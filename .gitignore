@@ -1,0 +1,7 @@
+#node_module
+/web/node_modules/*
+
+#workspack.xml
+.idea/workspace.xml
+
+

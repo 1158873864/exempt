@@ -1,2 +1,2 @@
-##Exempt前台界面
-运行方式：进入web文件夹依次输入 npm install , npm run dev即可运行前端
+#Exempt免签系统前端
+运行方法：进入web文件夹，依次输入npm install, npm run dev即可开启前端

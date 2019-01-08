@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/exempt.iml" filepath="$PROJECT_DIR$/.idea/modules/exempt.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/exempt_main.iml" filepath="$PROJECT_DIR$/.idea/modules/exempt_main.iml" group="exempt" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/exempt_test.iml" filepath="$PROJECT_DIR$/.idea/modules/exempt_test.iml" group="exempt" />
+    </modules>
+  </component>
+</project>

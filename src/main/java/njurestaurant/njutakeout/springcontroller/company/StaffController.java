@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+
 @RestController
 public class StaffController {
     private final StaffBlService staffBlService;
@@ -44,5 +46,30 @@ public class StaffController {
             e.printStackTrace();
             return new ResponseEntity<>(e.getResponse(), HttpStatus.SERVICE_UNAVAILABLE);
         }
+    }
+
+    @ApiOperation(value = "新增用户", notes = "管理员新增用户")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "team", value = "所属团队", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "post", value = "职务", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "username", value = "账号", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "status", value = "状态", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "verifyCode", value = "验证码", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "addTime", value = "添加时间", required = true, dataType = "Date"),
+            @ApiImplicitParam(name = "operator", value = "操作上级", required = true, dataType = "String")
+    })
+    @RequestMapping(value = "staff/add", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = StaffLoginReponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> register(
+            @RequestParam("username") String username, @RequestParam("team") String team,
+            @RequestParam("status") String status, @RequestParam("post") String post,
+            @RequestParam("verifyCode") String verifyCode, @RequestParam("addTime") Date addTime,
+            @RequestParam("operator") String operator) {
+        StaffLoginReponse staffLoginReponse = staffBlService.add(username, team, post, status, verifyCode, addTime, operator);
+        return new ResponseEntity<>(staffLoginReponse, HttpStatus.OK);
     }
 }

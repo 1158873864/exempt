@@ -13,9 +13,11 @@ import njurestaurant.njutakeout.security.jwt.JwtService;
 import njurestaurant.njutakeout.security.jwt.JwtStaffDetailService;
 import njurestaurant.njutakeout.security.jwt.JwtUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 @Service
 public class StaffBlServiceImpl implements StaffBlService {
@@ -54,5 +56,26 @@ public class StaffBlServiceImpl implements StaffBlService {
         } else {
             throw new WrongUsernameOrPasswordException();
         }
+    }
+
+    /**
+     * add a new staff
+     *
+     * @param staffName the username of the staff
+     * @param team the team of staff
+     * @param role the post of staff
+     * @param status
+     * @param verifyCode
+     * @param addTime operation time of add a new staff
+     * @param operator 操作上级
+     * @return
+     */
+    @Override
+    public StaffLoginReponse add(String staffName, String team, String role, String status, String verifyCode, Date addTime, String operator) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        staffDataService.saveStaff(new Staff(staffName, encoder.encode("123"), team, addTime, verifyCode, operator, status, role));
+        JwtUser jwtUser = (JwtUser) jwtStaffDetailService.loadUserByUsername(staffName);
+        String token = jwtService.generateToken(jwtUser, EXPIRATION);
+        return new StaffLoginReponse(token);
     }
 }

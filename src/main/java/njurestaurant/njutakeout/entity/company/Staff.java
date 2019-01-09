@@ -29,6 +29,17 @@ public class Staff {
     public Staff() {
     }
 
+    public Staff(String staffName, String password, String team, Date addTime, String verifyCode, String operator, String status, String role) {
+        this.staffName = staffName;
+        this.password = password;
+        this.team = team;
+        this.addTime = addTime;
+        this.verifyCode = verifyCode;
+        this.operator = operator;
+        this.status = status;
+        this.role = role;
+    }
+
     public String getRole() {
         return role;
     }

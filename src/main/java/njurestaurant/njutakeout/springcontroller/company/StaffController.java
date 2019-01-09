@@ -64,7 +64,7 @@ public class StaffController {
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> register(
+    public ResponseEntity<Response> addStaff(
             @RequestParam("username") String username, @RequestParam("team") String team,
             @RequestParam("status") String status, @RequestParam("post") String post,
             @RequestParam("verifyCode") String verifyCode, @RequestParam("addTime") Date addTime,

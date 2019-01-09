@@ -23,18 +23,18 @@ public class Staff {
     private String operator;
     @Column(name = "status")
     private String status;
+    @Column(name = "role")
+    private String role;
 
     public Staff() {
     }
 
-    public Staff(String staffName, String password, String team, Date addTime, String verifyCode, String operator, String status) {
-        this.staffName = staffName;
-        this.password = password;
-        this.team = team;
-        this.addTime = addTime;
-        this.verifyCode = verifyCode;
-        this.operator = operator;
-        this.status = status;
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public int getId() {

@@ -9,6 +9,8 @@ import njurestaurant.njutakeout.exception.WrongUsernameOrPasswordException;
 import njurestaurant.njutakeout.publicdatas.account.Role;
 import njurestaurant.njutakeout.response.company.StaffLoginReponse;
 import njurestaurant.njutakeout.response.user.UserLoginResponse;
+import njurestaurant.njutakeout.security.jwt.JwtService;
+import njurestaurant.njutakeout.security.jwt.JwtStaffDetailService;
 import njurestaurant.njutakeout.security.jwt.JwtUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,11 +19,18 @@ import java.util.ArrayList;
 
 @Service
 public class StaffBlServiceImpl implements StaffBlService {
+
+    private final static long EXPIRATION = 604800;
+
     private final StaffDataService staffDataService;
+    private final JwtStaffDetailService jwtStaffDetailService;
+    private final JwtService jwtService;
 
     @Autowired
-    public StaffBlServiceImpl(StaffDataService staffDataService) {
+    public StaffBlServiceImpl(StaffDataService staffDataService, JwtService jwtService, JwtStaffDetailService jwtStaffDetailService) {
         this.staffDataService = staffDataService;
+        this.jwtService = jwtService;
+        this.jwtStaffDetailService = jwtStaffDetailService;
     }
 
     /**
@@ -39,10 +48,9 @@ public class StaffBlServiceImpl implements StaffBlService {
         }
 
         if (staffDataService.confirmPassword(staffName, password)) {
-//            JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(username);
-//            String token = jwtService.generateToken(jwtUser, EXPIRATION);
-//            return new UserLoginResponse(token);
-            return new StaffLoginReponse("123456");
+            JwtUser jwtUser = (JwtUser) jwtStaffDetailService.loadUserByUsername(staffName);
+            String token = jwtService.generateToken(jwtUser, EXPIRATION);
+            return new StaffLoginReponse(token);
         } else {
             throw new WrongUsernameOrPasswordException();
         }

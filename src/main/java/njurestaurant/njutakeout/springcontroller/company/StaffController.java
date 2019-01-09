@@ -7,11 +7,9 @@ import njurestaurant.njutakeout.exception.WrongUsernameOrPasswordException;
 import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.WrongResponse;
 import njurestaurant.njutakeout.response.company.StaffLoginReponse;
-import njurestaurant.njutakeout.response.user.UserLoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

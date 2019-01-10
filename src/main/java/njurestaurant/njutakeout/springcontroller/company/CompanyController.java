@@ -92,7 +92,7 @@ public class CompanyController {
     }
 
     @ApiOperation(value = "新增收款码", notes = "管理员新增收款码")
-    @RequestMapping(value = "company/code/add", method = RequestMethod.GET)
+    @RequestMapping(value = "company/code/add", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = ReceiptCodeAddResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
@@ -155,4 +155,14 @@ public class CompanyController {
         return new ResponseEntity<>(receiptCodeBlService.loadReceiptCodes(), HttpStatus.OK);
     }
 
+    @ApiOperation(value = "银行卡列表", notes = "财务管理银行卡列表")
+    @RequestMapping(value = "company/cards", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = CompanyCardLoadResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> showBankCards() {
+        return new ResponseEntity<>(companyCardBlService.loadAllCompanyCards(), HttpStatus.OK);
+    }
 }

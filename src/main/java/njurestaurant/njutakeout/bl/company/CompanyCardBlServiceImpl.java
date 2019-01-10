@@ -5,6 +5,7 @@ import njurestaurant.njutakeout.dataservice.company.CompanyCardDataService;
 import njurestaurant.njutakeout.entity.company.CompanyCard;
 import njurestaurant.njutakeout.parameters.company.CompanyCardAddParameters;
 import njurestaurant.njutakeout.response.company.CompanyCardAddResponse;
+import njurestaurant.njutakeout.response.company.CompanyCardLoadResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,5 +28,10 @@ public class CompanyCardBlServiceImpl implements CompanyCardBlService {
     public CompanyCardAddResponse addCompanyCard(CompanyCard companyCard) {
         CompanyCard cc = companyCardDataService.saveCompanyCard(companyCard);
         return new CompanyCardAddResponse(cc.getId());
+    }
+
+    @Override
+    public CompanyCardLoadResponse loadAllCompanyCards() {
+        return new CompanyCardLoadResponse(companyCardDataService.findAllCompanyCards());
     }
 }

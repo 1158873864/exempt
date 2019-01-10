@@ -16,6 +16,12 @@ public class MerchantBlServiceImpl implements MerchantBlService {
         this.merchantDataService = merchantDataService;
     }
 
+    /**
+     * add a new merchant
+     *
+     * @param merchant the info of merchant
+     * @return
+     */
     @Override
     public MerchantAddResponse addMerchant(Merchant merchant) {
         return new MerchantAddResponse(merchantDataService.saveMerchant(merchant).getId());

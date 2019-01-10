@@ -1,51 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e91a2856-030b-4bfc-a3e1-de36c101076f" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/web/src/icons/svg/order.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/icons/svg/report.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/icons/svg/team.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/companyManage/announcement/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/companyManage/bankCard/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/companyManage/moneyReceiveCode/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/companyManage/privilege/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/companyManage/riskControl/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/companyManage/role/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/companyManage/settings/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/companyManage/team/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/financeManage/bankCardList/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/financeManage/receiveCodeList/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/order/cardChangeOrder/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/order/codeChangeOrder/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/order/orderDetails/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/order/withdrawOrder/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/report/agencyReport/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/report/fundReport/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/report/localTeamReport/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/report/merchantsReport/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/report/receiveCodeReport/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/userCenter/agency/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/userCenter/bankCardSetting/index.vue" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web/src/views/userCenter/userManage/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/.eslintrc.js" beforeDir="false" afterPath="$PROJECT_DIR$/web/.eslintrc.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/build/webpack.base.conf.js" beforeDir="false" afterPath="$PROJECT_DIR$/web/build/webpack.base.conf.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/src/components/Breadcrumb/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/components/Breadcrumb/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/src/icons/svg/user.svg" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/icons/svg/user.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/router/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/src/views/dashboard/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/views/dashboard/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/src/views/form/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/components/form/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/src/views/nested/menu1/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/src/views/nested/menu1/menu1-1/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/src/views/nested/menu1/menu1-2/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/src/views/nested/menu1/menu1-2/menu1-2-1/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/src/views/nested/menu1/menu1-2/menu1-2-2/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/src/views/nested/menu1/menu1-3/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/src/views/nested/menu2/index.vue" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/src/views/table/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/components/table/index.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/src/views/tree/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/web/src/components/tree/index.vue" afterDir="false" />
-    </list>
+    <list default="true" id="e91a2856-030b-4bfc-a3e1-de36c101076f" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/" />
     <ignored path="$PROJECT_DIR$/out/" />
@@ -60,22 +16,20 @@
       <ProjectState />
     </projectState>
   </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view />
+      </state>
+    </system>
+  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/web/src/views/userCenter/userManage/index.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="1" column="4" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="4" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/web/src/views/order/withdrawOrder/index.vue">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="1" column="9" selection-start-line="1" selection-start-column="9" selection-end-line="1" selection-end-column="9" />
+            <state relative-caret-position="75">
+              <caret line="5" column="20" lean-forward="true" selection-start-line="5" selection-start-column="20" selection-end-line="5" selection-end-column="20" />
             </state>
           </provider>
         </entry>
@@ -115,13 +69,7 @@
         <option value="$PROJECT_DIR$/web/src/icons/svg/user.svg" />
         <option value="$PROJECT_DIR$/web/src/views/layout/components/Navbar.vue" />
         <option value="$PROJECT_DIR$/web/src/views/layout/components/Sidebar/index.vue" />
-        <option value="$PROJECT_DIR$/web/src/views/userCenter/userManage/index.vue" />
         <option value="$PROJECT_DIR$/web/src/views/userCenter/bankCard/index.vue" />
-        <option value="$PROJECT_DIR$/web/src/views/report/receiveCodeReport/index.vue" />
-        <option value="$PROJECT_DIR$/web/src/views/report/merchantsReport/index.vue" />
-        <option value="$PROJECT_DIR$/web/src/views/report/localTeamReport/index.vue" />
-        <option value="$PROJECT_DIR$/web/src/views/report/fundReport/index.vue" />
-        <option value="$PROJECT_DIR$/web/src/views/report/agencyReport/index.vue" />
         <option value="$PROJECT_DIR$/web/src/router/index.js" />
         <option value="$PROJECT_DIR$/web/src/views/companyManage/role/index.vue" />
         <option value="$PROJECT_DIR$/web/src/views/companyManage/announcement/index.vue" />
@@ -141,6 +89,12 @@
         <option value="$PROJECT_DIR$/web/src/views/order/codeChangeOrder/index.vue" />
         <option value="$PROJECT_DIR$/web/src/views/order/orderDetails/index.vue" />
         <option value="$PROJECT_DIR$/web/src/views/order/withdrawOrder/index.vue" />
+        <option value="$PROJECT_DIR$/web/src/views/report/agencyReport/index.vue" />
+        <option value="$PROJECT_DIR$/web/src/views/report/fundReport/index.vue" />
+        <option value="$PROJECT_DIR$/web/src/views/report/localTeamReport/index.vue" />
+        <option value="$PROJECT_DIR$/web/src/views/report/merchantsReport/index.vue" />
+        <option value="$PROJECT_DIR$/web/src/views/report/receiveCodeReport/index.vue" />
+        <option value="$PROJECT_DIR$/web/src/views/userCenter/userManage/index.vue" />
       </list>
     </option>
   </component>
@@ -158,124 +112,11 @@
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
-    <navigator proportions="" version="1">
+    <navigator currentView="PackagesPane" proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="exempt" type="b2602c69:ProjectViewProjectNode" />
-              <item name="exempt" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-            </path>
-            <path>
-              <item name="exempt" type="b2602c69:ProjectViewProjectNode" />
-              <item name="exempt" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="exempt" type="b2602c69:ProjectViewProjectNode" />
-              <item name="exempt" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="exempt" type="b2602c69:ProjectViewProjectNode" />
-              <item name="exempt" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="router" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="exempt" type="b2602c69:ProjectViewProjectNode" />
-              <item name="exempt" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="exempt" type="b2602c69:ProjectViewProjectNode" />
-              <item name="exempt" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="dashboard" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="exempt" type="b2602c69:ProjectViewProjectNode" />
-              <item name="exempt" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="order" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="exempt" type="b2602c69:ProjectViewProjectNode" />
-              <item name="exempt" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="order" type="462c0819:PsiDirectoryNode" />
-              <item name="cardChangeOrder" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="exempt" type="b2602c69:ProjectViewProjectNode" />
-              <item name="exempt" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="order" type="462c0819:PsiDirectoryNode" />
-              <item name="codeChangeOrder" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="exempt" type="b2602c69:ProjectViewProjectNode" />
-              <item name="exempt" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="order" type="462c0819:PsiDirectoryNode" />
-              <item name="orderDetails" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="exempt" type="b2602c69:ProjectViewProjectNode" />
-              <item name="exempt" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="order" type="462c0819:PsiDirectoryNode" />
-              <item name="withdrawOrder" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="exempt" type="b2602c69:ProjectViewProjectNode" />
-              <item name="exempt" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="userCenter" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="exempt" type="b2602c69:ProjectViewProjectNode" />
-              <item name="exempt" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="userCenter" type="462c0819:PsiDirectoryNode" />
-              <item name="bankCardSetting" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="exempt" type="b2602c69:ProjectViewProjectNode" />
-              <item name="exempt" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
-              <item name="web" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="views" type="462c0819:PsiDirectoryNode" />
-              <item name="userCenter" type="462c0819:PsiDirectoryNode" />
-              <item name="userManage" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
+      <pane id="ProjectPane" />
       <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
@@ -284,7 +125,7 @@
     <property name="JavaScriptWeakerCompletionTypeGuess" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547122936063" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1547123021194" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.standard" value="true" />
@@ -402,12 +243,12 @@
       <workItem from="1546930258856" duration="230000" />
       <workItem from="1546941315412" duration="5732000" />
       <workItem from="1546953993831" duration="10000" />
-      <workItem from="1547117947486" duration="4749000" />
+      <workItem from="1547117947486" duration="5038000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="10721000" />
+    <option name="totallyTimeSpent" value="11010000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="3" y="37" width="1440" height="817" extended-state="6" />
@@ -527,41 +368,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/web/src/icons/svg/settings.svg">
       <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/views/report/receiveCodeReport/index.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="4" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/views/report/merchantsReport/index.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="4" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/views/report/localTeamReport/index.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="4" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/views/report/fundReport/index.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="4" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/views/report/agencyReport/index.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="4" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="4" />
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/web/src/icons/svg/report.svg">
       <provider selected="true" editor-type-id="images" />
@@ -739,13 +545,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/src/views/userCenter/userManage/index.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="1" column="4" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/web/src/views/order/cardChangeOrder/index.vue">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
@@ -769,8 +568,50 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/web/src/views/order/withdrawOrder/index.vue">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" lean-forward="true" selection-start-line="3" selection-end-line="3" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/src/views/report/agencyReport/index.vue">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15">
-          <caret line="1" column="9" selection-start-line="1" selection-start-column="9" selection-end-line="1" selection-end-column="9" />
+          <caret line="1" column="11" selection-start-line="1" selection-start-column="11" selection-end-line="1" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/src/views/report/fundReport/index.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="11" selection-start-line="1" selection-start-column="11" selection-end-line="1" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/src/views/report/localTeamReport/index.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="13" selection-start-line="1" selection-start-column="13" selection-end-line="1" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/src/views/report/merchantsReport/index.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="11" selection-start-line="1" selection-start-column="11" selection-end-line="1" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/src/views/report/receiveCodeReport/index.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15">
+          <caret line="1" column="12" selection-start-line="1" selection-start-column="12" selection-end-line="1" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/src/views/userCenter/userManage/index.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" column="20" lean-forward="true" selection-start-line="5" selection-start-column="20" selection-end-line="5" selection-end-column="20" />
         </state>
       </provider>
     </entry>

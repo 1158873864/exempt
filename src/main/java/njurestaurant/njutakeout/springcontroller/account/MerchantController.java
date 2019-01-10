@@ -28,7 +28,7 @@ public class MerchantController {
     @ApiOperation(value = "新增商家", notes = "代理/管理员新增商家")
     @RequestMapping(value = "merchant/add", method = RequestMethod.POST)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = ReceiptCodeAddResponse.class),
+            @ApiResponse(code = 200, message = "Success", response = MerchantAddResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody

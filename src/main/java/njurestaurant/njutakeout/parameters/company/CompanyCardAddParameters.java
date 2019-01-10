@@ -1,11 +1,17 @@
 package njurestaurant.njutakeout.parameters.company;
 
 public class CompanyCardAddParameters {
+    /*姓名*/
     private String name;
+    /*银行*/
     private String bank;
+    /*卡号*/
     private String number;
+    /*余额*/
     private double balance;
+    /*归属*/
     private String attribution;
+    /*关联*/
     private String relation;
     private String status;
 

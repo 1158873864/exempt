@@ -9,6 +9,7 @@ import njurestaurant.njutakeout.entity.company.ReceiptCode;
 import njurestaurant.njutakeout.exception.CannotRegisterException;
 import njurestaurant.njutakeout.exception.WrongUsernameOrPasswordException;
 import njurestaurant.njutakeout.parameters.company.CompanyCardAddParameters;
+import njurestaurant.njutakeout.parameters.company.StaffAddParameters;
 import njurestaurant.njutakeout.parameters.company.TeamAddParameters;
 import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.WrongResponse;
@@ -67,42 +68,21 @@ public class CompanyController {
     }
 
     @ApiOperation(value = "新增管理员", notes = "管理员新增管理员")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "team", value = "所属团队", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "post", value = "职务", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "username", value = "账号", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "status", value = "状态", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "verifyCode", value = "验证码", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "addTime", value = "添加时间", required = true, dataType = "Date"),
-            @ApiImplicitParam(name = "operator", value = "操作上级", required = true, dataType = "String")
-    })
-    @RequestMapping(value = "admin/add", method = RequestMethod.GET)
+    @RequestMapping(value = "admin/add", method = RequestMethod.POST)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = StaffLoginReponse.class),
+            @ApiResponse(code = 200, message = "Success", response = StaffAddResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> addStaff(
-            @RequestParam("username") String username, @RequestParam("team") String team,
-            @RequestParam("status") String status, @RequestParam("post") String post,
-            @RequestParam("verifyCode") String verifyCode, @RequestParam("addTime") Date addTime,
-            @RequestParam("operator") String operator) {
-        StaffLoginReponse staffLoginReponse = staffBlService.add(username, team, post, status, verifyCode, addTime, operator);
+    public ResponseEntity<Response> addStaff(@RequestBody StaffAddParameters staffAddParameters) {
+        StaffLoginReponse staffLoginReponse = staffBlService.add(staffAddParameters.getUsername(), staffAddParameters.getTeam(), staffAddParameters.getCode(), staffAddParameters.getStatus(), staffAddParameters.getCode(), staffAddParameters.getTime(), staffAddParameters.getOperator());
         return new ResponseEntity<>(staffLoginReponse, HttpStatus.OK);
     }
 
     @ApiOperation(value = "新增团队", notes = "公司管理员新增团队")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "supervisor", value = "主管账号", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "area", value = "地区分布", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "status", value = "状态", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "verifyCode", value = "验证码", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "operator", value = "添加人", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "addTime", value = "添加时间", required = true, dataType = "Date"),
-    })
     @RequestMapping(value = "company/team/add", method = RequestMethod.POST)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = ReceiptCodeAddResponse.class),
+            @ApiResponse(code = 200, message = "Success", response = TeamAddResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
@@ -112,25 +92,14 @@ public class CompanyController {
     }
 
     @ApiOperation(value = "新增收款码", notes = "管理员新增收款码")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "team", value = "归属团队", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "type", value = "所属类型", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "priority", value = "优先等级", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "duration", value = "持续时间", required = true, dataType = "int"),
-            @ApiImplicitParam(name = "info", value = "账号信息", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "number", value = "提现卡号", required = true, dataType = "String"),
-    })
     @RequestMapping(value = "company/code/add", method = RequestMethod.GET)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = ReceiptCodeAddResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> addReceiptCode(
-            @RequestParam("type") String type, @RequestParam("team") String team,
-            @RequestParam("priority") String priority, @RequestParam("duration") int duration,
-            @RequestParam("number") String number, @RequestParam("info") String info) {
-        ReceiptCodeAddResponse receiptCodeAddResponse = receiptCodeBlService.addReceiptCode(new ReceiptCode(team, type, duration, priority, info, number));
+    public ResponseEntity<Response> addReceiptCode(@RequestBody ReceiptCode receiptCode) {
+        ReceiptCodeAddResponse receiptCodeAddResponse = receiptCodeBlService.addReceiptCode(new ReceiptCode(receiptCode.getTeamName(), receiptCode.getType(), receiptCode.getDuration(), receiptCode.getPriorityLevel(), receiptCode.getAccountInfo(), receiptCode.getAccountNumber()));
         return new ResponseEntity<>(receiptCodeAddResponse, HttpStatus.OK);
     }
 
@@ -146,7 +115,7 @@ public class CompanyController {
     })
     @RequestMapping(value = "company/card/add", method = RequestMethod.POST)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = ReceiptCodeAddResponse.class),
+            @ApiResponse(code = 200, message = "Success", response = CompanyCardAddResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
@@ -161,9 +130,9 @@ public class CompanyController {
             @ApiImplicitParam(name = "post", value = "岗位", required = true, dataType = "String"),
             @ApiImplicitParam(name = "permission", value = "权限", required = true, dataType = "String"),
     })
-    @RequestMapping(value = "company/permission/add", method = RequestMethod.GET)
+    @RequestMapping(value = "company/permission/allocate", method = RequestMethod.GET)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = ReceiptCodeAddResponse.class),
+            @ApiResponse(code = 200, message = "Success", response = PostAndPermissionAddResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
@@ -173,6 +142,17 @@ public class CompanyController {
             allocationRecordBlService.addAllocationRecordBlService(new AllocationRecord(post, permission, new Date()));
         }
         return new ResponseEntity<>(postAndPermissionAddResponse, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "收款码列表", notes = "财务管理收款码列表")
+    @RequestMapping(value = "company/codes", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = ReceiptCodeLoadResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> showReceiptCode() {
+        return new ResponseEntity<>(receiptCodeBlService.loadReceiptCodes(), HttpStatus.OK);
     }
 
 }

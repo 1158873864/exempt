@@ -1,11 +1,10 @@
 package njurestaurant.njutakeout.springcontroller.company;
 
 import io.swagger.annotations.*;
-import njurestaurant.njutakeout.blservice.company.CompanyCardBlService;
-import njurestaurant.njutakeout.blservice.company.ReceiptCodeBlService;
-import njurestaurant.njutakeout.blservice.company.StaffBlService;
-import njurestaurant.njutakeout.blservice.company.TeamBlService;
+import njurestaurant.njutakeout.blservice.company.*;
+import njurestaurant.njutakeout.entity.company.AllocationRecord;
 import njurestaurant.njutakeout.entity.company.CompanyCard;
+import njurestaurant.njutakeout.entity.company.PostAndPermission;
 import njurestaurant.njutakeout.entity.company.ReceiptCode;
 import njurestaurant.njutakeout.exception.CannotRegisterException;
 import njurestaurant.njutakeout.exception.WrongUsernameOrPasswordException;
@@ -13,10 +12,7 @@ import njurestaurant.njutakeout.parameters.company.CompanyCardAddParameters;
 import njurestaurant.njutakeout.parameters.company.TeamAddParameters;
 import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.WrongResponse;
-import njurestaurant.njutakeout.response.company.CompanyCardAddResponse;
-import njurestaurant.njutakeout.response.company.ReceiptCodeAddResponse;
-import njurestaurant.njutakeout.response.company.StaffLoginReponse;
-import njurestaurant.njutakeout.response.company.TeamAddResponse;
+import njurestaurant.njutakeout.response.company.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,21 +26,27 @@ public class CompanyController {
     private final TeamBlService teamBlService;
     private final ReceiptCodeBlService receiptCodeBlService;
     private final CompanyCardBlService companyCardBlService;
+    private final PostAndPermissionBlService postAndPermissionBlService;
+    private final AllocationRecordBlService allocationRecordBlService;
 
     @Autowired
-    public CompanyController(StaffBlService staffBlService, TeamBlService teamBlService, ReceiptCodeBlService receiptCodeBlService, CompanyCardBlService companyCardBlService) {
+    public CompanyController(StaffBlService staffBlService, TeamBlService teamBlService, ReceiptCodeBlService receiptCodeBlService, CompanyCardBlService companyCardBlService, PostAndPermissionBlService postAndPermissionBlService, AllocationRecordBlService allocationRecordBlService) {
         this.staffBlService = staffBlService;
         this.teamBlService = teamBlService;
         this.receiptCodeBlService = receiptCodeBlService;
         this.companyCardBlService = companyCardBlService;
+        this.postAndPermissionBlService = postAndPermissionBlService;
+        this.allocationRecordBlService = allocationRecordBlService;
     }
 
-    @ApiOperation(value = "用户登录", notes = "验证用户登录并返回token")
+
+
+    @ApiOperation(value = "管理员登录", notes = "验证用户登录并返回token")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "username", value = "用户名", required = true, dataType = "String"),
             @ApiImplicitParam(name = "password", value = "密码", required = true, dataType = "String")
     })
-    @RequestMapping(value = "company/usr/login", method = RequestMethod.GET)
+    @RequestMapping(value = "admin/login", method = RequestMethod.GET)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = StaffLoginReponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
@@ -64,7 +66,7 @@ public class CompanyController {
         }
     }
 
-    @ApiOperation(value = "新增用户", notes = "管理员新增用户")
+    @ApiOperation(value = "新增管理员", notes = "管理员新增管理员")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "team", value = "所属团队", required = true, dataType = "String"),
             @ApiImplicitParam(name = "post", value = "职务", required = true, dataType = "String"),
@@ -74,7 +76,7 @@ public class CompanyController {
             @ApiImplicitParam(name = "addTime", value = "添加时间", required = true, dataType = "Date"),
             @ApiImplicitParam(name = "operator", value = "操作上级", required = true, dataType = "String")
     })
-    @RequestMapping(value = "company/usr/add", method = RequestMethod.GET)
+    @RequestMapping(value = "admin/add", method = RequestMethod.GET)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = StaffLoginReponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
@@ -132,7 +134,7 @@ public class CompanyController {
         return new ResponseEntity<>(receiptCodeAddResponse, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "新增银行卡", notes = "公司管理员新增公司")
+    @ApiOperation(value = "新增银行卡", notes = "公司管理员新增银行卡")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "name", value = "姓名", required = true, dataType = "String"),
             @ApiImplicitParam(name = "bank", value = "银行", required = true, dataType = "String"),
@@ -153,4 +155,24 @@ public class CompanyController {
         CompanyCardAddResponse companyCardAddResponse = companyCardBlService.addCompanyCard(companyCard);
         return new ResponseEntity<>(companyCardAddResponse, HttpStatus.OK);
     }
+
+    @ApiOperation(value = "权限新增", notes = "管理员新增权限")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "post", value = "岗位", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "permission", value = "权限", required = true, dataType = "String"),
+    })
+    @RequestMapping(value = "company/permission/add", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = ReceiptCodeAddResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> addPermissionOfPost(@RequestParam(name = "post") String post, @RequestParam(name = "permission") String permission) {
+        PostAndPermissionAddResponse postAndPermissionAddResponse= postAndPermissionBlService.addPostAndPermission(new PostAndPermission(post, permission));
+        if(postAndPermissionAddResponse.getId() != 0) {
+            allocationRecordBlService.addAllocationRecordBlService(new AllocationRecord(post, permission, new Date()));
+        }
+        return new ResponseEntity<>(postAndPermissionAddResponse, HttpStatus.OK);
+    }
+
 }

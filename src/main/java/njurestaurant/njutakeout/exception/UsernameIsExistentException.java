@@ -1,6 +1,5 @@
 package njurestaurant.njutakeout.exception;
 
-import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.WrongResponse;
 
 public class UsernameIsExistentException extends Exception {

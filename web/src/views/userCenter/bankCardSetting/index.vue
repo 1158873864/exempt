@@ -1,0 +1,13 @@
+<template>
+    <div>银行卡设置</div>
+</template>
+
+<script>
+    export default {
+        name: "index"
+    }
+</script>
+
+<style scoped>
+
+</style>

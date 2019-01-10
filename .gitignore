@@ -1,11 +1,7 @@
-<<<<<<< HEAD
-.idea/
-=======
 #node_module
 /web/node_modules/*
 
 #workspack.xml
 .idea
 
-
->>>>>>> 22a39245ba35085bd2ba3f931c4edfcf0b2d94ee
+out

@@ -66,8 +66,18 @@ export const constantRouterMap = [
       {
         path: 'team',
         name: 'team',
-        component: () => import('@/views/companyManage/team/index'),
-        meta: { title: '团队管理' }
+        // component: () => import('@/views/companyManage/team/index'),
+        // component: Layout,
+        meta: { title: '团队管理' },
+        children: [
+          {
+            path: 'addTeam',
+            name: 'addTeam',
+            component: () => import('@/views/companyManage/team/addTeam/index'),
+            meta: { title: '团队添加' }
+          },
+          { path: 'addTeam1', component: () => import('@/views/companyManage/team/addTeam/index'), name: 'addTeam1', meta: { title: '所有团队' } },
+        ]
       },
       {
         path: 'privilege',

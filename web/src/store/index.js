@@ -9,7 +9,8 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   modules: {
     app,
-    user
+    user,
+    // role
   },
   getters
 })

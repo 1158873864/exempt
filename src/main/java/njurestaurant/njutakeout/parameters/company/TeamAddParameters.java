@@ -8,18 +8,18 @@ public class TeamAddParameters {
     private String status;
     private String verifyCode;
     private String operator;
-    private Date addTime;
+    private String teamName;
 
     public TeamAddParameters() {
     }
 
-    public TeamAddParameters(String supervisor, String area, String status, String verifyCode, String operator, Date addTime) {
+    public TeamAddParameters(String supervisor, String area, String status, String verifyCode, String operator, String teamName) {
         this.supervisor = supervisor;
         this.area = area;
         this.status = status;
         this.verifyCode = verifyCode;
         this.operator = operator;
-        this.addTime = addTime;
+        this.teamName = teamName;
     }
 
     public String getSupervisor() {
@@ -62,11 +62,11 @@ public class TeamAddParameters {
         this.operator = operator;
     }
 
-    public Date getAddTime() {
-        return addTime;
+    public String getTeamName() {
+        return teamName;
     }
 
-    public void setAddTime(Date addTime) {
-        this.addTime = addTime;
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
     }
 }

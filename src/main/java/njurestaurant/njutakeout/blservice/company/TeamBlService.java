@@ -5,6 +5,8 @@ import njurestaurant.njutakeout.parameters.company.TeamAddParameters;
 import njurestaurant.njutakeout.response.company.TeamAddResponse;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface TeamBlService {
     /**
@@ -14,4 +16,10 @@ public interface TeamBlService {
      * @return
      */
     TeamAddResponse addTeam(TeamAddParameters teamAddParameters);
+
+    /**
+     * load all teams
+     * @return
+     */
+    List<Team> loadAllTeam();
 }

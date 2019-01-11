@@ -6,6 +6,8 @@ import njurestaurant.njutakeout.entity.company.Team;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TeamDataServiceImpl implements TeamDataService {
     private final TeamDao teamDao;
@@ -18,5 +20,15 @@ public class TeamDataServiceImpl implements TeamDataService {
     @Override
     public Team saveTeam(Team team) {
         return teamDao.save(team);
+    }
+
+    /**
+     * find all teams
+     *
+     * @return
+     */
+    @Override
+    public List<Team> findAllTeams() {
+        return teamDao.findAll();
     }
 }

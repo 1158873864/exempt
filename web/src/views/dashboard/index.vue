@@ -1,7 +1,17 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">name:{{ name }}</div>
-    <div class="dashboard-text">roles:<span v-for="role in roles" :key="role">{{ role }}</span></div>
+    <el-card class="dashboard-card">
+      <div slot="header">当日总量</div>
+      <div class="dashboard-card-content">
+        10000.0
+      </div>
+    </el-card>
+    <el-card class="dashboard-card">
+      <div slot="header">可用余额</div>
+      <div class="dashboard-card-content">
+        10000.0
+      </div>
+    </el-card>
   </div>
 </template>
 
@@ -23,10 +33,17 @@ export default {
 .dashboard {
   &-container {
     margin: 30px;
+    display: flex;
   }
-  &-text {
-    font-size: 30px;
-    line-height: 46px;
+  &-card {
+    width: 50%;
+    height: 200px;
+    margin-right: 20px;
+    &-content {
+      text-align: center;
+      font-size: 40px;
+      margin-top: 30px;
+    }
   }
 }
 </style>

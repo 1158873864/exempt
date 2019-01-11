@@ -30,7 +30,7 @@ export const constantRouterMap = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
-    name: 'Dashboard',
+    name: '首页',
     hidden: true,
     children: [{
       path: 'dashboard',
@@ -39,106 +39,196 @@ export const constantRouterMap = [
   },
 
   {
-    path: '/example',
+    path: '/company',
+    redirect: '/company/announcement',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
+    name: 'company',
+    meta: { title: '公司管理', icon: 'example' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        path: 'announcement',
+        name: 'announcement',
+        component: () => import('@/views/companyManage/announcement/index'),
+        meta: { title: '公告管理' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        path: 'role',
+        name: 'role',
+        component: () => import('@/views/companyManage/role/index'),
+        meta: { title: '角色管理' }
+      },
+      {
+        path: 'moneyReceiveCode',
+        name: 'moneyReceiveCode',
+        component: () => import('@/views/companyManage/moneyReceiveCode/index'),
+        meta: { title: '收款码新增' }
+      },
+      {
+        path: 'team',
+        name: 'team',
+        component: () => import('@/views/companyManage/team/index'),
+        meta: { title: '团队管理' }
+      },
+      {
+        path: 'privilege',
+        name: 'privilege',
+        component: () => import('@/views/companyManage/privilege/index'),
+        meta: { title: '权限管理' }
+      },
+      {
+        path: 'bankCard',
+        name: 'bankCard',
+        component: () => import('@/views/companyManage/bankCard/index'),
+        meta: { title: '银行卡管理' }
+      },
+      {
+        path: 'riskControl',
+        name: 'riskControl',
+        component: () => import('@/views/companyManage/riskControl/index'),
+        meta: { title: '风控管理' }
+      },
+      {
+        path: 'settings',
+        name: 'settings',
+        component: () => import('@/views/companyManage/settings/index'),
+        meta: { title: '系统设置' }
       }
     ]
   },
 
   {
-    path: '/form',
+    path: '/user',
+    redirect: '/user/agency',
     component: Layout,
+    name: 'user',
+    meta: {
+      title: '用户中心',
+      icon: 'team'
+    },
     children: [
       {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
+        path: 'agency',
+        component: () => import('@/views/userCenter/agency/index'),
+        name: 'agency',
+        meta: { title: '代理管理' }
+      },
+      {
+        path: 'userManage',
+        component: () => import('@/views/userCenter/userManage/index'),
+        name: 'userManage',
+        meta: { title: '用户管理' }
+      },
+      {
+        path: 'bankCardSetting',
+        component: () => import('@/views/userCenter/bankCardSetting/index'),
+        name: 'bankCardSetting',
+        meta: { title: '银行卡设置' }
       }
     ]
   },
 
   {
-    path: '/nested',
+    path: '/finance',
     component: Layout,
-    redirect: '/nested/menu1',
-    name: 'Nested',
+    redirect: '/finance/receiveCodeList',
+    name: 'finance',
     meta: {
-      title: 'Nested',
+      title: '财务管理',
       icon: 'nested'
     },
     children: [
       {
-        path: 'menu1',
-        component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
+        path: 'receiveCodeList',
+        component: () => import('@/views/financeManage/receiveCodeList/index'),
+        name: 'receiveCodeList',
+        meta: { title: '收款码列表' }
       },
       {
-        path: 'menu2',
-        component: () => import('@/views/nested/menu2/index'),
-        meta: { title: 'menu2' }
+        path: 'bankCardList',
+        component: () => import('@/views/financeManage/bankCardList/index'),
+        name: 'bankCardList',
+        meta: { title: '银行卡列表' }
+      },
+    ]
+  },
+
+  {
+    path: '/report',
+    redirect: '/report/receiveCodeReport',
+    component: Layout,
+    name: 'report',
+    meta: {
+      title: '报表统计',
+      icon: 'report'
+    },
+    children: [
+      {
+        path: 'receiveCodeReport',
+        component: () => import('@/views/report/receiveCodeReport/index'),
+        name: 'receiveCodeReport',
+        meta: { title: '收款码报表' }
+      },
+      {
+        path: 'merchantsReport',
+        component: () => import('@/views/report/merchantsReport/index'),
+        name: 'merchantsReport',
+        meta: { title: '商户报表' }
+      },
+      {
+        path: 'localTeamReport',
+        component: () => import('@/views/report/localTeamReport/index'),
+        name: 'localTeamReport',
+        meta: { title: '地方团队报表' }
+      },
+      {
+        path: 'fundReport',
+        component: () => import('@/views/report/fundReport/index'),
+        name: 'fundReport',
+        meta: { title: '资金报表' }
+      },
+      {
+        path: 'agencyReport',
+        component: () => import('@/views/report/agencyReport/index'),
+        name: 'agencyReport',
+        meta: { title: '代理报表' }
       }
     ]
   },
 
   {
-    path: 'external-link',
+    path: '/order',
+    redirect: '/order/orderDetails',
     component: Layout,
+    name: 'order',
+    meta: {
+      title: '订单管理',
+      icon: 'order'
+    },
     children: [
       {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
-      }
+        path: 'orderDetails',
+        component: () => import('@/views/order/orderDetails/index'),
+        name: 'orderDetails',
+        meta: { title: '订单明细' }
+      },
+      {
+        path: 'withdrawOrder',
+        component: () => import('@/views/order/withdrawOrder/index'),
+        name: 'withdrawOrder',
+        meta: { title: '商户提现订单' }
+      },
+      {
+        path: 'codeChangeOrder',
+        component: () => import('@/views/order/codeChangeOrder/index'),
+        name: 'codeChangeOrder',
+        meta: { title: '内部码帐变订单' }
+      },
+      {
+        path: 'cardChangeOrder',
+        component: () => import('@/views/order/cardChangeOrder/index'),
+        name: 'cardChangeOrder',
+        meta: { title: '内部卡帐变订单' }
+      },
     ]
   },
 

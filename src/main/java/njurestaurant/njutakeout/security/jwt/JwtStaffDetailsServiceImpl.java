@@ -36,7 +36,8 @@ public class JwtStaffDetailsServiceImpl implements JwtStaffDetailService {
         if(staff == null) {
             throw new UsernameNotFoundException(String.format("No user found with username '%s'.", username));
         } else {
-            return jwtService.converStaffToJwtUser(staff);
+            return null;
+//            return jwtService.converStaffToJwtUser(staff);
         }
     }
 }

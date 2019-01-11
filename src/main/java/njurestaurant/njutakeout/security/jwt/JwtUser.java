@@ -2,22 +2,33 @@ package njurestaurant.njutakeout.security.jwt;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class JwtUser implements UserDetails {
     private final String username;
     private final String password;
+    private final int tableId;
+    private final int role;
     private final Collection<JwtRole> authorities;
     private final boolean accountNonExpired = true;
     private final boolean accountNonLocked = true;
     private final boolean credentialsNonExpired = true;
     private final boolean enabled = true;
 
-    public JwtUser(String username, String password, Collection<JwtRole> authorities) {
+    public JwtUser(String username, String password, int tableId, int role) {
         this.username = username;
         this.password = password;
-        this.authorities = authorities;
+        this.tableId = tableId;
+        this.role = role;
+        this.authorities = new ArrayList<>();
     }
+
+    //    public JwtUser(String username, String password, Collection<JwtRole> authorities) {
+//        this.username = username;
+//        this.password = password;
+//        this.authorities = authorities;
+//    }
 
     @Override
     public String getUsername() {

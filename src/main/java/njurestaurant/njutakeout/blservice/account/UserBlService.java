@@ -52,4 +52,19 @@ public interface UserBlService {
      * @param avatarUrl
      */
     AvatarSaveResponse saveAvatar(String username, String avatarUrl) throws UsernameDoesNotFoundException;
+
+    /**
+     * save the admin into the user table
+     * @param username the username
+     * @param password the password
+     * @param tableId the id of the staff table
+     */
+    void saveAdmin(String username, String password, int tableId);
+
+    /**
+     * check the username whether existence
+     * @param username
+     * @return
+     */
+    boolean checkUsername(String username);
 }

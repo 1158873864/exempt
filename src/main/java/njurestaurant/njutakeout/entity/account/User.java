@@ -11,7 +11,7 @@ import java.util.List;
 @Table(name = "user")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "avatarUrl")
     private String avatarUrl;
@@ -20,7 +20,9 @@ public class User {
     @Column(name = "password")
     private String password;
     @Column(name = "role")
-    private Role role;
+    private int role;
+    @Column(name = "tableId")
+    private int tableId;
     @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     private List<Order> orders;
     @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
@@ -29,14 +31,21 @@ public class User {
     public User() {
     }
 
-    public User(String avatarUrl, String username, String password, Role role, List<Order> orders, List<Food> foods) {
-        this.avatarUrl = avatarUrl;
+    public User(String username, String password, int role, int tableId) {
         this.username = username;
         this.password = password;
         this.role = role;
-        this.orders = orders;
-        this.foods = foods;
+        this.tableId = tableId;
     }
+
+    //    public User(String avatarUrl, String username, String password, Role role, List<Order> orders, List<Food> foods) {
+//        this.avatarUrl = avatarUrl;
+//        this.username = username;
+//        this.password = password;
+//        this.role = role;
+//        this.orders = orders;
+//        this.foods = foods;
+//    }
 
     public int getId() {
         return id;
@@ -70,13 +79,13 @@ public class User {
         this.password = password;
     }
 
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
+//    public Role getRole() {
+//        return role;
+//    }
+//
+//    public void setRole(Role role) {
+//        this.role = role;
+//    }
 
     public List<Order> getOrders() {
         return orders;
@@ -92,5 +101,21 @@ public class User {
 
     public void setFoods(List<Food> foods) {
         this.foods = foods;
+    }
+
+    public int getRole() {
+        return role;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
+    }
+
+    public int getTableId() {
+        return tableId;
+    }
+
+    public void setTableId(int tableId) {
+        this.tableId = tableId;
     }
 }

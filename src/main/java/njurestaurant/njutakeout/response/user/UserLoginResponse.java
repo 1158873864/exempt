@@ -2,7 +2,7 @@ package njurestaurant.njutakeout.response.user;
 
 import njurestaurant.njutakeout.response.Response;
 
-public class UserLoginResponse extends Response {
+public class UserLoginResponse extends Response{
     private String token;
 
     public UserLoginResponse() {

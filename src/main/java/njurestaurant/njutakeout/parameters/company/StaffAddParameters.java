@@ -6,19 +6,27 @@ public class StaffAddParameters {
     private String team;
     private String post;
     private String username;
+    private String password;
     private String status;
     private String code;
-    private Date time;
     private String operator;
 
-    public StaffAddParameters(String team, String post, String username, String status, String code, Date time, String operator) {
+    public StaffAddParameters(String team, String post, String username, String password, String status, String code, String operator) {
         this.team = team;
         this.post = post;
         this.username = username;
+        this.password = password;
         this.status = status;
         this.code = code;
-        this.time = time;
         this.operator = operator;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getTeam() {
@@ -59,14 +67,6 @@ public class StaffAddParameters {
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public Date getTime() {
-        return time;
-    }
-
-    public void setTime(Date time) {
-        this.time = time;
     }
 
     public String getOperator() {

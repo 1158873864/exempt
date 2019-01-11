@@ -21,5 +21,5 @@ public interface JwtService {
 
     String generateToken(UserDetails userDetails, long expiration);
 
-    JwtUser converStaffToJwtUser(Staff staff);
+//    JwtUser converStaffToJwtUser(Staff staff);
 }

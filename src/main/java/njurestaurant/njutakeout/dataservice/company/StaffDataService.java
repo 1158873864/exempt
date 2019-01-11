@@ -16,14 +16,14 @@ public interface StaffDataService {
      *
      * @param staff the staff to be saved
      */
-    void saveStaff(Staff staff);
+    Staff saveStaff(Staff staff);
 
-    /**
-     * confirm the password
-     *
-     * @param staffName the username of staff
-     * @param password the password of staff
-     * @return true if password is correct else false
-     */
-    boolean confirmPassword(String staffName, String password);
+//    /**
+//     * confirm the password
+//     *
+//     * @param staffName the username of staff
+//     * @param password the password of staff
+//     * @return true if password is correct else false
+//     */
+//    boolean confirmPassword(String staffName, String password);
 }

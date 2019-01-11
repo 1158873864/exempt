@@ -7,12 +7,10 @@ import java.util.Date;
 @Table(name = "staff")
 public class Staff {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "staffName")
     private String staffName;
-    @Column(name = "password")
-    private String password;
     @Column(name = "team")
     private String team;
     @Column(name = "addTime")
@@ -23,29 +21,20 @@ public class Staff {
     private String operator;
     @Column(name = "status")
     private String status;
-    @Column(name = "role")
-    private String role;
+    @Column(name = "post")
+    private String post;
 
     public Staff() {
     }
 
-    public Staff(String staffName, String password, String team, Date addTime, String verifyCode, String operator, String status, String role) {
+    public Staff(String staffName, String team, Date addTime, String verifyCode, String operator, String status, String post) {
         this.staffName = staffName;
-        this.password = password;
         this.team = team;
         this.addTime = addTime;
         this.verifyCode = verifyCode;
         this.operator = operator;
         this.status = status;
-        this.role = role;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
+        this.post = post;
     }
 
     public int getId() {
@@ -64,12 +53,12 @@ public class Staff {
         this.staffName = staffName;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPost() {
+        return post;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPost(String post) {
+        this.post = post;
     }
 
     public String getTeam() {

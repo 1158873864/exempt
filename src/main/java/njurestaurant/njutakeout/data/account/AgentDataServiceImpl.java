@@ -6,6 +6,8 @@ import njurestaurant.njutakeout.entity.account.Agent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class AgentDataServiceImpl implements AgentDataService {
 
@@ -24,6 +26,25 @@ public class AgentDataServiceImpl implements AgentDataService {
     @Override
     public Agent saveAgent(Agent agent) {
         return agentDao.save(agent);
+    }
+
+    /**
+     *
+     * @param id the id of agent
+     * @return
+     */
+    @Override
+    public void deleteAgentById(int id) {
+        agentDao.deleteById(id);
+    }
+
+    @Override
+    public Agent findAgentById(int id) {
+        Optional<Agent> optionalAgent = agentDao.findById(id);
+        if(optionalAgent.isPresent()) {
+            return optionalAgent.get();
+        }
+        return null;
     }
 
     @Override

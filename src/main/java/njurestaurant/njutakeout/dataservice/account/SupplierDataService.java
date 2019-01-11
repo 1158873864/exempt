@@ -10,21 +10,4 @@ public interface SupplierDataService {
      * @return
      */
     Supplier saveSupplier(Supplier supplier);
-
-    /**
-     * confirm the password
-     *
-     * @param username the username
-     * @param password the password
-     * @return true if password is correct else false
-     */
-    boolean confirmPassword(String username, String password);
-
-    /**
-     * get supplier by username
-     *
-     * @param username the username
-     * @return
-     */
-    Supplier getSupplierByUsername(String username);
 }

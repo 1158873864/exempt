@@ -25,28 +25,4 @@ public class SupplierDataServiceImpl implements SupplierDataService {
         return supplierDao.save(supplier);
     }
 
-    /**
-     *
-     * @param username the username
-     * @param password the password
-     * @return
-     */
-    @Override
-    public boolean confirmPassword(String username, String password) {
-        Supplier supplier = supplierDao.findSupplierByUsername(username);
-        if(supplier.getPassword().equals(password)) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     *
-     * @param username the username
-     * @return
-     */
-    @Override
-    public Supplier getSupplierByUsername(String username) {
-        return supplierDao.findSupplierByUsername(username);
-    }
 }

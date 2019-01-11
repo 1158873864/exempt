@@ -2,6 +2,7 @@ package njurestaurant.njutakeout.parameters.user;
 
 public class AgentAddParameters {
     private String username;
+    private String password;
     private String flow;
     private String status;
     private String code;
@@ -10,12 +11,21 @@ public class AgentAddParameters {
     public AgentAddParameters() {
     }
 
-    public AgentAddParameters(String username, String flow, String status, String code, double brokerage) {
+    public AgentAddParameters(String username, String password, String flow, String status, String code, double brokerage) {
         this.username = username;
+        this.password = password;
         this.flow = flow;
         this.status = status;
         this.code = code;
         this.brokerage = brokerage;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getUsername() {

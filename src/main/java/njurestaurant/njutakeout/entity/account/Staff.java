@@ -1,4 +1,4 @@
-package njurestaurant.njutakeout.entity.company;
+package njurestaurant.njutakeout.entity.account;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -23,8 +23,22 @@ public class Staff {
     private String status;
     @Column(name = "post")
     private String post;
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
     public Staff() {
+    }
+
+    public Staff(String staffName, String team, Date addTime, String verifyCode, String operator, String status, String post, User user) {
+        this.staffName = staffName;
+        this.team = team;
+        this.addTime = addTime;
+        this.verifyCode = verifyCode;
+        this.operator = operator;
+        this.status = status;
+        this.post = post;
+        this.user = user;
     }
 
     public Staff(String staffName, String team, Date addTime, String verifyCode, String operator, String status, String post) {
@@ -99,5 +113,13 @@ public class Staff {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

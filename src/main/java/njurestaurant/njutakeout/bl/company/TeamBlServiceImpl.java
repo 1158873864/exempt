@@ -3,8 +3,11 @@ package njurestaurant.njutakeout.bl.company;
 import njurestaurant.njutakeout.blservice.company.TeamBlService;
 import njurestaurant.njutakeout.dataservice.company.TeamDataService;
 import njurestaurant.njutakeout.entity.company.Team;
+import njurestaurant.njutakeout.exception.BlankInputException;
+import njurestaurant.njutakeout.exception.IsExistentException;
 import njurestaurant.njutakeout.parameters.company.TeamAddParameters;
 import njurestaurant.njutakeout.response.company.TeamAddResponse;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,9 +29,15 @@ public class TeamBlServiceImpl implements TeamBlService {
      * @return
      */
     @Override
-    public TeamAddResponse addTeam(TeamAddParameters teamAddParameters) {
-        Team team =  new Team(teamAddParameters.getSupervisor(), teamAddParameters.getArea(), teamAddParameters.getStatus(), teamAddParameters.getVerifyCode(), teamAddParameters.getOperator(), new Date(), teamAddParameters.getTeamName());
-        return new TeamAddResponse(teamDataService.saveTeam(team).getId());
+    public TeamAddResponse addTeam(TeamAddParameters teamAddParameters) throws IsExistentException, BlankInputException {
+        if(StringUtils.isBlank(teamAddParameters.getTeamName())) {
+            throw new BlankInputException();
+        } else if(!teamDataService.isExistentTeamName(teamAddParameters.getTeamName())) {
+            Team team =  new Team(teamAddParameters.getSupervisor(), teamAddParameters.getArea(), teamAddParameters.getStatus(), teamAddParameters.getVerifyCode(), teamAddParameters.getOperator(), new Date(), teamAddParameters.getTeamName());
+            return new TeamAddResponse(teamDataService.saveTeam(team).getId());
+        } else {
+            throw new IsExistentException();
+        }
     }
 
     /**

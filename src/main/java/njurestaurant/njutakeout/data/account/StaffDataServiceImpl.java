@@ -1,11 +1,12 @@
-package njurestaurant.njutakeout.data.company;
+package njurestaurant.njutakeout.data.account;
 
-import njurestaurant.njutakeout.data.dao.company.StaffDao;
-import njurestaurant.njutakeout.dataservice.company.StaffDataService;
-import njurestaurant.njutakeout.entity.company.Staff;
+import njurestaurant.njutakeout.data.dao.account.StaffDao;
+import njurestaurant.njutakeout.dataservice.account.StaffDataService;
+import njurestaurant.njutakeout.entity.account.Staff;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class StaffDataServiceImpl implements StaffDataService {
@@ -50,4 +51,20 @@ public class StaffDataServiceImpl implements StaffDataService {
 //            return false;
 //        }
 //    }
+
+
+    @Override
+    public void deleteStaffById(int id) {
+        staffDao.deleteById(id);
+    }
+
+    @Override
+    public Staff findAgentById(int id) {
+        Optional<Staff> optionalStaff = staffDao.findById(id);
+        if(optionalStaff.isPresent()) {
+            return optionalStaff.get();
+        } else {
+            return null;
+        }
+    }
 }

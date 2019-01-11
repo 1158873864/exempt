@@ -4,24 +4,40 @@ import java.util.Date;
 
 public class MerchantAddParameters {
     private String username;
+    private String password;
     private String alipay;
     private String wechat;
     private double balance;
-    private String status;
     private String code;
-    private Date time;
+    private String superior;
+
+    public MerchantAddParameters(String username, String password, String alipay, String wechat, double balance, String code, String superior) {
+        this.username = username;
+        this.password = password;
+        this.alipay = alipay;
+        this.wechat = wechat;
+        this.balance = balance;
+        this.code = code;
+        this.superior = superior;
+    }
+
+    public String getSuperior() {
+        return superior;
+    }
+
+    public void setSuperior(String superior) {
+        this.superior = superior;
+    }
 
     public MerchantAddParameters() {
     }
 
-    public MerchantAddParameters(String username, String alipay, String wechat, double balance, String status, String code, Date time) {
-        this.username = username;
-        this.alipay = alipay;
-        this.wechat = wechat;
-        this.balance = balance;
-        this.status = status;
-        this.code = code;
-        this.time = time;
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getUsername() {
@@ -56,27 +72,11 @@ public class MerchantAddParameters {
         this.balance = balance;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public String getCode() {
         return code;
     }
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public Date getTime() {
-        return time;
-    }
-
-    public void setTime(Date time) {
-        this.time = time;
     }
 }

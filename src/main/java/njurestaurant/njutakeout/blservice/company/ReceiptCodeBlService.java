@@ -1,6 +1,7 @@
 package njurestaurant.njutakeout.blservice.company;
 
 import njurestaurant.njutakeout.entity.company.ReceiptCode;
+import njurestaurant.njutakeout.exception.IsExistentException;
 import njurestaurant.njutakeout.response.company.ReceiptCodeAddResponse;
 import njurestaurant.njutakeout.response.company.ReceiptCodeLoadResponse;
 import org.springframework.stereotype.Service;

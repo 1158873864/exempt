@@ -19,4 +19,12 @@ public interface TeamDataService {
      * @return
      */
     List<Team> findAllTeams();
+
+    /**
+     * find the team name whether existent
+     *
+     * @param teamName the team name
+     * @return
+     */
+    boolean isExistentTeamName(String teamName);
 }

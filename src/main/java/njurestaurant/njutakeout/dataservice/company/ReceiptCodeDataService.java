@@ -18,4 +18,5 @@ public interface ReceiptCodeDataService {
      * @return
      */
     List<ReceiptCode> findAllReceipt();
+
 }

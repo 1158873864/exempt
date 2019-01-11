@@ -1,5 +1,6 @@
 package njurestaurant.njutakeout.blservice.account;
 
+import njurestaurant.njutakeout.entity.account.User;
 import njurestaurant.njutakeout.exception.*;
 import njurestaurant.njutakeout.response.user.AvatarSaveResponse;
 import njurestaurant.njutakeout.response.user.OpenIdAndSessionKeyResponse;
@@ -54,12 +55,10 @@ public interface UserBlService {
     AvatarSaveResponse saveAvatar(String username, String avatarUrl) throws UsernameDoesNotFoundException;
 
     /**
-     * save the admin into the user table
-     * @param username the username
-     * @param password the password
-     * @param tableId the id of the staff table
+     * update the user info
+     * @param user
      */
-    void saveAdmin(String username, String password, int tableId);
+    void updateUser(User user);
 
     /**
      * check the username whether existence

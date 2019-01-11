@@ -154,17 +154,18 @@ public class UserBlServiceImpl implements UserBlService {
         }
     }
 
-    /**
-     * @param username the username
-     * @param password the password
-     * @param tableId  the id of the staff table
-     */
+
     @Override
-    public void saveAdmin(String username, String password, int tableId) {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        userDataService.saveUser(new User(username, encoder.encode(password), 1, tableId));
+    public void updateUser(User user) {
+//        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        userDataService.saveUser(user);
     }
 
+    /**
+     * check the username whether existent
+     * @param username
+     * @return
+     */
     @Override
     public boolean checkUsername(String username) {
         return userDataService.isUserExistent(username);

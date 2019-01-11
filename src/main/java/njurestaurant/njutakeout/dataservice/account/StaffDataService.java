@@ -1,6 +1,6 @@
-package njurestaurant.njutakeout.dataservice.company;
+package njurestaurant.njutakeout.dataservice.account;
 
-import njurestaurant.njutakeout.entity.company.Staff;
+import njurestaurant.njutakeout.entity.account.Staff;
 
 public interface StaffDataService {
     /**
@@ -26,4 +26,8 @@ public interface StaffDataService {
 //     * @return true if password is correct else false
 //     */
 //    boolean confirmPassword(String staffName, String password);
+
+    void deleteStaffById(int id);
+
+    Staff findAgentById(int id);
 }

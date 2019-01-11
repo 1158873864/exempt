@@ -21,15 +21,19 @@ public class AgentBlServiceImpl implements AgentBlService {
      * add the agent
      * @param agent the info of the agent
      * @return
-     * @throws UsernameIsExistentException
      */
     @Override
-    public AgentAddResponse addAgent(Agent agent) throws UsernameIsExistentException {
-        if(agentDataService.isAgentExistentByName(agent.getAgentName())) {
-            throw new UsernameIsExistentException();
-        } else {
-            Agent tmp = agentDataService.saveAgent(agent);
-            return new AgentAddResponse(tmp.getId());
-        }
+    public AgentAddResponse addAgent(Agent agent){
+        return new AgentAddResponse(agentDataService.saveAgent(agent).getId());
+    }
+
+    /**
+     * delete the agent by id
+     *
+     * @param id the agent id
+     */
+    @Override
+    public void delAgentById(int id) {
+        agentDataService.deleteAgentById(id);
     }
 }

@@ -6,7 +6,7 @@ import javax.persistence.*;
 @Table(name = "agent")
 public class Agent {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "agentName")
     private String agentName;
@@ -18,6 +18,21 @@ public class Agent {
     private String verifyCode;
     @Column(name = "dailyCommission")
     private double dailyCommission;
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
+    public Agent() {
+    }
+
+    public Agent(String agentName, String flow, String status, String verifyCode, double dailyCommission, User user) {
+        this.agentName = agentName;
+        this.flow = flow;
+        this.status = status;
+        this.verifyCode = verifyCode;
+        this.dailyCommission = dailyCommission;
+        this.user = user;
+    }
 
     public Agent(String agentName, String flow, String status, String verifyCode, double dailyCommission) {
         this.agentName = agentName;
@@ -25,6 +40,14 @@ public class Agent {
         this.status = status;
         this.verifyCode = verifyCode;
         this.dailyCommission = dailyCommission;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getId() {

@@ -3,6 +3,7 @@ package njurestaurant.njutakeout.bl.company;
 import njurestaurant.njutakeout.blservice.company.ReceiptCodeBlService;
 import njurestaurant.njutakeout.dataservice.company.ReceiptCodeDataService;
 import njurestaurant.njutakeout.entity.company.ReceiptCode;
+import njurestaurant.njutakeout.exception.IsExistentException;
 import njurestaurant.njutakeout.response.company.ReceiptCodeAddResponse;
 import njurestaurant.njutakeout.response.company.ReceiptCodeLoadResponse;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -19,4 +19,12 @@ public interface CompanyCardDataService {
      * @return
      */
     List<CompanyCard> findAllCompanyCards();
+
+    /**
+     * check the card whether existent by card number
+     *
+     * @param cardNumber the card number
+     * @return
+     */
+    boolean isExistentCard(String cardNumber);
 }

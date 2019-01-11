@@ -36,4 +36,15 @@ public class CompanyCardDataServiceImpl implements CompanyCardDataService {
     public List<CompanyCard> findAllCompanyCards() {
         return companyCardDao.findAll();
     }
+
+    /**
+     * find the card whether exist
+     *
+     * @param cardNumber the card number
+     * @return
+     */
+    @Override
+    public boolean isExistentCard(String cardNumber) {
+        return companyCardDao.findCompanyCardByCardNumber(cardNumber) != null;
+    }
 }

@@ -1,5 +1,7 @@
 package njurestaurant.njutakeout.entity.app;
 
+import njurestaurant.njutakeout.entity.account.Supplier;
+
 import javax.persistence.*;
 
 @Entity
@@ -8,14 +10,26 @@ public class Device {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "deviceId")
-    private String deviceId;
-    @Column(name = "username")
-    private String username;
+    /*设备唯一标识*/
+    @Column(name = "imei")
+    private String imei;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "supplier_id")
+    private Supplier supplier;
+    /*是否在该设备上在线，1为在线，0为离线*/
+    @Column(name = "online")
+    private int online;
 
-    public Device(String deviceId, String username) {
-        this.deviceId = deviceId;
-        this.username = username;
+    public Device() {
+    }
+
+    public Device(String imei) {
+        this.imei = imei;
+    }
+
+    public Device(String imei, Supplier supplier) {
+        this.imei = imei;
+        this.supplier = supplier;
     }
 
     public int getId() {
@@ -26,19 +40,19 @@ public class Device {
         this.id = id;
     }
 
-    public String getDeviceId() {
-        return deviceId;
+    public String getImei() {
+        return imei;
     }
 
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
+    public void setImei(String imei) {
+        this.imei = imei;
     }
 
-    public String getUsername() {
-        return username;
+    public Supplier getSupplier() {
+        return supplier;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setSupplier(Supplier supplier) {
+        this.supplier = supplier;
     }
 }

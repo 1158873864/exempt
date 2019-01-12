@@ -9,4 +9,15 @@ public interface MerchantDataService {
      * @return
      */
     Merchant saveMerchant(Merchant merchant);
+
+    /**
+     * find the merchant by id
+     *
+     * @param id merchant id
+     * @return
+     */
+    Merchant findMerchantById(int id);
+
+    void deleteMerchantById(int id);
+
 }

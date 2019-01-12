@@ -3,11 +3,14 @@ package njurestaurant.njutakeout.entity.company;
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * 权限操作记录表
+ */
 @Entity
 @Table(name = "allocationRecord")
 public class AllocationRecord {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "post")
     private String post;

@@ -28,7 +28,7 @@ public class PersonalCardController {
     @ApiOperation(value = "新增银行卡", notes = "用户个人银行卡增加")
     @RequestMapping(value = "usr/card/add", method = RequestMethod.POST)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = ReceiptCodeAddResponse.class),
+            @ApiResponse(code = 200, message = "Success", response = PersonalCardAddResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody

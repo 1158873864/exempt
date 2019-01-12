@@ -1,5 +1,7 @@
 package njurestaurant.njutakeout.entity.account;
 
+import njurestaurant.njutakeout.publicdatas.account.MerchantState;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -7,34 +9,60 @@ import java.util.Date;
 @Table(name = "merchant")
 public class Merchant {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "username")
-    private String username;
-    @Column(name = "password")
-    private String password;
     @Column(name = "alipay")
     private String alipay;
     @Column(name = "wechat")
     private String wechat;
     @Column(name = "balance")
-    private double banlance;
+    private double balance;
     @Column(name = "status")
-    private String status;
+    private MerchantState status;
     @Column(name = "verifyCode")
     private String verifyCode;
     @Column(name = "addTime")
     private Date addTime;
+    @Column(name = "name")
+    private String name;
+    @Column(name = "superior")
+    private String superior;
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
-    public Merchant(String username, String password, String alipay, String wechat, double banlance, String status, String verifyCode, Date addTime) {
-        this.username = username;
-        this.password = password;
+    public Merchant() {
+    }
+
+    public Merchant(String alipay, String wechat, double balance, MerchantState status, String verifyCode, Date addTime, String name, String superior, User user) {
         this.alipay = alipay;
         this.wechat = wechat;
-        this.banlance = banlance;
+        this.balance = balance;
         this.status = status;
         this.verifyCode = verifyCode;
         this.addTime = addTime;
+        this.name = name;
+        this.superior = superior;
+        this.user = user;
+    }
+
+    public Merchant(String alipay, String wechat, double balance, MerchantState status, String verifyCode, Date addTime, String name, String superior) {
+        this.alipay = alipay;
+        this.wechat = wechat;
+        this.balance = balance;
+        this.status = status;
+        this.verifyCode = verifyCode;
+        this.addTime = addTime;
+        this.name = name;
+        this.superior = superior;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getId() {
@@ -43,22 +71,6 @@ public class Merchant {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getAlipay() {
@@ -77,19 +89,19 @@ public class Merchant {
         this.wechat = wechat;
     }
 
-    public double getBanlance() {
-        return banlance;
+    public double getBalance() {
+        return balance;
     }
 
-    public void setBanlance(double banlance) {
-        this.banlance = banlance;
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 
-    public String getStatus() {
+    public MerchantState getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(MerchantState status) {
         this.status = status;
     }
 
@@ -103,6 +115,14 @@ public class Merchant {
 
     public Date getAddTime() {
         return addTime;
+    }
+
+    public String getSuperior() {
+        return superior;
+    }
+
+    public void setSuperior(String superior) {
+        this.superior = superior;
     }
 
     public void setAddTime(Date addTime) {

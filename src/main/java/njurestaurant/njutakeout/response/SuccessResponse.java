@@ -5,7 +5,7 @@ public class SuccessResponse extends Response {
     private String description;
 
     public SuccessResponse(String description) {
-        this.infoCode = 10000;
+        this.infoCode = 200;
         this.description = description;
     }
 

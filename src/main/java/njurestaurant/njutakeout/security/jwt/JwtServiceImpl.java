@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import njurestaurant.njutakeout.entity.account.User;
-import njurestaurant.njutakeout.entity.company.Staff;
 import njurestaurant.njutakeout.publicdatas.account.Role;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -49,22 +48,28 @@ public class JwtServiceImpl implements JwtService {
 
     @Override
     public JwtUser convertUserToJwtUser(User user) {
+//        return new JwtUser(
+//                user.getUsername(),
+//                user.getPassword(),
+//                mapToJwtRole(user.getRole())
+//        );
         return new JwtUser(
                 user.getUsername(),
                 user.getPassword(),
-                mapToJwtRole(user.getRole())
+                user.getTableId(),
+                user.getRole()
         );
     }
 
-    @Override
-    public JwtUser converStaffToJwtUser(Staff staff) {
-        Role role = new Role(staff.getRole());
-        return new JwtUser(
-                staff.getStaffName(),
-                staff.getPassword(),
-                mapToJwtRole(role)
-        );
-    }
+//    @Override
+//    public JwtUser converStaffToJwtUser(Staff staff) {
+//        Role role = new Role(staff.getRole());
+//        return new JwtUser(
+//                staff.getStaffName(),
+//                staff.getPassword(),
+//                mapToJwtRole(role)
+//        );
+//    }
 
     private List<JwtRole> mapToJwtRole(Role role) {
         List<Role> roles = new ArrayList<>();

@@ -15,4 +15,14 @@ public interface AgentDataService {
      * @param name account name of agent
      */
     boolean isAgentExistentByName(String name);
+
+    /**
+     * delete agent by id
+     *
+     * @param id the id of agent
+     * @return
+     */
+    void deleteAgentById(int id);
+
+    Agent findAgentById(int id);
 }

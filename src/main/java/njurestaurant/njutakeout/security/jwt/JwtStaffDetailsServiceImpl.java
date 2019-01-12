@@ -1,7 +1,7 @@
 package njurestaurant.njutakeout.security.jwt;
 
-import njurestaurant.njutakeout.data.dao.company.StaffDao;
-import njurestaurant.njutakeout.entity.company.Staff;
+import njurestaurant.njutakeout.data.dao.account.StaffDao;
+import njurestaurant.njutakeout.entity.account.Staff;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -36,7 +36,8 @@ public class JwtStaffDetailsServiceImpl implements JwtStaffDetailService {
         if(staff == null) {
             throw new UsernameNotFoundException(String.format("No user found with username '%s'.", username));
         } else {
-            return jwtService.converStaffToJwtUser(staff);
+            return null;
+//            return jwtService.converStaffToJwtUser(staff);
         }
     }
 }

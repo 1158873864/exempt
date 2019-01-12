@@ -6,6 +6,8 @@ import njurestaurant.njutakeout.entity.company.CompanyCard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CompanyCardDataServiceImpl implements CompanyCardDataService {
     private CompanyCardDao companyCardDao;
@@ -24,5 +26,25 @@ public class CompanyCardDataServiceImpl implements CompanyCardDataService {
     @Override
     public CompanyCard saveCompanyCard(CompanyCard companyCard) {
         return companyCardDao.save(companyCard);
+    }
+
+    /**
+     * load all bank cards
+     * @return
+     */
+    @Override
+    public List<CompanyCard> findAllCompanyCards() {
+        return companyCardDao.findAll();
+    }
+
+    /**
+     * find the card whether exist
+     *
+     * @param cardNumber the card number
+     * @return
+     */
+    @Override
+    public boolean isExistentCard(String cardNumber) {
+        return companyCardDao.findCompanyCardByCardNumber(cardNumber) != null;
     }
 }

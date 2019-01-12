@@ -20,7 +20,7 @@ public class PostAndPermissionDataServiceImpl implements PostAndPermissionDataSe
      * @param postAndPermission the permission of the post
      */
     @Override
-    public void savePostAndPermission(PostAndPermission postAndPermission) {
-        postAndPermissionDao.save(postAndPermission);
+    public PostAndPermission savePostAndPermission(PostAndPermission postAndPermission) {
+        return postAndPermissionDao.saveAndFlush(postAndPermission);
     }
 }

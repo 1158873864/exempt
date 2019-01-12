@@ -2,6 +2,8 @@ package njurestaurant.njutakeout.dataservice.company;
 
 import njurestaurant.njutakeout.entity.company.ReceiptCode;
 
+import java.util.List;
+
 public interface ReceiptCodeDataService {
     /**
      * save the receipt code
@@ -9,4 +11,12 @@ public interface ReceiptCodeDataService {
      * @param receiptCode the code to be saved
      */
     ReceiptCode saveReceiptCode(ReceiptCode receiptCode);
+
+    /**
+     * find all codes
+     *
+     * @return
+     */
+    List<ReceiptCode> findAllReceipt();
+
 }

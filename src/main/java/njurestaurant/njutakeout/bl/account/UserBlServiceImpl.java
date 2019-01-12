@@ -64,7 +64,8 @@ public class UserBlServiceImpl implements UserBlService {
         }
         if (password.equals(USER_DEFAULT_PASSWORD)) {
             if (!userDataService.isUserExistent(username)) {
-                userDataService.saveUser(new User("", username, password, Role.USER, new ArrayList<>(), new ArrayList<>()));
+                userDataService.saveUser(new User(username, password, 1, 0));
+//                userDataService.saveUser(new User("", username, password, Role.USER, new ArrayList<>(), new ArrayList<>()));
             }
             JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(username);
             String token = jwtService.generateToken(jwtUser, EXPIRATION);
@@ -110,7 +111,8 @@ public class UserBlServiceImpl implements UserBlService {
     @Override
     public UserLoginResponse register(String username, String password) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        userDataService.saveUser(new User("", username, encoder.encode(password), Role.RESTAURANT, new ArrayList<>(), new ArrayList<>()));
+        userDataService.saveUser(new User(username, encoder.encode(password), 0, 0));
+//        userDataService.saveUser(new User("", username, encoder.encode(password), Role.RESTAURANT, new ArrayList<>(), new ArrayList<>()));
         JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(username);
         String token = jwtService.generateToken(jwtUser, EXPIRATION);
         return new UserLoginResponse(token);
@@ -150,5 +152,22 @@ public class UserBlServiceImpl implements UserBlService {
             userDataService.saveUser(user);
             return new AvatarSaveResponse();
         }
+    }
+
+
+    @Override
+    public void updateUser(User user) {
+//        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        userDataService.saveUser(user);
+    }
+
+    /**
+     * check the username whether existent
+     * @param username
+     * @return
+     */
+    @Override
+    public boolean checkUsername(String username) {
+        return userDataService.isUserExistent(username);
     }
 }

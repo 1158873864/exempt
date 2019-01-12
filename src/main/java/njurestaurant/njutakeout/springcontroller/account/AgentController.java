@@ -21,21 +21,9 @@ import org.springframework.web.bind.annotation.*;
 public class AgentController {
     private final AgentBlService agentBlService;
 
-    @ApiOperation(value = "新增代理商", notes = "管理员新增代理")
-    @RequestMapping(value = "usr/agent/add", method = RequestMethod.POST)
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = ReceiptCodeAddResponse.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
-            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
-    @ResponseBody
-    public ResponseEntity<Response> addAgent(@RequestBody AgentAddParameters agentAddParameters) throws UsernameIsExistentException {
-        Agent agent = new Agent(agentAddParameters.getUsername(), agentAddParameters.getFlow(), agentAddParameters.getStatus(), agentAddParameters.getCode(), agentAddParameters.getBrokerage());
-        AgentAddResponse agentAddResponse = agentBlService.addAgent(agent);
-        return new ResponseEntity<>(agentAddResponse, HttpStatus.OK);
-    }
-
     @Autowired
     public AgentController(AgentBlService agentBlService) {
         this.agentBlService = agentBlService;
     }
+
 }

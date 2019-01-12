@@ -12,5 +12,12 @@ public interface AgentBlService {
      * @param agent the info of the agent
      * @return
      */
-    AgentAddResponse addAgent(Agent agent) throws UsernameIsExistentException;
+    AgentAddResponse addAgent(Agent agent);
+
+    /**
+     * delete the agent by id
+     * @param id the agent id
+     */
+    void delAgentById(int id);
+
 }

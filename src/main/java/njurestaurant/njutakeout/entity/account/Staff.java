@@ -1,4 +1,4 @@
-package njurestaurant.njutakeout.entity.company;
+package njurestaurant.njutakeout.entity.account;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -7,12 +7,10 @@ import java.util.Date;
 @Table(name = "staff")
 public class Staff {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "staffName")
     private String staffName;
-    @Column(name = "password")
-    private String password;
     @Column(name = "team")
     private String team;
     @Column(name = "addTime")
@@ -23,29 +21,34 @@ public class Staff {
     private String operator;
     @Column(name = "status")
     private String status;
-    @Column(name = "role")
-    private String role;
+    @Column(name = "post")
+    private String post;
+    @OneToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
     public Staff() {
     }
 
-    public Staff(String staffName, String password, String team, Date addTime, String verifyCode, String operator, String status, String role) {
+    public Staff(String staffName, String team, Date addTime, String verifyCode, String operator, String status, String post, User user) {
         this.staffName = staffName;
-        this.password = password;
         this.team = team;
         this.addTime = addTime;
         this.verifyCode = verifyCode;
         this.operator = operator;
         this.status = status;
-        this.role = role;
+        this.post = post;
+        this.user = user;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
+    public Staff(String staffName, String team, Date addTime, String verifyCode, String operator, String status, String post) {
+        this.staffName = staffName;
+        this.team = team;
+        this.addTime = addTime;
+        this.verifyCode = verifyCode;
+        this.operator = operator;
+        this.status = status;
+        this.post = post;
     }
 
     public int getId() {
@@ -64,12 +67,12 @@ public class Staff {
         this.staffName = staffName;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPost() {
+        return post;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPost(String post) {
+        this.post = post;
     }
 
     public String getTeam() {
@@ -110,5 +113,13 @@ public class Staff {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

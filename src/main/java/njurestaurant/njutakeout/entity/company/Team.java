@@ -7,7 +7,8 @@ import java.util.Date;
 @Table(name = "team")
 public class Team {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
     private int id;
     @Column(name = "supervisor")
     private String supervisor;
@@ -21,14 +22,36 @@ public class Team {
     private String operator;
     @Column(name = "addTime")
     private Date addTime;
+    @Column(name = "teamName")
+    private String teamName;
 
-    public Team(String supervisor, String area, String status, String verifyCode, String operator, Date addTime) {
+    public Team(String supervisor, String area, String status, String verifyCode, String operator, Date addTime, String teamName) {
         this.supervisor = supervisor;
         this.area = area;
         this.status = status;
         this.verifyCode = verifyCode;
         this.operator = operator;
         this.addTime = addTime;
+        this.teamName = teamName;
+    }
+
+    public Team() {
+    }
+
+    public String getVerifyCode() {
+        return verifyCode;
+    }
+
+    public void setVerifyCode(String verifyCode) {
+        this.verifyCode = verifyCode;
+    }
+
+    public String getTeamName() {
+        return teamName;
+    }
+
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
     }
 
     public int getId() {

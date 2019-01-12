@@ -2,11 +2,14 @@ package njurestaurant.njutakeout.entity.company;
 
 import javax.persistence.*;
 
+/**
+ * 岗位权限记录
+ */
 @Entity
 @Table(name = "postAndPermission")
 public class PostAndPermission {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "post")
     private String post;

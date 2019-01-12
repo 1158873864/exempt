@@ -7,5 +7,5 @@ public interface PostAndPermissionDataService {
      * save the permission of the post
      * @param postAndPermission the permission of the post
      */
-    void savePostAndPermission(PostAndPermission postAndPermission);
+    PostAndPermission savePostAndPermission(PostAndPermission postAndPermission);
 }

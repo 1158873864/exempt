@@ -6,6 +6,9 @@ import njurestaurant.njutakeout.entity.account.PersonalCard;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class PersonalCardDataServiceImpl implements PersonalCardDataService {
     private final PersonalCardDao personalCardDao;
@@ -23,5 +26,32 @@ public class PersonalCardDataServiceImpl implements PersonalCardDataService {
     @Override
     public PersonalCard savePersonalCard(PersonalCard personalCard) {
         return personalCardDao.saveAndFlush(personalCard);
+    }
+
+    @Override
+    public PersonalCard findPersonalCardById(int id) {
+        Optional<PersonalCard> optionalPersonalCard = personalCardDao.findById(id);
+        if(optionalPersonalCard.isPresent()) return optionalPersonalCard.get();
+        else return null;
+    }
+
+    @Override
+    public void deleteById(int id) {
+        personalCardDao.deleteById(id);
+    }
+
+    @Override
+    public List<PersonalCard> findAllCards() {
+        return personalCardDao.findAll();
+    }
+
+    @Override
+    public List<PersonalCard> findPersonalCarsByUid(int uid) {
+        return personalCardDao.findPersonalCardByUserId(uid);
+    }
+
+    @Override
+    public PersonalCard findPersonalCardByCardNumber(String cardNumber) {
+        return personalCardDao.findPersonalCardByCardNumber(cardNumber);
     }
 }

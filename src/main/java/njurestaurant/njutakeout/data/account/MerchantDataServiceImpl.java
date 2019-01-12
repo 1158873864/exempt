@@ -3,10 +3,12 @@ package njurestaurant.njutakeout.data.account;
 import njurestaurant.njutakeout.data.dao.account.MerchantDao;
 import njurestaurant.njutakeout.dataservice.account.MerchantDataService;
 import njurestaurant.njutakeout.entity.account.Merchant;
+import njurestaurant.njutakeout.publicdatas.account.MerchantState;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,7 +32,6 @@ public class MerchantDataServiceImpl implements MerchantDataService {
     }
 
     /**
-     *
      * @param id merchant id
      * @return
      */
@@ -44,8 +45,35 @@ public class MerchantDataServiceImpl implements MerchantDataService {
         }
     }
 
+    /**
+     * delete the merchant
+     *
+     * @param id the id
+     */
     @Override
     public void deleteMerchantById(int id) {
         merchantDao.deleteById(id);
+    }
+
+    /**
+     * get all merchants infos
+     *
+     * @return
+     */
+    @Override
+    public List<Merchant> getAllMerchants() {
+//        return merchantDao.findAll();
+        return merchantDao.findAll();
+    }
+
+
+    @Override
+    public List<Merchant> getMerchantsByState(MerchantState merchantState) {
+        return merchantDao.findMerchantByStatus(merchantState);
+    }
+
+    @Override
+    public List<Merchant> getMerchantsBySuperior(String superior) {
+        return merchantDao.findMerchantsBySuperior(superior);
     }
 }

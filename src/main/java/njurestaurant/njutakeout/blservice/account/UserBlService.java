@@ -2,10 +2,8 @@ package njurestaurant.njutakeout.blservice.account;
 
 import njurestaurant.njutakeout.entity.account.User;
 import njurestaurant.njutakeout.exception.*;
-import njurestaurant.njutakeout.response.user.AvatarSaveResponse;
-import njurestaurant.njutakeout.response.user.OpenIdAndSessionKeyResponse;
-import njurestaurant.njutakeout.response.user.PhoneNumberGetResponse;
-import njurestaurant.njutakeout.response.user.UserLoginResponse;
+import njurestaurant.njutakeout.response.Response;
+import njurestaurant.njutakeout.response.user.*;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -66,4 +64,10 @@ public interface UserBlService {
      * @return
      */
     boolean checkUsername(String username);
+
+    Response findUserInfoById(int id);
+
+    Response deleteUserById(int id);
+
+
 }

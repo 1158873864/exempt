@@ -2,6 +2,8 @@ package njurestaurant.njutakeout.dataservice.account;
 
 import njurestaurant.njutakeout.entity.account.Staff;
 
+import java.util.List;
+
 public interface StaffDataService {
     /**
      * find whether the staff is exists
@@ -29,5 +31,7 @@ public interface StaffDataService {
 
     void deleteStaffById(int id);
 
-    Staff findAgentById(int id);
+    Staff findStaffById(int id);
+
+    List<Staff> getAllStaffs();
 }

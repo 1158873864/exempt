@@ -1,7 +1,7 @@
 package njurestaurant.njutakeout.data.company;
 
 import njurestaurant.njutakeout.data.dao.company.AllocationRecordDao;
-import njurestaurant.njutakeout.dataservice.account.AllocationRecordDataService;
+import njurestaurant.njutakeout.dataservice.company.AllocationRecordDataService;
 import njurestaurant.njutakeout.entity.company.AllocationRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

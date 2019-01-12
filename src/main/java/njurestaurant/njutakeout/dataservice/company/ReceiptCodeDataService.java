@@ -19,4 +19,9 @@ public interface ReceiptCodeDataService {
      */
     List<ReceiptCode> findAllReceipt();
 
+    ReceiptCode findReceiptCodeById(int id);
+
+    void deleteReceiptById(int id);
+
+
 }

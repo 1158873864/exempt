@@ -27,4 +27,8 @@ public interface CompanyCardDataService {
      * @return
      */
     boolean isExistentCard(String cardNumber);
+
+    void deleteCompanyCardById(int id);
+
+    CompanyCard findCompanyById(int id);
 }

@@ -6,6 +6,8 @@ import njurestaurant.njutakeout.entity.company.PostAndPermission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PostAndPermissionDataServiceImpl implements PostAndPermissionDataService {
     private final PostAndPermissionDao postAndPermissionDao;
@@ -21,6 +23,26 @@ public class PostAndPermissionDataServiceImpl implements PostAndPermissionDataSe
      */
     @Override
     public PostAndPermission savePostAndPermission(PostAndPermission postAndPermission) {
-        return postAndPermissionDao.saveAndFlush(postAndPermission);
+        return postAndPermissionDao.save(postAndPermission);
+    }
+
+    @Override
+    public void deleteByPost(String post) {
+        postAndPermissionDao.deletePostAndPermissionsByPermission(post);
+    }
+
+    @Override
+    public List<PostAndPermission> savePostAndPermissions(List<PostAndPermission> postAndPermissions) {
+        return postAndPermissionDao.saveAll(postAndPermissions);
+    }
+
+    @Override
+    public List<PostAndPermission> findPostAndPermissionsByPost(String post) {
+        return postAndPermissionDao.findPostAndPermissionsByPost(post);
+    }
+
+    @Override
+    public List<PostAndPermission> findAllPostAndPermissions() {
+        return postAndPermissionDao.findAll();
     }
 }

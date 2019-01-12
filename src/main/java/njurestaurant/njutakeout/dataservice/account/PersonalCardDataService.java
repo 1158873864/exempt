@@ -2,6 +2,8 @@ package njurestaurant.njutakeout.dataservice.account;
 
 import njurestaurant.njutakeout.entity.account.PersonalCard;
 
+import java.util.List;
+
 public interface PersonalCardDataService {
     /**
      * save the personal bank card
@@ -10,4 +12,14 @@ public interface PersonalCardDataService {
      * @return
      */
     PersonalCard savePersonalCard(PersonalCard personalCard);
+
+    PersonalCard findPersonalCardById(int id);
+
+    void deleteById(int id);
+
+    List<PersonalCard> findPersonalCarsByUid(int uid);
+
+    List<PersonalCard> findAllCards();
+
+    PersonalCard findPersonalCardByCardNumber(String cardNumber);
 }

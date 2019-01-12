@@ -6,6 +6,7 @@ import njurestaurant.njutakeout.entity.account.Staff;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -59,12 +60,17 @@ public class StaffDataServiceImpl implements StaffDataService {
     }
 
     @Override
-    public Staff findAgentById(int id) {
+    public Staff findStaffById(int id) {
         Optional<Staff> optionalStaff = staffDao.findById(id);
         if(optionalStaff.isPresent()) {
             return optionalStaff.get();
         } else {
             return null;
         }
+    }
+
+    @Override
+    public List<Staff> getAllStaffs() {
+        return staffDao.findAll();
     }
 }

@@ -1,7 +1,5 @@
 package njurestaurant.njutakeout.parameters.company;
 
-import com.sun.org.apache.xpath.internal.operations.String;
-
 public class ReceiptCodeAddParameters {
     /*所属团队*/
     private String team;
@@ -10,13 +8,16 @@ public class ReceiptCodeAddParameters {
     /*优先等级*/
     private String priority;
     /*持续时间*/
-    private String duration;
+    private int duration;
     /*提现卡号*/
     private String number;
     /*账号信息*/
     private String info;
 
-    public ReceiptCodeAddParameters(String team, String type, String priority, String duration, String number, String info) {
+    public ReceiptCodeAddParameters() {
+    }
+
+    public ReceiptCodeAddParameters(String team, String type, String priority, int duration, String number, String info) {
         this.team = team;
         this.type = type;
         this.priority = priority;
@@ -49,11 +50,11 @@ public class ReceiptCodeAddParameters {
         this.priority = priority;
     }
 
-    public String getDuration() {
+    public int getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
     }
 

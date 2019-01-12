@@ -1,27 +1,19 @@
 package njurestaurant.njutakeout.springcontroller.account;
 
 import io.swagger.annotations.*;
-import njurestaurant.njutakeout.blservice.account.AgentBlService;
-import njurestaurant.njutakeout.blservice.account.MerchantBlService;
-import njurestaurant.njutakeout.blservice.account.UserBlService;
-import njurestaurant.njutakeout.blservice.account.StaffBlService;
-import njurestaurant.njutakeout.entity.account.Agent;
-import njurestaurant.njutakeout.entity.account.Merchant;
-import njurestaurant.njutakeout.entity.account.User;
-import njurestaurant.njutakeout.entity.account.Staff;
+import njurestaurant.njutakeout.blservice.account.*;
+import njurestaurant.njutakeout.entity.account.*;
 import njurestaurant.njutakeout.exception.*;
 import njurestaurant.njutakeout.parameters.company.StaffAddParameters;
 import njurestaurant.njutakeout.parameters.user.*;
 import njurestaurant.njutakeout.publicdatas.account.MerchantState;
+import njurestaurant.njutakeout.publicdatas.account.SupplierState;
 import njurestaurant.njutakeout.response.JSONResponse;
 import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.SuccessResponse;
 import njurestaurant.njutakeout.response.WrongResponse;
 import njurestaurant.njutakeout.response.company.StaffAddResponse;
-import njurestaurant.njutakeout.response.user.AdminAddResponse;
-import njurestaurant.njutakeout.response.user.AgentAddResponse;
-import njurestaurant.njutakeout.response.user.MerchantAddResponse;
-import njurestaurant.njutakeout.response.user.UserLoginResponse;
+import njurestaurant.njutakeout.response.user.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +21,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -37,13 +31,15 @@ public class UserController {
     private final StaffBlService staffBlService;
     private final AgentBlService agentBlService;
     private final MerchantBlService merchantBlService;
+    private final SupplierBlService supplierBlService;
 
     @Autowired
-    public UserController(UserBlService userBlService, StaffBlService staffBlService, AgentBlService agentBlService, MerchantBlService merchantBlService) {
+    public UserController(UserBlService userBlService, StaffBlService staffBlService, AgentBlService agentBlService, MerchantBlService merchantBlService, SupplierBlService supplierBlService) {
         this.userBlService = userBlService;
         this.staffBlService = staffBlService;
         this.agentBlService = agentBlService;
         this.merchantBlService = merchantBlService;
+        this.supplierBlService = supplierBlService;
     }
 
     @ApiOperation(value = "用户登录", notes = "验证用户登录并返回token")
@@ -122,14 +118,14 @@ public class UserController {
     @ApiOperation(value = "新增管理员", notes = "管理员新增管理员")
     @RequestMapping(value = "admin/add", method = RequestMethod.POST)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = StaffAddResponse.class),
+            @ApiResponse(code = 200, message = "Success", response = UserAddResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
     public ResponseEntity<Response> addStaff(@RequestBody StaffAddParameters staffAddParameters) throws UsernameIsExistentException {
         if(!userBlService.checkUsername(staffAddParameters.getUsername())) {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            User user = new User(staffAddParameters.getUsername(), encoder.encode(staffAddParameters.getPassword()), 1);
+            User user = new User(staffAddParameters.getUsername(), encoder.encode(staffAddParameters.getPassword()), 1, new ArrayList<>());
             Staff staff = new Staff(staffAddParameters.getUsername(), staffAddParameters.getTeam(), new Date(), staffAddParameters.getCode(), staffAddParameters.getOperator(), staffAddParameters.getStatus(), staffAddParameters.getPost(), user);
             Staff result =  staffBlService.addStaff(staff);
             user.setTableId(result.getId());
@@ -144,7 +140,7 @@ public class UserController {
     @ApiOperation(value = "新增代理商", notes = "管理员新增代理")
     @RequestMapping(value = "agent/add", method = RequestMethod.POST)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = AgentAddResponse.class),
+            @ApiResponse(code = 200, message = "Success", response = UserAddResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
@@ -153,7 +149,7 @@ public class UserController {
             return new ResponseEntity<>(new JSONResponse(10100, new UsernameIsExistentException().getResponse()), HttpStatus.OK);
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            User user = new User(agentAddParameters.getUsername(), encoder.encode(agentAddParameters.getPassword()), 2);
+            User user = new User(agentAddParameters.getUsername(), encoder.encode(agentAddParameters.getPassword()), 2, new ArrayList<>());
             Agent agent = new Agent(agentAddParameters.getUsername(), agentAddParameters.getFlow(), agentAddParameters.getStatus(), agentAddParameters.getCode(), agentAddParameters.getBrokerage(), user);
             AgentAddResponse agentAddResponse = agentBlService.addAgent(agent);
             user.setTableId(agentAddResponse.getAgentId());
@@ -165,7 +161,7 @@ public class UserController {
     @ApiOperation(value = "新增商家", notes = "代理/管理员新增商家")
     @RequestMapping(value = "merchant/add", method = RequestMethod.POST)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = MerchantAddResponse.class),
+            @ApiResponse(code = 200, message = "Success", response = UserAddResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
@@ -176,7 +172,7 @@ public class UserController {
             return new ResponseEntity<>(new JSONResponse(10110, new BlankInputException().getResponse()), HttpStatus.OK);
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            User user = new User(merchantAddParameters.getUsername(), encoder.encode(merchantAddParameters.getPassword()), 3);
+            User user = new User(merchantAddParameters.getUsername(), encoder.encode(merchantAddParameters.getPassword()), 3, new ArrayList<>());
             Merchant merchant = new Merchant(merchantAddParameters.getAlipay(), merchantAddParameters.getWechat(), merchantAddParameters.getBalance(), MerchantState.WAITING, merchantAddParameters.getCode(), new Date(), merchantAddParameters.getUsername(), merchantAddParameters.getSuperior(), user);
             MerchantAddResponse merchantAddResponse = merchantBlService.addMerchant(merchant);
             userBlService.updateUser(user);
@@ -184,40 +180,161 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "删除代理商", notes = "管理员删除代理商")
-    @RequestMapping(value = "agent/delete/{aid}", method = RequestMethod.GET)
+    @ApiOperation(value = "新增供码用户", notes = "管理员新增供码用户")
+    @RequestMapping(value = "supplier/add", method = RequestMethod.POST)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = MerchantAddResponse.class),
+            @ApiResponse(code = 200, message = "Success", response = UserAddResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> deleteAgent(@PathVariable("aid")int aid) {
-        agentBlService.delAgentById(aid);
-        return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("delete successfully")), HttpStatus.OK);
+    public ResponseEntity<Response> addSupplier(@RequestBody SupplierAddParameters supplierAddParameters) {
+        if(userBlService.checkUsername(supplierAddParameters.getUsername())) {
+            return new ResponseEntity<>(new JSONResponse(10100, new UsernameIsExistentException().getResponse()), HttpStatus.OK);
+        } else if(StringUtils.isBlank(supplierAddParameters.getUsername())) {
+            return new ResponseEntity<>(new JSONResponse(10110, new BlankInputException().getResponse()), HttpStatus.OK);
+        } else {
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            User user = new User(supplierAddParameters.getUsername(), encoder.encode(supplierAddParameters.getPassword()), 4, new ArrayList<>());
+            Supplier supplier = new Supplier(user, supplierAddParameters.getAplipayloginId(), new Date(), SupplierState.CHECKING);
+            try {
+                UserAddResponse userAddResponse = supplierBlService.addSupplier(supplier);
+                user.setTableId(userAddResponse.getTableId());
+                userBlService.updateUser(user);
+                return new ResponseEntity<>(new JSONResponse(200, userAddResponse), HttpStatus.OK);
+            } catch (UsernameIsExistentException e) {
+                return new ResponseEntity<>(new JSONResponse(10100,e.getResponse()), HttpStatus.OK);
+            }
+        }
     }
 
-    @ApiOperation(value = "删除商家", notes = "代理商/管理员删除商家")
-    @RequestMapping(value = "merchant/delete/{mid}", method = RequestMethod.GET)
+    @ApiOperation(value = "删除用户", notes = "删除某个用户")
+    @RequestMapping(value = "account/delete/{id}", method = RequestMethod.GET)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = MerchantAddResponse.class),
+            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> deleteMerchant(@PathVariable("mid")int mid) {
-        merchantBlService.delMerchantById(mid);
-        return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("delete successfully")), HttpStatus.OK);
+    public ResponseEntity<Response> deleteUser(@PathVariable("id")int id) {
+        return new ResponseEntity<>(new JSONResponse(200, userBlService.deleteUserById(id)), HttpStatus.OK);
+    }
+//
+//    @ApiOperation(value = "删除代理商", notes = "管理员删除代理商")
+//    @RequestMapping(value = "agent/delete/{aid}", method = RequestMethod.GET)
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+//            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+//            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+//    @ResponseBody
+//    public ResponseEntity<Response> deleteAgent(@PathVariable("aid")int aid) {
+//        agentBlService.delAgentById(aid);
+//        return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("delete successfully")), HttpStatus.OK);
+//    }
+//
+//    @ApiOperation(value = "删除商家", notes = "代理商/管理员删除商家")
+//    @RequestMapping(value = "merchant/delete/{mid}", method = RequestMethod.GET)
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+//            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+//            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+//    @ResponseBody
+//    public ResponseEntity<Response> deleteMerchant(@PathVariable("mid")int mid) {
+//        merchantBlService.delMerchantById(mid);
+//        return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("delete successfully")), HttpStatus.OK);
+//    }
+//
+//    @ApiOperation(value = "删除管理员", notes = "主管理员删除管理员")
+//    @RequestMapping(value = "admin/delete/{aid}", method = RequestMethod.GET)
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+//            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+//            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+//    @ResponseBody
+//    public ResponseEntity<Response> deleteAdmin(@PathVariable("aid")int aid) {
+//        staffBlService.delStaffById(aid);
+//        return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("delete successfully")), HttpStatus.OK);
+//    }
+//
+//    @ApiOperation(value = "删除供码用户", notes = "管理员删除供码用户")
+//    @RequestMapping(value = "supplier/delete/{sid}", method = RequestMethod.GET)
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+//            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+//            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+//    @ResponseBody
+//    public ResponseEntity<Response> deleteSupplier(@PathVariable("sid")int sid) {
+//        supplierBlService.delSupplierById(sid);
+//        return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("delete successfully")), HttpStatus.OK);
+//    }
+
+    @ApiOperation(value = "用户信息", notes = "查看用户详细信息")
+    @RequestMapping(value = "user/info/{id}", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = UserInfoResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> showUserInfo(@PathVariable("id")int id) {
+        return new ResponseEntity<>(new JSONResponse(200, userBlService.findUserInfoById(id)), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "删除管理员", notes = "主管理员删除管理员")
-    @RequestMapping(value = "admin/delete/{aid}", method = RequestMethod.GET)
+    @ApiOperation(value = "管理员列表", notes = "查看全部管理员")
+    @RequestMapping(value = "/admins", method = RequestMethod.GET)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = MerchantAddResponse.class),
+            @ApiResponse(code = 200, message = "Success", response = Staff.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> deleteAdmin(@PathVariable("aid")int aid) {
-        staffBlService.delStaffById(aid);
-        return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("delete successfully")), HttpStatus.OK);
+    public ResponseEntity<Response> showAdmins() {
+        return new ResponseEntity<>(new JSONResponse(200, staffBlService.findAllStaffs()), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "代理商列表", notes = "查看全部代理商")
+    @RequestMapping(value = "/agents", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = Agent.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> showAgents() {
+        return new ResponseEntity<>(new JSONResponse(200, agentBlService.findAllAgents()), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "供码用户列表", notes = "查看供码用户")
+    @RequestMapping(value = "/suppliers", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = Supplier.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> showSuppliers() {
+        return new ResponseEntity<>(new JSONResponse(200, supplierBlService.findAllSuppliers()), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "全部商户", notes = "管理员查看平台全部商户")
+    @RequestMapping(value = "/merchants", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = Merchant.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> showMerchants() {
+        return new ResponseEntity<>(new JSONResponse(200, merchantBlService.findAllMerchants()), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "代理商的商户", notes = "代理商查看已签约商户")
+    @RequestMapping(value = "/myMerchants/{id}", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = Merchant.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> showMyMerchants(@PathVariable("id")int id) {
+        try {
+            List<Merchant> merchantList = merchantBlService.findMerchantsBySuperior(id);
+            return new ResponseEntity<>(new JSONResponse(200, merchantList), HttpStatus.OK);
+        } catch (WrongIdException e) {
+            return new ResponseEntity<>(new JSONResponse(200, e.getResponse()), HttpStatus.OK);
+        }
     }
 
 }

@@ -2,14 +2,16 @@ package njurestaurant.njutakeout.bl.account;
 
 import net.sf.json.JSONObject;
 import njurestaurant.njutakeout.blservice.account.UserBlService;
-import njurestaurant.njutakeout.dataservice.account.UserDataService;
+import njurestaurant.njutakeout.dataservice.account.*;
+import njurestaurant.njutakeout.entity.account.Merchant;
+import njurestaurant.njutakeout.entity.account.Supplier;
 import njurestaurant.njutakeout.entity.account.User;
 import njurestaurant.njutakeout.exception.*;
 import njurestaurant.njutakeout.publicdatas.account.Role;
-import njurestaurant.njutakeout.response.user.AvatarSaveResponse;
-import njurestaurant.njutakeout.response.user.OpenIdAndSessionKeyResponse;
-import njurestaurant.njutakeout.response.user.PhoneNumberGetResponse;
-import njurestaurant.njutakeout.response.user.UserLoginResponse;
+import njurestaurant.njutakeout.response.Response;
+import njurestaurant.njutakeout.response.SuccessResponse;
+import njurestaurant.njutakeout.response.WrongResponse;
+import njurestaurant.njutakeout.response.user.*;
 import njurestaurant.njutakeout.security.jwt.JwtService;
 import njurestaurant.njutakeout.security.jwt.JwtUser;
 import njurestaurant.njutakeout.security.jwt.JwtUserDetailsService;
@@ -30,6 +32,10 @@ public class UserBlServiceImpl implements UserBlService {
     private final static String USER_DEFAULT_PASSWORD = "user";
 
     private final UserDataService userDataService;
+    private final AgentDataService agentDataService;
+    private final MerchantDataService merchantDataService;
+    private final StaffDataService staffDataService;
+    private final SupplierDataService supplierDataService;
     private final JwtUserDetailsService jwtUserDetailsService;
     private final JwtService jwtService;
 
@@ -43,8 +49,12 @@ public class UserBlServiceImpl implements UserBlService {
     private String appSecret;
 
     @Autowired
-    public UserBlServiceImpl(UserDataService userDataService, JwtUserDetailsService jwtUserDetailsService, JwtService jwtService) {
+    public UserBlServiceImpl(UserDataService userDataService, AgentDataService agentDataService, MerchantDataService merchantDataService, StaffDataService staffDataService, SupplierDataService supplierDataService, JwtUserDetailsService jwtUserDetailsService, JwtService jwtService) {
         this.userDataService = userDataService;
+        this.agentDataService = agentDataService;
+        this.merchantDataService = merchantDataService;
+        this.staffDataService = staffDataService;
+        this.supplierDataService = supplierDataService;
         this.jwtUserDetailsService = jwtUserDetailsService;
         this.jwtService = jwtService;
     }
@@ -72,9 +82,10 @@ public class UserBlServiceImpl implements UserBlService {
             return new UserLoginResponse(token);
         } else {
             if (userDataService.confirmPassword(username, password)) {
+                User user = userDataService.getUserByUsername(username);
                 JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(username);
                 String token = jwtService.generateToken(jwtUser, EXPIRATION);
-                return new UserLoginResponse(token);
+                return new UserLoginResponse(token, user.getRole(), user.getId());
             } else {
                 throw new WrongUsernameOrPasswordException();
             }
@@ -170,4 +181,61 @@ public class UserBlServiceImpl implements UserBlService {
     public boolean checkUsername(String username) {
         return userDataService.isUserExistent(username);
     }
+
+    @Override
+    public Response findUserInfoById(int id) {
+        User user = userDataService.getUserById(id);
+        if(user == null) {
+            return new WrongResponse(10130, "Wrong id.");
+        } else {
+            UserInfoResponse userInfoResponse = new UserInfoResponse();
+            if(user.getTableId() == 0) {
+                return new WrongResponse(10130, "Wrong id.");
+            }
+            if(user.getRole() == 1) {
+                userInfoResponse.setInfo(staffDataService.findStaffById(user.getTableId()));
+                userInfoResponse.setRole(1);
+            } else if (user.getRole() == 2) {
+                userInfoResponse.setInfo(agentDataService.findAgentById(user.getTableId()));
+                userInfoResponse.setRole(2);
+            } else if(user.getRole() == 3) {
+                userInfoResponse.setInfo(merchantDataService.findMerchantById(user.getTableId()));
+                userInfoResponse.setRole(3);
+            } else if(user.getRole() == 4) {
+                userInfoResponse.setInfo(supplierDataService.findSupplierById(user.getTableId()));
+                userInfoResponse.setRole(4);
+            } else {
+                return new WrongResponse(10150, "Wrong role.");
+            }
+            return userInfoResponse;
+        }
+    }
+
+    @Override
+    public Response deleteUserById(int id) {
+        User user = userDataService.getUserById(id);
+        if(user == null) {
+            return new WrongResponse(10130, "Wrong id.");
+        } else {
+            if(user.getTableId() == 0) {
+                return new WrongResponse(10130, "Wrong id.");
+            }
+            UserDeleteResponse userDeleteResponse = new UserDeleteResponse(user.getId(), user.getTableId());
+            if(user.getRole() == 1) {
+                userDeleteResponse.setTableId(user.getTableId());
+                staffDataService.deleteStaffById(user.getTableId());
+            } else if (user.getRole() == 2) {
+                agentDataService.deleteAgentById(user.getTableId());
+            } else if(user.getRole() == 3) {
+                merchantDataService.deleteMerchantById(user.getTableId());
+            } else if(user.getRole() == 4) {
+                supplierDataService.deleteSupplierById(user.getTableId());
+            } else {
+                return new WrongResponse(10150, "Wrong role.");
+            }
+            return userDeleteResponse;
+        }
+    }
+
+
 }

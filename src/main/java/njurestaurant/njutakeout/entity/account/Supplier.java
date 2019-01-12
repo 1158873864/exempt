@@ -22,7 +22,7 @@ public class Supplier {
     /*支付宝用户id*/
     @Column(name = "alipayUserId")
     private String alipayUserId;
-    /*支付宝登录id*/
+    /*支付宝账号*/
     @Column(name = "loginId")
     private String loginId;
     @Column(name = "time")
@@ -46,6 +46,13 @@ public class Supplier {
         this.status = status;
         this.devices = devices;
         this.alipayName = alipayName;
+    }
+
+    public Supplier(User user, String loginId, Date time, SupplierState status) {
+        this.user = user;
+        this.loginId = loginId;
+        this.time = time;
+        this.status = status;
     }
 
     public String getAlipayName() {

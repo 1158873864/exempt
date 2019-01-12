@@ -30,9 +30,9 @@ public interface UserDataService {
     /**
      * Removes a user.
      *
-     * @param username username
+     * @param id id
      */
-    void deleteUser(String username);
+    void deleteUser(int id);
 
 
     /**
@@ -42,4 +42,6 @@ public interface UserDataService {
      * @return
      */
     User getUserByUsername(String username);
+
+    User getUserById(int id);
 }

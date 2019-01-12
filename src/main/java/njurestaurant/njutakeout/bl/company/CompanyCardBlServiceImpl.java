@@ -5,6 +5,8 @@ import njurestaurant.njutakeout.dataservice.company.CompanyCardDataService;
 import njurestaurant.njutakeout.entity.company.CompanyCard;
 import njurestaurant.njutakeout.exception.IsExistentException;
 import njurestaurant.njutakeout.parameters.company.CompanyCardAddParameters;
+import njurestaurant.njutakeout.response.Response;
+import njurestaurant.njutakeout.response.WrongResponse;
 import njurestaurant.njutakeout.response.company.CompanyCardAddResponse;
 import njurestaurant.njutakeout.response.company.CompanyCardLoadResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +40,15 @@ public class CompanyCardBlServiceImpl implements CompanyCardBlService {
     @Override
     public CompanyCardLoadResponse loadAllCompanyCards() {
         return new CompanyCardLoadResponse(companyCardDataService.findAllCompanyCards());
+    }
+
+    @Override
+    public void delCompanyCardById(int id) {
+        companyCardDataService.deleteCompanyCardById(id);
+    }
+
+    @Override
+    public CompanyCard loadCompanyCardById(int id) {
+        return companyCardDataService.findCompanyById(id);
     }
 }

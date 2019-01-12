@@ -23,10 +23,12 @@ public class User {
     private int role;
     @Column(name = "tableId")
     private int tableId;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    private List<Order> orders;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
-    private List<Food> foods;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PersonalCard> cards;
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+//    private List<Order> orders;
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+//    private List<Food> foods;
 
     public User() {
     }
@@ -42,6 +44,22 @@ public class User {
         this.password = password;
         this.role = role;
         this.tableId = tableId;
+    }
+
+    public User(String username, String password, int role, List<PersonalCard> cards) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.tableId = tableId;
+        this.cards = cards;
+    }
+
+    public List<PersonalCard> getCards() {
+        return cards;
+    }
+
+    public void setCards(List<PersonalCard> cards) {
+        this.cards = cards;
     }
 
     //    public User(String avatarUrl, String username, String password, Role role, List<Order> orders, List<Food> foods) {
@@ -92,22 +110,22 @@ public class User {
 //    public void setRole(Role role) {
 //        this.role = role;
 //    }
-
-    public List<Order> getOrders() {
-        return orders;
-    }
-
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
-    }
-
-    public List<Food> getFoods() {
-        return foods;
-    }
-
-    public void setFoods(List<Food> foods) {
-        this.foods = foods;
-    }
+//
+//    public List<Order> getOrders() {
+//        return orders;
+//    }
+//
+//    public void setOrders(List<Order> orders) {
+//        this.orders = orders;
+//    }
+//
+//    public List<Food> getFoods() {
+//        return foods;
+//    }
+//
+//    public void setFoods(List<Food> foods) {
+//        this.foods = foods;
+//    }
 
     public int getRole() {
         return role;

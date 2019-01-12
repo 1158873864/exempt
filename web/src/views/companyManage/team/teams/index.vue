@@ -1,0 +1,93 @@
+<template>
+    <div class="app-container">
+  <div>团队管理</div>
+        <!-- <el-table
+        :data="teams"
+        height="250"
+        border
+        style="width: 100%">
+        <el-table-column prop="teamName" label="teamName" width="180"></el-table-column>
+        <el-table-column prop="addTime" label="addTime" width="180"></el-table-column>
+        <el-table-column prop="area" label="area" width="180"></el-table-column>
+        <el-table-column prop="id" label="id" width="180"></el-table-column>
+        <el-table-column prop="operator" label="operator" width="180"></el-table-column>
+        <el-table-column prop="status" label="status" width="180"></el-table-column>
+        <el-table-column prop="supervisor" label="supervisor" width="180"></el-table-column>
+        <el-table-column prop="verifyCode" label="verifyCode" width="180"></el-table-column>
+
+    </el-table> -->
+    <div class="block">
+        <span class="demonstration">调整每页显示条数</span>
+        <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page.sync="currentPage"
+        :page-sizes="[100, 200, 300, 400]"
+        :page-size="100"
+        layout="sizes, prev, pager, next"
+        :total="1000">
+        </el-pagination>
+    </div>
+  </div>
+</template>
+
+<script>
+import { teamAdd,teamsGet } from '@/api/team'
+    export default {
+        data() {
+            return {
+                activeNames: ['1'],
+                labelPosition: 'right',
+                teamAddParameters: {
+                        "area": "area",
+                        "operator": "operator",
+                        "status": "status",
+                        "supervisor": "supervisor",
+                        "teamName": "teamName",
+                        "verifyCode": "verifyCode"
+                },
+                teams:{},
+                currentPage:1
+            }
+        },
+        created(){
+            this.getData();
+        },
+        methods: {
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+              
+            },
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+            },
+            getData(){
+                this.getTeams();
+            },
+            getTeams(){
+                teamsGet().then(response=>{
+                    console.log(response,'sdll')
+                     if(response.data.infoCod){
+                        this.$message({
+                            message: response.data.description,
+                            type: 'warning'
+                        });
+                    }else{
+                       this.teams = response.data;
+                    }
+                })
+            },
+            handleChange(val) {
+                console.log(val);
+                  if(val==2)
+                {
+                    this.getTeams();
+                }
+            }
+        }
+    }
+</script>
+
+<style scoped>
+
+</style>

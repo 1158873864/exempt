@@ -30,19 +30,18 @@ export const constantRouterMap = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
-    name: '首页',
+    name: 'Dashboard',
     hidden: true,
     children: [{
       path: 'dashboard',
       component: () => import('@/views/dashboard/index')
     }]
   },
-
   {
     path: '/company',
     redirect: '/company/announcement',
     component: Layout,
-    name: 'company',
+    name: 'company1',
     meta: { title: '公司管理', icon: 'example' },
     children: [
       {
@@ -66,17 +65,23 @@ export const constantRouterMap = [
       {
         path: 'team',
         name: 'team',
-        // component: () => import('@/views/companyManage/team/index'),
-        // component: Layout,
-        meta: { title: '团队管理' },
-        children: [
+        redirect: '/team',
+        component: () => import('@/views/companyManage/team/index'),
+        meta: { title: '团队管理', breadcrumb: false },
+        children:[
           {
-            path: 'addTeam',
-            name: 'addTeam',
-            component: () => import('@/views/companyManage/team/addTeam/index'),
-            meta: { title: '团队添加' }
+            path: 'teams',
+            name: 'teams',
+            component: () => import('@/views/companyManage/team/teams/index'),
+            meta: { title: '所有团队' },
           },
-          { path: 'addTeam1', component: () => import('@/views/companyManage/team/addTeam/index'), name: 'addTeam1', meta: { title: '所有团队' } },
+          {
+            path: 'teamAdd',
+            name: 'teamAdd',
+            component: () => import('@/views/companyManage/team/addTeam/index'),
+            meta: { title: '添加团队', breadcrumb: false },
+            breadcrumb: false
+          }
         ]
       },
       {
@@ -120,7 +125,7 @@ export const constantRouterMap = [
         path: 'agency',
         component: () => import('@/views/userCenter/agency/index'),
         name: 'agency',
-        meta: { title: '代理管理' }
+        meta: { title: '代理管理' },
       },
       {
         path: 'userManage',
@@ -241,7 +246,6 @@ export const constantRouterMap = [
       },
     ]
   },
-
   { path: '*', redirect: '/404', hidden: true }
 ]
 

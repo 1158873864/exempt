@@ -1,7 +1,7 @@
 <template>
     <div class="app-container">
-  <div>团队管理</div>
-        <!-- <el-table
+    <div>团队管理</div>
+        <el-table
         :data="teams"
         height="250"
         border
@@ -15,7 +15,7 @@
         <el-table-column prop="supervisor" label="supervisor" width="180"></el-table-column>
         <el-table-column prop="verifyCode" label="verifyCode" width="180"></el-table-column>
 
-    </el-table> -->
+    </el-table>
     <div class="block">
         <span class="demonstration">调整每页显示条数</span>
         <el-pagination
@@ -46,7 +46,17 @@ import { teamAdd,teamsGet } from '@/api/team'
                         "teamName": "teamName",
                         "verifyCode": "verifyCode"
                 },
-                teams:{},
+                teams:[{
+                    'teamName':'teamName',
+                    'addTime':'addTime',
+                    'area':'area',
+                    'id':'id',
+                    'operator':'operator',
+                    'status':'status',
+                    'supervisor':'supervisor',
+                    'verifyCode':'verifyCode'
+                    }
+                ],
                 currentPage:1
             }
         },

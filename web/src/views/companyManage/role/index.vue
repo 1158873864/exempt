@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import { addRole } from '@/api/role'
+import { addAdmin } from '@/api/role'
 import Form from "../../../components/form/index";
 
     export default {
@@ -66,7 +66,7 @@ import Form from "../../../components/form/index";
           this.$refs[formName].validate((valid) => {
             if (valid) {
               // alert('submit!');
-              addRole(this.form.code,this.form.operator,this.form.password,this.form.post,this.form.status,this.form.team,this.form.username).then(response => {
+              addAdmin(this.form.code,this.form.operator,this.form.password,this.form.post,this.form.status,this.form.team,this.form.username).then(response => {
                 // console.log(response.data.infoCode)
                 if(response.data.infoCode){
                    this.$message({

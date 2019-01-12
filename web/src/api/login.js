@@ -3,7 +3,7 @@ export function login(username, password) {
   return request({
     url: '/account/login',
     method: 'post',
-    params: { username,password },
+    params: { username, password },
     data: {
       username,
       password
@@ -23,5 +23,13 @@ export function logout() {
   return request({
     url: '/user/logout',
     method: 'post'
+  })
+}
+
+export function deleteAccount(id) {
+  return request({
+    url: '/account/delete',
+    method: 'get',
+    params: { id }
   })
 }

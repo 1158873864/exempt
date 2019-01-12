@@ -88,13 +88,35 @@ export const constantRouterMap = [
         path: 'privilege',
         name: 'privilege',
         component: () => import('@/views/companyManage/privilege/index'),
-        meta: { title: '权限管理' }
+        meta: { title: '权限管理' },
+        children: [
+          {
+            path: 'permission',
+            name: 'permission',
+            component: () => import('@/views/companyManage/permission/allocate'),
+            meta: { title: '分配权限' },
+          }]
       },
       {
         path: 'bankCard',
         name: 'bankCard',
         component: () => import('@/views/companyManage/bankCard/index'),
-        meta: { title: '银行卡管理' }
+        meta: { title: '银行卡管理' },
+        children: [
+          {
+            path: 'cards',
+            name: 'cards',
+            component: () => import('@/views/companyManage/bankCard/cards/index'),
+            meta: { title: '所有银行卡' },
+          },
+          {
+            path: 'cardAdd',
+            name: 'cardAdd',
+            component: () => import('@/views/companyManage/bankCard/cardAdd/index'),
+            meta: { title: '添加银行卡', breadcrumb: false },
+            breadcrumb: false
+          }
+        ]
       },
       {
         path: 'riskControl',
@@ -155,8 +177,23 @@ export const constantRouterMap = [
       {
         path: 'receiveCodeList',
         component: () => import('@/views/financeManage/receiveCodeList/index'),
+        redirect: '/receiveCodeList/codes',
         name: 'receiveCodeList',
-        meta: { title: '收款码列表' }
+        meta: { title: '收款码列表' },
+        children: [
+          {
+            path: 'codes',
+            name: 'codes',
+            component: () => import('@/views/companyManage/moneyReceiveCode/codes/index'),
+            meta: { title: '所有收款码' },
+          },
+          {
+            path: 'codeAdd',
+            name: 'codeAdd',
+            component: () => import('@/views/companyManage/moneyReceiveCode/codeAdd/index'),
+            meta: { title: '添加收款码'},
+          }
+        ]
       },
       {
         path: 'bankCardList',

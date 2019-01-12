@@ -46,9 +46,6 @@ import { teamAdd,teamsGet } from '@/api/team'
                 currentPage:1
             }
         },
-        created(){
-            // this.getData();
-        },
         methods: {
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);

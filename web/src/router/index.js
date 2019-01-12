@@ -30,19 +30,18 @@ export const constantRouterMap = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
-    name: '首页',
+    name: 'Dashboard',
     hidden: true,
     children: [{
       path: 'dashboard',
       component: () => import('@/views/dashboard/index')
     }]
   },
-
   {
     path: '/company',
     redirect: '/company/announcement',
     component: Layout,
-    name: 'company',
+    name: 'company1',
     meta: { title: '公司管理', icon: 'example' },
     children: [
       {
@@ -66,20 +65,58 @@ export const constantRouterMap = [
       {
         path: 'team',
         name: 'team',
+        redirect: '/team',
         component: () => import('@/views/companyManage/team/index'),
-        meta: { title: '团队管理' }
+        meta: { title: '团队管理', breadcrumb: false },
+        children:[
+          {
+            path: 'teams',
+            name: 'teams',
+            component: () => import('@/views/companyManage/team/teams/index'),
+            meta: { title: '所有团队' },
+          },
+          {
+            path: 'teamAdd',
+            name: 'teamAdd',
+            component: () => import('@/views/companyManage/team/addTeam/index'),
+            meta: { title: '添加团队', breadcrumb: false },
+            breadcrumb: false
+          }
+        ]
       },
       {
         path: 'privilege',
         name: 'privilege',
         component: () => import('@/views/companyManage/privilege/index'),
-        meta: { title: '权限管理' }
+        meta: { title: '权限管理' },
+        children: [
+          {
+            path: 'permission',
+            name: 'permission',
+            component: () => import('@/views/companyManage/permission/allocate'),
+            meta: { title: '分配权限' },
+          }]
       },
       {
         path: 'bankCard',
         name: 'bankCard',
         component: () => import('@/views/companyManage/bankCard/index'),
-        meta: { title: '银行卡管理' }
+        meta: { title: '银行卡管理' },
+        children: [
+          {
+            path: 'cards',
+            name: 'cards',
+            component: () => import('@/views/companyManage/bankCard/cards/index'),
+            meta: { title: '所有银行卡' },
+          },
+          {
+            path: 'cardAdd',
+            name: 'cardAdd',
+            component: () => import('@/views/companyManage/bankCard/cardAdd/index'),
+            meta: { title: '添加银行卡', breadcrumb: false },
+            breadcrumb: false
+          }
+        ]
       },
       {
         path: 'riskControl',
@@ -110,13 +147,93 @@ export const constantRouterMap = [
         path: 'agency',
         component: () => import('@/views/userCenter/agency/index'),
         name: 'agency',
-        meta: { title: '代理管理' }
+        meta: { title: '代理管理' },
+        children: [
+          {
+            path: 'addAgency',
+            name: 'addAgency',
+            component: () => import('@/views/userCenter/agency/addAgency/index'),
+            meta: { title: '添加代理' }
+          },
+          {
+            path: 'agencys',
+            name: 'agencys',
+            component: () => import('@/views/userCenter/agency/agencys/index'),
+            meta: { title: '所有代理' }
+          }    
+        ]
       },
       {
-        path: 'userManage',
-        component: () => import('@/views/userCenter/userManage/index'),
-        name: 'userManage',
-        meta: { title: '用户管理' }
+        path: 'adminManage',
+        component: () => import('@/views/userCenter/adminManage/index'),
+        name: 'adminManage',
+        meta: { title: '管理员管理' },
+        children: [
+          {
+            path: 'addAdmin',
+            name: 'addAdmin',  
+            component: () => import('@/views/userCenter/adminManage/addAdmin/index'),
+            meta: { title: '添加管理员' }
+          },
+          {
+            path: 'admins',
+            name: 'admins',
+            component: () => import('@/views/userCenter/adminManage/admins/index'),
+            meta: { title: '所有管理员' }
+          }    
+        ]        
+      },
+      {
+        path: 'supplierManage',
+        component: () => import('@/views/userCenter/supplierManage/index'),
+        name: 'supplierManage',
+        meta: { title: '供码用户管理' },
+        children: [
+          {
+            path: 'addsupplier',
+            name: 'addsupplier',  
+            component: () => import('@/views/userCenter/supplierManage/addsupplier/index'),
+            meta: { title: '添加供码用户' }
+          },
+          {
+            path: 'waitApprovalSup',
+            name: 'waitApprovalSup',  
+            component: () => import('@/views/userCenter/supplierManage/waitApprovalSup/index'),
+            meta: { title: '审批供码用户' }
+          },
+          {
+            path: 'suppliers',
+            name: 'suppliers',
+            component: () => import('@/views/userCenter/supplierManage/suppliers/index'),
+            meta: { title: '所有供码用户' }
+          }    
+        ]
+      },
+      {
+        path: 'merchantManage',
+        component: () => import('@/views/userCenter/merchantManage/index'),
+        name: 'merchantManage',
+        meta: { title: '商户管理' },
+        children: [
+          {
+            path: 'addmerchant',
+            name: 'addmerchant',  
+            component: () => import('@/views/userCenter/merchantManage/addMerchant/index'),
+            meta: { title: '添加商户' }
+          },
+          {
+            path: 'waitApprovalMer',
+            name: 'waitApprovalMer',  
+            component: () => import('@/views/userCenter/merchantManage/waitApprovalMer/index'),
+            meta: { title: '审批商户' }
+          },
+          {
+            path: 'merchants',
+            name: 'merchants',
+            component: () => import('@/views/userCenter/merchantManage/merchants/index'),
+            meta: { title: '所有商户' }
+          }    
+        ]
       },
       {
         path: 'bankCardSetting',
@@ -140,8 +257,23 @@ export const constantRouterMap = [
       {
         path: 'receiveCodeList',
         component: () => import('@/views/financeManage/receiveCodeList/index'),
+        redirect: '/receiveCodeList/codes',
         name: 'receiveCodeList',
-        meta: { title: '收款码列表' }
+        meta: { title: '收款码列表' },
+        children: [
+          {
+            path: 'codes',
+            name: 'codes',
+            component: () => import('@/views/companyManage/moneyReceiveCode/codes/index'),
+            meta: { title: '所有收款码' },
+          },
+          {
+            path: 'codeAdd',
+            name: 'codeAdd',
+            component: () => import('@/views/companyManage/moneyReceiveCode/codeAdd/index'),
+            meta: { title: '添加收款码'},
+          }
+        ]
       },
       {
         path: 'bankCardList',
@@ -231,7 +363,6 @@ export const constantRouterMap = [
       },
     ]
   },
-
   { path: '*', redirect: '/404', hidden: true }
 ]
 

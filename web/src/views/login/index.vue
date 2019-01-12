@@ -38,6 +38,7 @@
 
 <script>
 import { isvalidUsername } from '@/utils/validate'
+import { login } from '@/api/login'
 
 export default {
   name: 'Login',
@@ -50,7 +51,7 @@ export default {
       }
     }
     const validatePass = (rule, value, callback) => {
-      if (value.length < 5) {
+      if (value.length < 2) {
         callback(new Error('密码不能小于5位'))
       } else {
         callback()
@@ -88,6 +89,7 @@ export default {
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
+        this.$router.push({ path: this.redirect || '/' })
         if (valid) {
           this.loading = true
           this.$store.dispatch('Login', this.loginForm).then(() => {

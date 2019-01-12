@@ -1,9 +1,9 @@
 import request from '@/utils/request'
-
 export function login(username, password) {
   return request({
-    url: '/user/login',
+    url: '/account/login',
     method: 'post',
+    params: { username, password },
     data: {
       username,
       password
@@ -23,5 +23,13 @@ export function logout() {
   return request({
     url: '/user/logout',
     method: 'post'
+  })
+}
+
+export function deleteAccount(id) {
+  return request({
+    url: '/account/delete',
+    method: 'get',
+    params: { id }
   })
 }

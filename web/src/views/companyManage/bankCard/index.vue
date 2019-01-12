@@ -1,13 +1,7 @@
-<template>
-  <div>银行卡管理</div>
+<template >
+  <div style="padding:30px;">
+    <!-- <el-alert :closable="false" title="团队管理"> -->
+      <router-view />
+    <!-- </el-alert> -->
+  </div>
 </template>
-
-<script>
-    export default {
-        name: "index"
-    }
-</script>
-
-<style scoped>
-
-</style>

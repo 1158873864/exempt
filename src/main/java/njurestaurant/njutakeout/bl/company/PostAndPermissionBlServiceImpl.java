@@ -42,10 +42,12 @@ public class PostAndPermissionBlServiceImpl implements PostAndPermissionBlServic
     public List<PostAndPermission> addPostAndPermissions(String post, List<String> permission) {
         postAndPermissionDataService.deleteByPost(post);
         List<PostAndPermission> postAndPermissionList = new ArrayList<>();
-        for(String p : permission) {
-            if(StringUtils.isBlank(p)) {
-                PostAndPermission per = new PostAndPermission(post, p);
-                postAndPermissionList.add(per);
+        if(permission != null) {
+            for(String p : permission) {
+                if(StringUtils.isBlank(p)) {
+                    PostAndPermission per = new PostAndPermission(post, p);
+                    postAndPermissionList.add(per);
+                }
             }
         }
         return postAndPermissionDataService.savePostAndPermissions(postAndPermissionList);

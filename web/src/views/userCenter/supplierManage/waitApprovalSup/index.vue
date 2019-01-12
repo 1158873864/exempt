@@ -1,20 +1,32 @@
 <template>
         <div class="app-container">
-        <div>待审批商户</div>
+        <div>待审批供码用户</div>
             <el-table
             :data="teams"
-            height="250"
+            height="550"
             border
             style="width: 100%">
-            <el-table-column prop="addTime" label="addTime" width="180"></el-table-column>
-            <el-table-column prop="alipay" label="alipay" width="80"></el-table-column>
-            <el-table-column prop="balance" label="balance" width="80"></el-table-column>
+            <el-table-column prop="alipayName" label="alipayName" width="180"></el-table-column>
+            <el-table-column prop="alipayUserId" label="alipayUserId" width="80"></el-table-column>
+
+            <el-table-column label='设备'>
+               <el-table-column prop="devices.id" label="id" width="80"></el-table-column>
+               <el-table-column prop="devices.imei" label="imei" width="80"></el-table-column>
+
+            </el-table-column>   
             <el-table-column prop="id" label="id" width="80"></el-table-column>
-            <el-table-column prop="name" label="name" width="180"></el-table-column>
+            <el-table-column prop="loginId" label="loginId" width="180"></el-table-column>
             <el-table-column prop="status" label="status" width="80"></el-table-column>
-            <el-table-column prop="superior" label="superior" width="180"></el-table-column>
-            <el-table-column prop="verifyCode" label="verifyCode" width="180"></el-table-column>
-            <el-table-column prop="wechat" label="wechat" width="180"></el-table-column>
+            <el-table-column prop="time" label="time" width="180"></el-table-column>
+            <el-table-column label="user">
+                <el-table-column prop="user.avatarUrl" label="avatarUrl" width="80"></el-table-column>
+                <el-table-column prop="user.id" label="id" width="80"></el-table-column>
+                <el-table-column prop="user.password" label="password" width="80"></el-table-column>
+                <el-table-column prop="user.role" label="role" width="80"></el-table-column>
+                <el-table-column prop="user.tableId" label="tableId" width="80"></el-table-column>
+                <el-table-column prop="user.username" label="username" width="80"></el-table-column>
+                
+            </el-table-column>
             <el-table-column label="操作" width="180">
                     <template scope="scope">
                         <el-button size="small"
@@ -40,7 +52,7 @@
     </template>
     
     <script>
-    import { waitApprovalMer, ApprovalMer } from '@/api/company'
+    import { waitApprovalSup, ApprovalSup } from '@/api/company'
         export default {
             data() {
                 return {
@@ -48,8 +60,25 @@
                     labelPosition: 'right',
                     
                     teams:[{
-                        mid: 'mid',
-                        state: 'state'
+                        alipayName: 'alipayName',
+                        alipayUserId:   'alipayUserId',
+                        devices:[{
+                            id: 'id',
+                            imei: 'imei'
+                        }],
+                        id: 'id',
+                        loginId: 'loginId',
+                        status: 'status',
+                        time: 'time',
+                        user:[{
+                            avatarUrl: 'avatarUrl',
+                            id: 'id',
+                            password: 'password',
+                            role: 'role',
+                            tableId: 'tableId',
+                            username: 'username'
+                        }]
+
                         }
                     ],
                     currentPage:1
@@ -61,7 +90,7 @@
             methods: {
                 approval(index, row,state) {
                     console.log(row);
-                    ApprovalMer(row.id,state).then(response=> {
+                    ApprovalSup(row.id,state).then(response=> {
                         if(response.data.infoCode){
                             this.$message({
                                 message: response.data.description,
@@ -88,7 +117,7 @@
                     this.getTeams();
                 },
                 getTeams(){
-                    waitApprovalMer().then(response=>{
+                    waitApprovalSup().then(response=>{
                         console.log(response,'sdll')
                          if(response.data.infoCod){
                             this.$message({

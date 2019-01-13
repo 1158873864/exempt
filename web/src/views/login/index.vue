@@ -39,7 +39,6 @@
 <script>
 import { isvalidUsername } from '@/utils/validate'
 import { login } from '@/api/login'
-
 export default {
   name: 'Login',
   data() {

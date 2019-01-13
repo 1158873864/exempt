@@ -1,5 +1,6 @@
 import { login, logout, getInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getUid ,setUid} from '../../utils/auth';
 
 const user = {
   state: {
@@ -7,7 +8,7 @@ const user = {
     name: '',
     avatar: '',
     roles: [],
-    uid: 0
+    uid: getUid()
   },
 
   mutations: {
@@ -38,8 +39,10 @@ const user = {
           console.log(response)
           const data = response.data
           setToken(data.token)
+          setUid(data.uid)
           commit('SET_TOKEN', data.token)
           commit('SET_UID', data.uid)
+          console.log(data.uid)
           resolve()
         }).catch(error => {
           reject(error)

@@ -4,6 +4,9 @@
             <el-form-item label="alipayloginID">
               <el-input v-model="form.alipayloginID"></el-input>
             </el-form-item>
+            <el-form-item label="level">
+                    <el-input v-model="form.level"></el-input>
+            </el-form-item>
             <el-form-item label="password">
               <el-input v-model="form.password"></el-input>
             </el-form-item>
@@ -27,6 +30,7 @@
         return {
                   form: {
                     alipayloginID: '1',
+                    level: 0,
                     password: '1',
                     username: '1'
                   },             
@@ -42,7 +46,7 @@
           this.$refs[formName].validate((valid) => {
             if (valid) {
               // alert('submit!');
-              addSupplier(this.form.alipayloginID,this.form.password,this.form.username).then(response => {
+              addSupplier(this.form.alipayloginID,this.form.level,this.form.password,this.form.username).then(response => {
                 // console.log(response.data.infoCode)
                 if(response.data.infoCode){
                    this.$message({

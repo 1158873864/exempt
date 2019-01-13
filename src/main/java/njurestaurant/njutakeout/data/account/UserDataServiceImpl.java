@@ -7,6 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
+import javax.jws.soap.SOAPBinding;
+import java.util.Optional;
+import java.util.OptionalInt;
+
 @Service
 public class UserDataServiceImpl implements UserDataService {
     private final UserDao userDao;
@@ -61,11 +65,11 @@ public class UserDataServiceImpl implements UserDataService {
     /**
      * Removes a user. No exception is thrown if username doesn't exist.
      *
-     * @param username username
+     * @param id id
      */
     @Override
-    public void deleteUser(String username) {
-        userDao.deleteById(username);
+    public void deleteUser(int id) {
+        userDao.deleteById(id);
     }
 
     /**
@@ -79,4 +83,13 @@ public class UserDataServiceImpl implements UserDataService {
         return userDao.findUserByUsername(username);
     }
 
+    @Override
+    public User getUserById(int id) {
+        Optional<User> userOptional = userDao.findById(id);
+        if(userOptional.isPresent()) {
+            return userOptional.get();
+        } else {
+            return null;
+        }
+    }
 }

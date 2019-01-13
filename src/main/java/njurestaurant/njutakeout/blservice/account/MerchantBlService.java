@@ -1,10 +1,14 @@
 package njurestaurant.njutakeout.blservice.account;
 
 import njurestaurant.njutakeout.entity.account.Merchant;
+import njurestaurant.njutakeout.exception.WrongIdException;
+import njurestaurant.njutakeout.publicdatas.account.MerchantState;
 import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.SuccessResponse;
 import njurestaurant.njutakeout.response.user.MerchantAddResponse;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public interface MerchantBlService {
@@ -13,7 +17,7 @@ public interface MerchantBlService {
      * @param merchant the info of merchant
      * @return
      */
-    MerchantAddResponse addMerchant(Merchant merchant);
+    MerchantAddResponse addMerchant(Merchant merchant) throws WrongIdException;
 
     /**
      * update the merchant
@@ -44,4 +48,10 @@ public interface MerchantBlService {
      * @param id the id of merchant
      */
     void delMerchantById(int id);
+
+    List<Merchant> findAllMerchants();
+
+    List<Merchant> findMerchantsBySuperior(int id) throws WrongIdException;
+
+    List<Merchant> findMerchantsByState(MerchantState merchantState);
 }

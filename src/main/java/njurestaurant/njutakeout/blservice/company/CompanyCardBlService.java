@@ -3,6 +3,7 @@ package njurestaurant.njutakeout.blservice.company;
 import njurestaurant.njutakeout.entity.company.CompanyCard;
 import njurestaurant.njutakeout.exception.IsExistentException;
 import njurestaurant.njutakeout.parameters.company.CompanyCardAddParameters;
+import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.company.CompanyCardAddResponse;
 import njurestaurant.njutakeout.response.company.CompanyCardLoadResponse;
 import org.springframework.stereotype.Service;
@@ -22,5 +23,11 @@ public interface CompanyCardBlService {
      * @return
      */
     CompanyCardLoadResponse loadAllCompanyCards();
+
+    void delCompanyCardById(int id);
+
+    CompanyCard loadCompanyCardById(int id);
+
+
 
 }

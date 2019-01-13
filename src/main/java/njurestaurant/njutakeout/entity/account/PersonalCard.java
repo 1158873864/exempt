@@ -20,14 +20,29 @@ public class PersonalCard {
     private String bin;
     @Column(name = "status")
     private String status;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public PersonalCard(String cardNumber, String name, String bank, String accountWithBank, String bin, String status) {
+    public PersonalCard() {
+    }
+
+    public PersonalCard(String cardNumber, String name, String bank, String accountWithBank, String bin, String status, User user) {
         this.cardNumber = cardNumber;
         this.name = name;
         this.bank = bank;
         this.accountWithBank = accountWithBank;
         this.bin = bin;
         this.status = status;
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public int getId() {

@@ -8,8 +8,8 @@ public class ReceiptCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "teamName")
-    private String teamName;
+    @Column(name = "teamId")
+    private String teamId;
     @Column(name = "type")
     private String type;
     @Column(name = "duration")
@@ -21,8 +21,11 @@ public class ReceiptCode {
     @Column(name = "accountNumber")
     private String accountNumber;
 
-    public ReceiptCode(String teamName, String type, int duration, String priorityLevel, String accountInfo, String accountNumber) {
-        this.teamName = teamName;
+    public ReceiptCode() {
+    }
+
+    public ReceiptCode(String teamId, String type, int duration, String priorityLevel, String accountInfo, String accountNumber) {
+        this.teamId = teamId;
         this.type = type;
         this.duration = duration;
         this.priorityLevel = priorityLevel;
@@ -38,12 +41,12 @@ public class ReceiptCode {
         this.id = id;
     }
 
-    public String getTeamName() {
-        return teamName;
+    public String getTeamId() {
+        return teamId;
     }
 
-    public void setTeamName(String teamName) {
-        this.teamName = teamName;
+    public void setTeamId(String teamId) {
+        this.teamId = teamId;
     }
 
     public String getType() {

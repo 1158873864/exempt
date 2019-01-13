@@ -6,6 +6,7 @@ import njurestaurant.njutakeout.entity.account.Agent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -50,5 +51,10 @@ public class AgentDataServiceImpl implements AgentDataService {
     @Override
     public boolean isAgentExistentByName(String name) {
         return agentDao.findAgentByAgentName(name) != null;
+    }
+
+    @Override
+    public List<Agent> getAllAgent() {
+        return agentDao.findAll();
     }
 }

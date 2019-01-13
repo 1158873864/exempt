@@ -3,8 +3,12 @@ package njurestaurant.njutakeout.data.account;
 import njurestaurant.njutakeout.data.dao.account.SupplierDao;
 import njurestaurant.njutakeout.dataservice.account.SupplierDataService;
 import njurestaurant.njutakeout.entity.account.Supplier;
+import njurestaurant.njutakeout.publicdatas.account.SupplierState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SupplierDataServiceImpl implements SupplierDataService {
@@ -25,4 +29,28 @@ public class SupplierDataServiceImpl implements SupplierDataService {
         return supplierDao.save(supplier);
     }
 
+    @Override
+    public Supplier findSupplierById(int id) {
+        Optional<Supplier> optionalSupplier = supplierDao.findById(id);
+        if(optionalSupplier.isPresent()) {
+            return optionalSupplier.get();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public void deleteSupplierById(int id) {
+        supplierDao.deleteById(id);
+    }
+
+    @Override
+    public List<Supplier> getAllSuppliers() {
+        return supplierDao.findAll();
+    }
+
+    @Override
+    public List<Supplier> findSuppliersByState(SupplierState supplierState) {
+        return supplierDao.findSupplierByStatus(supplierState);
+    }
 }

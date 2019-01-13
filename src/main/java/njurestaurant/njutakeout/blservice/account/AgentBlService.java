@@ -5,6 +5,8 @@ import njurestaurant.njutakeout.exception.UsernameIsExistentException;
 import njurestaurant.njutakeout.response.user.AgentAddResponse;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface AgentBlService {
     /**
@@ -20,4 +22,5 @@ public interface AgentBlService {
      */
     void delAgentById(int id);
 
+    List<Agent> findAllAgents();
 }

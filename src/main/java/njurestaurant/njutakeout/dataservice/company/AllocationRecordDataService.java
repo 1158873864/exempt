@@ -1,4 +1,4 @@
-package njurestaurant.njutakeout.dataservice.account;
+package njurestaurant.njutakeout.dataservice.company;
 
 import njurestaurant.njutakeout.entity.company.AllocationRecord;
 

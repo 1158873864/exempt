@@ -14,6 +14,18 @@ export function codeAdd(duration,info,number,priority,team,type) {
         }
   })
 }
+export function codeInfo(id) {
+    return request({
+        url: '/company/code/info/'+id,
+        method: 'get'
+    })
+}
+export function codeDelete(id) {
+    return request({
+        url: '/company/code/delete/'+id,
+        method: 'get'
+    })
+}
 export function permissionAllocate(post,permission) { 
     return request({
         url: '/company/permission/allocate',

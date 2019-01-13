@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CompanyCardDataServiceImpl implements CompanyCardDataService {
@@ -46,5 +47,18 @@ public class CompanyCardDataServiceImpl implements CompanyCardDataService {
     @Override
     public boolean isExistentCard(String cardNumber) {
         return companyCardDao.findCompanyCardByCardNumber(cardNumber) != null;
+    }
+
+    @Override
+    public void deleteCompanyCardById(int id) {
+        companyCardDao.deleteById(id);
+    }
+
+    @Override
+    public CompanyCard findCompanyById(int id) {
+        Optional<CompanyCard> optionalCompanyCard = companyCardDao.findById(id);
+        if(optionalCompanyCard.isPresent()) {
+            return optionalCompanyCard.get();
+        } else return null;
     }
 }

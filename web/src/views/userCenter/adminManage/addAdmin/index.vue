@@ -2,10 +2,7 @@
         <div class="app-container">
           <el-form ref="form" :model="form" label-width="80px">
       
-            <el-form-item label="code">
-              <el-input v-model="form.code"></el-input>
-            </el-form-item>
-            <el-form-item label="operator">
+            <el-form-item label="操作上级">
               <el-input v-model="form.operator"></el-input>
             </el-form-item>
             <el-form-item label="password">

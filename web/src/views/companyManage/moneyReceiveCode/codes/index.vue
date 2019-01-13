@@ -1,6 +1,5 @@
 <template>
     <div class="app-container">
-    <div>团队管理</div>
         <el-table
         :data="codes"
         height="250"
@@ -11,7 +10,7 @@
         <el-table-column prop="duration" label="duration" width="180"></el-table-column>
         <el-table-column prop="id" label="id" width="180"></el-table-column>
         <el-table-column prop="priorityLevel" label="priorityLevel" width="180"></el-table-column>
-        <el-table-column prop="codeName" label="codeName" width="180"></el-table-column>
+        <el-table-column prop="teamName" label="teamName" width="180"></el-table-column>
         <el-table-column prop="type" label="type" width="180"></el-table-column>
 
     </el-table>
@@ -43,7 +42,7 @@ import { codesGet } from '@/api/company'
                     'duration':'duration',
                     'id':'id',
                     'priorityLevel':'priorityLevel',
-                    'codeName':'codeName',
+                    'teamName':'teamName',
                     'type':'type',
                     }
                 ],

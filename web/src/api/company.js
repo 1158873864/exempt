@@ -14,6 +14,18 @@ export function codeAdd(duration,info,number,priority,team,type) {
         }
   })
 }
+export function codeInfo(id) {
+    return request({
+        url: '/company/code/info/'+id,
+        method: 'get'
+    })
+}
+export function codeDelete(id) {
+    return request({
+        url: '/company/code/delete/'+id,
+        method: 'get'
+    })
+}
 export function permissionAllocate(post,permission) { 
     return request({
         url: '/company/permission/allocate',
@@ -24,6 +36,24 @@ export function permissionAllocate(post,permission) {
         }
     })
  }
+export function checkSinglePermission(post) {
+  return request({
+    url: '/company/permission',
+    method: 'get',
+    params: {
+      post
+    }
+  })
+}
+export function checkAllPermission() {
+  return request({
+    url: '/company/permissions',
+    method: 'get',
+    params: {
+      
+    }
+  })
+}
 export function codesGet() {
   return request({
     url: '/company/codes',
@@ -87,5 +117,57 @@ export function cardsGet() {
   return request({
       url: '/company/cards',
         method: 'get',
+  })
+}
+/**
+ * 
+ * @param {岗位} post 
+ */
+export function addPost(post) {
+  return request({
+    url: '/company/post/add',
+    method: 'get',
+    params: {
+      post,
+    }
+  })
+}
+export function deletePost(post) {
+  return request({
+    url: '/company/post/delete',
+    method: 'get',
+    params: {
+      post
+    }
+  })
+}
+export function postGet() {
+  return request({
+    url: '/company/post/list',
+    method: 'get',
+    params: {
+    }
+  })
+}
+//---------------//
+
+export function teamAdd(area, operator, status, supervisor, teamName, verifyCode) {
+  return request({
+    url: '/company/team/add',
+    method: 'post',
+    data: {
+      area,
+      operator,
+      status,
+      supervisor,
+      teamName,
+      verifyCode
+    }
+  })
+}
+export function teamsGet() {
+  return request({
+    url: '/company/teams',
+    method: 'get'
   })
 }

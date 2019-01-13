@@ -3,9 +3,10 @@
     <div>团队管理</div>
         <el-table
         :data="teams"
-        height="250"
         border
-        style="width: 100%">
+        max-height="700"
+        ref="table"
+       >
         <el-table-column prop="teamName" label="teamName" width="180"></el-table-column>
         <el-table-column prop="addTime" label="addTime" width="180"></el-table-column>
         <el-table-column prop="area" label="area" width="180"></el-table-column>
@@ -36,6 +37,7 @@ import { teamAdd,teamsGet } from '@/api/team'
     export default {
         data() {
             return {
+                tableHeight: 290,
                 activeNames: ['1'],
                 labelPosition: 'right',
                 teamAddParameters: {
@@ -66,7 +68,6 @@ import { teamAdd,teamsGet } from '@/api/team'
         methods: {
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
-              
             },
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);

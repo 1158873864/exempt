@@ -11,9 +11,9 @@
             <el-form-item label="status">
                 <el-input v-model="teamAddParameters.status" placeholder="status"></el-input>
             </el-form-item>
-            <el-form-item label="supervisor">
+            <!-- <el-form-item label="supervisor">
                 <el-input v-model="teamAddParameters.supervisor" placeholder="supervisor"></el-input>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="teamName">
                 <el-input v-model="teamAddParameters.teamName" placeholder="teamName"></el-input>
             </el-form-item>
@@ -29,6 +29,7 @@
 
 <script>
 import { teamAdd,teamsGet } from '@/api/team'
+import store from '../../../../store'
     export default {
         data() {
             return {
@@ -45,6 +46,9 @@ import { teamAdd,teamsGet } from '@/api/team'
                 teams:{},
                 currentPage:1
             }
+        },
+        created(){
+            this.teamAddParameters.supervisor = store.getters.uid;
         },
         methods: {
             handleSizeChange(val) {

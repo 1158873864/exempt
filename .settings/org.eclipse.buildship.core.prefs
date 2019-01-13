@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+connection.project.dir=
+eclipse.preferences.version=1
+=======
 auto.sync=false
 build.scans.enabled=false
 connection.gradle.distribution=GRADLE_DISTRIBUTION(WRAPPER)
@@ -6,3 +10,4 @@ eclipse.preferences.version=1
 gradle.user.home=
 offline.mode=false
 override.workspace.settings=true
+>>>>>>> 49669b37b74b20047adef702bde709795436f755

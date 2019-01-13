@@ -6,7 +6,8 @@ const user = {
     token: getToken(),
     name: '',
     avatar: '',
-    roles: []
+    roles: [],
+    uid: 0
   },
 
   mutations: {
@@ -21,6 +22,9 @@ const user = {
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
+    },
+    SET_UID: (state, uid) => {
+      state.uid = uid
     }
   },
 
@@ -35,6 +39,7 @@ const user = {
           const data = response.data
           setToken(data.token)
           commit('SET_TOKEN', data.token)
+          commit('SET_UID', data.uid)
           resolve()
         }).catch(error => {
           reject(error)
@@ -43,7 +48,7 @@ const user = {
     },
 
     // 获取用户信息
-    GetInfo({ commit, state }) {
+    GetInfo({ commit, state }) {                                                               
       return new Promise((resolve, reject) => {
         getInfo(state.token).then(response => {
           const data = response.data
@@ -64,14 +69,10 @@ const user = {
     // 登出
     LogOut({ commit, state }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
-          commit('SET_TOKEN', '')
-          commit('SET_ROLES', [])
-          removeToken()
-          resolve()
-        }).catch(error => {
-          reject(error)
-        })
+        commit('SET_TOKEN', '')
+        commit('SET_ROLES', [])
+        removeToken()
+        resolve()
       })
     },
 

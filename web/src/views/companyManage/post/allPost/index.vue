@@ -12,11 +12,18 @@
                         <el-form-item  v-for="(item, index) in props.row.permission" :key="index">
                             <span>{{ item }}</span>
                         </el-form-item>
-
                     </el-form>
                 </template>
             </el-table-column>
             <el-table-column prop="post" label="post" width="180"></el-table-column>
+            <el-table-column label="操作" width="180">
+                    <template scope="scope">
+                        <el-button size="small"
+                                @click="del(scope.$index,scope.row)">删除</el-button>
+                        <!-- <el-button size="small"
+                                @click="edit(scope.$index,scope.row)">修改</el-button> -->
+                    </template>
+            </el-table-column>
             <!-- <el-table-column prop="permission" label="permission" width="180"></el-table-column> -->
         </el-table>
         <div class="block" v-if="teams.length>10">
@@ -34,15 +41,15 @@
       </div>
     </template>
     <script>
-    import { checkAllPermission } from '@/api/company'
+    import { checkAllPermission,deletePost } from '@/api/company'
         export default {
             data() {
                 return {
-                    activeNames: ['1'],
                     labelPosition: 'right',
                     teams:[{
+                        'id': 0,
                         'post': 'post',
-                        // 'permission':'permission'
+                        'permission':'permission'
                         }
                     ],
                     currentPage:1
@@ -52,6 +59,24 @@
                 this.getData();
             },
             methods: {
+                del(index, row) {
+                    console.log(row);
+                    deletePost(row.id).then(response=> {
+                        if(response.data.infoCode){
+                            this.$message({
+                                message: response.data.description,
+                                type: 'warning'
+                            });
+                        }else{
+                          this.$message({
+                           message: '删除成功',
+                          type: 'success'
+                          });
+                        }
+                       });
+                       this.teams.splice(index,1)
+
+                },
                 handleSizeChange(val) {
                     console.log(`每页 ${val} 条`);
                 },
@@ -63,7 +88,7 @@
                 },
                 getTeams(){
                     checkAllPermission().then(response=>{
-                        console.log(response,'sdll')
+                        console.log(response,'response')
                          if(response.data.infoCod){
                             this.$message({
                                 message: response.data.description,
@@ -84,8 +109,3 @@
             }
         }
     </script>
-    
-    <style scoped>
-    
-    </style>
-    

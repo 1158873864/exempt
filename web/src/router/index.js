@@ -119,12 +119,6 @@ export const constantRouterMap = [
             meta: { title: '岗位添加' }
           },
           {
-            path: 'postdelete',
-            name: 'postdelete',
-            component: () => import('@/views/companyManage/post/deletePost/index'),
-            meta: { title: '岗位删除' }
-          },
-          {
             path: 'allpost',
             name: 'allpost',
             component: () => import('@/views/companyManage/post/allPost/index'),
@@ -280,8 +274,29 @@ export const constantRouterMap = [
         path: 'bankCardSetting',
         component: () => import('@/views/userCenter/bankCardSetting/index'),
         name: 'bankCardSetting',
-        meta: { title: '银行卡设置' }
-      }
+        meta: { title: '银行卡设置' },
+        children: [
+          {
+            path: 'cards',
+            name: 'cards',
+            component: () => import('@/views/userCenter/bankCardSetting/cards/index'),
+            meta: { title: '所有银行卡' },
+          },
+          {
+            path: 'cardAdd',
+            name: 'cardAdd',
+            component: () => import('@/views/userCenter/bankCardSetting/addcard/index'),
+            meta: { title: '添加银行卡', breadcrumb: false },
+            breadcrumb: false
+          },
+          {
+            path: 'cardsPersonal',
+            name: 'cardsPersonal',
+            component: () => import('@/views/userCenter/bankCardSetting/personalcards/index'),
+            meta: { title: '个人银行卡' },
+          }
+        ]
+      },
     ]
   },
 

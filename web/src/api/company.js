@@ -119,6 +119,13 @@ export function cardsGet() {
         method: 'get',
   })
 }
+export function cardDelete(id) {
+  console.log(id)
+  return request({
+      url: '/company/card/delete/'+id,
+      method: 'get',
+  })
+}
 /**
  * 
  * @param {岗位} post 
@@ -132,13 +139,10 @@ export function addPost(post) {
     }
   })
 }
-export function deletePost(post) {
+export function deletePost(id) {
   return request({
-    url: '/company/post/delete',
-    method: 'get',
-    params: {
-      post
-    }
+    url: '/company/post/delete/'+id,
+    method: 'get'
   })
 }
 export function postGet() {

@@ -1,12 +1,10 @@
 <template>
     <div class="app-container">
-    <div>团队管理</div>
+    <div>公司银行卡管理</div>
         <el-table
         :data="cards"
-        height="250"
-        border
-        style="width: 100%">
-
+        max-height="700"
+        >
         <el-table-column prop="attribution" label="attribution" width="180"></el-table-column>
         <el-table-column prop="balance" label="balance" width="180"></el-table-column>
         <el-table-column prop="bank" label="bank" width="180"></el-table-column>
@@ -15,9 +13,15 @@
         <el-table-column prop="name" label="name" width="180"></el-table-column>
         <el-table-column prop="relation" label="relation" width="180"></el-table-column>
         <el-table-column prop="status" label="status" width="180"></el-table-column>
+        <el-table-column label="操作" fixed="right" width="180">
+            <template scope="scope">
+                <el-button size="small"
+                        @click="operation(scope.$index,scope.row)">删除</el-button>
+            </template>
+        </el-table-column>
 
     </el-table>
-    <div class="block">
+    <div class="block" v-if="cards.length>10">
         <span class="demonstration">调整每页显示条数</span>
         <el-pagination
         @size-change="handleSizeChange"
@@ -33,7 +37,7 @@
 </template>
 
 <script>
-import { cardsGet } from '@/api/company'
+import { cardsGet,cardDelete } from '@/api/company'
     export default {
         data() {
             return {
@@ -57,6 +61,24 @@ import { cardsGet } from '@/api/company'
             this.getData();
         },
         methods: {
+            operation(index, row) {
+                console.log(row);
+                cardDelete(row.id).then(response=> {
+                    if(response.code!=200){
+                        this.$message({
+                            message: response.data.description,
+                            type: 'warning'
+                        });
+                    }else{
+                        this.$message({
+                        message: '删除成功',
+                        type: 'success'
+                        });
+                    }
+                    });
+                    this.cards.splice(index,1)
+
+            },
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
               

@@ -1,28 +1,18 @@
 <template>
         <div class="app-container">
-        <div>待审批商户</div>
+        <div>个人银行卡</div>
             <el-table
             :data="teams"
             height="250"
             border
             style="width: 100%">
-            <el-table-column prop="addTime" label="addTime" width="180"></el-table-column>
-            <el-table-column prop="alipay" label="alipay" width="80"></el-table-column>
-            <el-table-column prop="balance" label="balance" width="80"></el-table-column>
-            <el-table-column prop="id" label="id" width="80"></el-table-column>
+            <el-table-column prop="accountWithBank" label="accountWithBank" width="180"></el-table-column>
+            <el-table-column prop="bank" label="bank" width="180"></el-table-column>
+            <el-table-column prop="bin" label="bin" width="180"></el-table-column>
+            <el-table-column prop="cardNumber" label="cardNumber" width="180"></el-table-column>
+            <el-table-column prop="id" label="id" width="180"></el-table-column>
             <el-table-column prop="name" label="name" width="180"></el-table-column>
-            <el-table-column prop="status" label="status" width="80"></el-table-column>
-            <el-table-column prop="superior" label="superior" width="180"></el-table-column>
-            <el-table-column prop="verifyCode" label="verifyCode" width="180"></el-table-column>
-            <el-table-column prop="wechat" label="wechat" width="180"></el-table-column>
-            <el-table-column label="操作" width="180">
-                    <template scope="scope">
-                        <el-button size="small"
-                                @click="approval(scope.$index,scope.row,1)">审批通过</el-button>
-                        <el-button size="small"
-                                @click="approval(scope.$index,scope.row,0)">审批不通过</el-button>
-                    </template>
-            </el-table-column>
+            <el-table-column prop="status" label="status" width="180"></el-table-column>
         </el-table>
         <div class="block">
             <span class="demonstration">调整每页显示条数</span>
@@ -40,16 +30,21 @@
     </template>
     
     <script>
-    import { waitApprovalMer, ApprovalMer } from '@/api/company'
+        import { cardAdd,cardsGetOne } from '@/api/personal'
+        import store from '../../../../store'
         export default {
             data() {
                 return {
                     activeNames: ['1'],
                     labelPosition: 'right',
-                    
                     teams:[{
-                        mid: 'mid',
-                        state: 'state'
+                        "accountWithBank": "string",
+                        "bank": "string",
+                        "bin": "string",
+                        "cardNumber": "string",
+                        "id": 0,
+                        "name": "string",
+                        "status": "string"
                         }
                     ],
                     currentPage:1
@@ -59,24 +54,6 @@
                 this.getData();
             },
             methods: {
-                approval(index, row,state) {
-                    console.log(row);
-                    ApprovalMer(row.id,state).then(response=> {
-                        if(response.data.infoCode){
-                            this.$message({
-                                message: response.data.description,
-                                type: 'warning'
-                            });
-                        }else{
-                          this.$message({
-                           message: '审批成功',
-                          type: 'success'
-                          });
-                        }
-                       });
-                       this.teams.splice(index,1)
-
-                },
                 handleSizeChange(val) {
                     console.log(`每页 ${val} 条`);
                   
@@ -88,9 +65,9 @@
                     this.getTeams();
                 },
                 getTeams(){
-                    waitApprovalMer().then(response=>{
+                    cardsGetOne(store.getters.uid).then(response=>{
                         console.log(response,'sdll')
-                         if(response.data.infoCod){
+                         if(response.code!=200){
                             this.$message({
                                 message: response.data.description,
                                 type: 'warning'

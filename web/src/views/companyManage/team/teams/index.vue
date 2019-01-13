@@ -2,9 +2,8 @@
     <div class="app-container">
     <div>团队管理</div>
         <el-table
-        :data="teams"
-        border
-        max-height="450"
+        :data="teams.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+        max-height="500"
         ref="table"
        >
         <el-table-column prop="teamName" label="teamName" width="180"></el-table-column>
@@ -18,13 +17,12 @@
 
     </el-table>
     <div class="block">
-        <span class="demonstration">调整每页显示条数</span>
         <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
         :page-sizes="[10, 20, 30, 40]"
-        :page-size="10"
+        :page-size="pagesize"
         layout="sizes, prev, pager, next"
         :total="1000">
         </el-pagination>
@@ -59,7 +57,8 @@ import { teamAdd,teamsGet } from '@/api/team'
                     'verifyCode':'verifyCode'
                     }
                 ],
-                currentPage:1
+                currentPage:1,
+                pagesize:10
             }
         },
         created(){
@@ -68,6 +67,7 @@ import { teamAdd,teamsGet } from '@/api/team'
         methods: {
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
+                this.pagesize = val;
             },
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);

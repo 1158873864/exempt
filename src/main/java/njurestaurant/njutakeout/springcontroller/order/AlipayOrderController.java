@@ -1,6 +1,5 @@
 package njurestaurant.njutakeout.springcontroller.order;
 
-import com.sun.net.httpserver.Authenticator;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;

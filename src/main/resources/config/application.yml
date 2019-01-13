@@ -36,7 +36,7 @@ spring:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/exempt?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: root
-    password: 123456
+    password: '0000'
   aop:
     auto: true
     proxy-target-class: false
@@ -46,7 +46,7 @@ wechat:
   id: wx8b0d0433876f8f70
   secret: 62eb76d04c849fcc23b49a23acf720a1
   mch_id: 1511954771
-  body: 冉阔餐饮-九餐厅
+  body: 鍐夐様椁愰ギ-涔濋鍘�
   device_info: WEB
   notify_url: https://www.sandc.com
   trade_type: JSAPI

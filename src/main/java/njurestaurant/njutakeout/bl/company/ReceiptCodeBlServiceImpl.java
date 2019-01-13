@@ -30,6 +30,7 @@ public class ReceiptCodeBlServiceImpl implements ReceiptCodeBlService {
      */
     @Override
     public ReceiptCodeAddResponse addReceiptCode(ReceiptCode receiptCode) {
+
         ReceiptCode rc =  receiptCodeDataService.saveReceiptCode(receiptCode);
         return new ReceiptCodeAddResponse(rc.getId());
     }
@@ -42,5 +43,15 @@ public class ReceiptCodeBlServiceImpl implements ReceiptCodeBlService {
     @Override
     public ReceiptCodeLoadResponse loadReceiptCodes() {
         return new ReceiptCodeLoadResponse(receiptCodeDataService.findAllReceipt());
+    }
+
+    @Override
+    public void delReceiptCode(int id) {
+        receiptCodeDataService.deleteReceiptById(id);
+    }
+
+    @Override
+    public ReceiptCode findReceiptCodeById(int id) {
+        return receiptCodeDataService.findReceiptCodeById(id);
     }
 }

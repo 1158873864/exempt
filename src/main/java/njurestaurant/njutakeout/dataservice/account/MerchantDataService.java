@@ -1,6 +1,9 @@
 package njurestaurant.njutakeout.dataservice.account;
 
 import njurestaurant.njutakeout.entity.account.Merchant;
+import njurestaurant.njutakeout.publicdatas.account.MerchantState;
+
+import java.util.List;
 
 public interface MerchantDataService {
     /**
@@ -18,6 +21,20 @@ public interface MerchantDataService {
      */
     Merchant findMerchantById(int id);
 
+    /**
+     * delete the merchant by id
+     * @param id the id
+     */
     void deleteMerchantById(int id);
+
+    /**
+     * load all merchants
+     * @return
+     */
+    List<Merchant> getAllMerchants();
+
+    List<Merchant> getMerchantsByState(MerchantState merchantState);
+
+    List<Merchant> getMerchantsBySuperior(String superior);
 
 }

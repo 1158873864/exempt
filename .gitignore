@@ -5,3 +5,7 @@
 .idea
 
 out
+bin
+.project
+lib
+.classpath

@@ -1,6 +1,7 @@
 package njurestaurant.njutakeout.parameters.user;
 
 public class PersonalCardAddParameters {
+    private int uid;
     private String number;
     private String name;
     private String bank;
@@ -11,13 +12,22 @@ public class PersonalCardAddParameters {
     public PersonalCardAddParameters() {
     }
 
-    public PersonalCardAddParameters(String number, String name, String bank, String accountOfBank, String bin, String status) {
+    public PersonalCardAddParameters(int uid, String number, String name, String bank, String accountOfBank, String bin, String status) {
+        this.uid = uid;
         this.number = number;
         this.name = name;
         this.bank = bank;
         this.accountOfBank = accountOfBank;
         this.bin = bin;
         this.status = status;
+    }
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
     }
 
     public String getNumber() {

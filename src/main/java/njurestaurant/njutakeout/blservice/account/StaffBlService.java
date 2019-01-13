@@ -4,6 +4,7 @@ import njurestaurant.njutakeout.entity.account.Staff;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public interface StaffBlService {
@@ -20,4 +21,6 @@ public interface StaffBlService {
     Staff addStaff(Staff staff);
 
     void delStaffById(int id);
+
+    List<Staff> findAllStaffs();
 }

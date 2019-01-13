@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class StaffBlServiceImpl implements StaffBlService {
@@ -66,5 +67,10 @@ public class StaffBlServiceImpl implements StaffBlService {
     @Override
     public void delStaffById(int id) {
         staffDataService.deleteStaffById(id);
+    }
+
+    @Override
+    public List<Staff> findAllStaffs() {
+        return staffDataService.getAllStaffs();
     }
 }

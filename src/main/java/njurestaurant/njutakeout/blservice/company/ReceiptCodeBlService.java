@@ -25,4 +25,8 @@ public interface ReceiptCodeBlService {
      * @return
      */
     ReceiptCodeLoadResponse loadReceiptCodes();
+
+    void delReceiptCode(int id);
+
+    ReceiptCode findReceiptCodeById(int id);
 }

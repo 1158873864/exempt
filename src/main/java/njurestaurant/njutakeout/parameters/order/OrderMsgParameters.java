@@ -1,29 +1,19 @@
-package njurestaurant.njutakeout.entity.order;
+package njurestaurant.njutakeout.parameters.order;
 
-import javax.persistence.*;
 import java.util.Date;
 
-@Entity
-@Table(name = "order")
-public class MyOrder {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @Column(name = "imei")
+public class OrderMsgParameters {
+    private String cmd;
+    private String type;
     private String imei;
-    @Column(name = "orderId")
     private String orderId;
-    @Column(name = "money")
     private double money;
-    @Column(name = "memo")
     private String memo;
-    @Column(name = "time")
     private Date time;
 
-    public MyOrder() {
-    }
-
-    public MyOrder(String imei, String orderId, double money, String memo, Date time) {
+    public OrderMsgParameters(String cmd, String type, String imei, String orderId, double money, String memo, Date time) {
+        this.cmd = cmd;
+        this.type = type;
         this.imei = imei;
         this.orderId = orderId;
         this.money = money;
@@ -31,12 +21,20 @@ public class MyOrder {
         this.time = time;
     }
 
-    public int getId() {
-        return id;
+    public String getCmd() {
+        return cmd;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setCmd(String cmd) {
+        this.cmd = cmd;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getImei() {

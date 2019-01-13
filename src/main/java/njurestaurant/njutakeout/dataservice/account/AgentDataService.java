@@ -2,6 +2,8 @@ package njurestaurant.njutakeout.dataservice.account;
 
 import njurestaurant.njutakeout.entity.account.Agent;
 
+import java.util.List;
+
 public interface AgentDataService {
     /**
      * save a agent
@@ -25,4 +27,6 @@ public interface AgentDataService {
     void deleteAgentById(int id);
 
     Agent findAgentById(int id);
+
+    List<Agent> getAllAgent();
 }

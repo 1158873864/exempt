@@ -8,6 +8,8 @@ import njurestaurant.njutakeout.response.user.AgentAddResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AgentBlServiceImpl implements AgentBlService {
     private final AgentDataService agentDataService;
@@ -35,5 +37,10 @@ public class AgentBlServiceImpl implements AgentBlService {
     @Override
     public void delAgentById(int id) {
         agentDataService.deleteAgentById(id);
+    }
+
+    @Override
+    public List<Agent> findAllAgents() {
+        return agentDataService.getAllAgent();
     }
 }

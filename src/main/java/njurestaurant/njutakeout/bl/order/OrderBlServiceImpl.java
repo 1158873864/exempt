@@ -85,10 +85,10 @@ public class OrderBlServiceImpl implements OrderBlService {
             switch (event.getEventType()) {
                 case FirstOrder:
                     User user = userDataService.getUserByUsername(username);
-                    if (user.getOrders().size() == 0) {
-                        double result = originTotal / 2;
-                        return new FinalPriceGetResponse(result);
-                    }
+//                    if (user.getOrders().size() == 0) {
+//                        double result = originTotal / 2;
+//                        return new FinalPriceGetResponse(result);
+//                    }
                     break;
                 case FullSubtraction:
                     if (originTotal >= ((FullSubtractionEvent) event).getFullPrice()) {

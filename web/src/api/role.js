@@ -29,7 +29,7 @@ export function addAgent(brokerage, code, flow, password, status, username) {
     }
   })
 }
-export function addMerchant(alipay, balance, code, password, superior, username, wechat) {
+export function addMerchant(alipay, balance, code, level, password, superior, username, wechat) {
   return request({
     url: '/merchant/add',
     method: 'post',
@@ -37,6 +37,7 @@ export function addMerchant(alipay, balance, code, password, superior, username,
       alipay,
       balance,
       code,
+      level,
       password,
       superior,
       username,

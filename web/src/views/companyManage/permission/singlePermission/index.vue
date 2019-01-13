@@ -1,15 +1,18 @@
 <template>
         <div class="app-container">
-            <div>职位权限1查询</div>
-            <el-form ref="form" :model="form" label-width="80px">
-      
-                <el-form-item label="post">
-                    <el-input v-model="form.post"></el-input>
-                    <el-button type="primary" @click="onSubmit('form')">查询</el-button>
+          
+            <el-form :model="formItem" ref="formItem" label-width="80px">
+                <el-form-item  label="查询职位" prop="sendValue">
+                    <select style="width: 200px" v-model="formItem.sendValue">
+                        <Option v-for="item in formItem.statelist" :value="item.label" :key="item.value" name="sendValue">
+                            {{item.label}}
+                        </Option>
+                    </select>
+                    <el-button type="primary" @click="onSubmit()">查询</el-button>
                     <el-button>取消</el-button>
-        
                 </el-form-item>
-             </el-form>
+                
+            </el-form>
             <el-table
             :data="teams"
             height="250"
@@ -100,11 +103,12 @@
                         this.getTeams();
                     }
                 },
-                onSubmit(formName) {
-                    this.$refs[formName].validate((valid) => {
+                onSubmit() {
+                    //this.$refs[formName].validate((valid) => {
+                        var valid =1
                         if (valid) {
                         // alert('submit!');
-                        checkSinglePermission(this.form.post).then(response => {
+                        checkSinglePermission(this.formItem.sendValue).then(response => {
                             // console.log(response.data.infoCode)
                             if(response.data.infoCode){
                                 this.$message({
@@ -134,7 +138,7 @@
                         console.log('error submit!!');
                         return false;
                         }
-                    });
+                    //});
                 }
             }
         }

@@ -10,6 +10,9 @@
             <el-form-item label="code">
               <el-input v-model="form.code"></el-input>
             </el-form-item>
+            <el-form-item label="level">
+                    <el-input v-model="form.level"></el-input>
+            </el-form-item>
             <el-form-item label="password">
               <el-input v-model="form.password"></el-input>
             </el-form-item>
@@ -42,8 +45,9 @@
         return {
                   form: {
                     alipay: '1',
-                    balance: '1',
+                    balance: 1,
                     code: '1',
+                    level: 0,
                     password: '1',
                     superior: '1',
                     username: '1',
@@ -62,7 +66,7 @@
           this.$refs[formName].validate((valid) => {
             if (valid) {
               // alert('submit!');
-              addMerchant(this.form.alipay,this.form.balance,this.form.code,this.form.password,this.form.superior,this.form.username,this.form.wechat).then(response => {
+              addMerchant(this.form.alipay,this.form.balance,this.form.code,this.form.level,this.form.password,this.form.superior,this.form.username,this.form.wechat).then(response => {
                 // console.log(response.data.infoCode)
                 if(response.data.infoCode){
                    this.$message({

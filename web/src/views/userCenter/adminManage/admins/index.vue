@@ -1,19 +1,17 @@
 <template>
         <div class="app-container">
-        <div>团队管理</div>
+        <div>所有管理员</div>
             <el-table
             :data="teams"
-            height="250"
+            height="450"
             border
             style="width: 100%">
-            <el-table-column prop="teamName" label="teamName" width="180"></el-table-column>
-            <el-table-column prop="addTime" label="addTime" width="180"></el-table-column>
-            <el-table-column prop="area" label="area" width="180"></el-table-column>
-            <el-table-column prop="id" label="id" width="180"></el-table-column>
-            <el-table-column prop="operator" label="operator" width="180"></el-table-column>
-            <el-table-column prop="status" label="status" width="180"></el-table-column>
-            <el-table-column prop="supervisor" label="supervisor" width="180"></el-table-column>
-            <el-table-column prop="verifyCode" label="verifyCode" width="180"></el-table-column>
+            <el-table-column prop="userInfo.username" label="username" width="180" align="center"></el-table-column>
+            <el-table-column prop="staffName" label="staffName" width="180" align="center"></el-table-column>
+            <el-table-column prop="team" label="team" width="180" align="center"></el-table-column>
+            <el-table-column prop="post" label="post" width="180" align="center"></el-table-column>
+            <el-table-column prop="status" label="status" width="180" align="center"></el-table-column>
+            
     
         </el-table>
         <div class="block">
@@ -22,8 +20,8 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page.sync="currentPage"
-            :page-sizes="[100, 200, 300, 400]"
-            :page-size="100"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="10"
             layout="sizes, prev, pager, next"
             :total="1000">
             </el-pagination>
@@ -32,29 +30,16 @@
     </template>
     
     <script>
-    import { teamAdd,teamsGet } from '@/api/team'
+    import { adminsGet } from '@/api/role'
         export default {
             data() {
                 return {
-                    activeNames: ['1'],
-                    labelPosition: 'right',
-                    teamAddParameters: {
-                            "area": "area",
-                            "operator": "operator",
-                            "status": "status",
-                            "supervisor": "supervisor",
-                            "teamName": "teamName",
-                            "verifyCode": "verifyCode"
-                    },
                     teams:[{
-                        'teamName':'teamName',
-                        'addTime':'addTime',
-                        'area':'area',
-                        'id':'id',
-                        'operator':'operator',
-                        'status':'status',
-                        'supervisor':'supervisor',
-                        'verifyCode':'verifyCode'
+                        'userInfo':{},
+                        'staffName': 'staffName',
+                        'team':'team',
+                        'post': 'post',
+                        'status': 'status'
                         }
                     ],
                     currentPage:1
@@ -75,7 +60,7 @@
                     this.getTeams();
                 },
                 getTeams(){
-                    teamsGet().then(response=>{
+                    adminsGet().then(response=>{
                         console.log(response,'sdll')
                          if(response.data.infoCod){
                             this.$message({

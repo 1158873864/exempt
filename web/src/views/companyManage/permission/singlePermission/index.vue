@@ -1,5 +1,6 @@
 <template>
         <div class="app-container">
+
           
             <el-form :model="formItem" ref="formItem" label-width="80px">
                 <el-form-item  label="查询职位" prop="sendValue">
@@ -9,6 +10,16 @@
                         </Option>
                     </select>
                     <el-button type="primary" @click="onSubmit()">查询</el-button>
+                    </el-form-item>
+            </el-form>
+
+            <div>职位权限查询</div>
+            <el-form ref="form" :model="form" label-width="80px">
+      
+                <el-form-item label="post">
+                    <el-input v-model="form.post"></el-input>
+                    <el-button type="primary" @click="onSubmit('form')">查询</el-button>
+
                     <el-button>取消</el-button>
                 </el-form-item>
                 

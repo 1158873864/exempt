@@ -8,6 +8,7 @@ import java.util.Collection;
 public class JwtUser implements UserDetails {
     private final String username;
     private final String password;
+    private final int uid;
     private final int tableId;
     private final int role;
     private final Collection<JwtRole> authorities;
@@ -16,11 +17,12 @@ public class JwtUser implements UserDetails {
     private final boolean credentialsNonExpired = true;
     private final boolean enabled = true;
 
-    public JwtUser(String username, String password, int tableId, int role) {
+    public JwtUser(String username, String password, int uid, int tableId, int role) {
         this.username = username;
         this.password = password;
         this.tableId = tableId;
         this.role = role;
+        this.uid = uid;
         this.authorities = new ArrayList<>();
     }
 

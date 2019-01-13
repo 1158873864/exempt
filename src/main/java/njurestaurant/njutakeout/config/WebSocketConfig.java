@@ -1,5 +1,7 @@
 package njurestaurant.njutakeout.config;
 
+import njurestaurant.njutakeout.config.websocket.WebSocketHandler;
+import njurestaurant.njutakeout.config.websocket.WebSocketHandshakeInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

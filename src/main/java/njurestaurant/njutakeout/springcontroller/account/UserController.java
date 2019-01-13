@@ -2,7 +2,9 @@ package njurestaurant.njutakeout.springcontroller.account;
 
 import io.swagger.annotations.*;
 import njurestaurant.njutakeout.blservice.account.*;
+import njurestaurant.njutakeout.blservice.event.LogBlService;
 import njurestaurant.njutakeout.entity.account.*;
+import njurestaurant.njutakeout.entity.event.Log;
 import njurestaurant.njutakeout.exception.*;
 import njurestaurant.njutakeout.parameters.company.StaffAddParameters;
 import njurestaurant.njutakeout.parameters.user.*;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 @RestController
@@ -32,15 +35,20 @@ public class UserController {
     private final AgentBlService agentBlService;
     private final MerchantBlService merchantBlService;
     private final SupplierBlService supplierBlService;
+    private final LogBlService logBlService;
 
     @Autowired
-    public UserController(UserBlService userBlService, StaffBlService staffBlService, AgentBlService agentBlService, MerchantBlService merchantBlService, SupplierBlService supplierBlService) {
+    public UserController(UserBlService userBlService, StaffBlService staffBlService, AgentBlService agentBlService, MerchantBlService merchantBlService, SupplierBlService supplierBlService, LogBlService logBlService) {
         this.userBlService = userBlService;
         this.staffBlService = staffBlService;
         this.agentBlService = agentBlService;
         this.merchantBlService = merchantBlService;
         this.supplierBlService = supplierBlService;
+        this.logBlService = logBlService;
     }
+
+
+
 
     @ApiOperation(value = "用户登录", notes = "验证用户登录并返回token")
     @RequestMapping(value = "account/login", method = RequestMethod.POST)
@@ -165,7 +173,7 @@ public class UserController {
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> addAgent(@RequestBody MerchantAddParameters merchantAddParameters) {
+    public ResponseEntity<Response> addMerchant(@RequestBody MerchantAddParameters merchantAddParameters) {
         if(userBlService.checkUsername(merchantAddParameters.getUsername())) {
             return new ResponseEntity<>(new JSONResponse(10100, new UsernameIsExistentException().getResponse()), HttpStatus.OK);
         } else if(StringUtils.isBlank(merchantAddParameters.getUsername())) {
@@ -173,15 +181,11 @@ public class UserController {
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             User user = new User(merchantAddParameters.getUsername(), encoder.encode(merchantAddParameters.getPassword()), 3, new ArrayList<>());
-            Merchant merchant = new Merchant(merchantAddParameters.getAlipay(), merchantAddParameters.getWechat(), merchantAddParameters.getBalance(), MerchantState.WAITING, merchantAddParameters.getCode(), new Date(), merchantAddParameters.getUsername(), merchantAddParameters.getSuperior(), user);
-            MerchantAddResponse merchantAddResponse = null;
-            try {
-                merchantAddResponse = merchantBlService.addMerchant(merchant);
-                userBlService.updateUser(user);
-                return new ResponseEntity<>(new JSONResponse(200, merchantAddResponse), HttpStatus.OK);
-            } catch (WrongIdException e) {
-                return new ResponseEntity<>(new JSONResponse(10160, e.getResponse()), HttpStatus.OK);
-            }
+            Merchant merchant = new Merchant(merchantAddParameters.getAlipay(), merchantAddParameters.getWechat(), merchantAddParameters.getBalance(), MerchantState.WAITING, merchantAddParameters.getCode(), new Date(), merchantAddParameters.getUsername(), merchantAddParameters.getSuperior(), user, merchantAddParameters.getLevel());
+            MerchantAddResponse merchantAddResponse = merchantBlService.addMerchant(merchant);
+            user.setTableId(merchant.getId());
+            userBlService.updateUser(user);
+            return new ResponseEntity<>(new JSONResponse(200, merchantAddResponse), HttpStatus.OK);
         }
     }
 
@@ -200,7 +204,7 @@ public class UserController {
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             User user = new User(supplierAddParameters.getUsername(), encoder.encode(supplierAddParameters.getPassword()), 4, new ArrayList<>());
-            Supplier supplier = new Supplier(user, supplierAddParameters.getAplipayloginId(), new Date(), SupplierState.CHECKING);
+            Supplier supplier = new Supplier(user, supplierAddParameters.getAplipayloginId(), new Date(), SupplierState.CHECKING, new ArrayList<>(), supplierAddParameters.getLevel());
             try {
                 UserAddResponse userAddResponse = supplierBlService.addSupplier(supplier);
                 user.setTableId(userAddResponse.getTableId());
@@ -323,6 +327,8 @@ public class UserController {
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
     public ResponseEntity<Response> showMerchants() {
+        List<Merchant> merchantList = merchantBlService.findAllMerchants();
+
         return new ResponseEntity<>(new JSONResponse(200, merchantBlService.findAllMerchants()), HttpStatus.OK);
     }
 

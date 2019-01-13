@@ -1,53 +1,27 @@
-package njurestaurant.njutakeout.entity.account;
+package njurestaurant.njutakeout.response.company;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import njurestaurant.njutakeout.response.Response;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "personal_card")
-
-public class PersonalCard {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class PersonalCardJsonResponse extends Response {
     private int id;
-    @Column(name = "cardNumber")
     private String cardNumber;
-    @Column(name = "name")
     private String name;
-    @Column(name = "bank")
     private String bank;
-    @Column(name = "accountWithBank")
     private String accountWithBank;
-    @Column(name = "bin")
     private String bin;
-    @Column(name = "status")
     private String status;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
-    private User user;
 
-    public PersonalCard() {
+    public PersonalCardJsonResponse() {
     }
 
-    public PersonalCard(String cardNumber, String name, String bank, String accountWithBank, String bin, String status, User user) {
+    public PersonalCardJsonResponse(int id, String cardNumber, String name, String bank, String accountWithBank, String bin, String status) {
+        this.id = id;
         this.cardNumber = cardNumber;
         this.name = name;
         this.bank = bank;
         this.accountWithBank = accountWithBank;
         this.bin = bin;
         this.status = status;
-        this.user = user;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 
     public int getId() {

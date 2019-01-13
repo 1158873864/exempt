@@ -20,7 +20,7 @@ public class Agent {
     private double dailyCommission;
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    private User userInfo;
 
     public Agent() {
     }
@@ -31,7 +31,7 @@ public class Agent {
         this.status = status;
         this.verifyCode = verifyCode;
         this.dailyCommission = dailyCommission;
-        this.user = user;
+        this.userInfo = user;
     }
 
     public Agent(String agentName, String flow, String status, String verifyCode, double dailyCommission) {
@@ -43,11 +43,11 @@ public class Agent {
     }
 
     public User getUser() {
-        return user;
+        return userInfo;
     }
 
     public void setUser(User user) {
-        this.user = user;
+        this.userInfo = user;
     }
 
     public int getId() {

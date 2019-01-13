@@ -1,7 +1,10 @@
 package njurestaurant.njutakeout.bl.company;
 
+import javafx.geometry.Pos;
 import njurestaurant.njutakeout.blservice.company.PostAndPermissionBlService;
 import njurestaurant.njutakeout.dataservice.account.PostAndPermissionDataService;
+import njurestaurant.njutakeout.dataservice.company.PostDataService;
+import njurestaurant.njutakeout.entity.company.Post;
 import njurestaurant.njutakeout.entity.company.PostAndPermission;
 import njurestaurant.njutakeout.response.company.PostAndPermissionResponse;
 import org.apache.commons.lang.StringUtils;
@@ -17,11 +20,14 @@ import java.util.Map;
 @Service
 public class PostAndPermissionBlServiceImpl implements PostAndPermissionBlService {
     private final PostAndPermissionDataService postAndPermissionDataService;
+    private final PostDataService postDataService;
 
     @Autowired
-    public PostAndPermissionBlServiceImpl(PostAndPermissionDataService permissionDataService) {
-        this.postAndPermissionDataService = permissionDataService;
+    public PostAndPermissionBlServiceImpl(PostAndPermissionDataService postAndPermissionDataService, PostDataService postDataService) {
+        this.postAndPermissionDataService = postAndPermissionDataService;
+        this.postDataService = postDataService;
     }
+
 
 //    /**
 //     *
@@ -44,7 +50,7 @@ public class PostAndPermissionBlServiceImpl implements PostAndPermissionBlServic
         List<PostAndPermission> postAndPermissionList = new ArrayList<>();
         if(permission != null) {
             for(String p : permission) {
-                if(StringUtils.isBlank(p)) {
+                if(StringUtils.isNotBlank(p)) {
                     PostAndPermission per = new PostAndPermission(post, p);
                     postAndPermissionList.add(per);
                 }
@@ -60,13 +66,19 @@ public class PostAndPermissionBlServiceImpl implements PostAndPermissionBlServic
         for(PostAndPermission p : postAndPermissionList) {
             permissions.add(p.getPermission());
         }
-        return new PostAndPermissionResponse(post, permissions);
+        Post p = postDataService.findPostByName(post);
+        return new PostAndPermissionResponse(post, permissions, p.getId());
     }
 
     @Override
     public List<PostAndPermissionResponse> getAll() {
         List<PostAndPermission> postAndPermissionList = postAndPermissionDataService.findAllPostAndPermissions();
         Map<String, List<String>> postMap = new HashMap<>();
+        List<Post> postList = postDataService.findAll();
+        Map<String, Integer> postIdMap = new HashMap<>();
+        for(Post p : postList) {
+            postIdMap.put(p.getPost(), p.getId());
+        }
         List<PostAndPermissionResponse> result = new ArrayList<>();
         if(postAndPermissionList.size() == 0)   return result;
         for(PostAndPermission p : postAndPermissionList) {
@@ -83,8 +95,10 @@ public class PostAndPermissionBlServiceImpl implements PostAndPermissionBlServic
             }
         }
         for(Map.Entry<String, List<String>> entry : postMap.entrySet()) {
-            PostAndPermissionResponse response = new PostAndPermissionResponse(entry.getKey(), entry.getValue());
-            result.add(response);
+            if(postIdMap.containsKey(entry.getKey())) {
+                PostAndPermissionResponse response = new PostAndPermissionResponse(entry.getKey(), entry.getValue(), postIdMap.get(entry.getKey()));
+                result.add(response);
+            }
         }
         return result;
     }

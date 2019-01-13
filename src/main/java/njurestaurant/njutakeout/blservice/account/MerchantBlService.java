@@ -1,6 +1,7 @@
 package njurestaurant.njutakeout.blservice.account;
 
 import njurestaurant.njutakeout.entity.account.Merchant;
+import njurestaurant.njutakeout.exception.UsernameIsExistentException;
 import njurestaurant.njutakeout.exception.WrongIdException;
 import njurestaurant.njutakeout.publicdatas.account.MerchantState;
 import njurestaurant.njutakeout.response.Response;
@@ -17,7 +18,7 @@ public interface MerchantBlService {
      * @param merchant the info of merchant
      * @return
      */
-    MerchantAddResponse addMerchant(Merchant merchant) throws WrongIdException;
+    MerchantAddResponse addMerchant(Merchant merchant) ;
 
     /**
      * update the merchant

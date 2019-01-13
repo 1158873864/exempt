@@ -24,6 +24,17 @@
         <el-input v-model="form.username"></el-input>
       </el-form-item>
 
+      <el-form-item>
+          <el-dropdown size="medium" split-button type="primary" @command="handleCommand">
+              {{ codeAddParameters.teamName }}
+              <el-dropdown-menu slot="dropdown">
+              <div v-for="item in teams" :key="item.id">
+                      <el-dropdown-item :command='{id:item.id,teamName:item.teamName}' >{{item.teamName}}</el-dropdown-item>
+              </div>
+              </el-dropdown-menu>
+          </el-dropdown>
+      </el-form-item>
+      
     <el-form-item>
     <el-button type="primary" @click="onSubmit('form')">添加</el-button>
     <el-button>取消</el-button>

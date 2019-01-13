@@ -36,6 +36,7 @@
 
 <script>
 import { codeAdd,codesGet } from '@/api/company'
+import { teamsGet } from '@/api/team'
     export default {
         data() {
             return {

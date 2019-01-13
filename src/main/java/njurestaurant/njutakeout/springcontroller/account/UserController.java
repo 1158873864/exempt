@@ -174,9 +174,14 @@ public class UserController {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             User user = new User(merchantAddParameters.getUsername(), encoder.encode(merchantAddParameters.getPassword()), 3, new ArrayList<>());
             Merchant merchant = new Merchant(merchantAddParameters.getAlipay(), merchantAddParameters.getWechat(), merchantAddParameters.getBalance(), MerchantState.WAITING, merchantAddParameters.getCode(), new Date(), merchantAddParameters.getUsername(), merchantAddParameters.getSuperior(), user);
-            MerchantAddResponse merchantAddResponse = merchantBlService.addMerchant(merchant);
-            userBlService.updateUser(user);
-            return new ResponseEntity<>(new JSONResponse(200, merchantAddResponse), HttpStatus.OK);
+            MerchantAddResponse merchantAddResponse = null;
+            try {
+                merchantAddResponse = merchantBlService.addMerchant(merchant);
+                userBlService.updateUser(user);
+                return new ResponseEntity<>(new JSONResponse(200, merchantAddResponse), HttpStatus.OK);
+            } catch (WrongIdException e) {
+                return new ResponseEntity<>(new JSONResponse(10160, e.getResponse()), HttpStatus.OK);
+            }
         }
     }
 

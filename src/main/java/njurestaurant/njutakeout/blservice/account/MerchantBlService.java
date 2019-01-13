@@ -17,7 +17,7 @@ public interface MerchantBlService {
      * @param merchant the info of merchant
      * @return
      */
-    MerchantAddResponse addMerchant(Merchant merchant);
+    MerchantAddResponse addMerchant(Merchant merchant) throws WrongIdException;
 
     /**
      * update the merchant

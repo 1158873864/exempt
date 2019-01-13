@@ -23,7 +23,6 @@ import njurestaurant.njutakeout.response.order.OrderConfirmArriveResponse;
 import njurestaurant.njutakeout.response.order.OrderRejectResponse;
 import njurestaurant.njutakeout.response.user.UserLoginResponse;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

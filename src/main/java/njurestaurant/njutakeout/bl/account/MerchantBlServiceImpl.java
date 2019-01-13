@@ -40,7 +40,11 @@ public class MerchantBlServiceImpl implements MerchantBlService {
      * @return
      */
     @Override
-    public MerchantAddResponse addMerchant(Merchant merchant) {
+    public MerchantAddResponse addMerchant(Merchant merchant) throws WrongIdException{
+        User user = userDataService.getUserById(merchant.getId());
+        if(user == null || user.getId() == 0 || user.getRole() != 2) {
+            throw new WrongIdException();
+        }
         return new MerchantAddResponse(merchantDataService.saveMerchant(merchant).getId());
     }
 

@@ -1,15 +1,25 @@
 <template>
         <div class="app-container">
-        <div>职位权限查询</div>
-        <el-form ref="form" :model="form" label-width="80px">
+            <div>职位权限1查询</div>
+            <el-form ref="form" :model="form" label-width="80px">
       
                 <el-form-item label="post">
-                  <el-input v-model="form.post"></el-input>
-          <el-button type="primary" @click="onSubmit('form')">查询</el-button>
-          <el-button>取消</el-button>
+                    <el-input v-model="form.post"></el-input>
+                    <el-button type="primary" @click="onSubmit('form')">查询</el-button>
+                    <el-button>取消</el-button>
         
-        </el-form-item>
-        </el-form>
+                </el-form-item>
+             </el-form>
+
+             <el-form :model="formItem" ref="formItem" label-width="80px">
+                    <el-form-item label="查询职务:" prop="sendValue">
+                        <Select style="width:200px" v-model="formItem.sendValue">
+                            <Option v-for="item in formItem.statelist" :value="item.value" :key="item.value" name="sendValue" >
+                                {{item.label}}
+                            </Option>
+                        </Select>
+                    </el-form-item>
+             </el-form>
      
             <el-table
             :data="teams"
@@ -17,12 +27,10 @@
             border
             style="width: 100%">
             <el-table-column prop="post" label="post" width="180"></el-table-column>
-            <el-table-column prop="permission" label="permission" width="180"></el-table-column>
+            <el-table-column prop="permission" label="permission" width="180"></el-table-column>   
+            </el-table>
 
-            
-    
-        </el-table>
-        <div class="block">
+           <div class="block">
             <span class="demonstration">调整每页显示条数</span>
             <el-pagination
             @size-change="handleSizeChange"
@@ -33,9 +41,10 @@
             layout="sizes, prev, pager, next"
             :total="1000">
             </el-pagination>
+            </div>
+
         </div>
-      </div>
-    </template>
+</template>
     
     <script>
     import { checkSinglePermission } from '@/api/company'
@@ -44,6 +53,22 @@
         export default {
             data() {
                 return {
+                    formItem:{
+                        statelist:[
+                            {
+                                value:'0',
+                                label:'admin'
+                            },
+                            {
+                                value:'1',
+                                label:'merchant'
+                            },
+                            {
+                                value:'2',
+                                label:'test'
+                            }
+                        ]
+                    },
                     form: {
                         post:'admin'
                     },
@@ -51,8 +76,8 @@
                     labelPosition: 'right',
                     
                     teams:[{
-                        //post: 'this.form.post',
-                        permission:'permission'
+                        post: 'post',
+                        permission:['permission']
                         
                         }
                     ],
@@ -60,8 +85,8 @@
                 }
             },
             components: {
-        Form
-      },
+                Form
+            },
             
             methods: {
                 handleSizeChange(val) {
@@ -111,13 +136,11 @@
                     type: 'success'
                   });
                   this.teams = response.data;
+                  console.log(this.teams)
                 }
-                // const data = response.data
-                // setToken(data.token)
-                // commit('SET_TOKEN', data.token)
+               
                 resolve()
               }).catch(error => {
-                // reject(error)
                  this.$message(error);
               })
             } else {

@@ -8,9 +8,6 @@
             style="width: 100%">
             <el-table-column prop="post" label="post" width="180"></el-table-column>
             <el-table-column prop="permission" label="permission" width="180"></el-table-column>
-
-            
-    
         </el-table>
         <div class="block">
             <span class="demonstration">调整每页显示条数</span>
@@ -26,7 +23,6 @@
         </div>
       </div>
     </template>
-    
     <script>
     import { checkAllPermission } from '@/api/company'
         export default {
@@ -34,8 +30,6 @@
                 return {
                     activeNames: ['1'],
                     labelPosition: 'right',
-                    
-                    
                     teams:[{
                         'post': 'post',
                         'permission':'permission'
@@ -50,7 +44,6 @@
             methods: {
                 handleSizeChange(val) {
                     console.log(`每页 ${val} 条`);
-                  
                 },
                 handleCurrentChange(val) {
                     console.log(`当前页: ${val}`);
@@ -67,7 +60,10 @@
                                 type: 'warning'
                             });
                         }else{
-                           this.teams = response.data;
+                            response.data.forEach(el => {
+                                el.permission = el.permission.join(',')
+                            });
+                            this.teams = response.data;
                         }
                     })
                 },

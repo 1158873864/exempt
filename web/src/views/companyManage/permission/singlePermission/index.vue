@@ -1,6 +1,6 @@
 <template>
         <div class="app-container">
-            <div>职位权限1查询</div>
+            <div>职位权限查询</div>
             <el-form ref="form" :model="form" label-width="80px">
       
                 <el-form-item label="post">

@@ -4,18 +4,22 @@ import njurestaurant.njutakeout.blservice.account.MerchantBlService;
 import njurestaurant.njutakeout.dataservice.account.MerchantDataService;
 import njurestaurant.njutakeout.dataservice.account.UserDataService;
 import njurestaurant.njutakeout.entity.account.Merchant;
+import njurestaurant.njutakeout.entity.account.PersonalCard;
 import njurestaurant.njutakeout.entity.account.User;
+import njurestaurant.njutakeout.exception.UsernameIsExistentException;
 import njurestaurant.njutakeout.exception.WrongIdException;
 import njurestaurant.njutakeout.publicdatas.account.MerchantState;
 import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.SuccessResponse;
 import njurestaurant.njutakeout.response.WrongResponse;
 import njurestaurant.njutakeout.response.user.MerchantAddResponse;
+import njurestaurant.njutakeout.response.user.UserAddResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -30,9 +34,6 @@ public class MerchantBlServiceImpl implements MerchantBlService {
         this.userDataService = userDataService;
     }
 
-
-
-
     /**
      * add a new merchant
      *
@@ -40,11 +41,7 @@ public class MerchantBlServiceImpl implements MerchantBlService {
      * @return
      */
     @Override
-    public MerchantAddResponse addMerchant(Merchant merchant) throws WrongIdException{
-        User user = userDataService.getUserById(merchant.getId());
-        if(user == null || user.getId() == 0 || user.getRole() != 2) {
-            throw new WrongIdException();
-        }
+    public MerchantAddResponse addMerchant(Merchant merchant){
         return new MerchantAddResponse(merchantDataService.saveMerchant(merchant).getId());
     }
 
@@ -94,8 +91,12 @@ public class MerchantBlServiceImpl implements MerchantBlService {
 
     @Override
     public List<Merchant> findAllMerchants() {
-        return merchantDataService.getAllMerchants();
+        List<Merchant> merchantList = merchantDataService.getAllMerchants();
+        JSONFilter(merchantList);
+        return merchantList;
     }
+
+
 
     @Override
     public List<Merchant> findMerchantsBySuperior(int id) throws WrongIdException {
@@ -103,12 +104,25 @@ public class MerchantBlServiceImpl implements MerchantBlService {
         if(user == null || user.getId() == 0) {
             throw new WrongIdException();
         } else {
-            return merchantDataService.getMerchantsBySuperior(Integer.toString(id));  //最好传id
+            List<Merchant> result = JSONFilter(merchantDataService.getMerchantsBySuperior(Integer.toString(id)));
+            return result;  //最好传id
         }
     }
 
     @Override
     public List<Merchant> findMerchantsByState(MerchantState merchantState) {
-        return merchantDataService.getMerchantsByState(merchantState);
+        List<Merchant> merchantList = merchantDataService.getMerchantsByState(merchantState);
+        JSONFilter(merchantList);
+        return merchantList;
+    }
+
+    private List<Merchant> JSONFilter(List<Merchant> merchantList) {
+        if(merchantList.size() != 0) {
+            for(Merchant merchant : merchantList) {
+                List<PersonalCard> cardList = merchant.getUser().getCards();
+                cardList.stream().peek(c -> c.setUser(null)).collect(Collectors.toList());
+            }
+        }
+        return merchantList;
     }
 }

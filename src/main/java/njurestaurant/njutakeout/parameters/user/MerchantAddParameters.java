@@ -10,8 +10,9 @@ public class MerchantAddParameters {
     private double balance;
     private String code;
     private String superior;
+    private int level;
 
-    public MerchantAddParameters(String username, String password, String alipay, String wechat, double balance, String code, String superior) {
+    public MerchantAddParameters(String username, String password, String alipay, String wechat, double balance, String code, String superior, int level) {
         this.username = username;
         this.password = password;
         this.alipay = alipay;
@@ -19,6 +20,15 @@ public class MerchantAddParameters {
         this.balance = balance;
         this.code = code;
         this.superior = superior;
+        this.level = level;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public String getSuperior() {

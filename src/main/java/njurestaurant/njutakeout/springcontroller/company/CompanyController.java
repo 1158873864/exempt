@@ -1,18 +1,19 @@
 package njurestaurant.njutakeout.springcontroller.company;
 
 import io.swagger.annotations.*;
+import javafx.geometry.Pos;
 import njurestaurant.njutakeout.blservice.account.MerchantBlService;
 import njurestaurant.njutakeout.blservice.account.SupplierBlService;
 import njurestaurant.njutakeout.blservice.company.*;
+import njurestaurant.njutakeout.dataservice.company.SystemDataService;
 import njurestaurant.njutakeout.entity.account.Merchant;
 import njurestaurant.njutakeout.entity.account.Supplier;
 import njurestaurant.njutakeout.entity.company.*;
+import njurestaurant.njutakeout.entity.company.System;
 import njurestaurant.njutakeout.exception.BlankInputException;
 import njurestaurant.njutakeout.exception.IsExistentException;
-import njurestaurant.njutakeout.parameters.company.CompanyCardAddParameters;
-import njurestaurant.njutakeout.parameters.company.PermissionsAllocationParameters;
-import njurestaurant.njutakeout.parameters.company.ReceiptCodeAddParameters;
-import njurestaurant.njutakeout.parameters.company.TeamAddParameters;
+import njurestaurant.njutakeout.exception.WrongIdException;
+import njurestaurant.njutakeout.parameters.company.*;
 import njurestaurant.njutakeout.publicdatas.account.MerchantState;
 import njurestaurant.njutakeout.publicdatas.account.SupplierState;
 import njurestaurant.njutakeout.response.JSONResponse;
@@ -20,6 +21,7 @@ import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.SuccessResponse;
 import njurestaurant.njutakeout.response.WrongResponse;
 import njurestaurant.njutakeout.response.company.*;
+import njurestaurant.njutakeout.response.user.UserAddResponse;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,9 +38,12 @@ public class CompanyController {
     private final AllocationRecordBlService allocationRecordBlService;
     private final MerchantBlService merchantBlService;
     private final SupplierBlService supplierBlService;
+    private final PostBlService postBlService;
+    private final PermissionBlService permissionBlService;
+    private final SystemBlService systemBlService;
 
     @Autowired
-    public CompanyController(TeamBlService teamBlService, ReceiptCodeBlService receiptCodeBlService, CompanyCardBlService companyCardBlService, PostAndPermissionBlService postAndPermissionBlService, AllocationRecordBlService allocationRecordBlService, MerchantBlService merchantBlService, SupplierBlService supplierBlService) {
+    public CompanyController(TeamBlService teamBlService, ReceiptCodeBlService receiptCodeBlService, CompanyCardBlService companyCardBlService, PostAndPermissionBlService postAndPermissionBlService, AllocationRecordBlService allocationRecordBlService, MerchantBlService merchantBlService, SupplierBlService supplierBlService, PostBlService postBlService, PermissionBlService permissionBlService, SystemBlService systemBlService) {
         this.teamBlService = teamBlService;
         this.receiptCodeBlService = receiptCodeBlService;
         this.companyCardBlService = companyCardBlService;
@@ -46,6 +51,9 @@ public class CompanyController {
         this.allocationRecordBlService = allocationRecordBlService;
         this.merchantBlService = merchantBlService;
         this.supplierBlService = supplierBlService;
+        this.postBlService = postBlService;
+        this.permissionBlService = permissionBlService;
+        this.systemBlService = systemBlService;
     }
 
     @ApiOperation(value = "新增团队", notes = "公司管理员新增团队")
@@ -252,6 +260,162 @@ public class CompanyController {
     public ResponseEntity<Response> deleteReceiptCode(@PathVariable("id") int id) {
         receiptCodeBlService.delReceiptCode(id);
         return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("delete success.")), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "岗位列表", notes = "查看全部岗位")
+    @RequestMapping(value = "company/post/list", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = Post.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> showAllPosts() {
+        return new ResponseEntity<>(new JSONResponse(200, postBlService.getPosts()), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "删除岗位", notes = "删除公司的岗位")
+    @RequestMapping(value = "company/post/delete/{id}", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> deletePost(@PathVariable("id")int id) {
+        postBlService.delPostById(id);
+        return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("delete success.")), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "增加岗位", notes = "管理员增加公司的岗位")
+    @RequestMapping(value = "company/post/add", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = Post.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> deletePost(@RequestParam("post")String post) {
+        try {
+            Post p = postBlService.addPost(post);
+            return new ResponseEntity<>(new JSONResponse(200, p), HttpStatus.OK);
+        } catch (IsExistentException e) {
+            return new ResponseEntity<>(new JSONResponse(10110, e.getResponse()), HttpStatus.OK);
+        }
+    }
+
+    @ApiOperation(value = "权限列表", notes = "管理员查看全部权限")
+    @RequestMapping(value = "company/permission/list", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = Permission.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> showAllPermissions() {
+        return new ResponseEntity<>(new JSONResponse(200, permissionBlService.getPermissions()), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "删除权限", notes = "管理员删除某个权限")
+    @RequestMapping(value = "company/permission/delete/{id}", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> deletePermission(@PathVariable("id")int id) {
+        permissionBlService.delPermissionById(id);
+        return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("delete success.")), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "增加权限", notes = "管理员增加岗位权限")
+    @RequestMapping(value = "company/permission/add", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = Permission.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> deletePermission(@RequestParam("permission")String permission) {
+        try {
+            Permission p = permissionBlService.addPermission(permission);
+            return new ResponseEntity<>(new JSONResponse(200, p), HttpStatus.OK);
+        } catch (IsExistentException e) {
+            return new ResponseEntity<>(new JSONResponse(10110, e.getResponse()), HttpStatus.OK);
+        }
+    }
+
+    @ApiOperation(value = "增加系统管理", notes = "管理员增加系统管理内容")
+    @RequestMapping(value = "company/sys/add", method = RequestMethod.POST)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = UserAddResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> addSystemManager(@RequestBody SystemAddParameters systemAddParameters) {
+        try {
+            if(StringUtils.isBlank(systemAddParameters.getTitle())) {
+                return new ResponseEntity<>(new JSONResponse(10120, new BlankInputException().getResponse()), HttpStatus.OK);
+            }
+            return new ResponseEntity<>(new JSONResponse(200, systemBlService.addSystem(new System(systemAddParameters.getTitle())).getId()), HttpStatus.OK);
+        } catch (IsExistentException e) {
+            return new ResponseEntity<>(new JSONResponse(10110, e.getResponse()), HttpStatus.OK);
+        }
+    }
+
+    @ApiOperation(value = "删除系统管理", notes = "管理员删除系统管理内容")
+    @RequestMapping(value = "company/sys/delete/{id}", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> deleteSysManager(@PathVariable("id")int id) {
+        systemBlService.delSystemById(id);
+        return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("delete success")), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "修改系统管理", notes = "管理员修改系统管理内容")
+    @RequestMapping(value = "company/sys/update", method = RequestMethod.POST)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = UserAddResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> updatePermission(@RequestBody SystemAddParameters systemAddParameters) {
+        try {
+            if(StringUtils.isBlank(systemAddParameters.getTitle())) {
+                return new ResponseEntity<>(new JSONResponse(10120, new BlankInputException().getResponse()), HttpStatus.OK);
+            }
+            System system = new System(systemAddParameters.getTitle());
+            system.setId(systemAddParameters.getId());
+            return new ResponseEntity<>(new JSONResponse(200, systemBlService.updateSystem(system).getId()), HttpStatus.OK);
+        } catch (IsExistentException e) {
+            return new ResponseEntity<>(new JSONResponse(10110, e.getResponse()), HttpStatus.OK);
+        } catch (WrongIdException e) {
+            return new ResponseEntity<>(new JSONResponse(10160, e.getResponse()), HttpStatus.OK);
+        }
+    }
+
+    @ApiOperation(value = "系统列表", notes = "管理员查看全部系统管理内容")
+    @RequestMapping(value = "company/sys/list", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = System.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> showAllSys() {
+        return new ResponseEntity<>(new JSONResponse(200, systemBlService.findAllSystem()), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "查看某个系统", notes = "管理员查看某个系统管理内容")
+    @RequestMapping(value = "company/sys/{id}", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = System.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> showSys(@PathVariable("id") int id) {
+        try {
+            return new ResponseEntity<>(new JSONResponse(200, systemBlService.findSystemById(id)), HttpStatus.OK);
+        } catch (WrongIdException e) {
+            return new ResponseEntity<>(new JSONResponse(200, e.getResponse()), HttpStatus.OK);
+        }
     }
 
 //    @ApiOperation(value = "收款码信息", notes = "查看收款码详细信息")

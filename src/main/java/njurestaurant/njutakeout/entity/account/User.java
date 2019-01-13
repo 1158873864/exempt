@@ -1,11 +1,12 @@
 package njurestaurant.njutakeout.entity.account;
 
-import njurestaurant.njutakeout.entity.food.Food;
-import njurestaurant.njutakeout.entity.order.Order;
-import njurestaurant.njutakeout.publicdatas.account.Role;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -30,6 +31,7 @@ public class User {
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
 //    private List<Food> foods;
 
+
     public User() {
     }
 
@@ -50,9 +52,19 @@ public class User {
         this.username = username;
         this.password = password;
         this.role = role;
-        this.tableId = tableId;
         this.cards = cards;
     }
+
+//    public List<PersonalCardJsonResponse> getCards() {
+//        List<PersonalCardJsonResponse> personalCardJsonResponses = new ArrayList<>();
+//        if(cards.size() > 0) {
+//            for(PersonalCard p : cards) {
+//                PersonalCardJsonResponse personalCardJsonResponse = new PersonalCardJsonResponse(p.getId(), p.getCardNumber(), p.getName(), p.getBank(), p.getAccountWithBank(), p.getBin(), p.getStatus());
+//                personalCardJsonResponses.add(personalCardJsonResponse);
+//            }
+//        }
+//        return personalCardJsonResponses;
+//    }
 
     public List<PersonalCard> getCards() {
         return cards;
@@ -61,6 +73,7 @@ public class User {
     public void setCards(List<PersonalCard> cards) {
         this.cards = cards;
     }
+
 
     //    public User(String avatarUrl, String username, String password, Role role, List<Order> orders, List<Food> foods) {
 //        this.avatarUrl = avatarUrl;

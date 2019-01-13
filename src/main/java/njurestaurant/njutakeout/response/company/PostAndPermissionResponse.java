@@ -7,10 +7,23 @@ import java.util.List;
 public class PostAndPermissionResponse extends Response {
     private String post;
     private List<String> permission;
+    private int id;
 
-    public PostAndPermissionResponse(String post, List<String> permission) {
+    public PostAndPermissionResponse() {
+    }
+
+    public PostAndPermissionResponse(String post, List<String> permission, int id) {
         this.post = post;
         this.permission = permission;
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getPost() {

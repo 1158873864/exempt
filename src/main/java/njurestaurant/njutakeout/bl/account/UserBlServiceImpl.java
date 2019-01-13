@@ -3,9 +3,7 @@ package njurestaurant.njutakeout.bl.account;
 import net.sf.json.JSONObject;
 import njurestaurant.njutakeout.blservice.account.UserBlService;
 import njurestaurant.njutakeout.dataservice.account.*;
-import njurestaurant.njutakeout.entity.account.Merchant;
-import njurestaurant.njutakeout.entity.account.Supplier;
-import njurestaurant.njutakeout.entity.account.User;
+import njurestaurant.njutakeout.entity.account.*;
 import njurestaurant.njutakeout.exception.*;
 import njurestaurant.njutakeout.publicdatas.account.Role;
 import njurestaurant.njutakeout.response.Response;
@@ -24,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserBlServiceImpl implements UserBlService {
@@ -193,16 +192,24 @@ public class UserBlServiceImpl implements UserBlService {
                 return new WrongResponse(10130, "Wrong id.");
             }
             if(user.getRole() == 1) {
-                userInfoResponse.setInfo(staffDataService.findStaffById(user.getTableId()));
+                Staff staff = staffDataService.findStaffById(user.getTableId());
+                staff.setUser(null);
+                userInfoResponse.setInfo(staff);
                 userInfoResponse.setRole(1);
             } else if (user.getRole() == 2) {
-                userInfoResponse.setInfo(agentDataService.findAgentById(user.getTableId()));
+                Agent agent = agentDataService.findAgentById(user.getTableId());
+                agent.setUser(null);
+                userInfoResponse.setInfo(agent);
                 userInfoResponse.setRole(2);
             } else if(user.getRole() == 3) {
-                userInfoResponse.setInfo(merchantDataService.findMerchantById(user.getTableId()));
+                Merchant merchant = merchantDataService.findMerchantById(user.getTableId());
+                merchant.setUser(null);
+                userInfoResponse.setInfo(merchant);
                 userInfoResponse.setRole(3);
             } else if(user.getRole() == 4) {
-                userInfoResponse.setInfo(supplierDataService.findSupplierById(user.getTableId()));
+                Supplier supplier = supplierDataService.findSupplierById(user.getTableId());
+                supplier.setUser(null);
+                userInfoResponse.setInfo(supplier);
                 userInfoResponse.setRole(4);
             } else {
                 return new WrongResponse(10150, "Wrong role.");
@@ -236,6 +243,4 @@ public class UserBlServiceImpl implements UserBlService {
             return userDeleteResponse;
         }
     }
-
-
 }

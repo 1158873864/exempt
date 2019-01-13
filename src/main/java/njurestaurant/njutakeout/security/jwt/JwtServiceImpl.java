@@ -56,6 +56,7 @@ public class JwtServiceImpl implements JwtService {
         return new JwtUser(
                 user.getUsername(),
                 user.getPassword(),
+                user.getId(),
                 user.getTableId(),
                 user.getRole()
         );

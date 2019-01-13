@@ -2,6 +2,7 @@ package njurestaurant.njutakeout.bl.account;
 
 import njurestaurant.njutakeout.blservice.account.StaffBlService;
 import njurestaurant.njutakeout.dataservice.account.StaffDataService;
+import njurestaurant.njutakeout.entity.account.PersonalCard;
 import njurestaurant.njutakeout.entity.account.Staff;
 import njurestaurant.njutakeout.security.jwt.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StaffBlServiceImpl implements StaffBlService {
@@ -71,6 +73,18 @@ public class StaffBlServiceImpl implements StaffBlService {
 
     @Override
     public List<Staff> findAllStaffs() {
-        return staffDataService.getAllStaffs();
+        List<Staff> staffList = JSONFilter(staffDataService.getAllStaffs());
+        return staffList;
     }
+
+    private List<Staff> JSONFilter(List<Staff> staffList) {
+        if(staffList.size() != 0) {
+            for(Staff staff : staffList) {
+                List<PersonalCard> cardList = staff.getUser().getCards();
+                cardList.stream().peek(c -> c.setUser(null)).collect(Collectors.toList());
+            }
+        }
+        return staffList;
+    }
+
 }

@@ -34,6 +34,8 @@ public class Supplier {
     private List<Device> devices;
     @Column(name = "alipayName")
     private String alipayName;
+    @Column(name = "priority")
+    private int priority;
 
     public Supplier() {
     }
@@ -46,6 +48,15 @@ public class Supplier {
         this.status = status;
         this.devices = devices;
         this.alipayName = alipayName;
+    }
+
+    public Supplier(User user, String loginId, Date time, SupplierState status, List<Device> devices, int priority) {
+        this.user = user;
+        this.loginId = loginId;
+        this.time = time;
+        this.status = status;
+        this.devices = devices;
+        this.priority = priority;
     }
 
     public Supplier(User user, String loginId, Date time, SupplierState status) {
@@ -121,5 +132,13 @@ public class Supplier {
 
     public void setDevices(List<Device> devices) {
         this.devices = devices;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 }

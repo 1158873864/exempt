@@ -15,7 +15,10 @@ import njurestaurant.njutakeout.response.user.PersonalCardAddResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.jws.soap.SOAPBinding;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PersonalCardBlServiceImpl implements PersonalCardBlService {
@@ -43,7 +46,12 @@ public class PersonalCardBlServiceImpl implements PersonalCardBlService {
 
     @Override
     public PersonalCard getPersonalCardById(int id) {
-        return personalCardDataService.findPersonalCardById(id);
+        PersonalCard personalCard = personalCardDataService.findPersonalCardById(id);
+        User user = personalCard.getUser();
+        user.setPassword(null);
+        user.setCards(null);
+        personalCard.setUser(user);
+        return personalCard;
     }
 
     @Override
@@ -52,11 +60,23 @@ public class PersonalCardBlServiceImpl implements PersonalCardBlService {
         if(user == null || user.getId() == 0) {
             throw new WrongIdException();
         }
-        return personalCardDataService.findPersonalCarsByUid(uid);
+        List<PersonalCard> personalCardList = personalCardDataService.findPersonalCarsByUid(uid);
+        return personalCardList.stream().peek(p -> p.setUser(null)).collect(Collectors.toList());
     }
 
     @Override
     public List<PersonalCard> getAllCards() {
-        return personalCardDataService.findAllCards();
+        List<PersonalCard> personalCardList = JSONFilter(personalCardDataService.findAllCards());
+        return personalCardList;
+    }
+
+    private List<PersonalCard> JSONFilter(List<PersonalCard> personalCards) {
+        personalCards.stream().peek(p -> {
+            User u = p.getUser();
+            u.setPassword(null);
+            u.setCards(new ArrayList<>());
+            p.setUser(u);
+        }).collect(Collectors.toList());
+        return personalCards;
     }
 }

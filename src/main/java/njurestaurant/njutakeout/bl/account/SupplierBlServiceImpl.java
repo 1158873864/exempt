@@ -4,6 +4,7 @@ import njurestaurant.njutakeout.blservice.account.SupplierBlService;
 import njurestaurant.njutakeout.blservice.account.UserBlService;
 import njurestaurant.njutakeout.dataservice.account.SupplierDataService;
 import njurestaurant.njutakeout.dataservice.account.UserDataService;
+import njurestaurant.njutakeout.entity.account.PersonalCard;
 import njurestaurant.njutakeout.entity.account.Supplier;
 import njurestaurant.njutakeout.exception.UsernameIsExistentException;
 import njurestaurant.njutakeout.publicdatas.account.SupplierState;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SupplierBlServiceImpl implements SupplierBlService {
@@ -66,11 +68,23 @@ public class SupplierBlServiceImpl implements SupplierBlService {
 
     @Override
     public List<Supplier> findAllSuppliers() {
-        return supplierDataService.getAllSuppliers();
+        List<Supplier> supplierList = JSONFilter(supplierDataService.getAllSuppliers());
+        return supplierList;
     }
 
     @Override
     public List<Supplier> findSupplierByState(SupplierState supplierState) {
-        return supplierDataService.findSuppliersByState(supplierState);
+        List<Supplier> supplierList = JSONFilter(supplierDataService.findSuppliersByState(supplierState));
+        return supplierList;
+    }
+
+    private List<Supplier> JSONFilter(List<Supplier> suppliers) {
+        if(suppliers.size() != 0) {
+            for(Supplier supplier : suppliers) {
+                List<PersonalCard> cardList = supplier.getUser().getCards();
+                cardList.stream().peek(c -> c.setUser(null)).collect(Collectors.toList());
+            }
+        }
+        return suppliers;
     }
 }

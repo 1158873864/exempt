@@ -30,8 +30,23 @@ public class Merchant {
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+    @Column(name = "priority")
+    private int priority;
 
     public Merchant() {
+    }
+
+    public Merchant(String alipay, String wechat, double balance, MerchantState status, String verifyCode, Date addTime, String name, String superior, User user, int priority) {
+        this.alipay = alipay;
+        this.wechat = wechat;
+        this.balance = balance;
+        this.status = status;
+        this.verifyCode = verifyCode;
+        this.addTime = addTime;
+        this.name = name;
+        this.superior = superior;
+        this.user = user;
+        this.priority = priority;
     }
 
     public Merchant(String alipay, String wechat, double balance, MerchantState status, String verifyCode, Date addTime, String name, String superior, User user) {
@@ -127,5 +142,21 @@ public class Merchant {
 
     public void setAddTime(Date addTime) {
         this.addTime = addTime;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 }

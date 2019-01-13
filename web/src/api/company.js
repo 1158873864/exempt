@@ -24,6 +24,24 @@ export function permissionAllocate(post,permission) {
         }
     })
  }
+export function checkSinglePermission(post) {
+  return request({
+    url: '/company/permission',
+    method: 'get',
+    params: {
+      post
+    }
+  })
+}
+export function checkAllPermission() {
+  return request({
+    url: '/company/permissions',
+    method: 'get',
+    params: {
+      
+    }
+  })
+}
 export function codesGet() {
   return request({
     url: '/company/codes',

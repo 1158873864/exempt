@@ -94,8 +94,21 @@ export const constantRouterMap = [
             path: 'permission',
             name: 'permission',
             component: () => import('@/views/companyManage/permission/allocate'),
-            meta: { title: '分配权限' },
-          }]
+            meta: { title: '分配权限' }
+          },
+          {
+            path: 'singlePermission',
+            name: 'singlePermission',
+            component: () => import('@/views/companyManage/permission/singlePermission/index'),
+            meta: { title: '某个职位权限查询' }
+          },
+          {
+            path: 'allPermission',
+            name: 'allPermission',
+            component: () => import('@/views/companyManage/permission/allPermission/index'),
+            meta: { title: '所有权限查询' }
+          }
+        ]
       },
       {
         path: 'bankCard',

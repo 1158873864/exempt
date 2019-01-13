@@ -1,11 +1,10 @@
 <template>
   <div class="app-container">
     <el-form ref="form" :model="form" label-width="80px">
-
       <el-form-item label="付款码">
         <el-input v-model="form.code"></el-input>
       </el-form-item>
-      <el-form-item label="操作">
+      <el-form-item label="操作上级">
         <el-input v-model="form.operator"></el-input>
       </el-form-item>
       <el-form-item label="密码">
@@ -17,9 +16,7 @@
       <el-form-item label="状态">
         <el-input v-model="form.status"></el-input>
       </el-form-item>
-      <el-form-item label="团队">
-        <el-input v-model="form.team"></el-input>
-      </el-form-item>
+      
       <el-form-item label="用户名">
         <el-input v-model="form.username"></el-input>
       </el-form-item>
@@ -45,6 +42,7 @@
 
 <script>
 import { addAdmin } from '@/api/role'
+import { teamsGet } from '@/api/company'
 import Form from "../../../components/form/index";
 
     export default {
@@ -57,14 +55,34 @@ import Form from "../../../components/form/index";
                   password: '1',
                   post: '1',
                   status: '1',
-                  team: '1',
+                  team: 1,
                   username: '1'
                   // time: '',
                 },
-                //  loginRules: {
-                //   username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-                //   password: [{ required: true, trigger: 'blur', validator: validatePass }]
-                // },
+                codeAddParameters: {
+                    "duration": 12312,
+                    "info": "info",
+                    "number": "number",
+                    "priority": "priority",
+                    "team": "team",
+                    "type": "type",
+                    "teamName":"teamName"
+                },
+                codes:{},
+                currentPage:1,
+                teamName:'选择队伍',
+                teams:[{
+                    'teamName':'teamName',
+                    'addTime':'addTime',
+                    'area':'area',
+                    'id':'id',
+                    'operator':'operator',
+                    'status':'status',
+                    'supervisor':'supervisor',
+                    'verifyCode':'verifyCode'
+                    }
+                ],
+                
               }
 
         },
@@ -72,12 +90,39 @@ import Form from "../../../components/form/index";
       components: {
         Form
       },
+      created(){
+            this.getData();
+          },
       methods:{
+        
+          getData(){
+                // this.getcodes();
+                this.getTeams();
+            },
+            getTeams(){
+                teamsGet().then(response=>{
+                    console.log(response,'sdll')
+                     if(response.data.infoCod){
+                        this.$message({
+                            message: response.data.description,
+                            type: 'warning'
+                        });
+                    }else{
+                       this.teams = response.data;
+                    }
+                })
+            },
+        handleCommand(command) {
+                // this.$message('click on item ' + command.id);
+                this.codeAddParameters.team = command.id;
+                this.codeAddParameters.teamName = command.teamName;
+                // console.log('click on item ' + command.teamName);
+            },
         onSubmit(formName) {
           this.$refs[formName].validate((valid) => {
             if (valid) {
               // alert('submit!');
-              addAdmin(this.form.code,this.form.operator,this.form.password,this.form.post,this.form.status,this.form.team,this.form.username).then(response => {
+              addAdmin(this.form.code,this.form.operator,this.form.password,this.form.post,this.form.status,this.codeAddParameters.team,this.form.username).then(response => {
                 // console.log(response.data.infoCode)
                 if(response.data.infoCode){
                    this.$message({
@@ -89,6 +134,8 @@ import Form from "../../../components/form/index";
                     message: '添加成功',
                     type: 'success'
                   });
+                  console.log(response.data.infoCode)
+                  console.log('ppp')
 
                 }
                 // const data = response.data

@@ -35,8 +35,7 @@
 </template>
 
 <script>
-import { codeAdd,codesGet } from '@/api/company'
-import { teamsGet } from '@/api/team'
+import { codeAdd,codesGet,teamsGet } from '@/api/company'
     export default {
         data() {
             return {
@@ -67,6 +66,9 @@ import { teamsGet } from '@/api/team'
                 ],
             }
         },
+        created(){
+            this.getData();
+        },
         methods: {
             handleCommand(command) {
                 // this.$message('click on item ' + command.id);
@@ -81,7 +83,7 @@ import { teamsGet } from '@/api/team'
                 console.log(`当前页: ${val}`);
             },
             getData(){
-                this.getcodes();
+                // this.getcodes();
                 this.getTeams();
             },
             getTeams(){

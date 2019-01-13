@@ -8,6 +8,7 @@ Vue.use(Router)
 
 /* Layout */
 import Layout from '../views/layout/Layout'
+import routerInclude from '../components/routerInclude'
 
 /**
 * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
@@ -81,6 +82,53 @@ export const constantRouterMap = [
             component: () => import('@/views/companyManage/team/addTeam/index'),
             meta: { title: '添加团队', breadcrumb: false },
             breadcrumb: false
+          }
+        ]
+      },
+      {
+        path: 'adminManage',
+        component: () => import('@/views/userCenter/adminManage/index'),
+        name: 'adminManage',
+        meta: { title: '管理员管理' },
+        children: [
+          {
+            path: 'addAdmin',
+            name: 'addAdmin',
+            component: () => import('@/views/userCenter/adminManage/addAdmin/index'),
+            meta: { title: '添加管理员' }
+          },
+          {
+            path: 'admins',
+            name: 'admins',
+            component: () => import('@/views/userCenter/adminManage/admins/index'),
+            meta: { title: '所有管理员' }
+          }
+        ]
+      },
+      {
+        path: 'post',
+        name: 'post',
+        component: () => import('@/views/companyManage/post/index'),
+        meta: { title: '岗位管理' },
+        props: true,
+        children: [
+          {
+            path: 'postAdd',
+            name: 'permission',
+            component: () => import('@/views/companyManage/post/addPost/index'),
+            meta: { title: '岗位添加' }
+          },
+          {
+            path: 'postdelete',
+            name: 'postdelete',
+            component: () => import('@/views/companyManage/post/deletePost/index'),
+            meta: { title: '岗位删除' }
+          },
+          {
+            path: 'allpost',
+            name: 'allpost',
+            component: () => import('@/views/companyManage/post/allPost/index'),
+            meta: { title: '所有岗位' }
           }
         ]
       },
@@ -175,26 +223,6 @@ export const constantRouterMap = [
             meta: { title: '所有代理' }
           }    
         ]
-      },
-      {
-        path: 'adminManage',
-        component: () => import('@/views/userCenter/adminManage/index'),
-        name: 'adminManage',
-        meta: { title: '管理员管理' },
-        children: [
-          {
-            path: 'addAdmin',
-            name: 'addAdmin',  
-            component: () => import('@/views/userCenter/adminManage/addAdmin/index'),
-            meta: { title: '添加管理员' }
-          },
-          {
-            path: 'admins',
-            name: 'admins',
-            component: () => import('@/views/userCenter/adminManage/admins/index'),
-            meta: { title: '所有管理员' }
-          }    
-        ]        
       },
       {
         path: 'supplierManage',

@@ -119,3 +119,55 @@ export function cardsGet() {
         method: 'get',
   })
 }
+/**
+ * 
+ * @param {岗位} post 
+ */
+export function addPost(post) {
+  return request({
+    url: '/company/post/add',
+    method: 'get',
+    params: {
+      post,
+    }
+  })
+}
+export function deletePost(post) {
+  return request({
+    url: '/company/post/delete',
+    method: 'get',
+    params: {
+      post
+    }
+  })
+}
+export function postGet() {
+  return request({
+    url: '/company/post/list',
+    method: 'get',
+    params: {
+    }
+  })
+}
+
+
+export function teamAdd(area, operator, status, supervisor, teamName, verifyCode) {
+  return request({
+    url: '/company/team/add',
+    method: 'post',
+    data: {
+      area,
+      operator,
+      status,
+      supervisor,
+      teamName,
+      verifyCode
+    }
+  })
+}
+export function teamsGet() {
+  return request({
+    url: '/company/teams',
+    method: 'get'
+  })
+}

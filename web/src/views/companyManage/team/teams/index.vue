@@ -4,7 +4,7 @@
         <el-table
         :data="teams"
         border
-        max-height="700"
+        max-height="450"
         ref="table"
        >
         <el-table-column prop="teamName" label="teamName" width="180"></el-table-column>
@@ -23,8 +23,8 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
-        :page-sizes="[100, 200, 300, 400]"
-        :page-size="100"
+        :page-sizes="[10, 20, 30, 40]"
+        :page-size="10"
         layout="sizes, prev, pager, next"
         :total="1000">
         </el-pagination>

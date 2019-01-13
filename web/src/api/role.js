@@ -45,12 +45,13 @@ export function addMerchant(alipay, balance, code, level, password, superior, us
     }
   })
 }
-export function addSupplier(alipayloginID, password, username) {
+export function addSupplier(alipayloginID, level, password, username) {
   return request({
     url: '/supplier/add',
     method: 'post',
     data: {
       alipayloginID,
+      level,
       password,
       username
     }
@@ -88,5 +89,29 @@ export function deleteSupplier(sid) {
     url: '/supplier/delete',
     method: 'get',
     params: {sid }
+  })
+}
+export function adminsGet() {
+  return request({
+    url: '/admins',
+    method: 'get'
+  })
+}
+export function agentsGet() {
+  return request({
+    url: '/agents',
+    method: 'get'
+  })
+}
+export function merchantsGet() {
+  return request({
+    url: '/merchants',
+    method: 'get'
+  })
+}
+export function suppliersGet() {
+  return request({
+    url: '/suppliers',
+    method: 'get'
   })
 }

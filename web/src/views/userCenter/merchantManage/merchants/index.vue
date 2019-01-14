@@ -6,13 +6,13 @@
         height="450"
         border
         style="width: 100%">
-        <el-table-column prop="user.username" label="username" width="180" align="center"></el-table-column>
-        <el-table-column prop="name" label="merchantName" width="180" align="center"></el-table-column>
-        <el-table-column prop="alipay" label="alipay" width="180" align="center"></el-table-column>
-        <el-table-column prop="wechat" label="wechat" width="180" align="center"></el-table-column>
-        <el-table-column prop="balance" label="balance" width="80" align="center"></el-table-column>
-        <el-table-column prop="superior" label="superior" width="180" align="center"></el-table-column>
-        <el-table-column prop="status" label="status" width="180" align="center"></el-table-column>
+        <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column>
+        <el-table-column prop="name" label="商户名"  align="center"></el-table-column>
+        <el-table-column prop="alipay" label="支付宝账号"  align="center"></el-table-column>
+        <el-table-column prop="wechat" label="微信号"  align="center"></el-table-column>
+        <el-table-column prop="balance" label="余额"  align="center"></el-table-column>
+        <el-table-column prop="superior" label="代理商"  align="center"></el-table-column>
+        <el-table-column prop="status" label="状态"  align="center"></el-table-column>
         
 
     </el-table>

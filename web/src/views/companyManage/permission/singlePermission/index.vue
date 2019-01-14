@@ -13,17 +13,7 @@
                     </el-form-item>
             </el-form>
 
-            <div>职位权限查询</div>
-            <el-form ref="form" :model="form" label-width="80px">
-      
-                <el-form-item label="post">
-                    <el-input v-model="form.post"></el-input>
-                    <el-button type="primary" @click="onSubmit('form')">查询</el-button>
-
-                    <el-button>取消</el-button>
-                </el-form-item>
-                
-            </el-form>
+            
             <el-table
             :data="teams"
             height="250"
@@ -31,13 +21,13 @@
             style="width: 100%">
              <el-table-column
                 prop="post"
-                label="post"
+                label="职位"
                 width="180">
                 </el-table-column>
                 <el-table-column
                 prop="permission"
-                label="permission"
-                width="180">
+                label="权限"
+                    >
                 </el-table-column>
             </el-table>
 

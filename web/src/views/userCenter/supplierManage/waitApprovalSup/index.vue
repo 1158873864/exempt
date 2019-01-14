@@ -3,31 +3,31 @@
         <div>待审批供码用户</div>
             <el-table
             :data="teams"
-            height="550"
+            height="450"
             border
             style="width: 100%">
-            <el-table-column prop="alipayName" label="alipayName" width="180"></el-table-column>
-            <el-table-column prop="alipayUserId" label="alipayUserId" width="80"></el-table-column>
+            <el-table-column prop="alipayName" label="支付宝用户名"  align="center"></el-table-column>
+            <el-table-column prop="alipayUserId" label="支付宝ID"  align="center"></el-table-column>
 
             <el-table-column label='设备'>
-               <el-table-column prop="devices.id" label="id" width="80"></el-table-column>
-               <el-table-column prop="devices.imei" label="imei" width="80"></el-table-column>
+               <el-table-column prop="devices.id" label="设备序号"  align="center"></el-table-column>
+               <el-table-column prop="devices.imei" label="设备信息"  align="center"></el-table-column>
 
             </el-table-column>   
-            <el-table-column prop="id" label="id" width="80"></el-table-column>
-            <el-table-column prop="loginId" label="loginId" width="180"></el-table-column>
-            <el-table-column prop="status" label="status" width="80"></el-table-column>
-            <el-table-column prop="time" label="time" width="180"></el-table-column>
+            <el-table-column prop="id" label="id"  align="center"></el-table-column>
+            <el-table-column prop="loginId" label="登录ID"  align="center"></el-table-column>
+            <el-table-column prop="status" label="状态"  align="center"></el-table-column>
+            <el-table-column prop="time" label="时间"  align="center"></el-table-column>
             <el-table-column label="user">
-                <el-table-column prop="user.avatarUrl" label="avatarUrl" width="80"></el-table-column>
-                <el-table-column prop="user.id" label="id" width="80"></el-table-column>
-                <el-table-column prop="user.password" label="password" width="80"></el-table-column>
-                <el-table-column prop="user.role" label="role" width="80"></el-table-column>
-                <el-table-column prop="user.tableId" label="tableId" width="80"></el-table-column>
-                <el-table-column prop="user.username" label="username" width="80"></el-table-column>
+                <el-table-column prop="user.avatarUrl" label="avatarUrl"  align="center"></el-table-column>
+                <el-table-column prop="user.id" label="id"  align="center"></el-table-column>
+                <el-table-column prop="user.password" label="密码"  align="center"></el-table-column>
+                <el-table-column prop="user.role" label="角色"  align="center"></el-table-column>
+                <el-table-column prop="user.tableId" label="tableId"  align="center"></el-table-column>
+                <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column>
                 
             </el-table-column>
-            <el-table-column label="操作" width="180">
+            <el-table-column label="操作" width="280" align="center">
                     <template scope="scope">
                         <el-button size="small"
                                 @click="approval(scope.$index,scope.row,1)">审批通过</el-button>

@@ -6,15 +6,15 @@
         max-height="500"
         ref="table"
        >
-        <el-table-column prop="teamName" label="teamName" width="180"></el-table-column>
-        <el-table-column prop="addTime" label="addTime" width="180"></el-table-column>
-        <el-table-column prop="area" label="area" width="180"></el-table-column>
-        <el-table-column prop="id" label="id" width="180"></el-table-column>
-        <el-table-column prop="operator" label="operator" width="180"></el-table-column>
-        <el-table-column prop="status" label="status" width="180"></el-table-column>
-        <el-table-column prop="supervisor" label="supervisor" width="180"></el-table-column>
+        <el-table-column prop="teamName" label="团队名" ></el-table-column>
+        <el-table-column prop="addTime" label="创建时间" ></el-table-column>
+        <el-table-column prop="area" label="区域" ></el-table-column>
+        <el-table-column prop="id" label="序号" ></el-table-column>
+        <el-table-column prop="operator" label="操作者" ></el-table-column>
+        <el-table-column prop="status" label="状态" ></el-table-column>
+        <el-table-column prop="supervisor" label="主管" ></el-table-column>
         <!-- <el-table-column prop="verifyCode" label="verifyCode" width="180"></el-table-column> -->
-        <el-table-column label="操作" fixed="right" width="180">
+        <el-table-column label="操作" fixed="right" >
             <template scope="scope">
                 <el-button size="small"
                         @click="openDialog(scope.$index,scope.row)">修改</el-button>
@@ -177,7 +177,6 @@ import { teamAdd,teamsGet,teamDelete,teamVerifyCodeCheck,teamUpdate, } from '@/a
                         this.dialogFormVisible = true;
                     }
                 });
-                console('flag',flag)
                 return flag;
             },
             updateTeam(){

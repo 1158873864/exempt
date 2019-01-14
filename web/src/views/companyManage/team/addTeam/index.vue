@@ -1,24 +1,24 @@
 <template>
   <!-- <div>团队管理</div> -->
     <div class="app-container">
-        <el-form :label-position="labelPosition" :model="teamAddParameters" class="demo-form-inline">
-            <el-form-item label="area">
-                <el-input v-model="teamAddParameters.area" placeholder="area"></el-input>
+        <el-form :label-position="labelPosition" :model="teamAddParameters" class="demo-form-inline" label-width="100px">
+            <el-form-item label="区域">
+                <el-input v-model="teamAddParameters.area" placeholder="area" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="operator">
-                <el-input v-model="teamAddParameters.operator" placeholder="operator"></el-input>
+            <el-form-item label="操作者">
+                <el-input v-model="teamAddParameters.operator" placeholder="operator" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="status">
-                <el-input v-model="teamAddParameters.status" placeholder="status"></el-input>
+            <el-form-item label="状态">
+                <el-input v-model="teamAddParameters.status" placeholder="status" style="width: 30%;"></el-input>
             </el-form-item>
             <!-- <el-form-item label="supervisor">
                 <el-input v-model="teamAddParameters.supervisor" placeholder="supervisor"></el-input>
             </el-form-item> -->
-            <el-form-item label="teamName">
-                <el-input v-model="teamAddParameters.teamName" placeholder="teamName"></el-input>
+            <el-form-item label="团队名">
+                <el-input v-model="teamAddParameters.teamName" placeholder="teamName" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="verifyCode">
-                <el-input v-model="teamAddParameters.verifyCode" placeholder="verifyCode"></el-input>
+            <el-form-item label="验证码">
+                <el-input v-model="teamAddParameters.verifyCode" placeholder="verifyCode" style="width: 30%;"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="addteam">添加</el-button>

@@ -6,16 +6,15 @@
         height="450"
         border
         style="width: 100%">
-        <el-table-column prop="userInfo.username" label="username" width="180" align="center"></el-table-column>
-        <el-table-column prop="agentName" label="agentName" width="180" align="center"></el-table-column>
-        <el-table-column prop="flow" label="flow" width="180" align="center"></el-table-column>
-        <el-table-column prop="dailyCommission" label="dailyCommission" width="180" align="center"></el-table-column>
-        <el-table-column prop="status" label="status" width="180" align="center"></el-table-column>
+        <el-table-column prop="userInfo.username" label="用户名" align="center"></el-table-column>
+        <el-table-column prop="agentName" label="代理名"  align="center"></el-table-column>
+        <el-table-column prop="flow" label="流量"  align="center"></el-table-column>
+        <el-table-column prop="dailyCommission" label="当日佣金"  align="center"></el-table-column>
+        <el-table-column prop="status" label="状态"  align="center"></el-table-column>
         
 
     </el-table>
     <div class="block">
-        <span class="demonstration">调整每页显示条数</span>
         <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"

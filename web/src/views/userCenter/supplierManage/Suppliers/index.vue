@@ -6,13 +6,13 @@
         height="450"
         border
         style="width: 100%">
-        <el-table-column prop="user.username" label="username" width="180" align="center"></el-table-column>
-        <el-table-column prop="priority" label="priority" width="180" align="center"></el-table-column>
-        <el-table-column prop="devices" label="devices" width="180" align="center"></el-table-column>
-        <el-table-column prop="status" label="status" width="180" align="center"></el-table-column>
-        <el-table-column label="操作" fixed="right" width="180">
-                <template scope="scope">
-                    <el-button size="small"
+        <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column>
+        <el-table-column prop="priority" label="等级"  align="center"></el-table-column>
+        <el-table-column prop="devices" label="设备"  align="center"></el-table-column>
+        <el-table-column prop="status" label="状态"  align="center"></el-table-column>
+        <el-table-column label="操作" fixed="right" align="center" >
+                <template scope="scope" >
+                    <el-button size="small" 
                             @click="openDialog(scope.$index,scope.row)">修改</el-button>
                 </template>
                 

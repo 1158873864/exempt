@@ -2,23 +2,23 @@
         <div class="app-container">
           <el-form ref="form" :model="form" label-width="80px">
       
-            <el-form-item label="brokerage">
-              <el-input v-model="form.brokerage"></el-input>
+            <el-form-item label="当日佣金">
+              <el-input v-model="form.brokerage" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="code">
-              <el-input v-model="form.code"></el-input>
+            <el-form-item label="验证码">
+              <el-input v-model="form.code" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="flow">
-              <el-input v-model="form.flow"></el-input>
+            <el-form-item label="流量">
+              <el-input v-model="form.flow" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="password">
-              <el-input v-model="form.password"></el-input>
+            <el-form-item label="密码">
+              <el-input v-model="form.password" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="status">
-              <el-input v-model="form.status"></el-input>
+            <el-form-item label="状态">
+              <el-input v-model="form.status" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="username">
-                    <el-input v-model="form.username"></el-input>
+            <el-form-item label="用户名">
+                    <el-input v-model="form.username" style="width: 30%;"></el-input>
             </el-form-item>
         
       

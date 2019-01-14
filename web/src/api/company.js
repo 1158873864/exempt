@@ -20,19 +20,22 @@ export function codeInfo(id) {
         method: 'get'
     })
 }
-export function codeDelete(id) {
+export function codeDelete(id,verifyCode) {
     return request({
         url: '/company/code/delete/'+id,
-        method: 'get'
+        method: 'get',
+        params:{
+          verifyCode
+        }
     })
 }
-export function permissionAllocate(post,permission) { 
+export function permissionAllocate(post,permissions) { 
     return request({
         url: '/company/permission/allocate',
         method:'post',
         data:{
             post,
-            permission
+            permissions
         }
     })
  }
@@ -119,6 +122,14 @@ export function cardsGet() {
         method: 'get',
   })
 }
+export function cardDelete(id,verifyCode) {
+  console.log(id)
+  return request({
+      url: '/company/card/delete/'+id,
+      method: 'get',
+      params:{ verifyCode }
+  })
+}
 /**
  * 
  * @param {岗位} post 
@@ -132,13 +143,10 @@ export function addPost(post) {
     }
   })
 }
-export function deletePost(post) {
+export function deletePost(id) {
   return request({
-    url: '/company/post/delete',
-    method: 'get',
-    params: {
-      post
-    }
+    url: '/company/post/delete/'+id,
+    method: 'get'
   })
 }
 export function postGet() {
@@ -149,7 +157,7 @@ export function postGet() {
     }
   })
 }
-//---------------//
+
 
 export function teamAdd(area, operator, status, supervisor, teamName, verifyCode) {
   return request({
@@ -169,5 +177,35 @@ export function teamsGet() {
   return request({
     url: '/company/teams',
     method: 'get'
+  })
+}
+export function teamDelete(id) {
+  return request({
+    url: '/company/team/delete/'+id,
+    method: 'get'
+  })
+}
+export function teamVerifyCodeCheck(id,verifyCode) {
+  return request({
+    url: '/company/team/verify/'+id,
+    method: 'get',
+    params:{
+      id,
+      verifyCode
+    }
+  })
+}
+export function teamUpdate(area, operator, status, supervisor, teamName, verifyCode,id) {
+  return request({
+    url: '/company/team/update/'+id,
+    method: 'post',
+    data: {
+      area,
+      operator,
+      status,
+      supervisor,
+      teamName,
+      verifyCode
+    }
   })
 }

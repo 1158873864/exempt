@@ -2,22 +2,22 @@
   <!-- <div>团队管理</div> -->
     <div class="app-container">
         <el-form :label-position="labelPosition" :model="cardAddParameters" class="demo-form-inline">
-            <el-form-item label="accountInfo">
+            <el-form-item label="attribution">
                 <el-input v-model="cardAddParameters.attribution" placeholder="attribution"></el-input>
             </el-form-item>
-            <el-form-item label="accountNumber">
-                <el-input v-model="cardAddParameters.balance" placeholder="balance"></el-input>
+            <el-form-item label="balance">
+                <el-input type="number" v-model="cardAddParameters.balance" placeholder="balance"></el-input>
             </el-form-item>
-            <el-form-item label="duration">
+            <el-form-item label="bank">
                 <el-input v-model="cardAddParameters.bank" placeholder="bank"></el-input>
             </el-form-item>
-            <el-form-item label="id">
+            <el-form-item label="name">
                 <el-input v-model="cardAddParameters.name" placeholder="name"></el-input>
             </el-form-item>
-            <el-form-item label="priorityLevel">
+            <el-form-item label="number">
                 <el-input v-model="cardAddParameters.number" placeholder="number"></el-input>
             </el-form-item>
-            <el-form-item label="cardName">
+            <el-form-item label="relation">
                 <el-input v-model="cardAddParameters.relation" placeholder="relation"></el-input>
             </el-form-item>
             <el-form-item label="type">
@@ -39,7 +39,7 @@ import { cardAdd } from '@/api/company'
                 labelPosition: 'right',
                 cardAddParameters: {
                         "attribution": "attribution",
-                        "balance": "balance",
+                        "balance": 8654654654,
                         "bank": "bank",
                         "name": "name",
                         "number": "number",
@@ -60,19 +60,6 @@ import { cardAdd } from '@/api/company'
             getData(){
                 this.getcards();
             },
-            getcards(){
-                cardsGet().then(response=>{
-                    console.log(response,'sdll')
-                     if(response.data.infoCod){
-                        this.$message({
-                            message: response.data.description,
-                            type: 'warning'
-                        });
-                    }else{
-                       this.cards = response.data;
-                    }
-                })
-            },
             addcard() {
                 cardAdd(
                 this.cardAddParameters.attribution,
@@ -83,7 +70,7 @@ import { cardAdd } from '@/api/company'
                 this.cardAddParameters.relation,
                 this.cardAddParameters.status
                 ).then(response=>{
-                    if(response.data.infocard){
+                    if(response.code!=200){
                         this.$message({
                             message: response.data.description,
                             type: 'warning'

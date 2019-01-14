@@ -1,18 +1,18 @@
 <template>
         <div class="app-container">
-        <div>所有管理员</div>
+        <div>个人银行卡</div>
             <el-table
             :data="teams"
-            height="450"
+            height="250"
             border
             style="width: 100%">
-            <el-table-column prop="userInfo.username" label="username" width="180" align="center"></el-table-column>
-            <el-table-column prop="staffName" label="staffName" width="180" align="center"></el-table-column>
-            <el-table-column prop="team" label="team" width="180" align="center"></el-table-column>
-            <el-table-column prop="post" label="post" width="180" align="center"></el-table-column>
-            <el-table-column prop="status" label="status" width="180" align="center"></el-table-column>
-            
-    
+            <el-table-column prop="accountWithBank" label="accountWithBank" width="180"></el-table-column>
+            <el-table-column prop="bank" label="bank" width="180"></el-table-column>
+            <el-table-column prop="bin" label="bin" width="180"></el-table-column>
+            <el-table-column prop="cardNumber" label="cardNumber" width="180"></el-table-column>
+            <el-table-column prop="id" label="id" width="180"></el-table-column>
+            <el-table-column prop="name" label="name" width="180"></el-table-column>
+            <el-table-column prop="status" label="status" width="180"></el-table-column>
         </el-table>
         <div class="block">
             <span class="demonstration">调整每页显示条数</span>
@@ -20,8 +20,8 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page.sync="currentPage"
-            :page-sizes="[10, 20, 30, 40]"
-            :page-size="10"
+            :page-sizes="[100, 200, 300, 400]"
+            :page-size="100"
             layout="sizes, prev, pager, next"
             :total="1000">
             </el-pagination>
@@ -30,16 +30,21 @@
     </template>
     
     <script>
-    import { adminsGet } from '@/api/role'
+        import { cardAdd,cardsGetOne } from '@/api/personal'
+        import store from '../../../../store'
         export default {
             data() {
                 return {
+                    activeNames: ['1'],
+                    labelPosition: 'right',
                     teams:[{
-                        'userInfo':{},
-                        'staffName': 'staffName',
-                        'team':'team',
-                        'post': 'post',
-                        'status': 'status'
+                        "accountWithBank": "string",
+                        "bank": "string",
+                        "bin": "string",
+                        "cardNumber": "string",
+                        "id": 0,
+                        "name": "string",
+                        "status": "string"
                         }
                     ],
                     currentPage:1
@@ -60,9 +65,9 @@
                     this.getTeams();
                 },
                 getTeams(){
-                    adminsGet().then(response=>{
+                    cardsGetOne(store.getters.uid).then(response=>{
                         console.log(response,'sdll')
-                         if(response.data.infoCod){
+                         if(response.code!=200){
                             this.$message({
                                 message: response.data.description,
                                 type: 'warning'

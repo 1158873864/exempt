@@ -1,45 +1,57 @@
 <template>
         <div class="app-container">
-        <div>所有管理员</div>
+        <div>团队管理</div>
             <el-table
             :data="teams"
-            height="450"
+            height="250"
             border
             style="width: 100%">
-            <el-table-column prop="userInfo.username" label="username" width="180" align="center"></el-table-column>
-            <el-table-column prop="staffName" label="staffName" width="180" align="center"></el-table-column>
-            <el-table-column prop="team" label="team" width="180" align="center"></el-table-column>
-            <el-table-column prop="post" label="post" width="180" align="center"></el-table-column>
-            <el-table-column prop="status" label="status" width="180" align="center"></el-table-column>
-            
+            <el-table-column prop="id" label="id" width="180"></el-table-column>
+            <el-table-column prop="cardNumber" label="cardNumber" width="180"></el-table-column>
+            <el-table-column prop="name" label="name" width="180"></el-table-column>
+            <el-table-column prop="bank" label="bank" width="180"></el-table-column>
+            <el-table-column prop="accountWithBank" label="accountWithBank" width="180"></el-table-column>
+            <el-table-column prop="bin" label="bin" width="180"></el-table-column>
+            <el-table-column prop="status" label="status" width="180"></el-table-column>
+            <el-table-column prop="user.username" label="user" width="180"></el-table-column>
     
         </el-table>
-        <div class="block">
+        <div class="block" v-if="teams.length>10">
             <span class="demonstration">调整每页显示条数</span>
             <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page.sync="currentPage"
-            :page-sizes="[10, 20, 30, 40]"
-            :page-size="10"
+            :page-sizes="[100, 200, 300, 400]"
+            :page-size="100"
             layout="sizes, prev, pager, next"
             :total="1000">
             </el-pagination>
         </div>
       </div>
     </template>
-    
     <script>
-    import { adminsGet } from '@/api/role'
+    import { cardsGet } from '@/api/personal'
         export default {
             data() {
                 return {
+                    activeNames: ['1'],
+                    labelPosition: 'right',
                     teams:[{
-                        'userInfo':{},
-                        'staffName': 'staffName',
-                        'team':'team',
-                        'post': 'post',
-                        'status': 'status'
+                        "id": 1,
+                        "cardNumber": "string",
+                        "name": "string",
+                        "bank": "string",
+                        "accountWithBank": "string",
+                        "bin": "string",
+                        "status": "string",
+                        "user": {
+                            "id": 2,
+                            "username": "string",
+                            "role": 3,
+                            "tableId": 1,
+                            "cards": []
+                        }
                         }
                     ],
                     currentPage:1
@@ -60,9 +72,9 @@
                     this.getTeams();
                 },
                 getTeams(){
-                    adminsGet().then(response=>{
+                    cardsGet().then(response=>{
                         console.log(response,'sdll')
-                         if(response.data.infoCod){
+                         if(response.code!=200){
                             this.$message({
                                 message: response.data.description,
                                 type: 'warning'
@@ -82,8 +94,3 @@
             }
         }
     </script>
-    
-    <style scoped>
-    
-    </style>
-    

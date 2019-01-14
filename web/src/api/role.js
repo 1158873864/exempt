@@ -115,3 +115,14 @@ export function suppliersGet() {
     method: 'get'
   })
 }
+export function supplierUpdate(codeType, level, password, id) {
+  return request({
+    url: '/supplier/update/'+id,
+    method: 'post',
+    data: {
+      codeType,
+      level,
+      password
+    }
+  })
+}

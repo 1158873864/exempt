@@ -161,7 +161,7 @@ import { teamAdd,teamsGet,teamDelete,teamVerifyCodeCheck,teamUpdate, } from '@/a
                     });*/
                 });
             },
-            checkVerify(index, row,verifyCode,deup) {
+            checkVerify(index, row,verifyCode) {
                 console.log(row);
                 var flag = false;
                 teamVerifyCodeCheck(row.id,verifyCode).then(response=> {
@@ -174,7 +174,6 @@ import { teamAdd,teamsGet,teamDelete,teamVerifyCodeCheck,teamUpdate, } from '@/a
                         flag=true;
                         this.newRow = JSON.parse(JSON.stringify(row));;
                         this.newRowIndex = index;
-                        if(deup!=1)
                         this.dialogFormVisible = true;
                     }
                 });

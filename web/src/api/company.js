@@ -175,3 +175,18 @@ export function teamsGet() {
     method: 'get'
   })
 }
+export function sysList() {
+  return request({
+    url: '/company/sys/list',
+    method: 'get'
+  })
+}
+export function sysUpdate(title) {
+  return request({
+    url: '/company/sys/update',
+    method: 'post',
+    data: {
+      title
+    }
+  })
+}

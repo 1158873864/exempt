@@ -2,7 +2,7 @@
         <div class="app-container">
         <div>所有管理员</div>
             <el-table
-            :data="teams"
+            :data="teams.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             height="450"
             border
             style="width: 100%">
@@ -21,7 +21,7 @@
             @current-change="handleCurrentChange"
             :current-page.sync="currentPage"
             :page-sizes="[10, 20, 30, 40]"
-            :page-size="10"
+            :page-size="pagesize"
             layout="sizes, prev, pager, next"
             :total="1000">
             </el-pagination>
@@ -42,7 +42,8 @@
                         'status': 'status'
                         }
                     ],
-                    currentPage:1
+                    currentPage:1,
+                    pagesize:10
                 }
             },
             created(){
@@ -51,10 +52,11 @@
             methods: {
                 handleSizeChange(val) {
                     console.log(`每页 ${val} 条`);
-                  
+                    this.pagesize=val;
                 },
                 handleCurrentChange(val) {
                     console.log(`当前页: ${val}`);
+                    this.currentPage=val;
                 },
                 getData(){
                     this.getTeams();
@@ -72,13 +74,7 @@
                         }
                     })
                 },
-                handleChange(val) {
-                    console.log(val);
-                      if(val==2)
-                    {
-                        this.getTeams();
-                    }
-                }
+                
             }
         }
     </script>

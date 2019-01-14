@@ -6,15 +6,19 @@
         max-height="500"
         ref="table"
        >
-        <el-table-column prop="teamName" label="teamName" width="180"></el-table-column>
-        <el-table-column prop="addTime" label="addTime" width="180"></el-table-column>
-        <el-table-column prop="area" label="area" width="180"></el-table-column>
-        <el-table-column prop="id" label="id" width="180"></el-table-column>
-        <el-table-column prop="operator" label="operator" width="180"></el-table-column>
-        <el-table-column prop="status" label="status" width="180"></el-table-column>
-        <el-table-column prop="supervisor" label="supervisor" width="180"></el-table-column>
-        <el-table-column prop="verifyCode" label="verifyCode" width="180"></el-table-column>
-
+        <el-table-column prop="teamName" label="teamName" width="100" align="center"></el-table-column>
+        <el-table-column prop="addTime" label="addTime" width="180" align="center"></el-table-column>
+        <el-table-column prop="area" label="area" width="180" align="center"></el-table-column>
+        <el-table-column prop="operator" label="operator" width="100" align="center"></el-table-column>
+        <el-table-column prop="status" label="status" width="180" align="center"></el-table-column>
+        <el-table-column prop="supervisor" label="supervisor" width="100" align="center"></el-table-column>
+        <el-table-column prop="verifyCode" label="verifyCode" width="100" align="center"></el-table-column>
+        <el-table-column label="actions" align="center" width="230" class-name="small-padding fixed-width">
+            <template slot-scope="scope">
+              <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">edit</el-button>
+              
+            </template>
+          </el-table-column>
     </el-table>
     <div class="block">
         <el-pagination
@@ -27,6 +31,21 @@
         :total="1000">
         </el-pagination>
     </div>
+
+    <el-dialog title="Edit" :visible.sync="dialogFormVisible">
+        <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
+          
+          <el-form-item label="title" prop="title">
+            <el-input v-model="teams.id"/>
+          </el-form-item>
+         
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">取消</el-button>
+          <el-button type="primary" @click="updateData()">确认</el-button>
+        </div>
+      </el-dialog>
+
   </div>
 </template>
 
@@ -58,13 +77,20 @@ import { teamAdd,teamsGet } from '@/api/team'
                     }
                 ],
                 currentPage:1,
-                pagesize:10
+                pagesize:10,
+                dialogFormVisible:false
             }
         },
         created(){
             this.getData();
         },
         methods: {
+            handleUpdate(row) {
+                this.dialogFormVisible = true
+                this.$nextTick(() => {
+                    this.$refs['dataForm'].clearValidate()
+                })
+            },
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
                 this.pagesize = val;

@@ -6,12 +6,18 @@ import njurestaurant.njutakeout.dataservice.account.SupplierDataService;
 import njurestaurant.njutakeout.dataservice.account.UserDataService;
 import njurestaurant.njutakeout.entity.account.PersonalCard;
 import njurestaurant.njutakeout.entity.account.Supplier;
+import njurestaurant.njutakeout.entity.account.User;
+import njurestaurant.njutakeout.exception.BlankInputException;
 import njurestaurant.njutakeout.exception.UsernameIsExistentException;
+import njurestaurant.njutakeout.exception.WrongIdException;
+import njurestaurant.njutakeout.parameters.user.SupplierUpdateParameters;
 import njurestaurant.njutakeout.publicdatas.account.SupplierState;
+import njurestaurant.njutakeout.publicdatas.app.CodeType;
 import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.SuccessResponse;
 import njurestaurant.njutakeout.response.WrongResponse;
 import njurestaurant.njutakeout.response.user.UserAddResponse;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -86,5 +92,38 @@ public class SupplierBlServiceImpl implements SupplierBlService {
             }
         }
         return suppliers;
+    }
+
+
+    @Override
+    public Supplier updateSupplier(int id, SupplierUpdateParameters supplierUpdateParameters) throws WrongIdException, BlankInputException {
+        Supplier supplier = supplierDataService.findSupplierById(id);
+        if(supplier == null) {
+            throw new WrongIdException();
+        } else if(StringUtils.isBlank(supplierUpdateParameters.getPassword()) || StringUtils.isBlank(supplierUpdateParameters.getCodeType()) || supplierUpdateParameters.getLevel() <= 0) {
+            throw new BlankInputException();
+        } else {
+            User user = supplier.getUser();
+            user.setPassword(supplierUpdateParameters.getPassword());
+            supplier.setPriority(supplierUpdateParameters.getLevel());
+            supplier.setUser(user);
+            switch (supplierUpdateParameters.getCodeType()) {
+                case "TSOLID":
+                    supplier.setCodeType(CodeType.TSOLID);
+                    break;
+                case "TPASS":
+                    supplier.setCodeType(CodeType.TPASS);
+                    break;
+                case "RSOLID":
+                    supplier.setCodeType(CodeType.RSOLID);
+                    break;
+                case "RPASS":
+                    supplier.setCodeType(CodeType.RPASS);
+                    break;
+                default:
+                    throw new BlankInputException();
+            }
+            return supplierDataService.saveSupplier(supplier);
+        }
     }
 }

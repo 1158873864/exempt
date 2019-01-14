@@ -1,21 +1,13 @@
 package njurestaurant.njutakeout.parameters.company;
 
 public class SystemAddParameters {
-    private int id;
+//    private int id;
     private String title;
 
-    public SystemAddParameters(int id, String title) {
-        this.id = id;
+    public SystemAddParameters(String title) {
         this.title = title;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;

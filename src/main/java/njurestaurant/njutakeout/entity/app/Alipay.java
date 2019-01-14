@@ -15,16 +15,44 @@ public class Alipay {
     private String loginId;
     @Column(name = "userId")
     private String userId;
-    @Column(name = "qrCodeId")
-    private String qrCodeId;
-    @Column(name = "loginOrNot")
-    private int loginOrNot;
+//    /*固码*/
+//    @Column(name = "solidCode")
+//    private String solidCode;
+//    /*通码*/
+//    @Column(name = "passCode")
+//    private String passCode;
+    @Column(name = "imei")
+    private String imei;
+    @Column(name = "name")
+    private String name;
 
-    public Alipay(String loginId, String userId, String qrCodeId, int loginOrNot) {
+    public Alipay() {
+    }
+
+    public Alipay(String loginId) {
+        this.loginId = loginId;
+    }
+
+    public Alipay(String loginId, String userId, String imei) {
         this.loginId = loginId;
         this.userId = userId;
-        this.qrCodeId = qrCodeId;
-        this.loginOrNot = loginOrNot;
+        this.imei = imei;
+    }
+
+    public String getImei() {
+        return imei;
+    }
+
+    public void setImei(String imei) {
+        this.imei = imei;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getId() {
@@ -49,21 +77,5 @@ public class Alipay {
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public String getQrCodeId() {
-        return qrCodeId;
-    }
-
-    public void setQrCodeId(String qrCodeId) {
-        this.qrCodeId = qrCodeId;
-    }
-
-    public int getLoginOrNot() {
-        return loginOrNot;
-    }
-
-    public void setLoginOrNot(int loginOrNot) {
-        this.loginOrNot = loginOrNot;
     }
 }

@@ -1,5 +1,6 @@
 package njurestaurant.njutakeout.util;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -79,5 +80,22 @@ public class FormatDateTime {
         Date dt = new Date();
         SimpleDateFormat myFmt = new SimpleDateFormat("yyyy年MM月");
         return myFmt.format(dt);
+    }
+
+    /**
+     * 10位时间戳转换成date
+     * @param time 10位时间戳
+     * @return
+     */
+    public static Date TenTimestampToDate(Integer time){
+        long temp = (long)time*1000;
+        Timestamp ts = new Timestamp(temp);
+        Date date = new Date();
+        try {
+            date = ts;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return date;
     }
 }

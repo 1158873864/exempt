@@ -27,4 +27,8 @@ public interface TeamDataService {
      * @return
      */
     boolean isExistentTeamName(String teamName);
+
+    void deleteTeamById(int id);
+
+    Team findTeamById(int id);
 }

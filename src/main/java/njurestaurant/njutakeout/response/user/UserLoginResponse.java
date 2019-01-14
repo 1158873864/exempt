@@ -2,12 +2,22 @@ package njurestaurant.njutakeout.response.user;
 
 import njurestaurant.njutakeout.response.Response;
 
+import java.util.List;
+
 public class UserLoginResponse extends Response{
     private String token;
     private int role;
     private int uid;
+    private List<String> permissions;
 
     public UserLoginResponse() {
+    }
+
+    public UserLoginResponse(String token, int role, int uid, List<String> permissions) {
+        this.token = token;
+        this.role = role;
+        this.uid = uid;
+        this.permissions = permissions;
     }
 
     public UserLoginResponse(String token) {

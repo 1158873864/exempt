@@ -1,4 +1,4 @@
-package njurestaurant.njutakeout.dataservice.order;
+package njurestaurant.njutakeout.dataservice.app;
 
 
 import njurestaurant.njutakeout.entity.order.AlipayOrder;

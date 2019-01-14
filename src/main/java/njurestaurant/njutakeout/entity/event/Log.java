@@ -1,5 +1,8 @@
 package njurestaurant.njutakeout.entity.event;
 
+import njurestaurant.njutakeout.publicdatas.event.LogField;
+import njurestaurant.njutakeout.publicdatas.event.LogType;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -13,6 +16,10 @@ public class Log {
     private Date time;
     @Column(name = "uid")
     private int uid;
+    @Column(name = "type")
+    private LogType logType;
+    @Column(name = "field")
+    private LogField logField;
     @Column(name = "message")
     private String message;
 

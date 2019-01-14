@@ -53,4 +53,9 @@ public class SupplierDataServiceImpl implements SupplierDataService {
     public List<Supplier> findSuppliersByState(SupplierState supplierState) {
         return supplierDao.findSupplierByStatus(supplierState);
     }
+
+    @Override
+    public List<Supplier> findSuppliersByLevel(int priority) {
+        return supplierDao.findSuppliersByPriority(priority);
+    }
 }

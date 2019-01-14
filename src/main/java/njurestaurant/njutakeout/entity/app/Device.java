@@ -19,6 +19,9 @@ public class Device {
     /*是否在该设备上在线，1为在线，0为离线*/
     @Column(name = "online")
     private int online;
+    /*支付宝表id*/
+    @Column(name = "alipayId")
+    private int alipayId;
 
     public Device() {
     }
@@ -29,6 +32,10 @@ public class Device {
 
     public Device(String imei, Supplier supplier) {
         this.imei = imei;
+        this.supplier = supplier;
+    }
+
+    public Device(Supplier supplier) {
         this.supplier = supplier;
     }
 
@@ -54,5 +61,21 @@ public class Device {
 
     public void setSupplier(Supplier supplier) {
         this.supplier = supplier;
+    }
+
+    public int getOnline() {
+        return online;
+    }
+
+    public void setOnline(int online) {
+        this.online = online;
+    }
+
+    public int getAlipayId() {
+        return alipayId;
+    }
+
+    public void setAlipayId(int alipayId) {
+        this.alipayId = alipayId;
     }
 }

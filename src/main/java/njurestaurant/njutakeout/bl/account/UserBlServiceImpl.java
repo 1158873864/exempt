@@ -2,8 +2,10 @@ package njurestaurant.njutakeout.bl.account;
 
 import net.sf.json.JSONObject;
 import njurestaurant.njutakeout.blservice.account.UserBlService;
+import njurestaurant.njutakeout.blservice.company.PostAndPermissionBlService;
 import njurestaurant.njutakeout.dataservice.account.*;
 import njurestaurant.njutakeout.entity.account.*;
+import njurestaurant.njutakeout.entity.company.Post;
 import njurestaurant.njutakeout.exception.*;
 import njurestaurant.njutakeout.publicdatas.account.Role;
 import njurestaurant.njutakeout.response.Response;
@@ -37,6 +39,7 @@ public class UserBlServiceImpl implements UserBlService {
     private final SupplierDataService supplierDataService;
     private final JwtUserDetailsService jwtUserDetailsService;
     private final JwtService jwtService;
+    private final PostAndPermissionBlService postAndPermissionBlService;
 
     @Value(value = "${wechat.url}")
     private String wechatUrl;
@@ -48,7 +51,7 @@ public class UserBlServiceImpl implements UserBlService {
     private String appSecret;
 
     @Autowired
-    public UserBlServiceImpl(UserDataService userDataService, AgentDataService agentDataService, MerchantDataService merchantDataService, StaffDataService staffDataService, SupplierDataService supplierDataService, JwtUserDetailsService jwtUserDetailsService, JwtService jwtService) {
+    public UserBlServiceImpl(UserDataService userDataService, AgentDataService agentDataService, MerchantDataService merchantDataService, StaffDataService staffDataService, SupplierDataService supplierDataService, JwtUserDetailsService jwtUserDetailsService, JwtService jwtService, PostAndPermissionBlService postAndPermissionBlService) {
         this.userDataService = userDataService;
         this.agentDataService = agentDataService;
         this.merchantDataService = merchantDataService;
@@ -56,6 +59,7 @@ public class UserBlServiceImpl implements UserBlService {
         this.supplierDataService = supplierDataService;
         this.jwtUserDetailsService = jwtUserDetailsService;
         this.jwtService = jwtService;
+        this.postAndPermissionBlService = postAndPermissionBlService;
     }
 
     /**
@@ -84,7 +88,23 @@ public class UserBlServiceImpl implements UserBlService {
                 User user = userDataService.getUserByUsername(username);
                 JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(username);
                 String token = jwtService.generateToken(jwtUser, EXPIRATION);
-                return new UserLoginResponse(token, user.getRole(), user.getId());
+                String post = null;
+                switch (user.getRole()) {
+                    case 1:
+                        post = staffDataService.findStaffById(user.getTableId()).getPost();
+                        break;
+                    case 2:
+                        post = "代理商";
+                        break;
+                    case 3:
+                        post = "商户";
+                        break;
+                    case 4:
+                        post = "供码用户";
+                        break;
+                }
+
+                return new UserLoginResponse(token, user.getRole(), user.getId(), postAndPermissionBlService.getPostAndPermissionsByPost(post).getPermission());
             } else {
                 throw new WrongUsernameOrPasswordException();
             }

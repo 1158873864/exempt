@@ -9,4 +9,6 @@ public enum OrderState {
     ARRIVED,//商户送达确认
     VALID,//等待客户确认
     COMMENTED,//已评论
+    PAID, //已支付
+    EXPIRED //已失效
 }

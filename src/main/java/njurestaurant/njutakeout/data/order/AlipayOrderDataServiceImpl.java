@@ -1,7 +1,7 @@
 package njurestaurant.njutakeout.data.order;
 
 import njurestaurant.njutakeout.data.dao.app.AlipayOrderDao;
-import njurestaurant.njutakeout.dataservice.order.AlipayOrderDataService;
+import njurestaurant.njutakeout.dataservice.app.AlipayOrderDataService;
 import njurestaurant.njutakeout.entity.order.AlipayOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

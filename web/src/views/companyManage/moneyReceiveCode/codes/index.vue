@@ -12,7 +12,12 @@
         <el-table-column prop="priorityLevel" label="priorityLevel" width="180"></el-table-column>
         <el-table-column prop="teamName" label="teamName" width="180"></el-table-column>
         <el-table-column prop="type" label="type" width="180"></el-table-column>
-
+        <el-table-column label="操作" fixed="right" width="180">
+            <template scope="scope">
+                <el-button size="small"
+                    @click="operationDel(scope.$index,scope.row)">删除</el-button>
+            </template>
+        </el-table-column>
     </el-table>
     <div class="block">
         <span class="demonstration">调整每页显示条数</span>
@@ -30,7 +35,7 @@
 </template>
 
 <script>
-import { codesGet } from '@/api/company'
+import { codesGet,codeDelete } from '@/api/company'
     export default {
         data() {
             return {
@@ -53,6 +58,41 @@ import { codesGet } from '@/api/company'
             this.getData();
         },
         methods: {
+              operationDel(index, row){
+                var verifyCode = '';
+                this.$prompt('请输入团队验证码', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    // inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+                    // inputErrorMessage: '邮箱格式不正确'
+                }).then(({ value }) => {
+                    // this.$message({
+                    //     type: 'success',
+                    //     message: '你的邮箱是: ' + value
+                    // });
+                    verifyCode = value;
+                    operation(index, row,verifyCode);
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '取消输入'
+                    });       
+                })
+            },
+            operation(index,row,verifyCode){
+                codeDelete(row.id,verifyCode).then(response=>{
+                    console.log(response,'sdll')
+                     if(response.code!=200){
+                        this.$message({
+                            message: response.data.description,
+                            type: 'warning'
+                        });
+                    }else{
+                       this.codes = response.data;
+                    
+                    }
+                })
+            },
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
               
@@ -66,13 +106,13 @@ import { codesGet } from '@/api/company'
             getcodes(){
                 codesGet().then(response=>{
                     console.log(response,'sdll')
-                     if(response.data.infoCod){
+                     if(response.code!=200){
                         this.$message({
                             message: response.data.description,
                             type: 'warning'
                         });
                     }else{
-                       this.codes = response.data.receiptCodeList;
+                       this.codes = response.data;
                     }
                 })
             },

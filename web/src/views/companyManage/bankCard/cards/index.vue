@@ -16,7 +16,7 @@
         <el-table-column label="操作" fixed="right" width="180">
             <template scope="scope">
                 <el-button size="small"
-                        @click="operation(scope.$index,scope.row)">删除</el-button>
+                        @click="operationDel(scope.$index,scope.row)">删除</el-button>
             </template>
         </el-table-column>
 
@@ -61,9 +61,24 @@ import { cardsGet,cardDelete } from '@/api/company'
             this.getData();
         },
         methods: {
-            operation(index, row) {
+            operationDel(index, row){
+                var verifyCode = '';
+                this.$prompt('请输入团队验证码', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                    }).then(({ value }) => {
+                        verifyCode = value;
+                        this.operation(index,row,verifyCode);
+                    }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '取消输入'
+                    });
+                });
+            },
+            operation(index, row,verifyCode) {
                 console.log(row);
-                cardDelete(row.id).then(response=> {
+                cardDelete(row.id,verifyCode).then(response=> {
                     if(response.code!=200){
                         this.$message({
                             message: response.data.description,

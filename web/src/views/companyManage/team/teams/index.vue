@@ -6,19 +6,24 @@
         max-height="500"
         ref="table"
        >
-        <el-table-column prop="teamName" label="teamName" width="100" align="center"></el-table-column>
-        <el-table-column prop="addTime" label="addTime" width="180" align="center"></el-table-column>
-        <el-table-column prop="area" label="area" width="180" align="center"></el-table-column>
-        <el-table-column prop="operator" label="operator" width="100" align="center"></el-table-column>
-        <el-table-column prop="status" label="status" width="180" align="center"></el-table-column>
-        <el-table-column prop="supervisor" label="supervisor" width="100" align="center"></el-table-column>
-        <el-table-column prop="verifyCode" label="verifyCode" width="100" align="center"></el-table-column>
-        <el-table-column label="actions" align="center" width="230" class-name="small-padding fixed-width">
-            <template slot-scope="scope">
-              <el-button type="primary" size="mini" @click="handleUpdate(scope.row)">edit</el-button>
-              
+        <el-table-column prop="teamName" label="teamName" width="180"></el-table-column>
+        <el-table-column prop="addTime" label="addTime" width="180"></el-table-column>
+        <el-table-column prop="area" label="area" width="180"></el-table-column>
+        <el-table-column prop="id" label="id" width="180"></el-table-column>
+        <el-table-column prop="operator" label="operator" width="180"></el-table-column>
+        <el-table-column prop="status" label="status" width="180"></el-table-column>
+        <el-table-column prop="supervisor" label="supervisor" width="180"></el-table-column>
+        <!-- <el-table-column prop="verifyCode" label="verifyCode" width="180"></el-table-column> -->
+        <el-table-column label="操作" fixed="right" width="180">
+            <template scope="scope">
+                <el-button size="small"
+                        @click="openDialog(scope.$index,scope.row)">修改</el-button>
+                        <el-button size="small"
+                        @click="operationDel(scope.$index,scope.row)">删除</el-button>
             </template>
-          </el-table-column>
+            
+        </el-table-column>
+
     </el-table>
     <div class="block">
         <el-pagination
@@ -32,25 +37,36 @@
         </el-pagination>
     </div>
 
-    <el-dialog title="Edit" :visible.sync="dialogFormVisible">
-        <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
-          
-          <el-form-item label="title" prop="title">
-            <el-input v-model="teams.id"/>
-          </el-form-item>
-         
+    <el-dialog title="修改团队信息" :visible.sync="dialogFormVisible">
+        <el-form :model="newRow">
+            <el-form-item label="new_area">
+                <el-input v-model="newRow.area" placeholder="area"></el-input>
+            </el-form-item>
+            <el-form-item label="new_operator">
+                <el-input v-model="newRow.operator" placeholder="operator"></el-input>
+            </el-form-item>
+            <el-form-item label="new_status">
+                <el-input v-model="newRow.status" placeholder="status"></el-input>
+            </el-form-item>
+            <el-form-item label="new_teamName">
+                <el-input v-model="newRow.teamName" placeholder="teamName"></el-input>
+            </el-form-item>
+            <el-form-item label="new_verifyCode">
+                <el-input v-model="newRow.verifyCode" placeholder="verifyCode"></el-input>
+            </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="updateData()">确认</el-button>
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="updateTeam">确 定</el-button>
         </div>
-      </el-dialog>
+    </el-dialog>
 
   </div>
+  
 </template>
 
 <script>
-import { teamAdd,teamsGet } from '@/api/team'
+import { teamAdd,teamsGet,teamDelete,teamVerifyCodeCheck,teamUpdate, } from '@/api/company'
     export default {
         data() {
             return {
@@ -78,18 +94,109 @@ import { teamAdd,teamsGet } from '@/api/team'
                 ],
                 currentPage:1,
                 pagesize:10,
-                dialogFormVisible:false
+                dialogFormVisible: false,
+                newRowIndex:1,
+                newRow: {
+                    area: '',
+                    operator: '',
+                    status: '',
+                    supervisor: '',
+                    teamName: '',
+                    verifyCode: ''
+                    },
+                formLabelWidth: '120px'
             }
         },
         created(){
             this.getData();
         },
         methods: {
-            handleUpdate(row) {
-                this.dialogFormVisible = true
-                this.$nextTick(() => {
-                    this.$refs['dataForm'].clearValidate()
+            operationDel(index, row){
+                var verifyCode = '';
+                this.$prompt('请输入团队验证码', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    
+                }).then(({ value }) => {
+                    // this.$message({
+                    //     type: 'success',
+                    //     message: '你的邮箱是: ' + value
+                    // });
+                    verifyCode = value;
+                    this.operation(index, row,verifyCode);
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '取消输入'
+                    });       
                 })
+            },
+            operation(index,row,verifyCode){
+                teamDelete(row.id,verifyCode).then(response=>{
+                    console.log(response,'sdll')
+                     if(response.code!=200){
+                        this.$message({
+                            message: response.data.description,
+                            type: 'warning'
+                        });
+                    }else{
+                        this.teams.splice(index,1)
+
+                    }
+                })
+            },
+            openDialog(index,row){
+                var   verifyCode   = '';
+                var flag = false;
+                this.$prompt('请输入团队验证码', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                    }).then(({ value }) => {
+                        verifyCode = value;
+                        this.checkVerify(index,row,verifyCode)
+                    }).catch(() => {
+                    /*this.$message({
+                        type: 'info',
+                        message: '操作成功'
+                    });*/
+                });
+            },
+            checkVerify(index, row,verifyCode,deup) {
+                console.log(row);
+                var flag = false;
+                teamVerifyCodeCheck(row.id,verifyCode).then(response=> {
+                    if(response.code!=200){
+                        this.$message({
+                            message: response.data.description,
+                            type: 'warning'
+                        });
+                    }else{
+                        flag=true;
+                        this.newRow = JSON.parse(JSON.stringify(row));;
+                        this.newRowIndex = index;
+                        if(deup!=1)
+                        this.dialogFormVisible = true;
+                    }
+                });
+                console('flag',flag)
+                return flag;
+            },
+            updateTeam(){
+                teamUpdate(this.newRow.area,this.newRow.operator,this.newRow.status,this.newRow.supervisor,this.newRow.teamName,this.newRow.verifyCode,this.newRow.id).then(response=> {
+                    if(response.code!=200){
+                        this.$message({
+                            message: response.data.description,
+                            type: 'warning'
+                        });
+                    }else{
+                        this.teams[this.newRowIndex] = this.newRow;
+                        this.dialogFormVisible = false;
+                         this.$message({
+                            message: '修改成功',
+                            type: 'success'
+                        });
+                    }
+                });
             },
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);

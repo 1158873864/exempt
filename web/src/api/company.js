@@ -20,10 +20,13 @@ export function codeInfo(id) {
         method: 'get'
     })
 }
-export function codeDelete(id) {
+export function codeDelete(id,verifyCode) {
     return request({
         url: '/company/code/delete/'+id,
-        method: 'get'
+        method: 'get',
+        params:{
+          verifyCode
+        }
     })
 }
 export function permissionAllocate(post,permission) { 
@@ -119,11 +122,12 @@ export function cardsGet() {
         method: 'get',
   })
 }
-export function cardDelete(id) {
+export function cardDelete(id,verifyCode) {
   console.log(id)
   return request({
       url: '/company/card/delete/'+id,
       method: 'get',
+      params:{ verifyCode }
   })
 }
 /**
@@ -175,18 +179,37 @@ export function teamsGet() {
     method: 'get'
   })
 }
-export function sysList() {
+export function teamDelete(id, verifyCode) {
   return request({
-    url: '/company/sys/list',
-    method: 'get'
+    url: '/company/team/delete/'+id,
+    method: 'get',
+    params: {
+      id,
+      verifyCode
+    }
   })
 }
-export function sysUpdate(title) {
+export function teamVerifyCodeCheck(id,verifyCode) {
   return request({
-    url: '/company/sys/update',
+    url: '/company/team/verify/'+id,
+    method: 'get',
+    params:{
+      id,
+      verifyCode
+    }
+  })
+}
+export function teamUpdate(area, operator, status, supervisor, teamName, verifyCode,id) {
+  return request({
+    url: '/company/team/update/'+id,
     method: 'post',
     data: {
-      title
+      area,
+      operator,
+      status,
+      supervisor,
+      teamName,
+      verifyCode
     }
   })
 }

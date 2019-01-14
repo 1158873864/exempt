@@ -21,4 +21,8 @@ public interface PlatformOrderDataService {
     List<PlatformOrder> findByUidAndState(int uid, OrderState orderState);
 
     PlatformOrder findByNumber(String number);
+
+    PlatformOrder findByImeiAndState(String imei, OrderState orderState);
+
+    void savePlatformOrders(List<PlatformOrder> platformOrders);
 }

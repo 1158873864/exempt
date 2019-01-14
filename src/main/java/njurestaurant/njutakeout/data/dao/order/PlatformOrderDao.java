@@ -13,5 +13,7 @@ public interface PlatformOrderDao extends JpaRepository<PlatformOrder, Integer> 
 
     List<PlatformOrder> findPlatformOrderByUidAndState(int uid, OrderState orderState);
 
-    List<PlatformOrder> findPlatformOrderByState(OrderState orderState);
+    List<PlatformOrder> findPlatformsByState(OrderState orderState);
+
+    PlatformOrder findPlatformOrdersByImeiAndState(String imei, OrderState state);
 }

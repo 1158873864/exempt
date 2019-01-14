@@ -9,4 +9,6 @@ public interface TransactionBlService {
     GetQrCodeResponse getQrCode(GetQrCodeParameters getQrCodeParameters) throws WrongIdException, BlankInputException;
 
     void addDevice();
+
+    String findQrCodeByOrderId(String orderid) throws WrongIdException;
 }

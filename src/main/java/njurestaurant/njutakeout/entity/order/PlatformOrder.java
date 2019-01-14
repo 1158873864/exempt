@@ -30,6 +30,8 @@ public class PlatformOrder {
     private String rechargeId;
     @Column(name = "money")
     private double money;
+    @Column(name = "payMoney")
+    private double payMoney;
     /*商户的userid*/
     @Column(name = "uid")
     private int uid;
@@ -58,6 +60,22 @@ public class PlatformOrder {
         this.rechargeId = rechargeId;
         this.money = money;
         this.uid = uid;
+        this.imei = imei;
+    }
+
+    public double getPayMoney() {
+        return payMoney;
+    }
+
+    public void setPayMoney(double payMoney) {
+        this.payMoney = payMoney;
+    }
+
+    public String getImei() {
+        return imei;
+    }
+
+    public void setImei(String imei) {
         this.imei = imei;
     }
 

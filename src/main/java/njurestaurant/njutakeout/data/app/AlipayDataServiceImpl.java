@@ -23,4 +23,9 @@ public class AlipayDataServiceImpl implements AlipayDataService {
         if (alipayOptional.isPresent()) return alipayOptional.get();
         else return null;
     }
+
+    @Override
+    public Alipay saveAlipay(Alipay alipay) {
+        return alipayDao.save(alipay);
+    }
 }

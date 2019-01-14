@@ -43,7 +43,7 @@ public class PlatformOrderDataServiceImpl implements PlatformOrderDataService {
 
     @Override
     public List<PlatformOrder> findByState(OrderState orderState) {
-        return platformOrderDao.findPlatformOrderByState(orderState);
+        return platformOrderDao.findPlatformsByState(orderState);
     }
 
     @Override
@@ -59,5 +59,15 @@ public class PlatformOrderDataServiceImpl implements PlatformOrderDataService {
     @Override
     public PlatformOrder findByNumber(String number) {
         return platformOrderDao.findPlatformOrderByNumber(number);
+    }
+
+    @Override
+    public PlatformOrder findByImeiAndState(String imei, OrderState orderState) {
+        return platformOrderDao.findPlatformOrdersByImeiAndState(imei, orderState);
+    }
+
+    @Override
+    public void savePlatformOrders(List<PlatformOrder> platformOrders) {
+        platformOrderDao.saveAll(platformOrders);
     }
 }

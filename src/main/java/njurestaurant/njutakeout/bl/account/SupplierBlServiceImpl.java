@@ -7,6 +7,7 @@ import njurestaurant.njutakeout.dataservice.account.UserDataService;
 import njurestaurant.njutakeout.entity.account.PersonalCard;
 import njurestaurant.njutakeout.entity.account.Supplier;
 import njurestaurant.njutakeout.entity.account.User;
+import njurestaurant.njutakeout.entity.app.Device;
 import njurestaurant.njutakeout.exception.BlankInputException;
 import njurestaurant.njutakeout.exception.UsernameIsExistentException;
 import njurestaurant.njutakeout.exception.WrongIdException;
@@ -89,6 +90,8 @@ public class SupplierBlServiceImpl implements SupplierBlService {
             for(Supplier supplier : suppliers) {
                 List<PersonalCard> cardList = supplier.getUser().getCards();
                 cardList.stream().peek(c -> c.setUser(null)).collect(Collectors.toList());
+                List<Device> devices = supplier.getDevices();
+                devices.stream().peek(d -> d.setSupplier(null)).collect(Collectors.toList());
             }
         }
         return suppliers;
@@ -117,9 +120,11 @@ public class SupplierBlServiceImpl implements SupplierBlService {
                 case "RSOLID":
                     supplier.setCodeType(CodeType.RSOLID);
                     break;
-                case "RPASS":
-                    supplier.setCodeType(CodeType.RPASS);
+                case "RPASSOFF":
+                    supplier.setCodeType(CodeType.RPASSOFF);
                     break;
+                case "RPASSQR":
+                    supplier.setCodeType(CodeType.RPASSQR);
                 default:
                     throw new BlankInputException();
             }

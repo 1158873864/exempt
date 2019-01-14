@@ -2,6 +2,9 @@ package njurestaurant.njutakeout.parameters.app;
 
 import java.util.Date;
 
+/**
+ * web端请求二维码接口
+ */
 public class GetQrCodeParameters {
 //    {IP:"ip地址",id:"充值方编号",money:"待付款金额",备注:"我们平台的唯一标识符",商户名:"merchantId",time="10位的时间戳",sign="签名算法(http://kfb.im/index/doc/sign.do)"}
     /*ip address*/

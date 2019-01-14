@@ -18,6 +18,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 @RestController
 public class TransactionController {
 
@@ -61,5 +65,24 @@ public class TransactionController {
     public ResponseEntity<Response> test() {
         transactionBlService.addDevice();
         return null;
+    }
+
+    @ApiOperation(value = "重定向", notes = "支付宝跳转重定向")
+    @RequestMapping(value = "/redirect", method = RequestMethod.GET)
+    public ResponseEntity<Response> redirect(@RequestParam("orderId") String orderId, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
+            String code = transactionBlService.findQrCodeByOrderId(orderId);
+            if(code.equals("expired")) {
+                return new ResponseEntity<>(new JSONResponse(10310, new WrongResponse(10310, "订单失效。")), HttpStatus.OK);
+            } else if(code.equals("paid")) {
+                return new ResponseEntity<>(new JSONResponse(10320, new WrongResponse(10320, "订单已支付。")), HttpStatus.OK);
+            }
+            response.sendRedirect(code);
+            return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("request successfully")), HttpStatus.OK);
+//            response.sendRedirect("alipayqr://platformapi/startapp?saId=20000123&actionType=scan&biz_data={\"s\": \"money\",\"u\": \"2088222774538613\",\"a\": \"0.02\",\"m\": \"66666\"}");
+//            return null;
+        } catch (WrongIdException e) {
+            return new ResponseEntity<>(new JSONResponse(10300, new WrongResponse(10300, "订单号错误")), HttpStatus.OK);
+        }
     }
 }

@@ -13,4 +13,6 @@ public interface DeviceDataService {
     Device findById(int id);
 
     void deleteById(int id);
+
+    Device findByImei(String imei);
 }

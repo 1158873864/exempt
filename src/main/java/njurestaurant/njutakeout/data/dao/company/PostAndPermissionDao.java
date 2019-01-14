@@ -11,4 +11,5 @@ public interface PostAndPermissionDao extends JpaRepository<PostAndPermission, S
     void deletePostAndPermissionsByPost(String post);
 
     List<PostAndPermission> findPostAndPermissionsByPost(String post);
+
 }

@@ -13,4 +13,5 @@ public interface PlatformOrderBlService {
     List<PlatformOrder> findAllPlatformOrders();
 
     PlatformOrder updatePlatformOrder(int id, PlatformUpdateParameters platformUpdateParameters) throws WrongIdException, BlankInputException;
+
 }

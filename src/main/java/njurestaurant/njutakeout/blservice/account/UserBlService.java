@@ -3,6 +3,7 @@ package njurestaurant.njutakeout.blservice.account;
 import njurestaurant.njutakeout.entity.account.User;
 import njurestaurant.njutakeout.exception.*;
 import njurestaurant.njutakeout.response.Response;
+import njurestaurant.njutakeout.response.SuccessResponse;
 import njurestaurant.njutakeout.response.user.*;
 import org.springframework.stereotype.Service;
 
@@ -69,5 +70,6 @@ public interface UserBlService {
 
     Response deleteUserById(int id);
 
+    SuccessResponse appLogin(String username, String password, String imei) throws WrongUsernameOrPasswordException, CannotRegisterException;
 
 }

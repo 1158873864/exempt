@@ -1,6 +1,21 @@
 package njurestaurant.njutakeout.config.websocket;
 
+import com.amazonaws.util.json.JSONObject;
+import njurestaurant.njutakeout.bl.order.TransactionBlServiceImpl;
+import njurestaurant.njutakeout.dataservice.app.AlipayDataService;
+import njurestaurant.njutakeout.dataservice.app.AlipayOrderDataService;
+import njurestaurant.njutakeout.dataservice.app.DeviceDataService;
+import njurestaurant.njutakeout.dataservice.order.PlatformOrderDataService;
+import njurestaurant.njutakeout.entity.account.Supplier;
+import njurestaurant.njutakeout.entity.app.Alipay;
+import njurestaurant.njutakeout.entity.app.Device;
+import njurestaurant.njutakeout.entity.order.PlatformOrder;
+import njurestaurant.njutakeout.publicdatas.app.CodeType;
+import njurestaurant.njutakeout.publicdatas.order.OrderState;
+import njurestaurant.njutakeout.response.app.DeviceUpdateResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -9,16 +24,39 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+@Service
 public class WebSocketHandler extends TextWebSocketHandler {
     @Value("${CROWD_CAST_USER_TOKEN_KEY}")
     private String CROWD_CAST_USER_TOKEN_KEY;
+
+    private final DeviceDataService deviceDataService;
+    private final AlipayDataService alipayDataService;
+    private final AlipayOrderDataService alipayOrderDataService;
+    private final PlatformOrderDataService platformOrderDataService;
+
+    @Autowired
+    public WebSocketHandler(DeviceDataService deviceDataService, AlipayDataService alipayDataService, AlipayOrderDataService alipayOrderDataService, PlatformOrderDataService platformOrderDataService) {
+        this.deviceDataService = deviceDataService;
+        this.alipayDataService = alipayDataService;
+        this.alipayOrderDataService = alipayOrderDataService;
+        this.platformOrderDataService = platformOrderDataService;
+    }
+
+    public static Map<String, Thread> mapThread = new HashMap<>();
+
+    public static Map<String, TextMessage> msgMap = new HashMap<>();
+
+
     /**
      * 用Map存储已建立连接的用户
      */
     private static final Map<String, WebSocketSession> socketSessionMap = new HashMap<>();
+
 
     /**
      * 处理前端发送的文本信息 js调用websocket.send时候，会调用该方法
@@ -30,36 +68,68 @@ public class WebSocketHandler extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 
-//		JSONObject jsonObject = new JSONObject(message.getPayload());
-//        String cmd = jsonObject.getString("cmd");
-//        String type = jsonObject.getString("type");
-//        //收到设备更新信息
-//        if(cmd.equals("validation") && type.equals("alipay")){
-//		    String userid = jsonObject.getString("userid");
-//		    String loginid = jsonObject.getString("loginid");
-//		    String imei = jsonObject.getString("imei");
-//		    String name = jsonObject.getString("name");
-//		    System.out.println("收到用户 " + imei + "的消息：" + message.getPayload().toString());
-//
-//		 // 如果设备更新成功入库，则回复一条信息
-//			JSONObject jsonObject2 = new JSONObject();
-//	        jsonObject2.put("cmd", cmd);
-//	        jsonObject2.put("status", "success");
-//	        jsonObject2.put("err", "msg");
-//	        jsonObject2.put("imei", imei);
-//	        session.sendMessage(new TextMessage(jsonObject2.toString()));
-//        }
-//
-//        //收到订单信息
-//        if(cmd.equals("order") && type.equals("alipay")){
+		JSONObject jsonObject = new JSONObject(message.getPayload());
+        String cmd = jsonObject.getString("cmd");
+        String type = jsonObject.getString("type");
+        String imei = jsonObject.getString("imei");
+
+        //收到设备更新信息
+        // 客户端消息:{"cmd":"validation","type":"alipay","userid":"支付宝userid","loginid":"支付宝loginid","imei":"设备唯一标识","name":"支付宝账号昵称/姓名(暂时未定)"}
+        if(cmd.equals("validation") && type.equals("alipay")){
+
+            String userid = jsonObject.getString("userid");
+            String loginid = jsonObject.getString("loginid");
+            String name = jsonObject.getString("name");
+            Device device = deviceDataService.findByImei(imei);
+            if(device != null) {
+                Alipay alipay = alipayDataService.findById(device.getAlipayId());
+                if(alipay == null || !alipay.getUserId().equals(userid)) {  // 没有支付宝信息/支付宝信息对不上
+                    alipay = new Alipay(loginid, userid, null, null, null, imei, name);
+                    Alipay a = alipayDataService.saveAlipay(alipay);
+                    device.setAlipayId(a.getId());
+                }
+                device.setOnline(1);    // 支付宝已登录
+                deviceDataService.saveDevice(device);
+                // 入库成功
+                session.sendMessage(new TextMessage(new DeviceUpdateResponse(null, imei).toString()));
+            }
+        }
+
+        //收到订单信息
+        // 客户端消息(订单信息):{"cmd":"order","type":"alipay","imei":"设备唯一标识","orderId":"订单号","money":"订单金额","memo":"备注","time":"订单时间"}
+        if(cmd.equals("order") && type.equals("alipay")){
+
+            String orderId = jsonObject.getString("orderId");
+            double money = jsonObject.getDouble("money");
+            String memo = jsonObject.getString("memo");
+            String time = jsonObject.getString("time");
+
+            Device device = deviceDataService.findByImei(imei);
+            Supplier supplier = device.getSupplier();
+            if(supplier.getCodeType() == CodeType.RPASSQR || supplier.getCodeType() == CodeType.RPASSOFF) { //供码用户提供收款码
+                PlatformOrder platformOrders = platformOrderDataService.findByImeiAndState(device.getImei(), OrderState.WAITING_FOR_PAYING);
+                if(platformOrders != null) {
+                    platformOrders.setState(OrderState.PAID);
+                    platformOrders.setPayMoney(money);
+                    platformOrderDataService.savePlatformOrder(platformOrders);
+                }
+            } else if(supplier.getCodeType() == CodeType.TPASS || supplier.getCodeType() == CodeType.TSOLID) {
+                PlatformOrder platformOrder = platformOrderDataService.findByNumber(memo);
+                if(platformOrder != null) {
+                    platformOrder.setState(OrderState.PAID);
+                    platformOrder.setPayMoney(money);
+                    platformOrderDataService.savePlatformOrder(platformOrder);
+                }
+            }
+
 //        	String imei = jsonObject.getString("imei");
 //		    String orderId = jsonObject.getString("orderId");
 //		    String money = jsonObject.getString("money");
 //		    String memo = jsonObject.getString("memo");
 //		    String time = jsonObject.getString("time");
 //		    System.out.println("收到用户 " + imei + "的消息：" + message.getPayload().toString());
-//
-//		 // 如果订单成功入库，则回复一条信息
+
+		 // 如果订单成功入库，则回复一条信息
 //		    if(true){
 //				JSONObject jsonObject2 = new JSONObject();
 //		        jsonObject2.put("cmd", cmd);
@@ -78,47 +148,18 @@ public class WebSocketHandler extends TextWebSocketHandler {
 //		        jsonObject3.put("imei", imei);
 //		        session.sendMessage(new TextMessage(jsonObject3.toString()));
 //	        }
-//         }
-//
-//        //收到通码链接
-//        if(cmd.equals("passcode") && type.equals("alipay")){
-//        	String status = jsonObject.getString("status");
-//        	if(status.equals("success")) {
-//        		//如果支付宝在线
-//			    String imei = jsonObject.getString("imei");
-//		    	String userid = jsonObject.getString("userid");
-//			    String qrcode = jsonObject.getString("qrcode");
-//			    String offqrcode = jsonObject.getString("offqrcode");
-//			    System.out.println("收到用户 " + imei + "的消息：" + message.getPayload().toString());
-//        	}
-//        	if(status.equals("failed")) {
-//        		//如果支付宝离线
-//        		String imei = jsonObject.getString("imei");
-// 		    	String err = jsonObject.getString("支付宝掉线");
-//			    System.out.println("收到用户 " + imei + "的消息：" + message.getPayload().toString());
-//        	}
-//         }
-//
-//        //收到固码链接
-//        if(cmd.equals("solidcode") && type.equals("alipay")){
-//        	String status = jsonObject.getString("status");
-//        	if(status.equals("success")) {
-//        		//如果支付宝在线
-//			    String imei = jsonObject.getString("imei");
-//		    	String userid = jsonObject.getString("userid");
-//			    String qrcode = jsonObject.getString("qrcode");
-//			    String money = jsonObject.getString("money");
-//			    String memo = jsonObject.getString("memo");
-//			    System.out.println("收到用户 " + imei + "的消息：" + message.getPayload().toString());
-//        	}
-//        	if(status.equals("failed")) {
-//        		//如果支付宝离线
-//        		String imei = jsonObject.getString("imei");
-// 		    	String err = jsonObject.getString("支付宝掉线");
-//			    System.out.println("收到用户 " + imei + "的消息：" + message.getPayload().toString());
-//        	}
-//         }
+         }
 
+        //收到通码链接
+        if(cmd.equals("passcode") && type.equals("alipay")){
+            msgMap.put(imei, message);
+            Thread thread = mapThread.get(imei);
+            thread.interrupt();
+         }
+
+        //收到固码链接
+        if(cmd.equals("solidcode") && type.equals("alipay")){
+         }
     }
 
     /**
@@ -129,7 +170,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-
+        socketSessionMap.put(session.getAttributes().get("imei").toString(), session);
         System.out.println("用户 " + session.getId() + " 已建立连接");
         // session.sendMessage(new TextMessage("@"+Settings.SUCCESS_CODE + ""));
     }
@@ -143,6 +184,18 @@ public class WebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        String imei = null;
+        for (Map.Entry<String, WebSocketSession> m : socketSessionMap.entrySet()) {
+            if(m.getValue().toString().equals(session.toString())) {
+                imei = m.getKey();
+                break;
+            }
+        }
+        Device device = deviceDataService.findByImei(imei);
+        if(device != null) {
+            device.setOnline(0);
+            deviceDataService.saveDevice(device);
+        }
         System.out.println("用户 " + session.getId() + " 已关闭连接。 当前状态：" + status);
 
     }
@@ -203,6 +256,5 @@ public class WebSocketHandler extends TextWebSocketHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

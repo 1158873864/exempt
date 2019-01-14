@@ -44,6 +44,7 @@ public class PlatformOrderBlServiceImpl implements PlatformOrderBlService {
             throw new WrongIdException();
         } else {
             platformOrder.setMoney(platformUpdateParameters.getMoney());
+            platformOrder.setPayMoney(platformUpdateParameters.getRealPay());
             switch (platformUpdateParameters.getState()) {
                 case "WAITING_FOR_PAYING":
                     break;

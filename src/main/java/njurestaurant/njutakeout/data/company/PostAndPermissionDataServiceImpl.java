@@ -28,7 +28,7 @@ public class PostAndPermissionDataServiceImpl implements PostAndPermissionDataSe
 
     @Override
     public void deleteByPost(String post) {
-        postAndPermissionDao.deletePostAndPermissionsByPermission(post);
+        postAndPermissionDao.deletePostAndPermissionsByPost(post);
     }
 
     @Override

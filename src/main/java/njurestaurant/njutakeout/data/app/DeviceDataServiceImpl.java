@@ -39,4 +39,9 @@ public class DeviceDataServiceImpl implements DeviceDataService {
     public void deleteById(int id) {
         deviceDao.deleteById(id);
     }
+
+    @Override
+    public Device findByImei(String imei) {
+        return findByImei(imei);
+    }
 }

@@ -179,3 +179,33 @@ export function teamsGet() {
     method: 'get'
   })
 }
+export function teamDelete(id) {
+  return request({
+    url: '/company/team/delete/'+id,
+    method: 'get'
+  })
+}
+export function teamVerifyCodeCheck(id,verifyCode) {
+  return request({
+    url: '/company/team/verify/'+id,
+    method: 'get',
+    params:{
+      id,
+      verifyCode
+    }
+  })
+}
+export function teamUpdate(area, operator, status, supervisor, teamName, verifyCode,id) {
+  return request({
+    url: '/company/team/update/'+id,
+    method: 'post',
+    data: {
+      area,
+      operator,
+      status,
+      supervisor,
+      teamName,
+      verifyCode
+    }
+  })
+}

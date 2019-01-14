@@ -29,13 +29,13 @@ export function codeDelete(id,verifyCode) {
         }
     })
 }
-export function permissionAllocate(post,permission) { 
+export function permissionAllocate(post,permissions) { 
     return request({
         url: '/company/permission/allocate',
         method:'post',
         data:{
             post,
-            permission
+            permissions
         }
     })
  }

@@ -140,7 +140,6 @@ import { teamAdd,teamsGet,teamDelete,teamVerifyCodeCheck,teamUpdate } from '@/ap
                         this.dialogFormVisible = true;
                     }
                 });
-                console('flag',flag)
                 return flag;
             },
             updateTeam(){

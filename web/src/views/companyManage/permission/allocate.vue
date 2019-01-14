@@ -6,17 +6,29 @@
                 <el-input v-model="permissionaddParameters.post" placeholder="post"></el-input>
             </el-form-item>
             <el-form-item label="permission">
-                <el-input v-model="permissionaddParameters.permission" placeholder="permission"></el-input>
             </el-form-item>
+                <el-tree
+                    :props="props"
+                    :data="treepermissions"
+                    show-checkbox
+                    node-key="title"
+                    ref="tree"
+                    show-checkbox
+                    @check-change="handleCheckChange">
+                </el-tree>
             <el-form-item>
                 <el-button type="primary" @click="addpermission">添加</el-button>
             </el-form-item>
         </el-form>
+        
+
+
   </div>
 </template>
 
 <script>
 import { permissionAllocate } from '@/api/company'
+import { getTreePermissions } from '@/api/permissions'
     export default {
         data() {
             return {
@@ -26,11 +38,21 @@ import { permissionAllocate } from '@/api/company'
                         "post": "post",
                         "permission": "permission",
                 },
-                currentPage:1
+                currentPage:1,
+                treepermissions:[],
+                props: {
+                    children: 'children',
+                    label: 'title'
+                },
             }
+        },
+        created(){
+            this.treepermissions = getTreePermissions();
+            console.log(this.treepermissions)
         },
         methods: {
             addpermission() {
+                this.getCheckedKeys();
                 permissionAllocate(
                     this.permissionaddParameters.post,
                     this.permissionaddParameters.permission,
@@ -47,7 +69,10 @@ import { permissionAllocate } from '@/api/company'
                         });
                     }
                 })
-
+            },
+            getCheckedKeys(){
+                this.permissionaddParameters.permission = this.$refs.tree.getCheckedKeys();
+                console.log(this.permissionaddParameters.permission)
             },
             handleChange(val) {
                 console.log(val);

@@ -10,6 +10,7 @@
         <el-table-column prop="priority" label="priority" width="180" align="center"></el-table-column>
         <el-table-column prop="devices" label="devices" width="180" align="center"></el-table-column>
         <el-table-column prop="status" label="status" width="180" align="center"></el-table-column>
+        <el-table-column prop="codeType" label="codeType" width="180" align="center"></el-table-column>
         
 
     </el-table>
@@ -37,7 +38,8 @@ import { suppliersGet } from '@/api/role'
                     "status": "PASS",
                     "devices": [],
                     "priority": 0,
-                    "user": {}
+                    "user": {},
+                    'codeType':''
                     }
                 ],
                 currentPage:1

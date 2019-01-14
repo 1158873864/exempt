@@ -14,7 +14,7 @@
         <el-table-column prop="status" label="状态" ></el-table-column>
         <el-table-column prop="supervisor" label="主管" ></el-table-column>
         <!-- <el-table-column prop="verifyCode" label="verifyCode" width="180"></el-table-column> -->
-        <el-table-column label="操作" fixed="right" >
+        <el-table-column label="操作" fixed="right" width="280" >
             <template scope="scope">
                 <el-button size="small"
                         @click="openDialog(scope.$index,scope.row)">修改</el-button>

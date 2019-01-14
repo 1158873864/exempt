@@ -42,6 +42,6 @@ public class DeviceDataServiceImpl implements DeviceDataService {
 
     @Override
     public Device findByImei(String imei) {
-        return findByImei(imei);
+        return deviceDao.findDeviceByImei(imei);
     }
 }

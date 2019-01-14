@@ -20,10 +20,13 @@ export function codeInfo(id) {
         method: 'get'
     })
 }
-export function codeDelete(id) {
+export function codeDelete(id,verifyCode) {
     return request({
         url: '/company/code/delete/'+id,
-        method: 'get'
+        method: 'get',
+        params:{
+          verifyCode
+        }
     })
 }
 export function permissionAllocate(post,permission) { 
@@ -119,11 +122,12 @@ export function cardsGet() {
         method: 'get',
   })
 }
-export function cardDelete(id) {
+export function cardDelete(id,verifyCode) {
   console.log(id)
   return request({
       url: '/company/card/delete/'+id,
       method: 'get',
+      params:{ verifyCode }
   })
 }
 /**

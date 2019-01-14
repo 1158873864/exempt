@@ -19,10 +19,6 @@
             <el-form-item label="status">
                     <el-input v-model="form.status"></el-input>
             </el-form-item>
-          <el-form-item>
-          <el-button type="primary" @click="onSubmit('form')">添加</el-button>
-          <el-button>取消</el-button>
-        </el-form-item>
       </el-form>
         </div>
       </template>

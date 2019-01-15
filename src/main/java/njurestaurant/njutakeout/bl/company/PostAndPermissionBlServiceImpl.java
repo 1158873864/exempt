@@ -62,6 +62,7 @@ public class PostAndPermissionBlServiceImpl implements PostAndPermissionBlServic
     public PostAndPermissionResponse getPostAndPermissionsByPost(String post) {
         List<PostAndPermission> postAndPermissionList = postAndPermissionDataService.findPostAndPermissionsByPost(post);
         List<String> permissions = new ArrayList<>();
+        if(postAndPermissionList.size() ==0) return null;
         for(PostAndPermission p : postAndPermissionList) {
             permissions.add(p.getPermission());
         }

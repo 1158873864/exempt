@@ -3,7 +3,6 @@ export function login(username, password) {
   return request({
     url: '/account/login',
     method: 'post',
-    params: { username, password },
     data: {
       username,
       password

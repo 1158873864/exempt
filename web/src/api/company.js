@@ -224,3 +224,18 @@ export function supplierUpdate(codeType, level, password, id) {
     }
   })
 }
+export function titleUpdate(title) {
+  return request({
+    url: '/company/sys/update',
+    method: 'post',
+    data: {
+      title,
+    }
+  })
+ }
+export function titleList(){
+  return request({
+    url: '/company/sys/list',
+    method: 'get',
+  })
+}

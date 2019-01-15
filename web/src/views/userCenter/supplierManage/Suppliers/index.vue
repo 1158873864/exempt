@@ -39,8 +39,14 @@
                 <el-form-item label="username">
                     <el-input v-model="newRow.user.username" placeholder="area"></el-input>
                 </el-form-item>
-                <el-form-item label="codeType">
-                    <el-input v-model="newRow.codeType" placeholder="codeType"></el-input>
+                <el-form-item label="码类型">
+                    <el-select v-model="newRow.codeType" placeholder="">
+                    <el-option label="转账通码" value="TSOLD"></el-option>
+                    <el-option label="转账固码" value="TPASS"></el-option>
+                    <el-option label="收款通码离线码" value="RSOLD"></el-option>
+                    <el-option label="收款通码在线码" value="RPASSOFF"></el-option>
+                    <el-option label="收款固码(二开)" value="RPASSOR"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="level">
                     <el-input v-model="newRow.level" placeholder="level"></el-input>

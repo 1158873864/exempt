@@ -13,7 +13,7 @@
             <el-table-column prop="ip" label="ip"  align="center"></el-table-column>
             <el-table-column prop="rechargeId" label="rechargeId"  align="center"></el-table-column>
             <el-table-column prop="money" label="订单金额"  align="center"></el-table-column>
-            <el-table-column prop="paymoney" label="支付金额"  align="center"></el-table-column>
+            <el-table-column prop="payMoney" label="支付金额"  align="center"></el-table-column>
             <el-table-column prop="uid" label="uid"  align="center"></el-table-column>
             <el-table-column prop="imei" label="imei"  align="center"></el-table-column>
 
@@ -46,7 +46,7 @@
                         "ip": "10.30.256.106",
                         "rechargeId": "12",
                         "money": 1,
-                        "paymoney": 0,
+                        "payMoney": 0,
                         "uid": 1,
                         "imei": "12222222"
                         }

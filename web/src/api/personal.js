@@ -27,3 +27,27 @@ export function cardsGetOne(uid) {
     method: 'get'
   })
 }
+export function qrCodeGet(id, ip, memo, merchantId, money, sign, time ) { 
+  return request({
+    url:'/qrCode/get',
+    method: 'post',
+    data:{
+      id,
+      ip,
+      memo,
+      merchantId,
+      money,
+      sign,
+      time
+    }
+  })
+}
+export function redirect(url,orderId){
+  return request({
+    url: url,
+    method: 'get',
+    params:{
+      orderId
+    }
+  })
+}

@@ -4,12 +4,14 @@ import com.amazonaws.util.json.JSONObject;
 import njurestaurant.njutakeout.bl.order.TransactionBlServiceImpl;
 import njurestaurant.njutakeout.dataservice.account.MerchantDataService;
 import njurestaurant.njutakeout.dataservice.account.SupplierDataService;
+import njurestaurant.njutakeout.dataservice.account.UserDataService;
 import njurestaurant.njutakeout.dataservice.app.AlipayDataService;
 import njurestaurant.njutakeout.dataservice.app.AlipayOrderDataService;
 import njurestaurant.njutakeout.dataservice.app.DeviceDataService;
 import njurestaurant.njutakeout.dataservice.order.PlatformOrderDataService;
 import njurestaurant.njutakeout.entity.account.Merchant;
 import njurestaurant.njutakeout.entity.account.Supplier;
+import njurestaurant.njutakeout.entity.account.User;
 import njurestaurant.njutakeout.entity.app.Alipay;
 import njurestaurant.njutakeout.entity.app.Device;
 import njurestaurant.njutakeout.entity.order.AlipayOrder;
@@ -44,14 +46,16 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private final AlipayOrderDataService alipayOrderDataService;
     private final PlatformOrderDataService platformOrderDataService;
     private final MerchantDataService merchantDataService;
+    private final UserDataService userDataService;
 
     @Autowired
-    public WebSocketHandler(DeviceDataService deviceDataService, AlipayDataService alipayDataService, AlipayOrderDataService alipayOrderDataService, PlatformOrderDataService platformOrderDataService, MerchantDataService merchantDataService) {
+    public WebSocketHandler(DeviceDataService deviceDataService, AlipayDataService alipayDataService, AlipayOrderDataService alipayOrderDataService, PlatformOrderDataService platformOrderDataService, MerchantDataService merchantDataService, UserDataService userDataService) {
         this.deviceDataService = deviceDataService;
         this.alipayDataService = alipayDataService;
         this.alipayOrderDataService = alipayOrderDataService;
         this.platformOrderDataService = platformOrderDataService;
         this.merchantDataService = merchantDataService;
+        this.userDataService = userDataService;
     }
 
     public static Map<String, Thread> mapThread = new HashMap<>();
@@ -74,7 +78,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-
+    	System.out.println("123");
+    	session.sendMessage(new TextMessage(message.getPayload()));
 		JSONObject jsonObject = new JSONObject(message.getPayload());
         String cmd = jsonObject.getString("cmd");
         String type = jsonObject.getString("type");
@@ -98,7 +103,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 device.setOnline(1);    // 支付宝已登录
                 deviceDataService.saveDevice(device);
                 // 入库成功
-                session.sendMessage(new TextMessage(new DeviceUpdateResponse(null, imei).toString()));
+                session.sendMessage(new TextMessage(new DeviceUpdateResponse("", imei).toString()));
             }
         }
 
@@ -113,20 +118,32 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
             Device device = deviceDataService.findByImei(imei);
             Supplier supplier = device.getSupplier();
+            System.out.println(jsonObject);
             if(supplier.getCodeType() == CodeType.RPASSQR || supplier.getCodeType() == CodeType.RPASSOFF) { //供码用户提供收款码
+            	System.out.println("1:" + supplier.getCodeType() + supplier.getId() + " " + imei);
                 // 提取imei，根据imei查询未付款的订单号，根据订单号把订单状态更新成已成功付款，保留订单金额，新插入实收金额。
-                PlatformOrder platformOrders = platformOrderDataService.findByImeiAndState(device.getImei(), OrderState.WAITING_FOR_PAYING);
+                PlatformOrder platformOrders = platformOrderDataService.findByImeiAndState(imei, OrderState.WAITING_FOR_PAYING);
                 if(platformOrders != null) {
                     platformOrders.setState(OrderState.PAID);
                     platformOrders.setPayMoney(money);
                     platformOrderDataService.savePlatformOrder(platformOrders);
-                    AlipayOrder alipayOrder = new AlipayOrder(imei, orderId, money, memo, FormatDateTime.TenTimestampToDate(Integer.valueOf(time)));
+                    AlipayOrder alipayOrder = new AlipayOrder(imei, orderId, money, memo, FormatDateTime.ThirdTimestampToDate(Long.parseLong(time)));
                     alipayOrderDataService.saveAlipayOrder(alipayOrder);
-                    Merchant merchant = merchantDataService.findMerchantById(platformOrders.getUid());
-                    merchant.setBalance(merchant.getBalance() + money);
+                    User user = userDataService.getUserById(platformOrders.getUid());
+                   
+                    if(user != null) {
+                    	Merchant merchant = merchantDataService.findMerchantById(user.getTableId());
+                    	if(merchant != null) {
+                    		merchant.setBalance(merchant.getBalance() + money);
+                            merchantDataService.saveMerchant(merchant);
+                    	}
+                    	
+                    }
+                
                 }
             } else if(supplier.getCodeType() == CodeType.TPASS || supplier.getCodeType() == CodeType.TSOLID) {  // 供码用户提供转账码
                 // 提取memo备注里的值（99.9%是订单号）。查询订单表中是否存在一个与memo的值匹配的订单号，如果存在，则把订单状态更新成已成功付款，保留订单金额，新插入实收金额。
+            	System.out.println("2:" + supplier.getCodeType());
                 PlatformOrder platformOrder = platformOrderDataService.findByNumber(memo);
                 if(platformOrder != null) {
                     platformOrder.setState(OrderState.PAID);
@@ -134,9 +151,19 @@ public class WebSocketHandler extends TextWebSocketHandler {
                     platformOrderDataService.savePlatformOrder(platformOrder);
                     AlipayOrder alipayOrder = new AlipayOrder(imei, orderId, money, memo, FormatDateTime.TenTimestampToDate(Integer.valueOf(time)));
                     alipayOrderDataService.saveAlipayOrder(alipayOrder);
-                    Merchant merchant = merchantDataService.findMerchantById(platformOrder.getUid());
-                    merchant.setBalance(merchant.getBalance() + money);
+                    User user = userDataService.getUserById(platformOrder.getUid());
+                    
+                    if(user != null) {
+                    	Merchant merchant = merchantDataService.findMerchantById(user.getTableId());
+                    	if(merchant != null) {
+                    		merchant.setBalance(merchant.getBalance() + money);
+                            merchantDataService.saveMerchant(merchant);
+                    	}
+                    	
+                    }
                 }
+            } else {
+            	System.out.println("77:");
             }
 
 //        	String imei = jsonObject.getString("imei");
@@ -187,8 +214,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        socketSessionMap.put(session.getAttributes().get("imei").toString(), session);
-        System.out.println("用户 " + session.getId() + " 已建立连接");
+       // socketSessionMap.put(session.getAttributes().get("imei").toString(), session);
+    	String imei=(String) session.getAttributes().get("imei");
+    	System.out.println(imei);
+    	socketSessionMap.put(imei, session);
+        System.out.println("用户 " + imei+ " 已建立连接");
         // session.sendMessage(new TextMessage("@"+Settings.SUCCESS_CODE + ""));
     }
 
@@ -201,19 +231,20 @@ public class WebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        String imei = null;
-        for (Map.Entry<String, WebSocketSession> m : socketSessionMap.entrySet()) {
-            if(m.getValue().toString().equals(session.toString())) {
-                imei = m.getKey();
-                break;
-            }
-        }
+        String imei = (String)session.getAttributes().get("imei");
+//        for (Map.Entry<String, WebSocketSession> m : socketSessionMap.entrySet()) {
+//            if(m.getValue().toString().equals(session.toString())) {
+//                imei = m.getKey();
+//                break;
+//            }
+//        }
+
         Device device = deviceDataService.findByImei(imei);
         if(device != null) {
             device.setOnline(0);
             deviceDataService.saveDevice(device);
         }
-        System.out.println("用户 " + session.getId() + " 已关闭连接。 当前状态：" + status);
+        System.out.println("用户 " + imei + " 已关闭连接。 当前状态：" + status);
 
     }
 
@@ -230,7 +261,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         if (session.isOpen()) {
             session.close();
         }
-        System.out.println("用户 " + session.getId() + " 已关闭连接");
+        System.out.println("用户 " + session.getAttributes().get("imei")+ " 已关闭连接");
 
     }
 

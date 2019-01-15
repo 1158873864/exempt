@@ -115,7 +115,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                 int randomNumber;
                 Supplier chosenSupplier = null;
                 Device chosenDevice = null;
-
+                
                 chosenSupplier = supplierDataService.findSupplierById(4);
                 List<Device> devices = chosenSupplier.getDevices();
                 if (devices == null) return null;
@@ -148,8 +148,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                     }
                 }
 
-
-                /*
+/*
                 while (len > 0) {
                     // 随机挑选一个供码者
                     randomNumber = random.nextInt(len);
@@ -264,7 +263,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
         long diff = now.getTime() - date.getTime();
         int minutes = (int) (diff / (1000 * 60));
         // 预设失效时间为2分钟
-        if (minutes > 2) {
+        if (minutes > 10) {
             return true;
         } else {
             return false;
@@ -295,8 +294,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
         WebSocketHandler.mapThread.put(imei, thread);
         thread.start();
         TextMessage textMessage = WebSocketHandler.msgMap.get(imei);
-        if (textMessage == null || StringUtils.isBlank(textMessage.getPayload())) {
-
+        if(textMessage == null || StringUtils.isBlank(textMessage.getPayload()))	return null;
             try {
                 JSONObject jsonObject = new JSONObject(textMessage.getPayload());
                 String cmd = jsonObject.getString("cmd");
@@ -312,10 +310,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
             } catch (JSONException e) {
                 return null;
             }
-        } else {
-            return null;
         }
-    }
 
     @Override
     public PlatformOrder findPlatformOrderByImeiAndState(String imei, OrderState orderState) {

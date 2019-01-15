@@ -4,6 +4,7 @@ import njurestaurant.njutakeout.config.websocket.WebSocketHandler;
 import njurestaurant.njutakeout.config.websocket.WebSocketHandshakeInterceptor;
 import njurestaurant.njutakeout.dataservice.account.MerchantDataService;
 import njurestaurant.njutakeout.dataservice.account.SupplierDataService;
+import njurestaurant.njutakeout.dataservice.account.UserDataService;
 import njurestaurant.njutakeout.dataservice.app.AlipayDataService;
 import njurestaurant.njutakeout.dataservice.app.AlipayOrderDataService;
 import njurestaurant.njutakeout.dataservice.app.DeviceDataService;
@@ -35,14 +36,16 @@ public class WebSocketConfig extends WebMvcConfigurerAdapter implements WebSocke
     private final AlipayOrderDataService alipayOrderDataService;
     private final PlatformOrderDataService platformOrderDataService;
     private final MerchantDataService merchantDataService;
+    private final UserDataService userDataService;
 
     @Autowired
-    public WebSocketConfig(DeviceDataService deviceDataService, AlipayDataService alipayDataService, AlipayOrderDataService alipayOrderDataService, PlatformOrderDataService platformOrderDataService, MerchantDataService merchantDataService) {
+    public WebSocketConfig(DeviceDataService deviceDataService, AlipayDataService alipayDataService, AlipayOrderDataService alipayOrderDataService, PlatformOrderDataService platformOrderDataService, MerchantDataService merchantDataService, UserDataService userDataService) {
         this.deviceDataService = deviceDataService;
         this.alipayDataService = alipayDataService;
         this.alipayOrderDataService = alipayOrderDataService;
         this.platformOrderDataService = platformOrderDataService;
         this.merchantDataService = merchantDataService;
+        this.userDataService = userDataService;
     }
 
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
@@ -50,7 +53,7 @@ public class WebSocketConfig extends WebMvcConfigurerAdapter implements WebSocke
         String websocket_url = WEB_SOCKET_URL;     				        //设置websocket的地址
         registry.addHandler(webSocketHandler(), websocket_url)
         		.setAllowedOrigins("*")         //注册Handler
-                .addInterceptors(new WebSocketHandshakeInterceptor());   //注册Interceptor
+                .addInterceptors(new WebSocketHandshakeInterceptor());  	 //注册Interceptor
 
         // 2.注册SockJS，提供SockJS支持(主要是兼容ie8)
         String sockjs_url = SOCKJS_URL;									//设置sockjs的地址
@@ -62,6 +65,6 @@ public class WebSocketConfig extends WebMvcConfigurerAdapter implements WebSocke
 
     @Bean
     public TextWebSocketHandler webSocketHandler() {
-        return new WebSocketHandler(deviceDataService, alipayDataService, alipayOrderDataService, platformOrderDataService, merchantDataService);
+        return new WebSocketHandler(deviceDataService, alipayDataService, alipayOrderDataService, platformOrderDataService, merchantDataService, userDataService);
     }
 }

@@ -98,4 +98,20 @@ public class FormatDateTime {
         }
         return date;
     }
+    
+    /**
+     * 13位时间戳转换成date
+     * @param time 13位时间戳
+     * @return
+     */
+    public static Date ThirdTimestampToDate(Long time){
+        Timestamp ts = new Timestamp(time);
+        Date date = new Date();
+        try {
+            date = ts;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
 }

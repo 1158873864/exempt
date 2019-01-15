@@ -1,7 +1,14 @@
 <template>
         <div class="app-container documentation-container">
-                <a class="document-btn" target="_blank" >主页名</a>
-                <label v-model="title" class="titlestyle">{{title}}</label>
+                <label class="titlestyle">{{ title }}</label>
+                <el-form :label-position="labelPosition" class="demo-form-inline">
+                    <el-form-item label="修改主页名">
+                        <el-input v-model="newTitle" style="width: 30%;"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="updateTitle">修改</el-button>
+                    </el-form-item>
+                </el-form>
         </div>
 </template>
 
@@ -10,10 +17,10 @@
     export default {
         data() {
             return {
-                title: {
-                    title:"titl"
-                },
-                dialogFormVisible:false
+                title: '',
+                dialogFormVisible:false,
+                newTitle:'',
+                labelPosition: 'right',
             }
 
         },
@@ -27,16 +34,31 @@
             getTitle() {
                 titleList().then(response=>{
                     console.log(response,'sdll')
-                     if(response.data.infoCod){
+                     if(response.code!=200){
                         this.$message({
                             message: response.data.description,
                             type: 'warning'
                         });
                     }else{
-                       this.title = response.data;
+                       this.title = response.data[0].title;
                     }
                 })
-
+            },
+            updateTitle(){
+                titleUpdate(this.newTitle).then(response=>{
+                    if(response.code!=200){
+                        this.$message({
+                            message: response.data.description,
+                            type: 'warning'
+                        });
+                    }else{
+                       this.title = this.newTitle;
+                       this.$message({
+                            message: '修改成功',
+                            type: 'success'
+                        });
+                    }
+                })
             }
 
         }

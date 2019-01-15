@@ -37,10 +37,12 @@ public class AppController {
 
 
     @ApiOperation(value = "app用户登录", notes = "供码用户在app上登录")
-    @RequestMapping(value = "app/login", method = RequestMethod.POST)
-    public ResponseEntity<Response> appLogin(@RequestBody AppLoginParameters appLoginParameters) {
+    @RequestMapping(value = "app/login", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Response> appLogin(@RequestParam("username")String username,@RequestParam("password")String password,@RequestParam("imei")String imei) {
+    	System.out.println("12");
         try {
-            return new ResponseEntity<>(new JSONResponse(200, userBlService.appLogin(appLoginParameters.getUsername(), appLoginParameters.getPassword(), appLoginParameters.getImei())), HttpStatus.OK);
+            return new ResponseEntity<>(new JSONResponse(200, userBlService.appLogin(username,password,imei)), HttpStatus.OK);
         } catch (WrongUsernameOrPasswordException e) {
             return new ResponseEntity<>(new JSONResponse(10003, e.getResponse()), HttpStatus.OK);
         } catch (CannotRegisterException e) {

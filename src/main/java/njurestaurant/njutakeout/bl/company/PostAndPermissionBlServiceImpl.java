@@ -1,6 +1,5 @@
 package njurestaurant.njutakeout.bl.company;
 
-import javafx.geometry.Pos;
 import njurestaurant.njutakeout.blservice.company.PostAndPermissionBlService;
 import njurestaurant.njutakeout.dataservice.account.PostAndPermissionDataService;
 import njurestaurant.njutakeout.dataservice.company.PostDataService;
@@ -63,6 +62,7 @@ public class PostAndPermissionBlServiceImpl implements PostAndPermissionBlServic
     public PostAndPermissionResponse getPostAndPermissionsByPost(String post) {
         List<PostAndPermission> postAndPermissionList = postAndPermissionDataService.findPostAndPermissionsByPost(post);
         List<String> permissions = new ArrayList<>();
+        if(postAndPermissionList.size() ==0) return null;
         for(PostAndPermission p : postAndPermissionList) {
             permissions.add(p.getPermission());
         }

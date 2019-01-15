@@ -1,13 +1,24 @@
 <template>
-  <div>代理报表</div>
+  <div class="chart-container">
+      <div>代理报表</div>
+    <chart height="100%" width="100%"/>
+  </div>
 </template>
 
 <script>
-    export default {
-        name: "index"
-    }
+import Chart from '@/components/Charts/lineMarker'
+
+export default {
+  name: 'LineChart',
+  components: { Chart }
+}
 </script>
 
 <style scoped>
-
+.chart-container{
+  position: relative;
+  width: 100%;
+  height: calc(100vh - 84px);
+}
 </style>
+

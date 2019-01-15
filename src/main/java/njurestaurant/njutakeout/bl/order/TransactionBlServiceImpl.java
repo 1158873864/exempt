@@ -53,8 +53,8 @@ public class TransactionBlServiceImpl implements TransactionBlService {
     private final DeviceDataService deviceDataService;
 
 
-    private final String TRANSFERSOLIDURL = "alipays://platformapi/startapp?appId=20000123%26actionType=scan%26biz_data={\"s\": \"money\",\"u\":\"";
-    private final String TRANSFERPASSURL = "alipays://platformapi/startapp?appId=09999988%26actionType=toAccount%26sourceId=contactAmount%26chatLoginId=%26chatUserId=";
+    private final String TRANSFERSOLIDURL = "alipays://platformapi/startapp?appId=20000123&actionType=scan&biz_data={\"s\": \"money\",\"u\":\"";
+    private final String TRANSFERPASSURL = "alipays://platformapi/startapp?appId=09999988&actionType=toAccount&sourceId=contactAmount&chatLoginId=&chatUserId=";
 
 
     @Autowired
@@ -115,7 +115,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                 int randomNumber;
                 Supplier chosenSupplier = null;
                 Device chosenDevice = null;
-                
+                /*
                 chosenSupplier = supplierDataService.findSupplierById(4);
                 List<Device> devices = chosenSupplier.getDevices();
                 if (devices == null) return null;
@@ -146,9 +146,8 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                         chosenDevice.setOnline(0);
                         deviceDataService.saveDevice(chosenDevice);
                     }
-                }
+                }*/
 
-/*
                 while (len > 0) {
                     // 随机挑选一个供码者
                     randomNumber = random.nextInt(len);
@@ -180,7 +179,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                             if (StringUtils.isBlank(alipay.getPassQrCode())) {
                                 alipay.setPassQrCode(getReceiptCodeResponse.getQrcode());
                                 if (StringUtils.isBlank(alipay.getPassOffCode())) {
-                                    alipay.setSolidCode(getReceiptCodeResponse.getOffcode());
+                                    alipay.setPassOffCode(getReceiptCodeResponse.getOffcode());
                                 }
                                 alipayDataService.saveAlipay(alipay);
                             }
@@ -192,7 +191,11 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                         } else dLen--;
                     }
 
-                    if (dLen == 0) continue; // 没有任何一个合适的设备
+                    if (dLen == 0) {
+                    	len--;
+                    	continue; // 没有任何一个合适的设备
+                    	
+                    }
 
                     // 找到一个设备支付宝账号在线的供码者
                     // 检查供码者设定的供码类型
@@ -201,7 +204,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                         continue;
                     } else break;
                 }
-                */
+                
                 // 没有一个供码者符合条件, 返回失败
                 if (len == 0) return null;
                 // 订单号生成规则： 1+10位的时间戳（从web端接收的）+两位随机数+用户的userid后四位不足补0 （支付宝通道则第一位为1）
@@ -213,24 +216,28 @@ public class TransactionBlServiceImpl implements TransactionBlService {
 
                 // 检查供码者设定的供码类型, 获取收款码
                 String qrCode = null;
+          
                 switch (chosenSupplier.getCodeType()) {
                     case RPASSOFF: // 收款通码离线码
                         qrCode = alipayDataService.findById(chosenDevice.getAlipayId()).getPassOffCode();
+                        System.out.println("off:" + qrCode);
                         break;
                     case RPASSQR:   //收款通码在线码
+                    	
                         qrCode = alipayDataService.findById(chosenDevice.getAlipayId()).getPassQrCode();
+                        System.out.println(qrCode);
                         break;
                     case RSOLID:    // 收款固码
                         qrCode = alipayDataService.findById(chosenDevice.getAlipayId()).getSolidCode();
                         break;
                     case TPASS: //转账通码
-                        qrCode = TRANSFERPASSURL + alipayDataService.findById(chosenDevice.getAlipayId()).getUserId() + "%26money=" + getQrCodeParameters.getMoney() + "%26amount=%26memo=" + orderId;
+                        qrCode = TRANSFERPASSURL + alipayDataService.findById(chosenDevice.getAlipayId()).getUserId() + "&money=" + getQrCodeParameters.getMoney() + "&amount=&memo=" + orderId;
                         break;
                     case TSOLID:    //转账固码
                         qrCode = TRANSFERSOLIDURL + alipayDataService.findById(chosenDevice.getAlipayId()).getUserId() + "\",\"a\":\"" + money + "\",\"m\":\"" + orderId + "\"}";
                         break;
                 }
-                PlatformOrder platformOrder = new PlatformOrder(orderId, OrderState.WAITING_FOR_PAYING, date, qrCode, getQrCodeParameters.getIp(), getQrCodeParameters.getId(), money, user.getId(), null);
+                PlatformOrder platformOrder = new PlatformOrder(orderId, OrderState.WAITING_FOR_PAYING, date, qrCode, getQrCodeParameters.getIp(), getQrCodeParameters.getId(), money, user.getId(), chosenDevice.getImei());
                 platformOrderDataService.savePlatformOrder(platformOrder);
                 return new GetQrCodeResponse("/redirect", "success", orderId);
             }
@@ -279,10 +286,19 @@ public class TransactionBlServiceImpl implements TransactionBlService {
      * @return
      */
     private GetReceiptCodeResponse checkAlipayOnline(String imei, String userId) {
+    	
+//    	Map<String,Integer> map = new HashMap<>();
+//    	WebSocketHandler.sendMessageToUser(imei, new TextMessage(String.valueOf(new CheckOnlineParameters(imei, userId))));
+//    	while((Integer)map.get(imei) == 0) {
+//    		if((Integer)map.get(imei) == 1) {
+//    			break;
+//    		}
+//    	}
+    	WebSocketHandler.sendMessageToUser(imei, new TextMessage(String.valueOf(new CheckOnlineParameters(imei, userId))));
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                WebSocketHandler.sendMessageToUser(imei, new TextMessage(String.valueOf(new CheckOnlineParameters(imei, userId))));
+                System.out.println("1");
                 try {
                     //线程休眠10s
                     Thread.sleep(1000000);
@@ -294,19 +310,21 @@ public class TransactionBlServiceImpl implements TransactionBlService {
         WebSocketHandler.mapThread.put(imei, thread);
         thread.start();
         TextMessage textMessage = WebSocketHandler.msgMap.get(imei);
+        System.out.println(textMessage.toString());
         if(textMessage == null || StringUtils.isBlank(textMessage.getPayload()))	return null;
+        //{"cmd":"passcode","imei":"304517300097652","type":"alipay","status":"success","userid":"2088022126490523","qrcode":"","offqrcode":""}
             try {
                 JSONObject jsonObject = new JSONObject(textMessage.getPayload());
                 String cmd = jsonObject.getString("cmd");
                 String type = jsonObject.getString("type");
                 String im = jsonObject.getString("imei");
-                String msg = jsonObject.getString("msg");
+//                String msg = jsonObject.getString("msg");
                 String userid = jsonObject.getString("userid");
                 String qrCode = jsonObject.getString("qrcode");
-                String offQrCode = jsonObject.getString("offQrCode");
+                String offQrCode = jsonObject.getString("offqrcode");
                 String status = jsonObject.getString("status");
 
-                return new GetReceiptCodeResponse(cmd, type, im, status, msg, userid, qrCode, offQrCode);
+                return new GetReceiptCodeResponse(cmd, type, im, status, "msg", userid, qrCode, offQrCode);
             } catch (JSONException e) {
                 return null;
             }

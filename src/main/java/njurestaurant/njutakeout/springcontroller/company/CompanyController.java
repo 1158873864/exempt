@@ -1,7 +1,6 @@
 package njurestaurant.njutakeout.springcontroller.company;
 
 import io.swagger.annotations.*;
-import javafx.geometry.Pos;
 import njurestaurant.njutakeout.blservice.account.MerchantBlService;
 import njurestaurant.njutakeout.blservice.account.SupplierBlService;
 import njurestaurant.njutakeout.blservice.company.*;

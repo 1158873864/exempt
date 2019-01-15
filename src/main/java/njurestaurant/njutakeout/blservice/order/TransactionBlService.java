@@ -13,6 +13,6 @@ public interface TransactionBlService {
     void addDevice();
 
     String findQrCodeByOrderId(String orderid) throws WrongIdException;
-
+    
     PlatformOrder findPlatformOrderByImeiAndState(String imei, OrderState orderState);
 }

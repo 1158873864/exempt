@@ -9,6 +9,18 @@ public class CheckOnlineParameters {
     private String type = "alipay";
     private String imei;
     private String userid;
+    
+    @Override
+    public String toString() {
+    	// TODO Auto-generated method stub
+            return "{" +
+                    "cmd='" + cmd + '\'' +
+                    ", type='" + type + '\'' +
+                    ", imei='" + imei + '\'' +
+                    ", userid='" + userid + '\'' +
+                    '}';
+        
+    }
 
     public CheckOnlineParameters(String imei, String userid) {
         this.imei = imei;

@@ -8,7 +8,11 @@
         style="width: 100%">
         <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column>
         <el-table-column prop="priority" label="等级"  align="center"></el-table-column>
-        <el-table-column prop="devices_team" label="设备/状态"  align="center"></el-table-column>
+        <el-table-column prop="devices_team" label="设备/状态"  align="center">
+           <template slot-scope="scope">
+               <el-tag :type="device.online?'success':'info'" v-for="device in scope.row.devices" :key="device.device_team">{{ device.device_team }}</el-tag>
+            </template>
+        </el-table-column>
         <el-table-column prop="status" label="状态"  align="center"></el-table-column>
         <el-table-column label="操作" fixed="right" align="center" >
                 <template scope="scope" >
@@ -44,7 +48,6 @@
                 <el-form-item label="password">
                     <el-input v-model="newRow.password" placeholder="password"></el-input>
                 </el-form-item>
-               
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -67,7 +70,6 @@ import { suppliersGet,supplierUpdate } from '@/api/role'
                     "devices_team":" ",
                     }
                 ],
-                
                 newRow: {
                     "codeType": "",
                     "level": 0,
@@ -127,45 +129,22 @@ import { suppliersGet,supplierUpdate } from '@/api/role'
             getTeams(){
                 suppliersGet().then(response=>{
                     console.log(response,'sdll')
-                     if(response.data.infoCod){
+                     if(response.code!=200){
                         this.$message({
                             message: response.data.description,
                             type: 'warning'
                         });
                     }else{
-                        
-                        
                        this.teams = response.data;
-                       var i=0;
-                       var j=0;
-                       console.log(this.teams[2].devices.length);
-                       console.log(this.teams.length)
-                       for(j=0;j<this.teams.length;j++)
-                       {
-                           this.teams[j].devices_team=" ";
-                           for(i=0;i<this.teams[j].devices.length;i++)
-                           {
-                              if(this.teams[j].devices[i].online==1)
-                              {
-                                this.teams[j].devices_team=this.teams[j].devices_team+this.teams[j].devices[i].imei+'/在线,';
-                              }
-                              else{
-                                this.teams[j].devices_team=this.teams[j].devices_team+this.teams[j].devices[i].imei+'/离线,';
 
-                              }
-                           }
-                           console.log(this.teams[j].devices_team,'xxcc');
-                       }
-                       
+                        this.teams.forEach(el => {
+                            el.devices.forEach(de=>{
+                                console.log(de.imei)
+                                de.device_team = de.imei +' '+ (de.online?'在线':'离线');
+                            })
+                        });
                     }
                 })
-            },
-            handleChange(val) {
-                console.log(val);
-                  if(val==2)
-                {
-                    this.getTeams();
-                }
             }
         }
     }

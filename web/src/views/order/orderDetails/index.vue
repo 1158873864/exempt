@@ -3,11 +3,7 @@
         <div>所有订单</div>
             <el-table
             :data="teams.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-<<<<<<< HEAD
-            height="450"
-=======
             height="500"
->>>>>>> 40dce71b164d046a0e57cfb0ee915cabdec9ec27
             border
             style="width: 100%">
             <el-table-column prop="id" label="编号"  align="center"></el-table-column>
@@ -16,16 +12,12 @@
             <el-table-column prop="payCode" label="支付码"  align="center"></el-table-column>
             <el-table-column prop="ip" label="ip"  align="center"></el-table-column>
             <el-table-column prop="rechargeId" label="rechargeId"  align="center"></el-table-column>
-<<<<<<< HEAD
-            <el-table-column prop="money" label="金额"  align="center"></el-table-column>
-=======
             <el-table-column prop="money" label="订单金额"  align="center"></el-table-column>
             <el-table-column prop="paymoney" label="支付金额"  align="center"></el-table-column>
->>>>>>> 40dce71b164d046a0e57cfb0ee915cabdec9ec27
             <el-table-column prop="uid" label="uid"  align="center"></el-table-column>
             <el-table-column prop="imei" label="imei"  align="center"></el-table-column>
-            
-    
+
+
         </el-table>
         <div class="block">
             <el-pagination
@@ -40,7 +32,7 @@
         </div>
       </div>
     </template>
-    
+
     <script>
     import { ordersGet } from '@/api/order'
         export default {
@@ -53,12 +45,8 @@
                         "payCode": "sadfsadf",
                         "ip": "10.30.256.106",
                         "rechargeId": "12",
-<<<<<<< HEAD
-                        "money": 12.3,
-=======
                         "money": 1,
                         "paymoney": 0,
->>>>>>> 40dce71b164d046a0e57cfb0ee915cabdec9ec27
                         "uid": 1,
                         "imei": "12222222"
                         }
@@ -83,11 +71,7 @@
                     this.getTeams();
                 },
                 getTeams(){
-<<<<<<< HEAD
-                    adminsGet().then(response=>{
-=======
                     ordersGet().then(response=>{
->>>>>>> 40dce71b164d046a0e57cfb0ee915cabdec9ec27
                         console.log(response,'sdll')
                          if(response.data.infoCod){
                             this.$message({
@@ -99,12 +83,11 @@
                         }
                     })
                 },
-                
+
             }
         }
     </script>
-    
+
     <style scoped>
-    
+
     </style>
-    

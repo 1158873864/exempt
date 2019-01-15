@@ -3,13 +3,11 @@ package njurestaurant.njutakeout.parameters.user;
 public class SupplierAddParameters {
     private String username;
     private String password;
-    private String aplipayloginId;
     private int level;
 
-    public SupplierAddParameters(String username, String password, String aplipayloginId, int level) {
+    public SupplierAddParameters(String username, String password, int level) {
         this.username = username;
         this.password = password;
-        this.aplipayloginId = aplipayloginId;
         this.level = level;
     }
 
@@ -35,14 +33,6 @@ public class SupplierAddParameters {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getAplipayloginId() {
-        return aplipayloginId;
-    }
-
-    public void setAplipayloginId(String aplipayloginId) {
-        this.aplipayloginId = aplipayloginId;
     }
 }
 

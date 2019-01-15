@@ -2,8 +2,8 @@
     <div class="app-container">
         <div>添加岗位</div>
         <el-form :label-position="labelPosition" :model="postaddParameters" class="demo-form-inline">
-            <el-form-item label="post">
-                <el-input v-model="postaddParameters.post" placeholder="post"></el-input>
+            <el-form-item label="职位">
+                <el-input v-model="postaddParameters.post" placeholder="post" style="width: 30%;"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="postAdd">添加</el-button>

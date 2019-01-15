@@ -1,6 +1,6 @@
 import { login, logout, getInfo } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
-import { getUid ,setUid} from '../../utils/auth';
+import { getToken, setToken, removeToken,getRoles } from '@/utils/auth'
+import { getUid, setUid, setRoles} from '../../utils/auth';
 
 const user = {
   state: {
@@ -42,7 +42,6 @@ const user = {
           setUid(data.uid)
           commit('SET_TOKEN', data.token)
           commit('SET_UID', data.uid)
-          console.log(data.uid)
           resolve()
         }).catch(error => {
           reject(error)
@@ -53,15 +52,16 @@ const user = {
     // 获取用户信息
     GetInfo({ commit, state }) {                                                               
       return new Promise((resolve, reject) => {
-        getInfo(state.token).then(response => {
+        console.log('get info')
+        getInfo(state.uid).then(response => {
           const data = response.data
-          if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', data.roles)
+          var roles = ['404', '面板']
+          if (data.permissions && data.permissions.length > 0) { // 验证返回的roles是否是一个非空数组
+            roles = roles.concat(data.permissions)
+            commit('SET_ROLES', roles)
           } else {
             reject('getInfo: roles must be a non-null array !')
           }
-          commit('SET_NAME', data.name)
-          commit('SET_AVATAR', data.avatar)
           resolve(response)
         }).catch(error => {
           reject(error)

@@ -1,7 +1,7 @@
 package njurestaurant.njutakeout.bl.food;
 
-import njurestaurant.njutakeout.blservice.order.AlipayOrderService;
-import njurestaurant.njutakeout.dataservice.order.AlipayOrderDataService;
+import njurestaurant.njutakeout.blservice.order.AlipayOrderBlService;
+import njurestaurant.njutakeout.dataservice.app.AlipayOrderDataService;
 import njurestaurant.njutakeout.entity.order.AlipayOrder;
 import njurestaurant.njutakeout.parameters.order.OrderMsgParameters;
 import njurestaurant.njutakeout.response.order.AlipayOrderAddResponse;
@@ -9,11 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AlipayOrderServiceImpl implements AlipayOrderService {
+public class AlipayOrderBlServiceImpl implements AlipayOrderBlService {
     private final AlipayOrderDataService alipayOrderDataService;
 
     @Autowired
-    public AlipayOrderServiceImpl(AlipayOrderDataService alipayOrderDataService) {
+    public AlipayOrderBlServiceImpl(AlipayOrderDataService alipayOrderDataService) {
         this.alipayOrderDataService = alipayOrderDataService;
     }
 

@@ -2,8 +2,12 @@ package njurestaurant.njutakeout.bl.account;
 
 import net.sf.json.JSONObject;
 import njurestaurant.njutakeout.blservice.account.UserBlService;
+import njurestaurant.njutakeout.blservice.company.PostAndPermissionBlService;
 import njurestaurant.njutakeout.dataservice.account.*;
+import njurestaurant.njutakeout.dataservice.app.DeviceDataService;
 import njurestaurant.njutakeout.entity.account.*;
+import njurestaurant.njutakeout.entity.app.Device;
+import njurestaurant.njutakeout.entity.company.Post;
 import njurestaurant.njutakeout.exception.*;
 import njurestaurant.njutakeout.publicdatas.account.Role;
 import njurestaurant.njutakeout.response.Response;
@@ -37,6 +41,8 @@ public class UserBlServiceImpl implements UserBlService {
     private final SupplierDataService supplierDataService;
     private final JwtUserDetailsService jwtUserDetailsService;
     private final JwtService jwtService;
+    private final PostAndPermissionBlService postAndPermissionBlService;
+    private final DeviceDataService deviceDataService;
 
     @Value(value = "${wechat.url}")
     private String wechatUrl;
@@ -48,7 +54,7 @@ public class UserBlServiceImpl implements UserBlService {
     private String appSecret;
 
     @Autowired
-    public UserBlServiceImpl(UserDataService userDataService, AgentDataService agentDataService, MerchantDataService merchantDataService, StaffDataService staffDataService, SupplierDataService supplierDataService, JwtUserDetailsService jwtUserDetailsService, JwtService jwtService) {
+    public UserBlServiceImpl(UserDataService userDataService, AgentDataService agentDataService, MerchantDataService merchantDataService, StaffDataService staffDataService, SupplierDataService supplierDataService, JwtUserDetailsService jwtUserDetailsService, JwtService jwtService, PostAndPermissionBlService postAndPermissionBlService, DeviceDataService deviceDataService) {
         this.userDataService = userDataService;
         this.agentDataService = agentDataService;
         this.merchantDataService = merchantDataService;
@@ -56,6 +62,8 @@ public class UserBlServiceImpl implements UserBlService {
         this.supplierDataService = supplierDataService;
         this.jwtUserDetailsService = jwtUserDetailsService;
         this.jwtService = jwtService;
+        this.postAndPermissionBlService = postAndPermissionBlService;
+        this.deviceDataService = deviceDataService;
     }
 
     /**
@@ -84,10 +92,50 @@ public class UserBlServiceImpl implements UserBlService {
                 User user = userDataService.getUserByUsername(username);
                 JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(username);
                 String token = jwtService.generateToken(jwtUser, EXPIRATION);
-                return new UserLoginResponse(token, user.getRole(), user.getId());
+                String post = null;
+                switch (user.getRole()) {
+                    case 1:
+                        post = staffDataService.findStaffById(user.getTableId()).getPost();
+                        break;
+                    case 2:
+                        post = "代理商";
+                        break;
+                    case 3:
+                        post = "商户";
+                        break;
+                    case 4:
+                        post = "供码用户";
+                        break;
+                }
+
+                return new UserLoginResponse(token, user.getRole(), user.getId(), postAndPermissionBlService.getPostAndPermissionsByPost(post).getPermission());
             } else {
                 throw new WrongUsernameOrPasswordException();
             }
+        }
+    }
+
+    @Override
+    public SuccessResponse appLogin(String username, String password, String imei) throws WrongUsernameOrPasswordException, CannotRegisterException {
+        if (username.length() == 0) {
+            throw new CannotRegisterException();
+        }
+        if (userDataService.confirmPassword(username, password)) {
+            User user = userDataService.getUserByUsername(username);
+            JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(username);
+            String token = jwtService.generateToken(jwtUser, EXPIRATION);
+            if(user.getRole() == 4) {
+                Supplier supplier = supplierDataService.findSupplierById(user.getTableId());
+                Device device = deviceDataService.findByImei(imei);
+                if(device == null)  {
+                    device = new Device(imei, supplier);
+                    device.setOnline(0);
+                    deviceDataService.saveDevice(device);
+                }
+            }
+            return new SuccessResponse("login success");
+        } else {
+            throw new WrongUsernameOrPasswordException();
         }
     }
 
@@ -173,6 +221,7 @@ public class UserBlServiceImpl implements UserBlService {
 
     /**
      * check the username whether existent
+     *
      * @param username
      * @return
      */
@@ -181,36 +230,46 @@ public class UserBlServiceImpl implements UserBlService {
         return userDataService.isUserExistent(username);
     }
 
+    /**
+     * 根据用户id查找用户的信息
+     *
+     * @param id
+     * @return
+     */
     @Override
     public Response findUserInfoById(int id) {
         User user = userDataService.getUserById(id);
-        if(user == null) {
+        if (user == null) {
             return new WrongResponse(10130, "Wrong id.");
         } else {
             UserInfoResponse userInfoResponse = new UserInfoResponse();
-            if(user.getTableId() == 0) {
+            if (user.getTableId() == 0) {
                 return new WrongResponse(10130, "Wrong id.");
             }
-            if(user.getRole() == 1) {
+            if (user.getRole() == 1) {
                 Staff staff = staffDataService.findStaffById(user.getTableId());
                 staff.setUser(null);
                 userInfoResponse.setInfo(staff);
-                userInfoResponse.setRole(1);
+                userInfoResponse.setPost(staff.getPost());
+                userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost(staff.getPost()).getPermission());
             } else if (user.getRole() == 2) {
                 Agent agent = agentDataService.findAgentById(user.getTableId());
                 agent.setUser(null);
                 userInfoResponse.setInfo(agent);
-                userInfoResponse.setRole(2);
-            } else if(user.getRole() == 3) {
+                userInfoResponse.setPost("代理商");
+                userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost("代理商").getPermission());
+            } else if (user.getRole() == 3) {
                 Merchant merchant = merchantDataService.findMerchantById(user.getTableId());
                 merchant.setUser(null);
                 userInfoResponse.setInfo(merchant);
-                userInfoResponse.setRole(3);
-            } else if(user.getRole() == 4) {
+                userInfoResponse.setPost("商户");
+                userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost("商户").getPermission());
+            } else if (user.getRole() == 4) {
                 Supplier supplier = supplierDataService.findSupplierById(user.getTableId());
                 supplier.setUser(null);
                 userInfoResponse.setInfo(supplier);
-                userInfoResponse.setRole(4);
+                userInfoResponse.setPost("供码用户");
+                userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost("供码用户").getPermission());
             } else {
                 return new WrongResponse(10150, "Wrong role.");
             }
@@ -221,21 +280,21 @@ public class UserBlServiceImpl implements UserBlService {
     @Override
     public Response deleteUserById(int id) {
         User user = userDataService.getUserById(id);
-        if(user == null) {
+        if (user == null) {
             return new WrongResponse(10130, "Wrong id.");
         } else {
-            if(user.getTableId() == 0) {
+            if (user.getTableId() == 0) {
                 return new WrongResponse(10130, "Wrong id.");
             }
             UserDeleteResponse userDeleteResponse = new UserDeleteResponse(user.getId(), user.getTableId());
-            if(user.getRole() == 1) {
+            if (user.getRole() == 1) {
                 userDeleteResponse.setTableId(user.getTableId());
                 staffDataService.deleteStaffById(user.getTableId());
             } else if (user.getRole() == 2) {
                 agentDataService.deleteAgentById(user.getTableId());
-            } else if(user.getRole() == 3) {
+            } else if (user.getRole() == 3) {
                 merchantDataService.deleteMerchantById(user.getTableId());
-            } else if(user.getRole() == 4) {
+            } else if (user.getRole() == 4) {
                 supplierDataService.deleteSupplierById(user.getTableId());
             } else {
                 return new WrongResponse(10150, "Wrong role.");

@@ -1,25 +1,38 @@
 package njurestaurant.njutakeout.response.user;
 
+import njurestaurant.njutakeout.entity.company.Permission;
 import njurestaurant.njutakeout.response.Response;
 
+import java.util.List;
+
 public class UserInfoResponse extends Response {
-    private int role;
+    private String post;
+    private List<String> permissions;
     private Object info;
 
     public UserInfoResponse() {
     }
 
-    public UserInfoResponse(int role, Object info) {
-        this.role = role;
+    public UserInfoResponse(String post, List<String> permissions, Object info) {
+        this.post = post;
+        this.permissions = permissions;
         this.info = info;
     }
 
-    public int getRole() {
-        return role;
+    public String getPost() {
+        return post;
     }
 
-    public void setRole(int role) {
-        this.role = role;
+    public void setPost(String post) {
+        this.post = post;
+    }
+
+    public List<String> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermission(List<String> permissions) {
+        this.permissions = permissions;
     }
 
     public Object getInfo() {

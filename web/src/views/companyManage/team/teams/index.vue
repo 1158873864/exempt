@@ -6,19 +6,22 @@
         max-height="500"
         ref="table"
        >
-        <el-table-column prop="teamName" label="teamName" width="180"></el-table-column>
-        <el-table-column prop="addTime" label="addTime" width="180"></el-table-column>
-        <el-table-column prop="area" label="area" width="180"></el-table-column>
-        <el-table-column prop="id" label="id" width="180"></el-table-column>
-        <el-table-column prop="operator" label="operator" width="180"></el-table-column>
-        <el-table-column prop="status" label="status" width="180"></el-table-column>
-        <el-table-column prop="supervisor" label="supervisor" width="180"></el-table-column>
+        <el-table-column prop="teamName" label="团队名" ></el-table-column>
+        <el-table-column prop="addTime" label="创建时间" ></el-table-column>
+        <el-table-column prop="area" label="区域" ></el-table-column>
+        <el-table-column prop="id" label="序号" ></el-table-column>
+        <el-table-column prop="operator" label="操作者" ></el-table-column>
+        <el-table-column prop="status" label="状态" ></el-table-column>
+        <el-table-column prop="supervisor" label="主管" ></el-table-column>
         <!-- <el-table-column prop="verifyCode" label="verifyCode" width="180"></el-table-column> -->
-        <el-table-column label="操作" fixed="right" width="180">
+        <el-table-column label="操作" fixed="right" >
             <template scope="scope">
                 <el-button size="small"
                         @click="openDialog(scope.$index,scope.row)">修改</el-button>
+                        <el-button size="small"
+                        @click="operationDel(scope.$index,scope.row)">删除</el-button>
             </template>
+            
         </el-table-column>
 
     </el-table>
@@ -64,6 +67,7 @@
 
 <script>
 import { teamAdd,teamsGet,teamDelete,teamVerifyCodeCheck,teamUpdate } from '@/api/company'
+import store from '../../../../store'
     export default {
         data() {
             return {
@@ -106,10 +110,46 @@ import { teamAdd,teamsGet,teamDelete,teamVerifyCodeCheck,teamUpdate } from '@/ap
         },
         created(){
             this.getData();
+            console.log(store.getters.roles)
+            console.log(store.getters.uid)
         },
         methods: {
-            openDialog(index,row){
+            operationDel(index, row){
                 var verifyCode = '';
+                this.$prompt('请输入团队验证码', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    
+                }).then(({ value }) => {
+                    // this.$message({
+                    //     type: 'success',
+                    //     message: '你的邮箱是: ' + value
+                    // });
+                    verifyCode = value;
+                    this.operation(index, row,verifyCode);
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '取消输入'
+                    });       
+                })
+            },
+            operation(index,row,verifyCode){
+                teamDelete(row.id,verifyCode).then(response=>{
+                    console.log(response,'sdll')
+                     if(response.code!=200){
+                        this.$message({
+                            message: response.data.description,
+                            type: 'warning'
+                        });
+                    }else{
+                        this.teams.splice(index,1)
+
+                    }
+                })
+            },
+            openDialog(index,row){
+                var   verifyCode   = '';
                 var flag = false;
                 this.$prompt('请输入团队验证码', '提示', {
                         confirmButtonText: '确定',
@@ -118,10 +158,10 @@ import { teamAdd,teamsGet,teamDelete,teamVerifyCodeCheck,teamUpdate } from '@/ap
                         verifyCode = value;
                         this.checkVerify(index,row,verifyCode)
                     }).catch(() => {
-                    this.$message({
+                    /*this.$message({
                         type: 'info',
-                        message: '取消输入'
-                    });
+                        message: '操作成功'
+                    });*/
                 });
             },
             checkVerify(index, row,verifyCode) {

@@ -1,7 +1,10 @@
 package njurestaurant.njutakeout.blservice.account;
 
 import njurestaurant.njutakeout.entity.account.Supplier;
+import njurestaurant.njutakeout.exception.BlankInputException;
 import njurestaurant.njutakeout.exception.UsernameIsExistentException;
+import njurestaurant.njutakeout.exception.WrongIdException;
+import njurestaurant.njutakeout.parameters.user.SupplierUpdateParameters;
 import njurestaurant.njutakeout.publicdatas.account.SupplierState;
 import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.user.UserAddResponse;
@@ -25,4 +28,6 @@ public interface SupplierBlService {
     List<Supplier> findAllSuppliers();
 
     List<Supplier> findSupplierByState(SupplierState supplierState);
+
+    Supplier updateSupplier(int id, SupplierUpdateParameters supplierUpdateParameters) throws WrongIdException, BlankInputException;
 }

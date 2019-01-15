@@ -6,15 +6,15 @@
             height="450"
             border
             style="width: 100%">
-            <el-table-column prop="addTime" label="addTime" width="180" align="center"></el-table-column>
-            <el-table-column prop="alipay" label="alipay" width="80" align="center"></el-table-column>
-            <el-table-column prop="balance" label="balance" width="80" align="center"></el-table-column>
-            <el-table-column prop="name" label="name" width="100" align="center"></el-table-column>
-            <el-table-column prop="status" label="status" width="80" align="center"></el-table-column>
-            <el-table-column prop="superior" label="superior" width="80" align="center"></el-table-column>
-            <el-table-column prop="verifyCode" label="verifyCode" width="100" align="center"></el-table-column>
-            <el-table-column prop="wechat" label="wechat" width="100" align="center"></el-table-column>
-            <el-table-column label="操作" width="180" align="center">
+            <el-table-column prop="addTime" label="添加时间"  align="center"></el-table-column>
+            <el-table-column prop="alipay" label="支付宝"  align="center"></el-table-column>
+            <el-table-column prop="balance" label="余额"  align="center"></el-table-column>
+            <el-table-column prop="name" label="用户名"  align="center"></el-table-column>
+            <el-table-column prop="status" label="状态"  align="center"></el-table-column>
+            <el-table-column prop="superior" label="主管"  align="center"></el-table-column>
+            <el-table-column prop="verifyCode" label="验证码"  align="center"></el-table-column>
+            <el-table-column prop="wechat" label="微信"  align="center"></el-table-column>
+            <el-table-column label="操作" width="280" align="center">
                     <template scope="scope">
                         <el-button size="small"
                                 @click="approval(scope.$index,scope.row,1)">审批通过</el-button>

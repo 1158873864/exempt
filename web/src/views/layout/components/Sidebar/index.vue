@@ -17,6 +17,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import SidebarItem from './SidebarItem'
+import store from '../../../../store'
 
 export default {
   components: { SidebarItem },
@@ -25,7 +26,8 @@ export default {
       'sidebar'
     ]),
     routes() {
-      return this.$router.options.routes
+      return store.getters.addRouters
+      // return this.$router.options.routes
     },
     isCollapse() {
       return !this.sidebar.opened

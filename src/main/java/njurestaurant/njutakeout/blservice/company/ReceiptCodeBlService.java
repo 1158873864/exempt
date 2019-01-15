@@ -17,16 +17,16 @@ public interface ReceiptCodeBlService {
      * @param receiptCode
      * @return
      */
-    ReceiptCodeAddResponse addReceiptCode(ReceiptCode receiptCode);
+    ReceiptCode addReceiptCode(ReceiptCode receiptCode);
 
     /**
      * load all receipt code
      *
      * @return
      */
-    ReceiptCodeLoadResponse loadReceiptCodes();
+    List<ReceiptCodeLoadResponse> loadReceiptCodes();
 
     void delReceiptCode(int id);
 
-    ReceiptCode findReceiptCodeById(int id);
+    ReceiptCodeLoadResponse findReceiptCodeById(int id);
 }

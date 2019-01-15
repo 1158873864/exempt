@@ -10,6 +10,7 @@ import njurestaurant.njutakeout.parameters.company.StaffAddParameters;
 import njurestaurant.njutakeout.parameters.user.*;
 import njurestaurant.njutakeout.publicdatas.account.MerchantState;
 import njurestaurant.njutakeout.publicdatas.account.SupplierState;
+import njurestaurant.njutakeout.publicdatas.app.CodeType;
 import njurestaurant.njutakeout.response.JSONResponse;
 import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.SuccessResponse;
@@ -204,7 +205,7 @@ public class UserController {
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             User user = new User(supplierAddParameters.getUsername(), encoder.encode(supplierAddParameters.getPassword()), 4, new ArrayList<>());
-            Supplier supplier = new Supplier(user, supplierAddParameters.getAplipayloginId(), new Date(), SupplierState.CHECKING, new ArrayList<>(), supplierAddParameters.getLevel());
+            Supplier supplier = new Supplier(user, new Date(), SupplierState.CHECKING, new ArrayList<>(), supplierAddParameters.getLevel(), njurestaurant.njutakeout.publicdatas.app.CodeType.NONE);
             try {
                 UserAddResponse userAddResponse = supplierBlService.addSupplier(supplier);
                 user.setTableId(userAddResponse.getTableId());
@@ -213,6 +214,24 @@ public class UserController {
             } catch (UsernameIsExistentException e) {
                 return new ResponseEntity<>(new JSONResponse(10100,e.getResponse()), HttpStatus.OK);
             }
+        }
+    }
+
+    @ApiOperation(value = "更改供码用户信息", notes = "管理员修改供码用户信息")
+    @RequestMapping(value = "supplier/update/{id}", method = RequestMethod.POST)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> updateSupplier(@PathVariable("id")int id, @RequestBody SupplierUpdateParameters supplierUpdateParameters) {
+        try {
+            supplierBlService.updateSupplier(id, supplierUpdateParameters);
+            return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("update success")), HttpStatus.OK);
+        } catch (WrongIdException e) {
+            return new ResponseEntity<>(new JSONResponse(10160, e.getResponse()), HttpStatus.OK);
+        } catch (BlankInputException e) {
+            return new ResponseEntity<>(new JSONResponse(10170, new WrongResponse(10170, "输入错误")), HttpStatus.EXPECTATION_FAILED);
         }
     }
 

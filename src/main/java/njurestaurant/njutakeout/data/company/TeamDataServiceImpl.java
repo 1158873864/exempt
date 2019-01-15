@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TeamDataServiceImpl implements TeamDataService {
@@ -42,5 +43,17 @@ public class TeamDataServiceImpl implements TeamDataService {
     @Override
     public List<Team> findAllTeams() {
         return teamDao.findAll();
+    }
+
+    @Override
+    public void deleteTeamById(int id) {
+        teamDao.deleteById(id);
+    }
+
+    @Override
+    public Team findTeamById(int id) {
+        Optional<Team> optionalTeam = teamDao.findById(id);
+        if(optionalTeam.isPresent()) return optionalTeam.get();
+        else return null;
     }
 }

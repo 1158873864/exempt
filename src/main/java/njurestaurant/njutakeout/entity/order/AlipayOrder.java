@@ -4,13 +4,14 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "order")
+@Table(name = "alipay_order")
 public class AlipayOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "imei")
     private String imei;
+    /*支付宝订单号*/
     @Column(name = "orderId")
     private String orderId;
     @Column(name = "money")

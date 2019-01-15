@@ -1,29 +1,29 @@
 <template>
         <div class="app-container">
-          <el-form ref="form" :model="form" label-width="80px">      
-            <el-form-item label="alipay">
-              <el-input v-model="form.alipay"></el-input>
+          <el-form ref="form" :model="form" label-width="100px">      
+            <el-form-item label="支付宝账号">
+              <el-input v-model="form.alipay" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="balance">
-              <el-input v-model="form.balance"></el-input>
+            <el-form-item label="余额">
+              <el-input v-model="form.balance" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="code">
-              <el-input v-model="form.code"></el-input>
+            <el-form-item label="验证码">
+              <el-input v-model="form.code" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="level">
-                    <el-input v-model="form.level"></el-input>
+            <el-form-item label="等级">
+                    <el-input v-model="form.level" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="password">
-              <el-input v-model="form.password"></el-input>
+            <el-form-item label="密码">
+              <el-input v-model="form.password" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="superior">
-              <el-input v-model="form.superior"></el-input>
+            <el-form-item label="主管">
+              <el-input v-model="form.superior" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="username">
-                    <el-input v-model="form.username"></el-input>
+            <el-form-item label="用户名">
+                    <el-input v-model="form.username" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="wechat">
-                    <el-input v-model="form.wechat"></el-input>
+            <el-form-item label="微信号">
+                    <el-input v-model="form.wechat" style="width: 30%;"></el-input>
             </el-form-item>
         
       

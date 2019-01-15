@@ -39,6 +39,7 @@
 <script>
 import { isvalidUsername } from '@/utils/validate'
 import { login } from '@/api/login'
+import store from '../../store'
 export default {
   name: 'Login',
   data() {
@@ -62,7 +63,7 @@ export default {
         password: 'admin'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        username: [{ required: true, trigger: 'blur' }],
         password: [{ required: true, trigger: 'blur', validator: validatePass }]
       },
       loading: false,
@@ -93,7 +94,8 @@ export default {
           this.loading = true
           this.$store.dispatch('Login', this.loginForm).then(() => {
             this.loading = false
-            this.$router.push({ path: this.redirect || '/' })
+            this.$router.push({ path:  this.redirect ||'/' })
+            console.log(asdASASD)
           }).catch(() => {
             this.loading = false
           })

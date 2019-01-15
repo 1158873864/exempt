@@ -15,7 +15,9 @@ import njurestaurant.njutakeout.response.report.MerchantReport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -81,6 +83,17 @@ public class PlatformOrderBlServiceImpl implements PlatformOrderBlService {
     public List<MerchantReport> merchantsOrderReport() {
         List<PlatformOrder> platformOrders = platformOrderDataService.findAll();
         List<User> merchantUser = userDataService.getUserByRole(3);
-        return null;
+        Map<Integer, String> usernameMap = new HashMap<>();
+        for(User user : merchantUser) {
+            usernameMap.put(user.getId(), user.getUsername());
+        }
+        return platformOrders.stream().map(p -> {
+            if(usernameMap.containsKey(p.getUid())) {
+                MerchantReport merchantReport = new MerchantReport(usernameMap.get(p.getUid()), p.getMoney(), p.getPayMoney(), p.getTime(), p.getState());
+                return merchantReport;
+            } else {
+                return null;
+            }
+        }).filter(p -> p != null).collect(Collectors.toList());
     }
 }

@@ -46,6 +46,6 @@ public class ReportController {
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
     public ResponseEntity<Response> merchantsReport() {
-        return null;
+        return new ResponseEntity<>(new JSONResponse(200, platformOrderBlService.merchantsOrderReport()), HttpStatus.OK);
     }
 }

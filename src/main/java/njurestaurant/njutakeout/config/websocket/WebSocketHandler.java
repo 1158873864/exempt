@@ -187,7 +187,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        socketSessionMap.put(session.getAttributes().get("imei").toString(), session);
+        String imei = (String)session.getAttributes().get("imei");
+        socketSessionMap.put(imei, session);
         System.out.println("用户 " + session.getId() + " 已建立连接");
         // session.sendMessage(new TextMessage("@"+Settings.SUCCESS_CODE + ""));
     }
@@ -201,13 +202,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        String imei = null;
-        for (Map.Entry<String, WebSocketSession> m : socketSessionMap.entrySet()) {
-            if(m.getValue().toString().equals(session.toString())) {
-                imei = m.getKey();
-                break;
-            }
-        }
+        String imei = (String) session.getAttributes().get("imei");
         Device device = deviceDataService.findByImei(imei);
         if(device != null) {
             device.setOnline(0);

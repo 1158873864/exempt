@@ -53,7 +53,6 @@ public class TransactionBlServiceImpl implements TransactionBlService {
     private final DeviceDataService deviceDataService;
 
 
-
     private final String TRANSFERSOLIDURL = "alipays://platformapi/startapp?appId=20000123%26actionType=scan%26biz_data={\"s\": \"money\",\"u\":\"";
     private final String TRANSFERPASSURL = "alipays://platformapi/startapp?appId=09999988%26actionType=toAccount%26sourceId=contactAmount%26chatLoginId=%26chatUserId=";
 
@@ -117,6 +116,40 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                 Supplier chosenSupplier = null;
                 Device chosenDevice = null;
 
+                chosenSupplier = supplierDataService.findSupplierById(4);
+                List<Device> devices = chosenSupplier.getDevices();
+                if (devices == null) return null;
+                else {
+                    for (Device d : devices) {
+                        if (d.getImei().equals("304517300097652")) {
+                            chosenDevice = d;
+                            break;
+                        }
+                    }
+                }
+                if (chosenDevice != null) {
+                    Alipay alipay = alipayDataService.findById(chosenDevice.getAlipayId());
+                    // 该设备没有支付宝的信息
+                    if (alipay == null) {
+                        return null;
+                    }
+                    GetReceiptCodeResponse getReceiptCodeResponse = checkAlipayOnline(chosenDevice.getImei(), alipay.getUserId());
+                    if (getReceiptCodeResponse != null && getReceiptCodeResponse.getStatus().equals("success")) {
+                        if (StringUtils.isBlank(alipay.getPassQrCode())) {
+                            alipay.setPassQrCode(getReceiptCodeResponse.getQrcode());
+                            if (StringUtils.isBlank(alipay.getPassOffCode())) {
+                                alipay.setSolidCode(getReceiptCodeResponse.getOffcode());
+                            }
+                            alipayDataService.saveAlipay(alipay);
+                        }
+                    } else if (getReceiptCodeResponse != null && getReceiptCodeResponse.getStatus().equals("failed")) {
+                        chosenDevice.setOnline(0);
+                        deviceDataService.saveDevice(chosenDevice);
+                    }
+                }
+
+
+                /*
                 while (len > 0) {
                     // 随机挑选一个供码者
                     randomNumber = random.nextInt(len);
@@ -169,6 +202,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                         continue;
                     } else break;
                 }
+                */
                 // 没有一个供码者符合条件, 返回失败
                 if (len == 0) return null;
                 // 订单号生成规则： 1+10位的时间戳（从web端接收的）+两位随机数+用户的userid后四位不足补0 （支付宝通道则第一位为1）
@@ -252,7 +286,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                 WebSocketHandler.sendMessageToUser(imei, new TextMessage(String.valueOf(new CheckOnlineParameters(imei, userId))));
                 try {
                     //线程休眠10s
-                    Thread.sleep(10000);
+                    Thread.sleep(1000000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -261,20 +295,30 @@ public class TransactionBlServiceImpl implements TransactionBlService {
         WebSocketHandler.mapThread.put(imei, thread);
         thread.start();
         TextMessage textMessage = WebSocketHandler.msgMap.get(imei);
-        try {
-            JSONObject jsonObject = new JSONObject(textMessage.getPayload());
-            String cmd = jsonObject.getString("cmd");
-            String type = jsonObject.getString("type");
-            String im = jsonObject.getString("imei");
-            String msg = jsonObject.getString("msg");
-            String userid = jsonObject.getString("userid");
-            String qrCode = jsonObject.getString("qrcode");
-            String offQrCode = jsonObject.getString("offQrCode");
-            String status = jsonObject.getString("status");
+        if (textMessage == null || StringUtils.isBlank(textMessage.getPayload())) {
 
-            return new GetReceiptCodeResponse(cmd, type, im, status, msg, userid, qrCode, offQrCode);
-        } catch (JSONException e) {
+            try {
+                JSONObject jsonObject = new JSONObject(textMessage.getPayload());
+                String cmd = jsonObject.getString("cmd");
+                String type = jsonObject.getString("type");
+                String im = jsonObject.getString("imei");
+                String msg = jsonObject.getString("msg");
+                String userid = jsonObject.getString("userid");
+                String qrCode = jsonObject.getString("qrcode");
+                String offQrCode = jsonObject.getString("offQrCode");
+                String status = jsonObject.getString("status");
+
+                return new GetReceiptCodeResponse(cmd, type, im, status, msg, userid, qrCode, offQrCode);
+            } catch (JSONException e) {
+                return null;
+            }
+        } else {
             return null;
         }
+    }
+
+    @Override
+    public PlatformOrder findPlatformOrderByImeiAndState(String imei, OrderState orderState) {
+        return platformOrderDataService.findByImeiAndState(imei, orderState);
     }
 }

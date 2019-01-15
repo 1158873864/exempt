@@ -7,6 +7,7 @@ import njurestaurant.njutakeout.blservice.order.TransactionBlService;
 import njurestaurant.njutakeout.exception.BlankInputException;
 import njurestaurant.njutakeout.exception.WrongIdException;
 import njurestaurant.njutakeout.parameters.app.GetQrCodeParameters;
+import njurestaurant.njutakeout.publicdatas.order.OrderState;
 import njurestaurant.njutakeout.response.JSONResponse;
 import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.SuccessResponse;
@@ -84,5 +85,13 @@ public class TransactionController {
         } catch (WrongIdException e) {
             return new ResponseEntity<>(new JSONResponse(10300, new WrongResponse(10300, "订单号错误")), HttpStatus.OK);
         }
+    }
+
+    @ApiOperation(value = "根据imei号查找测试", notes = "支付宝跳转重定向")
+    @RequestMapping(value = "/test/order", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Response> platformTest(@RequestParam("imei")String imei) {
+
+        return new ResponseEntity<>(new JSONResponse(200, transactionBlService.findPlatformOrderByImeiAndState(imei, OrderState.WAITING_FOR_PAYING)), HttpStatus.OK);
     }
 }

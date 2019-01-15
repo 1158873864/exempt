@@ -41,7 +41,7 @@
       </div>
     </template>
     <script>
-    import { checkAllPermission,deletePost } from '@/api/company'
+    import { checkAllPermission,deletePost,postGet } from '@/api/company'
         export default {
             data() {
                 return {
@@ -87,7 +87,18 @@
                     this.getTeams();
                 },
                 getTeams(){
-                    checkAllPermission().then(response=>{
+                    /*checkAllPermission().then(response=>{
+                        console.log(response,'response')
+                         if(response.data.infoCod){
+                            this.$message({
+                                message: response.data.description,
+                                type: 'warning'
+                            });
+                        }else{
+                            this.teams = response.data;
+                        }
+                    })*/
+                    postGet().then(response=>{
                         console.log(response,'response')
                          if(response.data.infoCod){
                             this.$message({

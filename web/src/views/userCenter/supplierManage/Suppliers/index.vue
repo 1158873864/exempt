@@ -8,7 +8,7 @@
         style="width: 100%">
         <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column>
         <el-table-column prop="priority" label="等级"  align="center"></el-table-column>
-        <el-table-column prop="devices" label="设备"  align="center"></el-table-column>
+        <el-table-column prop="devices_team" label="设备/状态"  align="center"></el-table-column>
         <el-table-column prop="status" label="状态"  align="center"></el-table-column>
         <el-table-column label="操作" fixed="right" align="center" >
                 <template scope="scope" >
@@ -61,11 +61,13 @@ import { suppliersGet,supplierUpdate } from '@/api/role'
             return {
                 teams:[{
                     "priority": 0,
-                    "devices": "",
+                    "devices": [],
                     "status": "",
-                    "user": {}
+                    "user": {},
+                    "devices_team":" ",
                     }
                 ],
+                
                 newRow: {
                     "codeType": "",
                     "level": 0,
@@ -131,7 +133,30 @@ import { suppliersGet,supplierUpdate } from '@/api/role'
                             type: 'warning'
                         });
                     }else{
+                        
+                        
                        this.teams = response.data;
+                       var i=0;
+                       var j=0;
+                       console.log(this.teams[2].devices.length);
+                       console.log(this.teams.length)
+                       for(j=0;j<this.teams.length;j++)
+                       {
+                           this.teams[j].devices_team=" ";
+                           for(i=0;i<this.teams[j].devices.length;i++)
+                           {
+                              if(this.teams[j].devices[i].online==1)
+                              {
+                                this.teams[j].devices_team=this.teams[j].devices_team+this.teams[j].devices[i].imei+'/在线,';
+                              }
+                              else{
+                                this.teams[j].devices_team=this.teams[j].devices_team+this.teams[j].devices[i].imei+'/离线,';
+
+                              }
+                           }
+                           console.log(this.teams[j].devices_team,'xxcc');
+                       }
+                       
                     }
                 })
             },

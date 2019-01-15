@@ -375,7 +375,7 @@ export const constantRouterMap = [
       },
       {
         path: 'bankCardList',
-        component: () => import('@/views/financeManage/bankCardList/index'),
+        component: () => import('@/views/companyManage/bankCard/cards/index'),
         name: 'bankCardList',
         role:['银行卡列表'],
         meta: { title: '银行卡列表' }

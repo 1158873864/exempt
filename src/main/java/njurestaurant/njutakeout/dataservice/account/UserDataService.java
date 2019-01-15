@@ -2,6 +2,8 @@ package njurestaurant.njutakeout.dataservice.account;
 
 import njurestaurant.njutakeout.entity.account.User;
 
+import java.util.List;
+
 public interface UserDataService {
     /**
      * find whether the user exists
@@ -44,4 +46,6 @@ public interface UserDataService {
     User getUserByUsername(String username);
 
     User getUserById(int id);
+
+    List<User> getUserByRole(int role);
 }

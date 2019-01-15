@@ -2,6 +2,8 @@ package njurestaurant.njutakeout.config;
 
 import njurestaurant.njutakeout.config.websocket.WebSocketHandler;
 import njurestaurant.njutakeout.config.websocket.WebSocketHandshakeInterceptor;
+import njurestaurant.njutakeout.dataservice.account.MerchantDataService;
+import njurestaurant.njutakeout.dataservice.account.SupplierDataService;
 import njurestaurant.njutakeout.dataservice.app.AlipayDataService;
 import njurestaurant.njutakeout.dataservice.app.AlipayOrderDataService;
 import njurestaurant.njutakeout.dataservice.app.DeviceDataService;
@@ -32,13 +34,15 @@ public class WebSocketConfig extends WebMvcConfigurerAdapter implements WebSocke
     private final AlipayDataService alipayDataService;
     private final AlipayOrderDataService alipayOrderDataService;
     private final PlatformOrderDataService platformOrderDataService;
+    private final MerchantDataService merchantDataService;
 
     @Autowired
-    public WebSocketConfig(DeviceDataService deviceDataService, AlipayDataService alipayDataService, AlipayOrderDataService alipayOrderDataService, PlatformOrderDataService platformOrderDataService) {
+    public WebSocketConfig(DeviceDataService deviceDataService, AlipayDataService alipayDataService, AlipayOrderDataService alipayOrderDataService, PlatformOrderDataService platformOrderDataService, MerchantDataService merchantDataService) {
         this.deviceDataService = deviceDataService;
         this.alipayDataService = alipayDataService;
         this.alipayOrderDataService = alipayOrderDataService;
         this.platformOrderDataService = platformOrderDataService;
+        this.merchantDataService = merchantDataService;
     }
 
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
@@ -58,6 +62,6 @@ public class WebSocketConfig extends WebMvcConfigurerAdapter implements WebSocke
 
     @Bean
     public TextWebSocketHandler webSocketHandler() {
-        return new WebSocketHandler(deviceDataService, alipayDataService, alipayOrderDataService, platformOrderDataService);
+        return new WebSocketHandler(deviceDataService, alipayDataService, alipayOrderDataService, platformOrderDataService, merchantDataService);
     }
 }

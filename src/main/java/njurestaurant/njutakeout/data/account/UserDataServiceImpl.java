@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import javax.jws.soap.SOAPBinding;
+import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -91,5 +92,10 @@ public class UserDataServiceImpl implements UserDataService {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public List<User> getUserByRole(int role) {
+        return userDao.findUsersByRole(role);
     }
 }

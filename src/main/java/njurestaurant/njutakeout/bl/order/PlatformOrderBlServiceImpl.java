@@ -1,23 +1,35 @@
 package njurestaurant.njutakeout.bl.order;
 
 import njurestaurant.njutakeout.blservice.order.PlatformOrderBlService;
+import njurestaurant.njutakeout.dataservice.account.MerchantDataService;
+import njurestaurant.njutakeout.dataservice.account.UserDataService;
 import njurestaurant.njutakeout.dataservice.order.PlatformOrderDataService;
+import njurestaurant.njutakeout.entity.account.Merchant;
+import njurestaurant.njutakeout.entity.account.User;
 import njurestaurant.njutakeout.entity.order.PlatformOrder;
 import njurestaurant.njutakeout.exception.BlankInputException;
 import njurestaurant.njutakeout.exception.WrongIdException;
 import njurestaurant.njutakeout.parameters.order.PlatformUpdateParameters;
+import njurestaurant.njutakeout.publicdatas.order.OrderState;
+import njurestaurant.njutakeout.response.report.MerchantReport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PlatformOrderBlServiceImpl implements PlatformOrderBlService {
+
     private final PlatformOrderDataService platformOrderDataService;
+    private final UserDataService userDataService;
+    private final MerchantDataService merchantDataService;
 
     @Autowired
-    public PlatformOrderBlServiceImpl(PlatformOrderDataService platformOrderDataService) {
+    public PlatformOrderBlServiceImpl(PlatformOrderDataService platformOrderDataService, UserDataService userDataService, MerchantDataService merchantDataService) {
         this.platformOrderDataService = platformOrderDataService;
+        this.userDataService = userDataService;
+        this.merchantDataService = merchantDataService;
     }
 
     @Override
@@ -57,5 +69,18 @@ public class PlatformOrderBlServiceImpl implements PlatformOrderBlService {
             }
             return platformOrderDataService.savePlatformOrder(platformOrder);
         }
+    }
+
+    @Override
+    public List<MerchantReport> merchantOrderReportByUid(int uid) {
+        List<PlatformOrder> platformOrders = platformOrderDataService.findByUid(uid);
+        return platformOrders.stream().map(p -> new MerchantReport(p.getMoney(),p.getPayMoney(), p.getTime(), p.getState())).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MerchantReport> merchantsOrderReport() {
+        List<PlatformOrder> platformOrders = platformOrderDataService.findAll();
+        List<User> merchantUser = userDataService.getUserByRole(3);
+        return null;
     }
 }

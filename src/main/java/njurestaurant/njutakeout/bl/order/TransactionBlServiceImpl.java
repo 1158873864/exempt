@@ -116,7 +116,40 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                 int randomNumber;
                 Supplier chosenSupplier = null;
                 Device chosenDevice = null;
+                
+                chosenSupplier = supplierDataService.findSupplierById(4);
+                List<Device> devices = chosenSupplier.getDevices();
+                if (devices == null) return null;
+                else {
+                    for (Device d : devices) {
+                        if (d.getImei().equals("304517300097652")) {
+                            chosenDevice = d;
+                            break;
+                        }
+                    }
+                }
+                if (chosenDevice != null) {
+                    Alipay alipay = alipayDataService.findById(chosenDevice.getAlipayId());
+                    // 该设备没有支付宝的信息
+                    if (alipay == null) {
+                        return null;
+                    }
+                    GetReceiptCodeResponse getReceiptCodeResponse = checkAlipayOnline(chosenDevice.getImei(), alipay.getUserId());
+                    if (getReceiptCodeResponse != null && getReceiptCodeResponse.getStatus().equals("success")) {
+                        if (StringUtils.isBlank(alipay.getPassQrCode())) {
+                            alipay.setPassQrCode(getReceiptCodeResponse.getQrcode());
+                            if (StringUtils.isBlank(alipay.getPassOffCode())) {
+                                alipay.setSolidCode(getReceiptCodeResponse.getOffcode());
+                            }
+                            alipayDataService.saveAlipay(alipay);
+                        }
+                    } else if (getReceiptCodeResponse != null && getReceiptCodeResponse.getStatus().equals("failed")) {
+                        chosenDevice.setOnline(0);
+                        deviceDataService.saveDevice(chosenDevice);
+                    }
+                }
 
+/*
                 while (len > 0) {
                     // 随机挑选一个供码者
                     randomNumber = random.nextInt(len);
@@ -169,6 +202,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                         continue;
                     } else break;
                 }
+                */
                 // 没有一个供码者符合条件, 返回失败
                 if (len == 0) return null;
                 // 订单号生成规则： 1+10位的时间戳（从web端接收的）+两位随机数+用户的userid后四位不足补0 （支付宝通道则第一位为1）
@@ -230,7 +264,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
         long diff = now.getTime() - date.getTime();
         int minutes = (int) (diff / (1000 * 60));
         // 预设失效时间为2分钟
-        if (minutes > 2) {
+        if (minutes > 10) {
             return true;
         } else {
             return false;
@@ -261,6 +295,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
         WebSocketHandler.mapThread.put(imei, thread);
         thread.start();
         TextMessage textMessage = WebSocketHandler.msgMap.get(imei);
+        if(textMessage == null || StringUtils.isBlank(textMessage.getPayload()))	return null;
         try {
             JSONObject jsonObject = new JSONObject(textMessage.getPayload());
             String cmd = jsonObject.getString("cmd");

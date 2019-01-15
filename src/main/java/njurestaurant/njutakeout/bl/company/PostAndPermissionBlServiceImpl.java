@@ -1,6 +1,5 @@
 package njurestaurant.njutakeout.bl.company;
 
-import javafx.geometry.Pos;
 import njurestaurant.njutakeout.blservice.company.PostAndPermissionBlService;
 import njurestaurant.njutakeout.dataservice.account.PostAndPermissionDataService;
 import njurestaurant.njutakeout.dataservice.company.PostDataService;

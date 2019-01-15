@@ -67,7 +67,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-
+    	System.out.println("123");
+    	session.sendMessage(new TextMessage(message.getPayload()));
 		JSONObject jsonObject = new JSONObject(message.getPayload());
         String cmd = jsonObject.getString("cmd");
         String type = jsonObject.getString("type");
@@ -81,6 +82,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
             String loginid = jsonObject.getString("loginid");
             String name = jsonObject.getString("name");
             Device device = deviceDataService.findByImei(imei);
+            System.out.println(jsonObject);
+            System.out.println(imei);
+            System.out.println(device.getId());
             if(device != null) {
                 Alipay alipay = alipayDataService.findById(device.getAlipayId());
                 if(alipay == null || !alipay.getUserId().equals(userid)) {  // 没有支付宝信息/支付宝信息对不上
@@ -170,8 +174,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        socketSessionMap.put(session.getAttributes().get("imei").toString(), session);
-        System.out.println("用户 " + session.getId() + " 已建立连接");
+       // socketSessionMap.put(session.getAttributes().get("imei").toString(), session);
+    	String imei=(String) session.getAttributes().get("imei");
+    	System.out.println(imei);
+    	socketSessionMap.put(imei, session);
+        System.out.println("用户 " + session.getAttributes().get("imei")+ " 已建立连接");
         // session.sendMessage(new TextMessage("@"+Settings.SUCCESS_CODE + ""));
     }
 

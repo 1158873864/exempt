@@ -12,7 +12,6 @@ import java.util.Map;
 
 public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
 
-    public static String imei;
 
     /**
      * 在调用hanler前处理方法
@@ -27,7 +26,8 @@ public class WebSocketHandshakeInterceptor implements HandshakeInterceptor {
             System.out.println("11111111111111111");
             System.out.println(session);
             if (session != null) {
-                imei = servletRequest.getParameter("imei");
+                String imei = servletRequest.getParameter("imei");
+                System.out.println(imei);
                 //使用imei区分WebSocketHandler，以便定向发送消息
                 String imeiSession = (String) session.getAttribute("imei");
                 if (imei == null || imei.equals("")) {

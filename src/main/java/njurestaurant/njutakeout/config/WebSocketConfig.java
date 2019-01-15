@@ -47,7 +47,7 @@ public class WebSocketConfig extends WebMvcConfigurerAdapter implements WebSocke
         String websocket_url = WEB_SOCKET_URL;     				        //设置websocket的地址
         registry.addHandler(webSocketHandler(), websocket_url)
         		.setAllowedOrigins("*")         //注册Handler
-                .addInterceptors(new WebSocketHandshakeInterceptor());   //注册Interceptor
+                .addInterceptors(new WebSocketHandshakeInterceptor());  	 //注册Interceptor
 
         // 2.注册SockJS，提供SockJS支持(主要是兼容ie8)
         String sockjs_url = SOCKJS_URL;									//设置sockjs的地址

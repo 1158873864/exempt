@@ -5,15 +5,15 @@
         :data="cards"
         max-height="700"
         >
-        <el-table-column prop="attribution" label="attribution" width="180"></el-table-column>
-        <el-table-column prop="balance" label="balance" width="180"></el-table-column>
-        <el-table-column prop="bank" label="bank" width="180"></el-table-column>
-        <el-table-column prop="cardNumber" label="cardNumber" width="180"></el-table-column>
-        <el-table-column prop="id" label="id" width="180"></el-table-column>
-        <el-table-column prop="name" label="name" width="180"></el-table-column>
-        <el-table-column prop="relation" label="relation" width="180"></el-table-column>
-        <el-table-column prop="status" label="status" width="180"></el-table-column>
-        <el-table-column label="操作" fixed="right" width="180">
+        <el-table-column prop="attribution" label="归属" ></el-table-column>
+        <el-table-column prop="balance" label="余额" ></el-table-column>
+        <el-table-column prop="bank" label="银行" ></el-table-column>
+        <el-table-column prop="cardNumber" label="银行卡号" ></el-table-column>
+        <el-table-column prop="id" label="序号" ></el-table-column>
+        <el-table-column prop="name" label="用户名" ></el-table-column>
+        <el-table-column prop="relation" label="归属"></el-table-column>
+        <el-table-column prop="status" label="关联" ></el-table-column>
+        <el-table-column label="操作" fixed="right" >
             <template scope="scope">
                 <el-button size="small"
                         @click="operationDel(scope.$index,scope.row)">删除</el-button>

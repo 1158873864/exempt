@@ -5,14 +5,14 @@
         height="250"
         border
         style="width: 100%">
-        <el-table-column prop="accountInfo" label="accountInfo" width="180"></el-table-column>
-        <el-table-column prop="accountNumber" label="accountNumber" width="180"></el-table-column>
-        <el-table-column prop="duration" label="duration" width="180"></el-table-column>
-        <el-table-column prop="id" label="id" width="180"></el-table-column>
-        <el-table-column prop="priorityLevel" label="priorityLevel" width="180"></el-table-column>
-        <el-table-column prop="teamName" label="teamName" width="180"></el-table-column>
-        <el-table-column prop="type" label="type" width="180"></el-table-column>
-        <el-table-column label="操作" fixed="right" width="180">
+        <el-table-column prop="accountInfo" label="accountInfo" align="center"></el-table-column>
+        <el-table-column prop="accountNumber" label="accountNumber" align="center" ></el-table-column>
+        <el-table-column prop="duration" label="duration" align="center"></el-table-column>
+        <el-table-column prop="id" label="id" ></el-table-column>
+        <el-table-column prop="priorityLevel" label="priorityLevel" align="center"></el-table-column>
+        <el-table-column prop="teamName" label="团队名" align="center"></el-table-column>
+        <el-table-column prop="type" label="type" align="center"></el-table-column>
+        <el-table-column label="操作" fixed="right" >
             <template scope="scope">
                 <el-button size="small"
                     @click="operationDel(scope.$index,scope.row)">删除</el-button>
@@ -89,6 +89,7 @@ import { codesGet,codeDelete } from '@/api/company'
                         });
                     }else{
                        this.codes = response.data;
+                    
                     }
                 })
             },

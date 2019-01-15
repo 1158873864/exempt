@@ -26,7 +26,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 @EnableWebSocket
 @Component
 public class WebSocketConfig extends WebMvcConfigurerAdapter implements WebSocketConfigurer {
-
 	private String WEB_SOCKET_URL="/websocket";
 	@Value("${SOCKJS_URL}")
 	private String SOCKJS_URL;

@@ -63,10 +63,10 @@ export function getTreePermissions(){
             title: '银行卡管理' ,
             children: [
                 {
-                    title: '所有银行卡' ,
+                    title: '公司所有银行卡' ,
                 },
                 {
-                    title: '添加银行卡' ,
+                    title: '公司添加银行卡' ,
                 }
             ]
         },
@@ -125,10 +125,10 @@ export function getTreePermissions(){
             title: '银行卡设置' ,
             children: [
                 {
-                    title: '所有银行卡' ,
+                    title: '个人所有银行卡' ,
                 },
                 {
-                    title: '添加银行卡' ,
+                    title: '个人添加银行卡' ,
                 },
                 {
                     title: '个人银行卡' ,

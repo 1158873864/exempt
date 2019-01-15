@@ -2,59 +2,122 @@
     <div class="app-container">
     <div>所有供码用户</div>
         <el-table
-        :data="teams"
+        :data="teams.slice((currentPage-1)*pagesize,currentPage*pagesize)"
         height="450"
         border
         style="width: 100%">
-        <el-table-column prop="user.username" label="username" width="180" align="center"></el-table-column>
-        <el-table-column prop="priority" label="priority" width="180" align="center"></el-table-column>
-        <el-table-column prop="devices" label="devices" width="180" align="center"></el-table-column>
-        <el-table-column prop="status" label="status" width="180" align="center"></el-table-column>
-        <el-table-column prop="codeType" label="codeType" width="180" align="center"></el-table-column>
-        
+        <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column>
+        <el-table-column prop="priority" label="等级"  align="center"></el-table-column>
+        <el-table-column prop="devices" label="设备"  align="center"></el-table-column>
+        <el-table-column prop="status" label="状态"  align="center"></el-table-column>
+        <el-table-column label="操作" fixed="right" align="center" >
+                <template scope="scope" >
+                    <el-button size="small" 
+                            @click="openDialog(scope.$index,scope.row)">修改</el-button>
+                </template>
+                
+        </el-table-column>
 
     </el-table>
     <div class="block">
-        <span class="demonstration">调整每页显示条数</span>
         <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
         :page-sizes="[10, 20, 30, 40]"
-        :page-size="10"
+        :page-size="pagesize"
         layout="sizes, prev, pager, next"
         :total="1000">
         </el-pagination>
     </div>
+    <el-dialog title="修改供码用户信息" :visible.sync="dialogFormVisible">
+            <el-form :model="newRow">
+                <el-form-item label="username">
+                    <el-input v-model="newRow.user.username" placeholder="area"></el-input>
+                </el-form-item>
+                <el-form-item label="codeType">
+                    <el-input v-model="newRow.codeType" placeholder="codeType"></el-input>
+                </el-form-item>
+                <el-form-item label="level">
+                    <el-input v-model="newRow.level" placeholder="level"></el-input>
+                </el-form-item>
+                <el-form-item label="password">
+                    <el-input v-model="newRow.password" placeholder="password"></el-input>
+                </el-form-item>
+               
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="updateSupplier">确 定</el-button>
+            </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { suppliersGet } from '@/api/role'
+import { suppliersGet,supplierUpdate } from '@/api/role'
     export default {
         data() {
             return {
                 teams:[{
-                    "status": "PASS",
-                    "devices": [],
                     "priority": 0,
-                    "user": {},
-                    'codeType':''
+                    "devices": "",
+                    "status": "",
+                    "user": {}
                     }
                 ],
-                currentPage:1
+                newRow: {
+                    "codeType": "",
+                    "level": 0,
+                    "password": "",
+                    "user": {}
+                    },
+                currentPage:1,
+                pagesize:10,
+                newRowIndex:1,
+                dialogFormVisible: false
             }
         },
         created(){
             this.getData();
         },
         methods: {
+            updateSupplier() {
+                supplierUpdate(this.newRow.codeType,this.newRow.level,this.newRow.password,this.newRow.id).then(response=> {
+                    if(response.code!=200){
+                        this.$message({
+                            message: response.data.description,
+                            type: 'warning'
+                        });
+                    }else{
+                        this.teams[this.newRowIndex].priority = this.newRow.level;
+                        this.dialogFormVisible = false;
+                         this.$message({
+                            message: '修改成功',
+                            type: 'success'
+                        });
+                    }
+                }); 
+            },
+            openDialog(index,row) {
+                this.dialogFormVisible=true;
+                //this.newRow = JSON.parse(JSON.stringify(row));
+                this.newRow = this.teams[index];
+                this.newRow.password=this.teams[index].user.password;
+                this.newRow.level=this.teams[index].priority;
+                console.log(this.newRow);
+                this.newRowIndex = index;
+                console.log(index);
+
+            },
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
+                this.pagesize=val;
               
             },
             handleCurrentChange(val) {
                 console.log(`当前页: ${val}`);
+                this.currentPage=val;
             },
             getData(){
                 this.getTeams();

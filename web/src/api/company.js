@@ -179,10 +179,14 @@ export function teamsGet() {
     method: 'get'
   })
 }
-export function teamDelete(id) {
+export function teamDelete(id, verifyCode) {
   return request({
     url: '/company/team/delete/'+id,
-    method: 'get'
+    method: 'get',
+    params: {
+      id,
+      verifyCode
+    }
   })
 }
 export function teamVerifyCodeCheck(id,verifyCode) {
@@ -206,6 +210,17 @@ export function teamUpdate(area, operator, status, supervisor, teamName, verifyC
       supervisor,
       teamName,
       verifyCode
+    }
+  })
+}
+export function supplierUpdate(codeType, level, password, id) {
+  return request({
+    url: '/supplier/update'+id,
+    method: 'post',
+    data: {
+      codeType,
+      level,
+      password
     }
   })
 }

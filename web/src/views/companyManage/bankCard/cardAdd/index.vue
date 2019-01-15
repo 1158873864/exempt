@@ -2,26 +2,26 @@
   <!-- <div>团队管理</div> -->
     <div class="app-container">
         <el-form :label-position="labelPosition" :model="cardAddParameters" class="demo-form-inline">
-            <el-form-item label="attribution">
-                <el-input v-model="cardAddParameters.attribution" placeholder="attribution"></el-input>
+            <el-form-item label="归属">
+                <el-input v-model="cardAddParameters.attribution" placeholder="attribution" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="balance">
-                <el-input type="number" v-model="cardAddParameters.balance" placeholder="balance"></el-input>
+            <el-form-item label="余额">
+                <el-input type="number" v-model="cardAddParameters.balance" placeholder="balance" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="bank">
-                <el-input v-model="cardAddParameters.bank" placeholder="bank"></el-input>
+            <el-form-item label="银行">
+                <el-input v-model="cardAddParameters.bank" placeholder="bank" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="name">
-                <el-input v-model="cardAddParameters.name" placeholder="name"></el-input>
+            <el-form-item label="所属人">
+                <el-input v-model="cardAddParameters.name" placeholder="name" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="number">
-                <el-input v-model="cardAddParameters.number" placeholder="number"></el-input>
+            <el-form-item label="卡号">
+                <el-input v-model="cardAddParameters.number" placeholder="number" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="relation">
-                <el-input v-model="cardAddParameters.relation" placeholder="relation"></el-input>
+            <el-form-item label="关联">
+                <el-input v-model="cardAddParameters.relation" placeholder="relation" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="type">
-                <el-input v-model="cardAddParameters.status" placeholder="status"></el-input>
+            <el-form-item label="状态">
+                <el-input v-model="cardAddParameters.status" placeholder="status" style="width: 30%;"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="addcard">添加</el-button>

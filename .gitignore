@@ -10,3 +10,5 @@ bin
 lib
 .classpath
 .gradle/*
+/.gradle/
+/build/

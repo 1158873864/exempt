@@ -14,7 +14,7 @@
         <el-table-column prop="status" label="状态" ></el-table-column>
         <el-table-column prop="supervisor" label="主管" ></el-table-column>
         <!-- <el-table-column prop="verifyCode" label="verifyCode" width="180"></el-table-column> -->
-        <el-table-column label="操作" fixed="right" >
+        <el-table-column label="操作" fixed="right" width="280" >
             <template scope="scope">
                 <el-button size="small"
                         @click="openDialog(scope.$index,scope.row)">修改</el-button>
@@ -66,8 +66,7 @@
 </template>
 
 <script>
-import { teamAdd,teamsGet,teamDelete,teamVerifyCodeCheck,teamUpdate } from '@/api/company'
-import store from '../../../../store'
+import { teamAdd,teamsGet,teamDelete,teamVerifyCodeCheck,teamUpdate, } from '@/api/company'
     export default {
         data() {
             return {
@@ -110,8 +109,6 @@ import store from '../../../../store'
         },
         created(){
             this.getData();
-            console.log(store.getters.roles)
-            console.log(store.getters.uid)
         },
         methods: {
             operationDel(index, row){

@@ -1,14 +1,14 @@
 <template>
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-      <h3 class="title">vue-admin-template</h3>
-      <el-form-item prop="username">
+      <h3 class="title">{{ title }}</h3>
+      <el-form-item prop="用户名">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input v-model="loginForm.username" name="username" type="text" auto-complete="on" placeholder="username" />
+        <el-input v-model="loginForm.username" name="username" type="text" auto-complete="on" placeholder="用户名" />
       </el-form-item>
-      <el-form-item prop="password">
+      <el-form-item prop="密码">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
@@ -17,7 +17,7 @@
           v-model="loginForm.password"
           name="password"
           auto-complete="on"
-          placeholder="password"
+          placeholder="密码"
           @keyup.enter.native="handleLogin" />
         <span class="show-pwd" @click="showPwd">
           <svg-icon icon-class="eye" />
@@ -25,12 +25,11 @@
       </el-form-item>
       <el-form-item>
         <el-button :loading="loading" type="primary" style="width:100%;" @click.native.prevent="handleLogin">
-          Sign in
+          登陆
         </el-button>
       </el-form-item>
       <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: admin</span>
+        <span style="margin-right:20px;">请输入账号密码</span>
       </div>
     </el-form>
   </div>
@@ -40,6 +39,7 @@
 import { isvalidUsername } from '@/utils/validate'
 import { login } from '@/api/login'
 import store from '../../store'
+import {titleList, titleUpdate} from '@/api/company'
 export default {
   name: 'Login',
   data() {
@@ -68,7 +68,8 @@ export default {
       },
       loading: false,
       pwdType: 'password',
-      redirect: undefined
+      redirect: undefined,
+      title:"管理系统"
     }
   },
   watch: {
@@ -78,6 +79,15 @@ export default {
       },
       immediate: true
     }
+  },
+  created(){
+    titleList().then(res => {
+      if(res.code!=200){
+        this.title = '管理系统'
+      }else{
+        this.title = res.data[0].title;
+      }
+    })
   },
   methods: {
     showPwd() {

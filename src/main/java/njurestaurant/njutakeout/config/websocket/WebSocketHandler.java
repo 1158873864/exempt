@@ -2,17 +2,22 @@ package njurestaurant.njutakeout.config.websocket;
 
 import com.amazonaws.util.json.JSONObject;
 import njurestaurant.njutakeout.bl.order.TransactionBlServiceImpl;
+import njurestaurant.njutakeout.dataservice.account.MerchantDataService;
+import njurestaurant.njutakeout.dataservice.account.SupplierDataService;
 import njurestaurant.njutakeout.dataservice.app.AlipayDataService;
 import njurestaurant.njutakeout.dataservice.app.AlipayOrderDataService;
 import njurestaurant.njutakeout.dataservice.app.DeviceDataService;
 import njurestaurant.njutakeout.dataservice.order.PlatformOrderDataService;
+import njurestaurant.njutakeout.entity.account.Merchant;
 import njurestaurant.njutakeout.entity.account.Supplier;
 import njurestaurant.njutakeout.entity.app.Alipay;
 import njurestaurant.njutakeout.entity.app.Device;
+import njurestaurant.njutakeout.entity.order.AlipayOrder;
 import njurestaurant.njutakeout.entity.order.PlatformOrder;
 import njurestaurant.njutakeout.publicdatas.app.CodeType;
 import njurestaurant.njutakeout.publicdatas.order.OrderState;
 import njurestaurant.njutakeout.response.app.DeviceUpdateResponse;
+import njurestaurant.njutakeout.util.FormatDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -38,13 +43,15 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private final AlipayDataService alipayDataService;
     private final AlipayOrderDataService alipayOrderDataService;
     private final PlatformOrderDataService platformOrderDataService;
+    private final MerchantDataService merchantDataService;
 
     @Autowired
-    public WebSocketHandler(DeviceDataService deviceDataService, AlipayDataService alipayDataService, AlipayOrderDataService alipayOrderDataService, PlatformOrderDataService platformOrderDataService) {
+    public WebSocketHandler(DeviceDataService deviceDataService, AlipayDataService alipayDataService, AlipayOrderDataService alipayOrderDataService, PlatformOrderDataService platformOrderDataService, MerchantDataService merchantDataService) {
         this.deviceDataService = deviceDataService;
         this.alipayDataService = alipayDataService;
         this.alipayOrderDataService = alipayOrderDataService;
         this.platformOrderDataService = platformOrderDataService;
+        this.merchantDataService = merchantDataService;
     }
 
     public static Map<String, Thread> mapThread = new HashMap<>();
@@ -99,7 +106,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
             }
         }
 
-        //收到订单信息
+        // 收到订单信息
         // 客户端消息(订单信息):{"cmd":"order","type":"alipay","imei":"设备唯一标识","orderId":"订单号","money":"订单金额","memo":"备注","time":"订单时间"}
         if(cmd.equals("order") && type.equals("alipay")){
 
@@ -111,18 +118,28 @@ public class WebSocketHandler extends TextWebSocketHandler {
             Device device = deviceDataService.findByImei(imei);
             Supplier supplier = device.getSupplier();
             if(supplier.getCodeType() == CodeType.RPASSQR || supplier.getCodeType() == CodeType.RPASSOFF) { //供码用户提供收款码
+                // 提取imei，根据imei查询未付款的订单号，根据订单号把订单状态更新成已成功付款，保留订单金额，新插入实收金额。
                 PlatformOrder platformOrders = platformOrderDataService.findByImeiAndState(device.getImei(), OrderState.WAITING_FOR_PAYING);
                 if(platformOrders != null) {
                     platformOrders.setState(OrderState.PAID);
                     platformOrders.setPayMoney(money);
                     platformOrderDataService.savePlatformOrder(platformOrders);
+                    AlipayOrder alipayOrder = new AlipayOrder(imei, orderId, money, memo, FormatDateTime.TenTimestampToDate(Integer.valueOf(time)));
+                    alipayOrderDataService.saveAlipayOrder(alipayOrder);
+                    Merchant merchant = merchantDataService.findMerchantById(platformOrders.getUid());
+                    merchant.setBalance(merchant.getBalance() + money);
                 }
-            } else if(supplier.getCodeType() == CodeType.TPASS || supplier.getCodeType() == CodeType.TSOLID) {
+            } else if(supplier.getCodeType() == CodeType.TPASS || supplier.getCodeType() == CodeType.TSOLID) {  // 供码用户提供转账码
+                // 提取memo备注里的值（99.9%是订单号）。查询订单表中是否存在一个与memo的值匹配的订单号，如果存在，则把订单状态更新成已成功付款，保留订单金额，新插入实收金额。
                 PlatformOrder platformOrder = platformOrderDataService.findByNumber(memo);
                 if(platformOrder != null) {
                     platformOrder.setState(OrderState.PAID);
                     platformOrder.setPayMoney(money);
                     platformOrderDataService.savePlatformOrder(platformOrder);
+                    AlipayOrder alipayOrder = new AlipayOrder(imei, orderId, money, memo, FormatDateTime.TenTimestampToDate(Integer.valueOf(time)));
+                    alipayOrderDataService.saveAlipayOrder(alipayOrder);
+                    Merchant merchant = merchantDataService.findMerchantById(platformOrder.getUid());
+                    merchant.setBalance(merchant.getBalance() + money);
                 }
             }
 

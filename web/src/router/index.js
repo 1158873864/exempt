@@ -304,9 +304,16 @@ export const asyncRouterMap = [
             name: 'cardsPersonal',
             component: () => import('@/views/userCenter/bankCardSetting/personalcards/index'),
             meta: { title: '个人银行卡',role:['个人银行卡'] },
-          }
+          },
+               
         ]
       },
+      {
+        path: 'qrcodePersonal',
+        name: 'qrcodePersonal',
+        component: () => import('@/views/userCenter/qrCode/index'),
+        meta: { title: '获取二维码', role: ['用户中心'] },
+      }
     ]
   },
 
@@ -347,6 +354,7 @@ export const asyncRouterMap = [
         name: 'bankCardList',
         meta: { title: '银行卡列表',role:['银行卡列表'] }
       },
+
     ]
   },
 

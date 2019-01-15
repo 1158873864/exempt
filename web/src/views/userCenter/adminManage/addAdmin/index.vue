@@ -14,9 +14,19 @@
             <el-form-item label="状态">
               <el-input v-model="form.status" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="团队">
-                    <el-input v-model="form.team" style="width: 30%;"></el-input>
+            <el-form-item>
+                <el-dropdown size="medium" split-button type="primary" @command="handleCommand">
+                    {{ form.teamName }}
+                    <el-dropdown-menu slot="dropdown">
+                    <div v-for="item in teams" :key="item.id">
+                            <el-dropdown-item :command='{id:item.id,teamName:item.teamName}' >{{item.teamName}}</el-dropdown-item>
+                    </div>
+                    </el-dropdown-menu>
+                </el-dropdown>
             </el-form-item>
+            <!-- <el-form-item label="团队">
+                    <el-input v-model="form.team" style="width: 30%;"></el-input>
+            </el-form-item> -->
             <el-form-item label="用户名">
                     <el-input v-model="form.username" style="width: 30%;"></el-input>
             </el-form-item>
@@ -33,6 +43,7 @@
 <script>
     import {addAdmin} from '@/api/role'
     import Form from "../../../../components/form/index";
+    import {teamsGet} from '@/api/company'
 
     export default {
         name: "index",
@@ -45,8 +56,20 @@
                     post: '1',
                     status: '1',
                     team:'1',
-                    username: '1'
+                    username: '1',
+                    teamName:'选择队伍',
                 },
+                
+                teams:[{
+                    'teamName':'teamName',
+                    'addTime':'addTime',
+                    'area':'area',
+                    'id':'id',
+                    'operator':'operator',
+                    'status':'status',
+                    'supervisor':'supervisor',
+                    'verifyCode':'verifyCode'
+                    }]
                 
               }
 
@@ -55,7 +78,33 @@
       components: {
         Form
       },
+      created(){
+        this.getData();
+      },
       methods:{
+         handleCommand(command) {
+              // this.$message('click on item ' + command.id);
+              this.form.team = command.id;
+              this.form.teamName = command.teamName;
+              // console.log('click on item ' + command.teamName);
+          },
+          getData(){
+              // this.getcodes();
+              this.getTeams();
+          },
+          getTeams(){
+                teamsGet().then(response=>{
+                    console.log(response,'sdll')
+                     if(response.data.infoCod){
+                        this.$message({
+                            message: response.data.description,
+                            type: 'warning'
+                        });
+                    }else{
+                       this.teams = response.data;
+                    }
+                })
+            },
         onSubmit(formName) {
           this.$refs[formName].validate((valid) => {
             if (valid) {

@@ -1,14 +1,23 @@
 <template>
 <div>
   <div>获取QrCode</div>
+        <el-form ref="form" :model="formparameters" label-width="100px">      
+            <el-form-item label="金额">
+                <el-input v-model="formparameters.money" style="width: 30%;"></el-input>
+            </el-form-item>
+            <el-form-item label="备注">
+              <el-input v-model="formparameters.memo" style="width: 30%;"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="getCode">获取二维码</el-button>
+                <!-- <el-button>取消</el-button> -->
+            </el-form-item>
+                <el-form-item>
+                    <img :src="img_src" />
+                </el-form-item>
+      </el-form>
     <el-form>
-        <el-form-item>
-        <el-button type="primary" @click="getCode">获取二维码</el-button>
-        <!-- <el-button>取消</el-button> -->
-        <el-form-item>
-            <img :src="img_src" />
-        </el-form-item>
-    </el-form-item>
+        
     </el-form>
 </div>
 </template>

@@ -16,9 +16,6 @@
             <el-form-item label="密码">
               <el-input v-model="form.password" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="主管">
-              <el-input v-model="form.superior" style="width: 30%;"></el-input>
-            </el-form-item>
             <el-form-item label="用户名">
                     <el-input v-model="form.username" style="width: 30%;"></el-input>
             </el-form-item>
@@ -37,7 +34,8 @@
 
 <script>
     import {addMerchant} from '@/api/role'
-    import Form from "../../../../components/form/index";
+    import Form from "../../../../components/form/index"
+    import store from '../../../../store'
 
     export default {
         name: "index",
@@ -60,6 +58,9 @@
 
       components: {
         Form
+      },
+      created(){
+        this.form.superior = store.getters.uid;
       },
       methods:{
         onSubmit(formName) {

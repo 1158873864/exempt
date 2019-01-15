@@ -1,24 +1,29 @@
 <template>
         <div class="app-container">
           <el-form ref="form" :model="form" label-width="80px">
-            <el-form-item label="accountOfBank">
+            <el-form-item label="银行账户">
               <el-input v-model="form.accountOfBank"></el-input>
             </el-form-item>
-            <el-form-item label="bank">
+            <el-form-item label="银行">
               <el-input v-model="form.bank"></el-input>
             </el-form-item>
             <el-form-item label="bin">
               <el-input v-model="form.bin"></el-input>
             </el-form-item>
-            <el-form-item label="name">
+            <el-form-item label="名字">
               <el-input v-model="form.name"></el-input>
             </el-form-item>
-            <el-form-item label="number">
+            <el-form-item label="数字">
                     <el-input v-model="form.number"></el-input>
             </el-form-item>
-            <el-form-item label="status">
+            <el-form-item label="状态">
                     <el-input v-model="form.status"></el-input>
             </el-form-item>
+
+            <el-form-item>
+                <el-button type="primary" @click="onSubmit('form')">添加</el-button>
+                <el-button>取消</el-button>
+              </el-form-item>
       </el-form>
         </div>
       </template>

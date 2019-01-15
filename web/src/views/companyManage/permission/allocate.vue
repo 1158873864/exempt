@@ -2,10 +2,10 @@
   <!-- <div>团队管理</div> -->
     <div class="app-container">
         <el-form :label-position="labelPosition" :model="permissionaddParameters" class="demo-form-inline">
-            <el-form-item label="post">
-                <el-input v-model="permissionaddParameters.post" placeholder="post"></el-input>
+            <el-form-item label="职位">
+                <el-input v-model="permissionaddParameters.post" placeholder="post" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="permission">
+            <el-form-item label="权限">
             </el-form-item>
                 <el-tree
                     :props="props"

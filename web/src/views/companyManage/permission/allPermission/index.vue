@@ -1,22 +1,21 @@
 <template>
         <div class="app-container">
-        <div>团队管理</div>
+        <div style="width: 100%">所有权限查询</div>
             <el-table
-            :data="teams"
-            height="250"
+            :data="teams.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+            
             border
             style="width: 100%">
-            <el-table-column prop="post" label="post" width="180"></el-table-column>
-            <el-table-column prop="permission" label="permission" width="180"></el-table-column>
+            <el-table-column prop="post" label="职位" width="80"></el-table-column>
+            <el-table-column prop="permission" label="权限" ></el-table-column>
         </el-table>
         <div class="block">
-            <span class="demonstration">调整每页显示条数</span>
             <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page.sync="currentPage"
-            :page-sizes="[100, 200, 300, 400]"
-            :page-size="100"
+            :page-sizes="[10, 2, 30, 40]"
+            :page-size="pagesize"
             layout="sizes, prev, pager, next"
             :total="1000">
             </el-pagination>
@@ -35,6 +34,7 @@
                         'permission':'permission'
                         }
                     ],
+                    pagesize:10,
                     currentPage:1
                 }
             },
@@ -44,9 +44,11 @@
             methods: {
                 handleSizeChange(val) {
                     console.log(`每页 ${val} 条`);
+                    this.pagesize=val;
                 },
                 handleCurrentChange(val) {
                     console.log(`当前页: ${val}`);
+                    this.currentPage=val;
                 },
                 getData(){
                     this.getTeams();

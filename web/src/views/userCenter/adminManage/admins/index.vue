@@ -2,26 +2,25 @@
         <div class="app-container">
         <div>所有管理员</div>
             <el-table
-            :data="teams"
+            :data="teams.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             height="450"
             border
             style="width: 100%">
-            <el-table-column prop="userInfo.username" label="username" width="180" align="center"></el-table-column>
-            <el-table-column prop="staffName" label="staffName" width="180" align="center"></el-table-column>
-            <el-table-column prop="team" label="team" width="180" align="center"></el-table-column>
-            <el-table-column prop="post" label="post" width="180" align="center"></el-table-column>
-            <el-table-column prop="status" label="status" width="180" align="center"></el-table-column>
+            <el-table-column prop="userInfo.username" label="用户名"  align="center"></el-table-column>
+            <el-table-column prop="staffName" label="职工名"  align="center"></el-table-column>
+            <el-table-column prop="team" label="团队"  align="center"></el-table-column>
+            <el-table-column prop="post" label="职务"  align="center"></el-table-column>
+            <el-table-column prop="status" label="状态"  align="center"></el-table-column>
             
     
         </el-table>
         <div class="block">
-            <span class="demonstration">调整每页显示条数</span>
             <el-pagination
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page.sync="currentPage"
             :page-sizes="[10, 20, 30, 40]"
-            :page-size="10"
+            :page-size="pagesize"
             layout="sizes, prev, pager, next"
             :total="1000">
             </el-pagination>
@@ -42,7 +41,8 @@
                         'status': 'status'
                         }
                     ],
-                    currentPage:1
+                    currentPage:1,
+                    pagesize:10
                 }
             },
             created(){
@@ -51,10 +51,11 @@
             methods: {
                 handleSizeChange(val) {
                     console.log(`每页 ${val} 条`);
-                  
+                    this.pagesize=val;
                 },
                 handleCurrentChange(val) {
                     console.log(`当前页: ${val}`);
+                    this.currentPage=val;
                 },
                 getData(){
                     this.getTeams();
@@ -72,13 +73,7 @@
                         }
                     })
                 },
-                handleChange(val) {
-                    console.log(val);
-                      if(val==2)
-                    {
-                        this.getTeams();
-                    }
-                }
+                
             }
         }
     </script>

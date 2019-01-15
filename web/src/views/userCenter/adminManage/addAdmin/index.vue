@@ -3,22 +3,22 @@
           <el-form ref="form" :model="form" label-width="80px">
       
             <el-form-item label="操作上级">
-              <el-input v-model="form.operator"></el-input>
+              <el-input v-model="form.operator" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="password">
-              <el-input v-model="form.password"></el-input>
+            <el-form-item label="密码">
+              <el-input v-model="form.password" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="post">
-              <el-input v-model="form.post"></el-input>
+            <el-form-item label="职位">
+              <el-input v-model="form.post" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="status">
-              <el-input v-model="form.status"></el-input>
+            <el-form-item label="状态">
+              <el-input v-model="form.status" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="team">
-                    <el-input v-model="form.team"></el-input>
+            <el-form-item label="团队">
+                    <el-input v-model="form.team" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="username">
-                    <el-input v-model="form.username"></el-input>
+            <el-form-item label="用户名">
+                    <el-input v-model="form.username" style="width: 30%;"></el-input>
             </el-form-item>
         
       

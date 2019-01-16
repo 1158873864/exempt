@@ -295,20 +295,16 @@ public class TransactionBlServiceImpl implements TransactionBlService {
 //    		}
 //    	}
     	WebSocketHandler.sendMessageToUser(imei, new TextMessage(String.valueOf(new CheckOnlineParameters(imei, userId))));
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("1");
-                try {
-                    //线程休眠10s
-                    Thread.sleep(1000000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        WebSocketHandler.mapThread.put(imei, thread);
-        thread.start();
+        
+    	Thread thread = Thread.currentThread();
+    	WebSocketHandler.mapThread.put(imei, thread);
+        try {
+			thread.sleep(100000);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+        
         TextMessage textMessage = WebSocketHandler.msgMap.get(imei);
         System.out.println(textMessage.toString());
         if(textMessage == null || StringUtils.isBlank(textMessage.getPayload()))	return null;

@@ -237,7 +237,7 @@ export const asyncRouterMap = [
           {
             path: 'addsupplier',
             name: 'addsupplier',  
-            component: () => import('@/views/userCenter/supplierManage/addsupplier/index'),
+            component: () => import('@/views/userCenter/supplierManage/addSupplier/index'),
             meta: { title: '添加供码用户',role:['添加供码用户'] }
           },
           {
@@ -249,7 +249,7 @@ export const asyncRouterMap = [
           {
             path: 'suppliers',
             name: 'suppliers',
-            component: () => import('@/views/userCenter/supplierManage/suppliers/index'),
+            component: () => import('@/views/userCenter/supplierManage/Suppliers/index'),
             meta: { title: '所有供码用户',role:['所有供码用户'] }
           }    
         ]

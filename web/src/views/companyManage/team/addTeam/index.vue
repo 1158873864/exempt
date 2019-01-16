@@ -5,15 +5,15 @@
             <el-form-item label="区域">
                 <el-input v-model="teamAddParameters.area" placeholder="area" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="操作者">
-                <el-input v-model="teamAddParameters.operator" placeholder="operator" style="width: 30%;"></el-input>
-            </el-form-item>
             <el-form-item label="状态">
                 <el-input v-model="teamAddParameters.status" placeholder="status" style="width: 30%;"></el-input>
             </el-form-item>
-            <!-- <el-form-item label="supervisor">
-                <el-input v-model="teamAddParameters.supervisor" placeholder="supervisor"></el-input>
-            </el-form-item> -->
+             <el-form-item label="状态">
+                    <el-select v-model="teamAddParameters.status" placeholder="启用">
+                    <el-option label="启用" value="启用"></el-option>
+                    <el-option label="停用" value="停用"></el-option>
+                    </el-select>
+                </el-form-item>
             <el-form-item label="团队名">
                 <el-input v-model="teamAddParameters.teamName" placeholder="teamName" style="width: 30%;"></el-input>
             </el-form-item>
@@ -49,6 +49,7 @@ import store from '../../../../store'
         },
         created(){
             this.teamAddParameters.supervisor = store.getters.uid;
+            this.teamAddParameters.operator = store.getters.uid;
         },
         methods: {
             handleSizeChange(val) {

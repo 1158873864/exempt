@@ -51,16 +51,16 @@ export default {
       }
     }
     const validatePass = (rule, value, callback) => {
-      if (value.length < 2) {
-        callback(new Error('密码不能小于5位'))
+      if (value.length < 8) {
+        callback(new Error('密码不能小于8位'))
       } else {
         callback()
       }
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: 'admin'
+        username: '账号',
+        password: '密码'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur' }],

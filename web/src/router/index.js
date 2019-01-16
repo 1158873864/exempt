@@ -62,12 +62,6 @@ export const asyncRouterMap = [
         meta: { title: '公告管理',role:['公告管理'] }
       },
       {
-        path: 'role',
-        name: 'role',
-        component: () => import('@/views/companyManage/role/index'),
-        meta: { title: '角色管理',role:['角色管理'] }
-      },
-      {
         path: 'moneyReceiveCode',
         name: 'moneyReceiveCode',
         component: () => import('@/views/companyManage/moneyReceiveCode/index'),

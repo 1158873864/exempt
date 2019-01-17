@@ -3,7 +3,14 @@
     <div class="app-container">
         <el-form :label-position="labelPosition" :model="permissionaddParameters" class="demo-form-inline">
             <el-form-item label="职位">
-                <el-input v-model="permissionaddParameters.post" placeholder="post" style="width: 30%;"></el-input>
+             <el-select  style="width: 200px" v-model="permissionaddParameters.post">
+                 <el-option
+                    v-for="item in posts"
+                    :key="item.id"
+                    :label="item.post"
+                    :value="item.post">
+                    </el-option>
+            </el-select >
             </el-form-item>
             <el-form-item label="权限">
             </el-form-item>
@@ -14,7 +21,7 @@
                     node-key="title"
                     ref="tree"
                     show-checkbox
-                    @check-change="handleCheckChange">
+                   >
                 </el-tree>
             <el-form-item>
                 <el-button type="primary" @click="addpermission">添加</el-button>
@@ -27,8 +34,9 @@
 </template>
 
 <script>
-import { permissionAllocate } from '@/api/company'
+import { permissionAllocate,postGet } from '@/api/company'
 import { getTreePermissions } from '@/api/permissions'
+
     export default {
         data() {
             return {
@@ -44,13 +52,28 @@ import { getTreePermissions } from '@/api/permissions'
                     children: 'children',
                     label: 'title'
                 },
+                posts:[{}]
             }
         },
         created(){
             this.treepermissions = getTreePermissions();
             console.log(this.treepermissions)
+            this.getPost();
         },
         methods: {
+            getPost(){
+                 postGet().then(response=>{
+                        console.log(response,'response')
+                         if(response.code!=200){
+                            this.$message({
+                                message: response.data.description,
+                                type: 'warning'
+                            });
+                        }else{
+                            this.posts = response.data;
+                        }
+                    })
+            },
             addpermission() {
                 this.getCheckedKeys();
                 permissionAllocate(

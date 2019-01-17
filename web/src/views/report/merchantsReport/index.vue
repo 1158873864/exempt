@@ -1,24 +1,7 @@
-<template>
-  <div class="chart-container">
-      <div>商户报表</div>
-    <chart height="100%" width="100%"/>
+<template >
+  <div style="padding:30px;">
+    <!-- <el-alert :closable="false" title="团队管理"> -->
+      <router-view />
+    <!-- </el-alert> -->
   </div>
 </template>
-
-<script>
-import Chart from '@/components/Charts/lineMarker'
-
-export default {
-  name: 'LineChart',
-  components: { Chart }
-}
-</script>
-
-<style scoped>
-.chart-container{
-  position: relative;
-  width: 100%;
-  height: calc(100vh - 84px);
-}
-</style>
-

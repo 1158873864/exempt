@@ -62,19 +62,12 @@ import {qrCodeGet,redirect} from '@/api/personal'
                         console.log(res)
                          if(res.code!=200){
                             this.$message({
-                                message: res.data.description,
+                                message: res.data.reason,
                                 type: 'warning'
                                 });
                         }else{
                             this.img_src = this.urlBase + this.BASE_API + res.data.url +"?orderId="+res.data.orderId
                             console.log(this.img_src)
-                        }
-                        if(res.code!=200){
-                            // $
-                        }else{
-                            // redirect(res.data.url,res.data.orderId).then(res=>{
-                            //     console.log(res)
-                            // })
                         }
                     })
                 },

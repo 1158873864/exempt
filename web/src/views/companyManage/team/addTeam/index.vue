@@ -5,9 +5,6 @@
             <el-form-item label="区域">
                 <el-input v-model="teamAddParameters.area" placeholder="area" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="状态">
-                <el-input v-model="teamAddParameters.status" placeholder="status" style="width: 30%;"></el-input>
-            </el-form-item>
              <el-form-item label="状态">
                     <el-select v-model="teamAddParameters.status" placeholder="启用">
                     <el-option label="启用" value="启用"></el-option>
@@ -36,11 +33,11 @@ import store from '../../../../store'
                 activeNames: ['1'],
                 labelPosition: 'right',
                 teamAddParameters: {
-                        "area": "area",
-                        "operator": "operator",
-                        "status": "status",
+                        "area": "区域",
+                        "operator": "1",
+                        "status": "启用",
                         "supervisor": "supervisor",
-                        "teamName": "teamName",
+                        "teamName": "团队名",
                         "verifyCode": "verifyCode"
                 },
                 teams:{},

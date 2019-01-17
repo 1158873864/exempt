@@ -5,17 +5,18 @@
             height="500"
             border
             style="width: 100%">
-            <el-table-column prop="id" label="订单编号"  align="center"></el-table-column>
+            <!-- <el-table-column prop="id" label="订单编号"  align="center"></el-table-column> -->
+            <el-table-column prop="orderNumber" label="订单编号"  align="center"></el-table-column>
             <el-table-column prop="money" label="订单金额"  align="center"></el-table-column>
-            <el-table-column prop="payMoney" label="成交金额"  align="center"></el-table-column>
+            <el-table-column prop="paymoney" label="成交金额"  align="center"></el-table-column>
             <el-table-column prop="rechargeId" label="充值方编号"  align="center"></el-table-column>
-            <el-table-column prop="payCode" label="收款码"  align="center"></el-table-column>
-            <el-table-column prop="state" label="状态"  align="center"></el-table-column>
-            <el-table-column prop="time" label="时间"  align="center"></el-table-column>
-            <el-table-column prop="number" label="号码"  align="center"></el-table-column>
-            <el-table-column prop="ip" label="ip"  align="center"></el-table-column>
+            <el-table-column prop="code" label="收款码"  align="center"></el-table-column>
+            <el-table-column prop="orderState" label="状态"  align="center"></el-table-column>
+            <el-table-column prop="time" label="支付时间"  align="center"></el-table-column>
+            <el-table-column prop="payTime" label="到账时间"  align="center"></el-table-column>
+            <!-- <el-table-column prop="ip" label="ip"  align="center"></el-table-column> -->
             <!-- <el-table-column prop="uid" label="uid"  align="center"></el-table-column> -->
-            <el-table-column prop="imei" label="imei"  align="center"></el-table-column>
+            <el-table-column prop="merchantName" label="商户"  align="center"></el-table-column>
 
 
         </el-table>

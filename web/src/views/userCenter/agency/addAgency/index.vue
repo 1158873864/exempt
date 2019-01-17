@@ -2,29 +2,31 @@
         <div class="app-container">
           <el-form ref="form" :model="form" label-width="80px">
       
-            <el-form-item label="当日佣金">
-              <el-input v-model="form.brokerage" style="width: 30%;"></el-input>
-            </el-form-item>
-            <el-form-item label="验证码">
-              <el-input v-model="form.code" style="width: 30%;"></el-input>
-            </el-form-item>
-            <el-form-item label="流量">
-              <el-input v-model="form.flow" style="width: 30%;"></el-input>
+            <el-form-item label="用户名">
+                    <el-input v-model="form.username" style="width: 30%;"></el-input>
             </el-form-item>
             <el-form-item label="密码">
               <el-input v-model="form.password" style="width: 30%;"></el-input>
             </el-form-item>
+            <!-- <el-form-item label="当日佣金">
+              <el-input v-model="form.brokerage" style="width: 30%;"></el-input>
+            </el-form-item> -->
             <el-form-item label="状态">
-              <el-input v-model="form.status" style="width: 30%;"></el-input>
+                    <el-select v-model="form.status" placeholder="启用">
+                    <el-option label="启用" value="启用"></el-option>
+                    <el-option label="停用" value="停用"></el-option>
+                    </el-select>
             </el-form-item>
-            <el-form-item label="用户名">
-                    <el-input v-model="form.username" style="width: 30%;"></el-input>
+            <el-form-item label="验证码">
+              <el-input v-model="form.code" style="width: 30%;"></el-input>
             </el-form-item>
+            <!-- <el-form-item label="流量">
+              <el-input v-model="form.flow" style="width: 30%;"></el-input>
+            </el-form-item> -->
         
       
           <el-form-item>
           <el-button type="primary" @click="onSubmit('form')">添加</el-button>
-          <el-button>取消</el-button>
         </el-form-item>
       </el-form>
         </div>
@@ -39,14 +41,13 @@
         data(){
         return {
                   form: {
-                    brokerage: '1',
-                    code: '1',
-                    flow: '1',
-                    password: '1',
-                    status: '1',
-                    username: '1'
+                    brokerage: '',
+                    code: '',
+                    flow: '',
+                    password: '',
+                    status: '',
+                    username: ''
                 },
-                
               }
 
         },

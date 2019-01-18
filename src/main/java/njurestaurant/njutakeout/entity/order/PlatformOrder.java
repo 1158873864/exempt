@@ -32,11 +32,19 @@ public class PlatformOrder {
     private double money;
     @Column(name = "payMoney")
     private double payMoney;
+    @Column(name = "payTime")
+    private Date payTime;
     /*商户的userid*/
     @Column(name = "uid")
     private int uid;
     @Column(name = "imei")
     private String imei;
+    /*收款码对应的用户信息id*/
+    @Column(name = "table_id")
+    private int tableId;
+    /*支付宝/微信的订单*/
+    @Column(name = "type")
+    private String type;
 
     public PlatformOrder() {
     }
@@ -61,6 +69,30 @@ public class PlatformOrder {
         this.money = money;
         this.uid = uid;
         this.imei = imei;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public int getTableId() {
+        return tableId;
+    }
+
+    public void setTableId(int tableId) {
+        this.tableId = tableId;
+    }
+
+    public Date getPayTime() {
+        return payTime;
+    }
+
+    public void setPayTime(Date payTime) {
+        this.payTime = payTime;
     }
 
     public double getPayMoney() {

@@ -77,7 +77,6 @@ public class TransactionBlServiceImpl implements TransactionBlService {
 
     /**
      * web客户端发起获取二维码请求
-     * <p>
      * 成功，则服务器返回：
      * {url:"我们平台的网址(在二维码未失效的情况下可重定向到支付宝付款地址) 重定向的接口",status:"success",orderid:"订单号"}
      * 失败，则服务器返回：
@@ -115,38 +114,6 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                 int randomNumber;
                 Supplier chosenSupplier = null;
                 Device chosenDevice = null;
-                /*
-                chosenSupplier = supplierDataService.findSupplierById(4);
-                List<Device> devices = chosenSupplier.getDevices();
-                if (devices == null) return null;
-                else {
-                    for (Device d : devices) {
-                        if (d.getImei().equals("304517300097652")) {
-                            chosenDevice = d;
-                            break;
-                        }
-                    }
-                }
-                if (chosenDevice != null) {
-                    Alipay alipay = alipayDataService.findById(chosenDevice.getAlipayId());
-                    // 该设备没有支付宝的信息
-                    if (alipay == null) {
-                        return null;
-                    }
-                    GetReceiptCodeResponse getReceiptCodeResponse = checkAlipayOnline(chosenDevice.getImei(), alipay.getUserId());
-                    if (getReceiptCodeResponse != null && getReceiptCodeResponse.getStatus().equals("success")) {
-                        if (StringUtils.isBlank(alipay.getPassQrCode())) {
-                            alipay.setPassQrCode(getReceiptCodeResponse.getQrcode());
-                            if (StringUtils.isBlank(alipay.getPassOffCode())) {
-                                alipay.setSolidCode(getReceiptCodeResponse.getOffcode());
-                            }
-                            alipayDataService.saveAlipay(alipay);
-                        }
-                    } else if (getReceiptCodeResponse != null && getReceiptCodeResponse.getStatus().equals("failed")) {
-                        chosenDevice.setOnline(0);
-                        deviceDataService.saveDevice(chosenDevice);
-                    }
-                }*/
 
                 while (len > 0) {
                     // 随机挑选一个供码者
@@ -174,6 +141,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                             dLen--;
                             continue;
                         }
+                        // 选择一个合适的供码设备
                         GetReceiptCodeResponse getReceiptCodeResponse = checkAlipayOnline(chosenDevice.getImei(), alipay.getUserId());
                         if (getReceiptCodeResponse != null && getReceiptCodeResponse.getStatus().equals("success")) {
                             if (StringUtils.isBlank(alipay.getPassQrCode())) {
@@ -238,6 +206,10 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                         break;
                 }
                 PlatformOrder platformOrder = new PlatformOrder(orderId, OrderState.WAITING_FOR_PAYING, date, qrCode, getQrCodeParameters.getIp(), getQrCodeParameters.getId(), money, user.getId(), chosenDevice.getImei());
+                platformOrder.setType(getQrCodeParameters.getType());
+                // 需要支付宝的收款码
+                if(getQrCodeParameters.getType().equals("alipay")) platformOrder.setTableId(chosenDevice.getAlipayId());
+                // else 微信收款码
                 platformOrderDataService.savePlatformOrder(platformOrder);
                 return new GetQrCodeResponse("/redirect", "success", orderId);
             }

@@ -11,6 +11,7 @@ import njurestaurant.njutakeout.entity.app.Device;
 import njurestaurant.njutakeout.exception.BlankInputException;
 import njurestaurant.njutakeout.exception.UsernameIsExistentException;
 import njurestaurant.njutakeout.exception.WrongIdException;
+import njurestaurant.njutakeout.parameters.company.SupplierApprovalParameters;
 import njurestaurant.njutakeout.parameters.user.SupplierUpdateParameters;
 import njurestaurant.njutakeout.publicdatas.account.SupplierState;
 import njurestaurant.njutakeout.publicdatas.app.CodeType;
@@ -20,8 +21,10 @@ import njurestaurant.njutakeout.response.WrongResponse;
 import njurestaurant.njutakeout.response.user.UserAddResponse;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,14 +54,22 @@ public class SupplierBlServiceImpl implements SupplierBlService {
     }
 
     @Override
-    public Response approvalSupplier(int sid, String state) {
+    public Response approvalSupplier(int sid, SupplierApprovalParameters supplierApprovalParameters) {
         Supplier supplier = supplierDataService.findSupplierById(sid);
         if(supplier == null) {
             return new WrongResponse(10130, "Wrong id.");
         } else {
-            if(state.equals("1")) {
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            User user = supplier.getUser();
+            user.setUsername(supplierApprovalParameters.getUsername());
+            user.setPassword(encoder.encode(supplierApprovalParameters.getPassword()));
+            supplier.setUser(user);
+            supplier.setPriority(supplierApprovalParameters.getLevel());
+            supplier.setApprovalTime(new Date());
+            supplier.setApproverId(supplierApprovalParameters.getId());
+            if(supplierApprovalParameters.getState() == 1) {
                 supplier.setStatus(SupplierState.PASS);
-            } else if (state.equals("2")) {
+            } else if (supplierApprovalParameters.getState() == 0) {
                 supplier.setStatus(SupplierState.REJECT);
             } else {
                 return new WrongResponse(10140, "Wrong state");
@@ -107,7 +118,8 @@ public class SupplierBlServiceImpl implements SupplierBlService {
             throw new BlankInputException();
         } else {
             User user = supplier.getUser();
-            user.setPassword(supplierUpdateParameters.getPassword());
+            if(!supplierUpdateParameters.getPassword().equals(user.getPassword()))
+                user.setPassword(supplierUpdateParameters.getPassword());
             supplier.setPriority(supplierUpdateParameters.getLevel());
             supplier.setUser(user);
             switch (supplierUpdateParameters.getCodeType()) {

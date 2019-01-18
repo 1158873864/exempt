@@ -56,54 +56,40 @@ public class TransactionController {
         }
     }
 
-    @ApiOperation(value = "增加设备测试", notes = "测试")
-    @RequestMapping(value = "device/add/test", method = RequestMethod.GET)
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = GetQrCodeResponse.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
-            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
-    @ResponseBody
-    public ResponseEntity<Response> test() {
-        transactionBlService.addDevice();
-        return null;
-    }
+//    @ApiOperation(value = "增加设备测试", notes = "测试")
+//    @RequestMapping(value = "device/add/test", method = RequestMethod.GET)
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Success", response = GetQrCodeResponse.class),
+//            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+//            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+//    @ResponseBody
+//    public ResponseEntity<Response> test() {
+//        transactionBlService.addDevice();
+//        return null;
+//    }
 
     @ApiOperation(value = "重定向", notes = "支付宝跳转重定向")
     @RequestMapping(value = "/redirect", method = RequestMethod.GET)
     public void redirect(@RequestParam("orderId") String orderId, HttpServletRequest request, HttpServletResponse response) throws IOException {
-    	//String s="alipays://platformapi/startapp?appId=09999988%26actionType=toAccount%26sourceId=contactAmount%26chatLoginId=%26chatUserId=2088032153858247%26money=%26amount=%26memo=测试备注1234";
-//    	response.sendRedirect("alipays://platformapi/startapp?appId=20000123&actionType=scan&biz_data={%22s%22: %22money%22,%22u%22:%222088022126490523%22,%22a%22:%220.1%22,%22m%22:%22"+ orderId+"%22}");
-//    	alipays://platformapi/startapp?appId=20000123%26actionType=scan%26biz_data={%22s%22: %22money%22,%22u%22:%222088022126490523%22,%22a%22:%220.01%22,%22m%22:%2211547565131870009%22}
         try {
             String code = transactionBlService.findQrCodeByOrderId(orderId);
-          
-            
             if(code.equals("expired")) {
-//                 return new ResponseEntity<>(new JSONResponse(10310, new WrongResponse(10310, "订单失效。")), HttpStatus.OK);
             } else if(code.equals("paid")) {
-//                  return new ResponseEntity<>(new JSONResponse(10320, new WrongResponse(10320, "订单已支付。")), HttpStatus.OK);
             }
             else {
             	String result = "";
                 int index = 0;
                 for(int i = 0; i < code.length(); i++) {
                 	if(code.charAt(i) == '\"') {
-                		result += code.substring(index, i);
-                		result += "%22";
-                		i++;
-                		index = i;
+                		result = result + code.substring(index, i) + "%22";
+                		index = i + 1;
                 	}
                 }
                 if(index == 0) result = code;
                 else result += code.substring(index, code.length());
-            	System.out.println("code:" + result);
-            	response.sendRedirect(code);
+            	response.sendRedirect(result);
             }
-//              return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("request successfully")), HttpStatus.OK);
-              
-//              return null;
         } catch (WrongIdException e) {
-//              return new ResponseEntity<>(new JSONResponse(10300, new WrongResponse(10300, "订单号错误")), HttpStatus.OK);
         }
     }
 

@@ -73,7 +73,7 @@ public class MerchantDataServiceImpl implements MerchantDataService {
     }
 
     @Override
-    public List<Merchant> getMerchantsBySuperior(String superior) {
-        return merchantDao.findMerchantsBySuperior(superior);
+    public List<Merchant> getMerchantsByApplyId(int id) {
+        return merchantDao.findMerchantsByApplyId(id);
     }
 }

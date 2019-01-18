@@ -11,10 +11,12 @@ public class Merchant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    /*支付宝点位*/
     @Column(name = "alipay")
-    private String alipay;
+    private double alipay;
+    /*微信点位*/
     @Column(name = "wechat")
-    private String wechat;
+    private double wechat;
     @Column(name = "balance")
     private double balance;
     @Column(name = "status")
@@ -25,8 +27,14 @@ public class Merchant {
     private Date addTime;
     @Column(name = "name")
     private String name;
-    @Column(name = "superior")
-    private String superior;
+    /*操作上级id*/
+    @Column(name = "apply_id")
+    private int applyId;
+    /*审批人id*/
+    @Column(name = "approver_id")
+    private int approverId;
+    @Column(name = "approvalTime")
+    private Date approvalTime;
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
@@ -36,41 +44,33 @@ public class Merchant {
     public Merchant() {
     }
 
-    public Merchant(String alipay, String wechat, double balance, MerchantState status, String verifyCode, Date addTime, String name, String superior, User user, int priority) {
+    public Merchant(double alipay, double wechat, double balance, MerchantState status, Date addTime, String name, int applyId, User user, int priority) {
         this.alipay = alipay;
         this.wechat = wechat;
         this.balance = balance;
         this.status = status;
-        this.verifyCode = verifyCode;
         this.addTime = addTime;
         this.name = name;
-        this.superior = superior;
+        this.applyId = applyId;
         this.user = user;
         this.priority = priority;
     }
 
-    public Merchant(String alipay, String wechat, double balance, MerchantState status, String verifyCode, Date addTime, String name, String superior, User user) {
+
+
+    public Merchant(double alipay, double wechat, double balance, MerchantState status, Date addTime, String name, int approverId, Date approvalTime, User user, int priority) {
         this.alipay = alipay;
         this.wechat = wechat;
         this.balance = balance;
         this.status = status;
-        this.verifyCode = verifyCode;
         this.addTime = addTime;
         this.name = name;
-        this.superior = superior;
+        this.approverId = approverId;
+        this.approvalTime = approvalTime;
         this.user = user;
+        this.priority = priority;
     }
 
-    public Merchant(String alipay, String wechat, double balance, MerchantState status, String verifyCode, Date addTime, String name, String superior) {
-        this.alipay = alipay;
-        this.wechat = wechat;
-        this.balance = balance;
-        this.status = status;
-        this.verifyCode = verifyCode;
-        this.addTime = addTime;
-        this.name = name;
-        this.superior = superior;
-    }
 
     public String getName() {
         return name;
@@ -88,20 +88,44 @@ public class Merchant {
         this.id = id;
     }
 
-    public String getAlipay() {
+    public double getAlipay() {
         return alipay;
     }
 
-    public void setAlipay(String alipay) {
+    public void setAlipay(double alipay) {
         this.alipay = alipay;
     }
 
-    public String getWechat() {
+    public double getWechat() {
         return wechat;
     }
 
-    public void setWechat(String wechat) {
+    public void setWechat(double wechat) {
         this.wechat = wechat;
+    }
+
+    public int getApplyId() {
+        return applyId;
+    }
+
+    public void setApplyId(int applyId) {
+        this.applyId = applyId;
+    }
+
+    public int getApproverId() {
+        return approverId;
+    }
+
+    public void setApproverId(int approverId) {
+        this.approverId = approverId;
+    }
+
+    public Date getApprovalTime() {
+        return approvalTime;
+    }
+
+    public void setApprovalTime(Date approvalTime) {
+        this.approvalTime = approvalTime;
     }
 
     public double getBalance() {
@@ -130,14 +154,6 @@ public class Merchant {
 
     public Date getAddTime() {
         return addTime;
-    }
-
-    public String getSuperior() {
-        return superior;
-    }
-
-    public void setSuperior(String superior) {
-        this.superior = superior;
     }
 
     public void setAddTime(Date addTime) {

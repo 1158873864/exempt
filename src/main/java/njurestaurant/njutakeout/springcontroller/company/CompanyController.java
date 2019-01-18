@@ -3,17 +3,15 @@ package njurestaurant.njutakeout.springcontroller.company;
 import io.swagger.annotations.*;
 import njurestaurant.njutakeout.blservice.account.MerchantBlService;
 import njurestaurant.njutakeout.blservice.account.SupplierBlService;
+import njurestaurant.njutakeout.blservice.account.UserBlService;
 import njurestaurant.njutakeout.blservice.company.*;
-import njurestaurant.njutakeout.dataservice.company.SystemDataService;
 import njurestaurant.njutakeout.entity.account.Merchant;
 import njurestaurant.njutakeout.entity.account.Supplier;
 import njurestaurant.njutakeout.entity.company.*;
 import njurestaurant.njutakeout.entity.company.System;
-import njurestaurant.njutakeout.exception.BlankInputException;
-import njurestaurant.njutakeout.exception.IsExistentException;
-import njurestaurant.njutakeout.exception.TeamVerifyCodeWrongException;
-import njurestaurant.njutakeout.exception.WrongIdException;
+import njurestaurant.njutakeout.exception.*;
 import njurestaurant.njutakeout.parameters.company.*;
+import njurestaurant.njutakeout.parameters.company.MerchantApprovalParameters;
 import njurestaurant.njutakeout.publicdatas.account.MerchantState;
 import njurestaurant.njutakeout.publicdatas.account.SupplierState;
 import njurestaurant.njutakeout.response.JSONResponse;
@@ -41,9 +39,10 @@ public class CompanyController {
     private final PostBlService postBlService;
     private final PermissionBlService permissionBlService;
     private final SystemBlService systemBlService;
+    private final UserBlService userBlService;
 
     @Autowired
-    public CompanyController(TeamBlService teamBlService, ReceiptCodeBlService receiptCodeBlService, CompanyCardBlService companyCardBlService, PostAndPermissionBlService postAndPermissionBlService, AllocationRecordBlService allocationRecordBlService, MerchantBlService merchantBlService, SupplierBlService supplierBlService, PostBlService postBlService, PermissionBlService permissionBlService, SystemBlService systemBlService) {
+    public CompanyController(TeamBlService teamBlService, ReceiptCodeBlService receiptCodeBlService, CompanyCardBlService companyCardBlService, PostAndPermissionBlService postAndPermissionBlService, AllocationRecordBlService allocationRecordBlService, MerchantBlService merchantBlService, SupplierBlService supplierBlService, PostBlService postBlService, PermissionBlService permissionBlService, SystemBlService systemBlService, UserBlService userBlService) {
         this.teamBlService = teamBlService;
         this.receiptCodeBlService = receiptCodeBlService;
         this.companyCardBlService = companyCardBlService;
@@ -54,6 +53,7 @@ public class CompanyController {
         this.postBlService = postBlService;
         this.permissionBlService = permissionBlService;
         this.systemBlService = systemBlService;
+        this.userBlService = userBlService;
     }
 
     @ApiOperation(value = "新增团队", notes = "公司管理员新增团队")
@@ -231,15 +231,17 @@ public class CompanyController {
     }
 
     @ApiOperation(value = "审批商户账号开通", notes = "管理员审批待审批的商户账号")
-    @RequestMapping(value = "company/approval/merchant/{mid}", method = RequestMethod.GET)
+    @RequestMapping(value = "company/approval/merchant/{mid}", method = RequestMethod.PUT)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> merchantApproval(@PathVariable("mid") int mid, @RequestParam("state")String state) {
-
-        return new ResponseEntity<>(new JSONResponse(200, merchantBlService.ApprovalMerchant(mid, state)), HttpStatus.OK);
+    public ResponseEntity<Response> merchantApproval(@PathVariable("mid")int mid, @RequestBody MerchantApprovalParameters merchantApprovalParameters) {
+        if(userBlService.checkUsername(merchantApprovalParameters.getUsername())) {
+            return new ResponseEntity<>(new JSONResponse(10100, new UsernameIsExistentException().getResponse()), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new JSONResponse(200, merchantBlService.ApprovalMerchant(mid, merchantApprovalParameters)), HttpStatus.OK);
     }
 
     @ApiOperation(value = "待审批商户账号", notes = "管理员查看待审批的商户账号列表")
@@ -255,14 +257,17 @@ public class CompanyController {
     }
 
     @ApiOperation(value = "审批供码账号", notes = "管理员审批待审批供码用户账号")
-    @RequestMapping(value = "company/approval/supplier/{sid}", method = RequestMethod.GET)
+    @RequestMapping(value = "company/approval/supplier/{sid}", method = RequestMethod.PUT)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> supplierApproval(@PathVariable("sid") int sid, @RequestParam("state")String state) {
-        return new ResponseEntity<>(new JSONResponse(200, supplierBlService.approvalSupplier(sid, state)), HttpStatus.OK);
+    public ResponseEntity<Response> supplierApproval(@PathVariable("sid") int sid, @RequestBody SupplierApprovalParameters supplierApprovalParameters) {
+        if(userBlService.checkUsername(supplierApprovalParameters.getUsername())) {
+            return new ResponseEntity<>(new JSONResponse(10100, new UsernameIsExistentException().getResponse()), HttpStatus.OK);
+        }
+        return new ResponseEntity<>(new JSONResponse(200, supplierBlService.approvalSupplier(sid, supplierApprovalParameters)), HttpStatus.OK);
     }
 
     @ApiOperation(value = "待审批供码账号", notes = "管理员查看待审批的供码用户列表")

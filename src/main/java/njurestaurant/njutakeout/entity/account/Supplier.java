@@ -21,8 +21,17 @@ public class Supplier {
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+    /*申请人的userid*/
+    @Column(name = "applicantId")
+    private int applicantId;
+    /*添加事件*/
     @Column(name = "time")
     private Date time;
+    /*审批事件*/
+    @Column(name = "approvalTime")
+    private Date approvalTime;
+    @Column(name = "approverId")
+    private int approverId;
     /*审批状态*/
     @Column(name = "status")
     private SupplierState status;
@@ -38,21 +47,47 @@ public class Supplier {
     public Supplier() {
     }
 
-    public Supplier(User user, Date time, SupplierState status, List<Device> devices, int priority) {
+    public Supplier(User user, int applicantId, Date time, SupplierState status, List<Device> devices, int priority, CodeType codeType) {
         this.user = user;
-        this.time = time;
-        this.status = status;
-        this.devices = devices;
-        this.priority = priority;
-    }
-
-    public Supplier(User user, Date time, SupplierState status, List<Device> devices, int priority, CodeType codeType) {
-        this.user = user;
+        this.applicantId = applicantId;
         this.time = time;
         this.status = status;
         this.devices = devices;
         this.priority = priority;
         this.codeType = codeType;
+    }
+
+    public Supplier(User user, Date approvalTime, int approverId, SupplierState status, List<Device> devices, int priority) {
+        this.user = user;
+        this.approvalTime = approvalTime;
+        this.approverId = approverId;
+        this.status = status;
+        this.devices = devices;
+        this.priority = priority;
+    }
+
+    public int getApplicantId() {
+        return applicantId;
+    }
+
+    public void setApplicantId(int applicantId) {
+        this.applicantId = applicantId;
+    }
+
+    public Date getApprovalTime() {
+        return approvalTime;
+    }
+
+    public void setApprovalTime(Date approvalTime) {
+        this.approvalTime = approvalTime;
+    }
+
+    public int getApproverId() {
+        return approverId;
+    }
+
+    public void setApproverId(int approverId) {
+        this.approverId = approverId;
     }
 
     public User getUser() {

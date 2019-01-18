@@ -4,9 +4,13 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import njurestaurant.njutakeout.blservice.order.TransactionBlService;
+import njurestaurant.njutakeout.entity.order.WithdrewOrder;
 import njurestaurant.njutakeout.exception.BlankInputException;
 import njurestaurant.njutakeout.exception.WrongIdException;
+import njurestaurant.njutakeout.exception.WrongInputException;
 import njurestaurant.njutakeout.parameters.app.GetQrCodeParameters;
+import njurestaurant.njutakeout.parameters.order.WithdrewDealParameters;
+import njurestaurant.njutakeout.parameters.order.WithdrewParameters;
 import njurestaurant.njutakeout.publicdatas.order.OrderState;
 import njurestaurant.njutakeout.response.JSONResponse;
 import njurestaurant.njutakeout.response.Response;
@@ -14,6 +18,7 @@ import njurestaurant.njutakeout.response.SuccessResponse;
 import njurestaurant.njutakeout.response.WrongResponse;
 import njurestaurant.njutakeout.response.transaction.FailedToLoadCodeResponse;
 import njurestaurant.njutakeout.response.transaction.GetQrCodeResponse;
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -53,6 +58,89 @@ public class TransactionController {
             return new ResponseEntity<>(new JSONResponse(10300, new FailedToLoadCodeResponse("failed", "用户id出错。")), HttpStatus.OK);
         } catch (BlankInputException e) {
             return new ResponseEntity<>(new JSONResponse(10300, new FailedToLoadCodeResponse("failed", "参数错误。")), HttpStatus.OK);
+        }
+    }
+
+    @ApiOperation(value = "提现", notes = "代理商/商家发起提现请求")
+    @RequestMapping(value = "withdrew", method = RequestMethod.POST)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> withdrew(@RequestBody WithdrewParameters withdrewParameters) {
+        try {
+            transactionBlService.addWithdrewOrder(withdrewParameters);
+            return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("发出提现成功，等待审核。")), HttpStatus.OK);
+        } catch (WrongIdException e) {
+            return new ResponseEntity<>(new JSONResponse(10160, new WrongResponse(10160, "该用户无法进行该提现操作。")), HttpStatus.OK);
+        } catch (BlankInputException e) {
+            return new ResponseEntity<>(new JSONResponse(10120, new WrongResponse(10120, "提现类型错误。")), HttpStatus.OK);
+        } catch (WrongInputException e) {
+            return new ResponseEntity<>(new JSONResponse(10410, new WrongResponse(10410, "提现金额大于该用户现有的余额。")), HttpStatus.OK);
+        }
+    }
+
+    @ApiOperation(value = "查看未处理的提现订单", notes = "财务查看未处理的提现订单")
+    @RequestMapping(value = "withdrews/waiting", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = WithdrewOrder.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> showWithdrewOrder() {
+        return new ResponseEntity<>(new JSONResponse(200, transactionBlService.getAllWaitingWithdrewOrder()), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "抢单", notes = "财务点击接手处理提现订单")
+    @RequestMapping(value = "withdrew/get/{id}", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> showWithdrewOrder(@PathVariable("id")int id, @RequestParam("operatorId")String operatorId) {
+        if(!NumberUtils.isNumber(operatorId))   return new ResponseEntity<>(new JSONResponse(10160, new WrongResponse(10160, "用户id格式错误")), HttpStatus.OK);
+        try {
+            transactionBlService.grabWithdrewOrderById(id, Integer.valueOf(operatorId));
+            return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("抢单成功")), HttpStatus.OK);
+        } catch (WrongIdException e) {
+            return new ResponseEntity<>(new JSONResponse(10160, new WrongResponse(10160, "订单id错误/用户id错误。")), HttpStatus.OK);
+        } catch (WrongInputException e) {
+            return new ResponseEntity<>(new JSONResponse(10410, new WrongResponse(10410, "该订单已被处理。")), HttpStatus.OK);
+        }
+    }
+
+    @ApiOperation(value = "处理提现订单", notes = "财务处理的提现订单")
+    @RequestMapping(value = "withdrew/deal/{id}", method = RequestMethod.POST)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> dealWithdrewOrder(@PathVariable("id") int id, @RequestBody WithdrewDealParameters withdrewDealParameters) {
+        try {
+            transactionBlService.dealWithdrewOrder(id, withdrewDealParameters);
+            return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("处理成功。")), HttpStatus.OK);
+        } catch (WrongIdException e) {
+            return new ResponseEntity<>(new JSONResponse(10160, new WrongResponse(10160, "该财务无法处理该订单/该订单已被处理。")), HttpStatus.OK);
+        } catch (BlankInputException e) {
+            return new ResponseEntity<>(new JSONResponse(10120, new WrongResponse(10120, "审批状态错误。")), HttpStatus.OK);
+        }
+    }
+
+    @ApiOperation(value = "财务订单", notes = "显示财务个人的全部提现订单")
+    @RequestMapping(value = "withdrew/list/{uid}", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = WithdrewOrder.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> dealWithdrewOrder(@PathVariable("uid") int id) {
+        try {
+            return new ResponseEntity<>(new JSONResponse(200, transactionBlService.getMyWithdrewOrder(id)), HttpStatus.OK);
+        } catch (WrongIdException e) {
+            return new ResponseEntity<>(new JSONResponse(10160, new WrongResponse(10160, "该用户无法查看提现订单。")), HttpStatus.OK);
         }
     }
 

@@ -238,9 +238,6 @@ public class CompanyController {
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
     public ResponseEntity<Response> merchantApproval(@PathVariable("mid")int mid, @RequestBody MerchantApprovalParameters merchantApprovalParameters) {
-        if(userBlService.checkUsername(merchantApprovalParameters.getUsername())) {
-            return new ResponseEntity<>(new JSONResponse(10100, new UsernameIsExistentException().getResponse()), HttpStatus.OK);
-        }
         return new ResponseEntity<>(new JSONResponse(200, merchantBlService.ApprovalMerchant(mid, merchantApprovalParameters)), HttpStatus.OK);
     }
 
@@ -264,9 +261,6 @@ public class CompanyController {
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
     public ResponseEntity<Response> supplierApproval(@PathVariable("sid") int sid, @RequestBody SupplierApprovalParameters supplierApprovalParameters) {
-        if(userBlService.checkUsername(supplierApprovalParameters.getUsername())) {
-            return new ResponseEntity<>(new JSONResponse(10100, new UsernameIsExistentException().getResponse()), HttpStatus.OK);
-        }
         return new ResponseEntity<>(new JSONResponse(200, supplierBlService.approvalSupplier(sid, supplierApprovalParameters)), HttpStatus.OK);
     }
 

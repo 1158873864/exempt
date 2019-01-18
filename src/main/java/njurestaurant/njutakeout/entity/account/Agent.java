@@ -20,6 +20,8 @@ public class Agent {
     /*代理商余额*/
     @Column(name = "balance")
     private double balance;
+    @Column(name = "withdrewMoney")
+    private double withdrewMoney;
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User userInfo;
@@ -33,6 +35,14 @@ public class Agent {
         this.percent = percent;
         this.balance = balance;
         this.userInfo = userInfo;
+    }
+
+    public double getWithdrewMoney() {
+        return withdrewMoney;
+    }
+
+    public void setWithdrewMoney(double withdrewMoney) {
+        this.withdrewMoney = withdrewMoney;
     }
 
     public double getPercent() {

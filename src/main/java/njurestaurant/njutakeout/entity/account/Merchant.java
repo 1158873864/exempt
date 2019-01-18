@@ -40,6 +40,8 @@ public class Merchant {
     private User user;
     @Column(name = "priority")
     private int priority;
+    @Column(name = "withdrewMoney")
+    private double withdrewMoney;
 
     public Merchant() {
     }
@@ -71,6 +73,13 @@ public class Merchant {
         this.priority = priority;
     }
 
+    public double getWithdrewMoney() {
+        return withdrewMoney;
+    }
+
+    public void setWithdrewMoney(double withdrewMoney) {
+        this.withdrewMoney = withdrewMoney;
+    }
 
     public String getName() {
         return name;

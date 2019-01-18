@@ -250,7 +250,7 @@ public class UserController {
         } catch (WrongIdException e) {
             return new ResponseEntity<>(new JSONResponse(10160, e.getResponse()), HttpStatus.OK);
         } catch (BlankInputException e) {
-            return new ResponseEntity<>(new JSONResponse(10170, new WrongResponse(10170, "输入错误")), HttpStatus.EXPECTATION_FAILED);
+            return new ResponseEntity<>(new JSONResponse(10170, new WrongResponse(10170, "输入错误")), HttpStatus.OK);
         }
     }
 

@@ -114,12 +114,13 @@ public class SupplierBlServiceImpl implements SupplierBlService {
         Supplier supplier = supplierDataService.findSupplierById(id);
         if(supplier == null) {
             throw new WrongIdException();
-        } else if(StringUtils.isBlank(supplierUpdateParameters.getPassword()) || StringUtils.isBlank(supplierUpdateParameters.getCodeType()) || supplierUpdateParameters.getLevel() <= 0) {
+        } else if(StringUtils.isBlank(supplierUpdateParameters.getPassword()) || StringUtils.isBlank(supplierUpdateParameters.getCodeType()) || supplierUpdateParameters.getLevel() < 0) {
             throw new BlankInputException();
         } else {
             User user = supplier.getUser();
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             if(!supplierUpdateParameters.getPassword().equals(user.getPassword()))
-                user.setPassword(supplierUpdateParameters.getPassword());
+                user.setPassword(encoder.encode(supplierUpdateParameters.getPassword()));
             supplier.setPriority(supplierUpdateParameters.getLevel());
             supplier.setUser(user);
             switch (supplierUpdateParameters.getCodeType()) {

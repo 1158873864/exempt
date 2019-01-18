@@ -1,11 +1,11 @@
 server:
-  port: 8080
+  port: 1024
 #server:
 #  port: 443
-  ssl:
-      key-store: config/jrq.jks
-      key-store-password: njujrq123
-      key-store-type: JKS
+#  ssl:
+#      key-store: config/jrq.jks
+#      key-store-password: njujrq123
+#      key-store-type: JKS
 logging:
   level:
     org.springframework:
@@ -34,9 +34,9 @@ spring:
     open-in-view: true
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/exempt?useUnicode=true&characterEncoding=UTF-8&useSSL=false
-    username: root
-    password: 123456
+    url: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root   #debian-sys-maint（服务器数据库名）
+    password: 123456 #su4B1V2efWUxbRSm（服务器数据库密码）
   aop:
     auto: true
     proxy-target-class: false

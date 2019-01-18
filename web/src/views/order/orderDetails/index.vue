@@ -1,21 +1,30 @@
 <template>
         <div class="app-container">
-        <div>所有订单</div>
             <el-table
             :data="teams.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             height="500"
             border
             style="width: 100%">
-            <el-table-column prop="id" label="编号"  align="center"></el-table-column>
-            <el-table-column prop="number" label="号码"  align="center"></el-table-column>
-            <el-table-column prop="state" label="状态"  align="center"></el-table-column>
-            <el-table-column prop="payCode" label="支付码"  align="center"></el-table-column>
-            <el-table-column prop="ip" label="ip"  align="center"></el-table-column>
-            <el-table-column prop="rechargeId" label="rechargeId"  align="center"></el-table-column>
+            <el-table-column prop="orderNumber" label="订单编号"  align="center"></el-table-column>
             <el-table-column prop="money" label="订单金额"  align="center"></el-table-column>
-            <el-table-column prop="payMoney" label="支付金额"  align="center"></el-table-column>
-            <el-table-column prop="uid" label="uid"  align="center"></el-table-column>
-            <el-table-column prop="imei" label="imei"  align="center"></el-table-column>
+            <el-table-column prop="paymoney" label="成交金额"  align="center"></el-table-column>
+            <el-table-column prop="rechargeId" label="充值方编号"  align="center"></el-table-column>
+            <el-table-column prop="nickname" label="支付宝昵称"  align="center"></el-table-column>
+            <el-table-column prop="code" label="收款码"  align="center"></el-table-column>
+            <el-table-column prop="time" label="订单时间"  align="center"></el-table-column>
+            <el-table-column prop="orderState" label="状态"  align="center">
+                 <template slot-scope="{row}">
+                    <el-button type="success" size="small" v-if="row.orderState=='PAID'">已支付</el-button>
+                    <el-tag type="success" v-if="row.orderState=='审批通过'">{{ row.approvalTime }}</el-tag>
+                    <el-button type="info" size="small" v-else-if="row.orderState=='WAITING_FOR_PAYING'">等待审批</el-button>
+                    <el-button type="warning" size="small" v-else-if="row.orderState=='EXPIRED'">审批不通过</el-button>
+                    <el-tag type="warning" v-if="row.orderState=='PAID'">{{ row.payTime }}</el-tag>
+                </template>
+            </el-table-column>
+            <!-- <el-table-column prop="payTime" label="到账时间"  align="center"></el-table-column> -->
+            <!-- <el-table-column prop="ip" label="ip"  align="center"></el-table-column> -->
+            <!-- <el-table-column prop="uid" label="uid"  align="center"></el-table-column> -->
+            <el-table-column prop="merchantName" label="商户"  align="center"></el-table-column>
 
 
         </el-table>
@@ -48,7 +57,8 @@
                         "money": 1,
                         "payMoney": 0,
                         "uid": 1,
-                        "imei": "12222222"
+                        "imei": "12222222",
+                        "time":"2019-01-17T04:58:07.882Z"
                         }
                     ],
                     currentPage:1,
@@ -73,13 +83,14 @@
                 getTeams(){
                     ordersGet().then(response=>{
                         console.log(response,'sdll')
-                         if(response.data.infoCod){
+                         if(response.code!=200){
                             this.$message({
                                 message: response.data.description,
                                 type: 'warning'
                             });
                         }else{
-                           this.teams = response.data;
+                            if(response.data.length!=0)
+                                this.teams = response.data;
                         }
                     })
                 },

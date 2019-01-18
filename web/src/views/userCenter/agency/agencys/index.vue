@@ -7,8 +7,8 @@
         border
         style="width: 100%">
         <el-table-column prop="userInfo.username" label="用户名" align="center"></el-table-column>
-        <el-table-column prop="agentName" label="代理名"  align="center"></el-table-column>
-        <el-table-column prop="flow" label="流量"  align="center"></el-table-column>
+        <el-table-column prop="name" label="代理名"  align="center"></el-table-column>
+        <el-table-column prop="dailyFlow" label="流量"  align="center"></el-table-column>
         <el-table-column prop="dailyCommission" label="当日佣金"  align="center"></el-table-column>
         <el-table-column prop="status" label="状态"  align="center"></el-table-column>
         
@@ -34,12 +34,20 @@ import { agentsGet } from '@/api/role'
         data() {
             return {
                 teams:[{
-                    "agentName": "str1ing",
-                    "flow": "string",
-                    "status": "string",
-                    "dailyCommission": 0,
-                    "userInfo": {}
-                    }
+                id: 1,
+                agentName: "a1",
+                status: "string",
+                percent: 0.3,
+                balance: 0,
+                userInfo: {
+                    id: 29,
+                    username: "a1",
+                    password: "$2a$10$dJ/s9iiGBGzQS/7XbSYUMODsSzblY0X3Zu7GKdjvKrKuHoaCc5Q6a",
+                    role: 2,
+                    tableId: 1,
+                    cards: []
+                }
+                }
                 ],
                 currentPage:1,
                 pagesize:10

@@ -3,14 +3,17 @@
 
           
             <el-form :model="formItem" ref="formItem" label-width="80px">
-                <el-form-item  label="查询职位" prop="sendValue">
-                    <select style="width: 200px" v-model="formItem.sendValue">
-                        <Option v-for="item in formItem.statelist" :value="item.label" :key="item.value" name="sendValue">
-                            {{item.label}}
-                        </Option>
-                    </select>
+                <el-form-item  label="查询职位">
+                    <el-select  style="width: 200px" v-model="formItem.sendValue">
+                        <el-option
+                        v-for="item in posts"
+                        :key="item.id"
+                        :label="item.post"
+                        :value="item.post">
+                        </el-option>
+                    </el-select >
                     <el-button type="primary" @click="onSubmit()">查询</el-button>
-                    </el-form-item>
+                </el-form-item>
             </el-form>
 
             
@@ -35,13 +38,14 @@
 </template>
     
     <script>
-    import { checkSinglePermission } from '@/api/company'
+    import { checkSinglePermission,postGet } from '@/api/company'
     import Form from "../../../../components/form/index";
 
         export default {
             data() {
                 return {
                     formItem:{
+                        sendValue:'',
                         statelist:[
                             {
                                 value:'0',
@@ -66,13 +70,16 @@
                         post:'post',
                         permission:'permission'
                     }],
-                    currentPage:1
+                    currentPage:1,
+                    posts:[{}]
                 }
             },
             components: {
                 Form
             },
-            
+            created(){
+                this.getData();
+            },
             methods: {
                 handleSizeChange(val) {
                     console.log(`每页 ${val} 条`);
@@ -82,7 +89,8 @@
                     console.log(`当前页: ${val}`);
                 },
                 getData(){
-                    this.getTeams();
+                    // this.getTeams();
+                    this.getPost();
                 },
                 getTeams(){
                     checkSinglePermission(this.form.post).then(response=>{
@@ -97,6 +105,19 @@
                         }
                     })
                 },
+                getPost(){
+                 postGet().then(response=>{
+                        console.log(response,'response')
+                         if(response.code!=200){
+                            this.$message({
+                                message: response.data.description,
+                                type: 'warning'
+                            });
+                        }else{
+                            this.posts = response.data;
+                        }
+                    })
+            },
                 handleChange(val) {
                     console.log(val);
                       if(val==2)
@@ -109,9 +130,10 @@
                         var valid =1
                         if (valid) {
                         // alert('submit!');
+                        console.log(this.formItem.sendValue)
                         checkSinglePermission(this.formItem.sendValue).then(response => {
                             // console.log(response.data.infoCode)
-                            if(response.data.infoCode){
+                            if(response.code!=200){
                                 this.$message({
                                     message: response.data.description,
                                     type: 'warning'

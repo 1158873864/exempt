@@ -302,12 +302,12 @@ export const asyncRouterMap = [
                
         ]
       },
-      {
-        path: 'qrcodePersonal',
-        name: 'qrcodePersonal',
-        component: () => import('@/views/userCenter/qrCode/index'),
-        meta: { title: '获取二维码', role: ['用户中心'] },
-      }
+    //   {
+    //     path: 'qrcodePersonal',
+    //     name: 'qrcodePersonal',
+    //     component: () => import('@/views/userCenter/qrCode/index'),
+    //     meta: { title: '获取二维码', role: ['用户中心'] },
+    //   }
     ]
   },
 
@@ -364,31 +364,35 @@ export const asyncRouterMap = [
     children: [
       {
         path: 'receiveCodeReport',
-        component: () => import('@/views/report/receiveCodeReport/index'),
+        // component: () => import('@/views/report/receiveCodeReport/index'),
+        component: () => import('@/views/report/merchantsReport/merchants/index'),
         name: 'receiveCodeReport',
         meta: { title: '收款码报表',role:['收款码报表'] }
       },
       {
         path: 'merchantsReport',
-        component: () => import('@/views/report/merchantsReport/index'),
+        component: () => import('@/views/report/merchantsReport/merchants/index'),
         name: 'merchantsReport',
         meta: { title: '商户报表',role:['商户报表'] }
       },
       {
         path: 'localTeamReport',
-        component: () => import('@/views/report/localTeamReport/index'),
+        // component: () => import('@/views/report/localTeamReport/index'),
+        component: () => import('@/views/report/merchantsReport/merchants/index'),
         name: 'localTeamReport',
         meta: { title: '地方团队报表',role:['地方团队报表'] }
       },
       {
         path: 'fundReport',
-        component: () => import('@/views/report/fundReport/index'),
+        // component: () => import('@/views/report/fundReport/index'),
+        component: () => import('@/views/report/merchantsReport/merchants/index'),
         name: 'fundReport',
         meta: { title: '资金报表',role:['资金报表'] }
       },
       {
         path: 'agencyReport',
-        component: () => import('@/views/report/agencyReport/index'),
+        // component: () => import('@/views/report/agencyReport/index'),
+        component: () => import('@/views/report/merchantsReport/merchants/index'),
         name: 'agencyReport',
         meta: { title: '代理报表',role:['代理报表'] }
       }

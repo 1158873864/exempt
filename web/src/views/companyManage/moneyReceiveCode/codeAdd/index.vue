@@ -2,21 +2,27 @@
   <!-- <div>团队管理</div> -->
     <div class="app-container">
         <el-form :label-position="labelPosition" :model="codeAddParameters" class="demo-form-inline">
-            <el-form-item label="duration">
-                <el-input type = "number" v-model="codeAddParameters.duration" placeholder="duration"></el-input>
+            <el-form-item label="时间">
+                <el-input type = "number" v-model="codeAddParameters.duration" placeholder=""></el-input>
             </el-form-item>
-            <el-form-item label="info">
-                <el-input v-model="codeAddParameters.info" placeholder="info"></el-input>
+            <el-form-item label="信息">
+                <el-input v-model="codeAddParameters.info" placeholder=""></el-input>
             </el-form-item>
-            <el-form-item label="number">
-                <el-input v-model="codeAddParameters.number" placeholder="number"></el-input>
+            <el-form-item label="号码">
+                <el-input v-model="codeAddParameters.number" placeholder=""></el-input>
             </el-form-item>
-            <el-form-item label="priority">
-                <el-input v-model="codeAddParameters.priority" placeholder="priority"></el-input>
+            <el-form-item label="优先权">
+                <el-input v-model="codeAddParameters.priority" type="number" placeholder=""></el-input>
             </el-form-item>
-            <el-form-item label="type">
-                <el-input v-model="codeAddParameters.type" placeholder="type"></el-input>
-            </el-form-item>
+            <el-form-item label="码类型">
+                    <el-select v-model="codeAddParameters.type" placeholder="">
+                    <el-option label="转账通码" value="TSOLID"></el-option>
+                    <el-option label="转账固码" value="TPASS"></el-option>
+                    <el-option label="收款通码离线码" value="RSOLID"></el-option>
+                    <el-option label="收款通码在线码" value="RPASSOFF"></el-option>
+                    <el-option label="收款固码(二开)" value="RPASSQR"></el-option>
+                    </el-select>
+                </el-form-item>
             <el-form-item>
                 <el-dropdown size="medium" split-button type="primary" @command="handleCommand">
                     {{ codeAddParameters.teamName }}
@@ -42,13 +48,13 @@ import { codeAdd,codesGet,teamsGet } from '@/api/company'
                 activeNames: ['1'],
                 labelPosition: 'right',
                 codeAddParameters: {
-                    "duration": 12312,
-                    "info": "info",
-                    "number": "number",
-                    "priority": "priority",
-                    "team": "team",
-                    "type": "type",
-                    "teamName":"teamName"
+                    "duration": 5,
+                    "info": "",
+                    "number": "",
+                    "priority": 1,
+                    "team": "",
+                    "type": "TSOLID",
+                    "teamName":"选择队伍"
                 },
                 codes:{},
                 currentPage:1,

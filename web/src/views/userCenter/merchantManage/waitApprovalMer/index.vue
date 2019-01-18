@@ -6,14 +6,14 @@
             height="450"
             border
             style="width: 100%">
-            <el-table-column prop="addTime" label="添加时间"  align="center"></el-table-column>
-            <el-table-column prop="alipay" label="支付宝"  align="center"></el-table-column>
-            <el-table-column prop="balance" label="余额"  align="center"></el-table-column>
-            <el-table-column prop="name" label="用户名"  align="center"></el-table-column>
+            <el-table-column prop="alipay" label="支付宝点位"  align="center"></el-table-column>
+            <el-table-column prop="approverId" label="approverId"  align="center"></el-table-column>
+            <el-table-column prop="priority" label="等级"  align="center"></el-table-column>
+            <el-table-column prop="user.password" label="密码"  align="center"></el-table-column>
             <el-table-column prop="status" label="状态"  align="center"></el-table-column>
-            <el-table-column prop="superior" label="主管"  align="center"></el-table-column>
-            <el-table-column prop="verifyCode" label="验证码"  align="center"></el-table-column>
-            <el-table-column prop="wechat" label="微信"  align="center"></el-table-column>
+            <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column>
+            <el-table-column prop="wechat" label="微信点位"  align="center"></el-table-column>
+            <el-table-column prop="mid" label="商户id"  align="center"></el-table-column>
             <el-table-column label="操作" width="280" align="center">
                     <template scope="scope">
                         <el-button size="small"
@@ -40,6 +40,7 @@
     
     <script>
     import { waitApprovalMer, ApprovalMer } from '@/api/company'
+    import store from '../../../../store'
         export default {
             data() {
                 return {
@@ -47,8 +48,14 @@
                     labelPosition: 'right',
                     
                     teams:[{
-                        mid: 'mid',
-                        state: 'state'
+                        alipay:0,
+                        approverId:0,
+                        level:0,
+                        password:0,
+                        status:0,
+                        username:0,
+                        wechat:0,
+                        mid:0,
                         }
                     ],
                     currentPage:1
@@ -56,11 +63,20 @@
             },
             created(){
                 this.getData();
+                // this.
             },
             methods: {
-                approval(index, row,state) {
+                approval(index, row,status) {
                     console.log(row);
-                    ApprovalMer(row.id,state).then(response=> {
+                    ApprovalMer(
+                            row.alipay,
+                            row.approverId,
+                            row.priority,
+                            row.user.password,
+                            status,
+                            row.user.username,
+                            row.wechat,
+                            row.mid).then(response=> {
                         if(response.data.infoCode){
                             this.$message({
                                 message: response.data.description,
@@ -96,6 +112,10 @@
                             });
                         }else{
                            this.teams = response.data;
+                           this.teams.forEach(el => {
+                               el.approverId = store.getters.uid;
+                               el.mid = el.id;
+                           });
                         }
                     })
                 },

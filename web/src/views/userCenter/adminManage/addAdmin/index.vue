@@ -17,9 +17,12 @@
                     </el-dropdown-menu>
                 </el-dropdown>
             </el-form-item>
-            <el-form-item label="状态">
-              <el-input v-model="form.status" style="width: 30%;"></el-input>
-            </el-form-item>
+             <el-form-item label="状态">
+                    <el-select v-model="form.status" placeholder="启用">
+                    <el-option label="启用" value="启用"></el-option>
+                    <el-option label="停用" value="停用"></el-option>
+                    </el-select>
+              </el-form-item>
             <el-form-item>
                 <el-dropdown size="medium" split-button type="primary" @command="handleCommandTeam">
                     {{ form.teamName }}
@@ -32,7 +35,6 @@
             </el-form-item>
           <el-form-item>
           <el-button type="primary" @click="onSubmit('form')">添加</el-button>
-          <el-button>取消</el-button>
         </el-form-item>
       </el-form>
         </div>
@@ -50,10 +52,10 @@
                   form: {
                     code: '1',
                     operator: '1',
-                    password: '1',
+                    password: '填写密码',
                     post: '选择岗位',
-                    status: '1',
-                    team:'1',
+                    status: '启用',
+                    team:'队伍',
                     username: '1',
                     teamName:'选择队伍',
                 },

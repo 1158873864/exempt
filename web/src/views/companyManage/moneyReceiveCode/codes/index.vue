@@ -5,13 +5,12 @@
         height="250"
         border
         style="width: 100%">
-        <el-table-column prop="accountInfo" label="accountInfo" align="center"></el-table-column>
-        <el-table-column prop="accountNumber" label="accountNumber" align="center" ></el-table-column>
-        <el-table-column prop="duration" label="duration" align="center"></el-table-column>
-        <el-table-column prop="id" label="id" ></el-table-column>
-        <el-table-column prop="priorityLevel" label="priorityLevel" align="center"></el-table-column>
+        <el-table-column prop="accountInfo" label="账户信息" align="center"></el-table-column>
+        <el-table-column prop="accountNumber" label="账户号码" align="center" ></el-table-column>
+        <el-table-column prop="duration" label="时间" align="center"></el-table-column>
+        <el-table-column prop="priorityLevel" label="优先等级" align="center"></el-table-column>
         <el-table-column prop="teamName" label="团队名" align="center"></el-table-column>
-        <el-table-column prop="type" label="type" align="center"></el-table-column>
+        <el-table-column prop="type" label="类型" align="center"></el-table-column>
         <el-table-column label="操作" fixed="right" >
             <template scope="scope">
                 <el-button size="small"

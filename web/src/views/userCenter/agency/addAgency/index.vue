@@ -8,18 +8,18 @@
             <el-form-item label="密码">
               <el-input v-model="form.password" style="width: 30%;"></el-input>
             </el-form-item>
-            <!-- <el-form-item label="当日佣金">
-              <el-input v-model="form.brokerage" style="width: 30%;"></el-input>
-            </el-form-item> -->
+            <el-form-item label="佣金比例">
+              <el-input v-model="form.percent" style="width: 30%;"></el-input>
+            </el-form-item>
             <el-form-item label="状态">
                     <el-select v-model="form.status" placeholder="启用">
-                    <el-option label="启用" value="启用"></el-option>
-                    <el-option label="停用" value="停用"></el-option>
+                    <el-option label="启用" value="WORKING"></el-option>
+                    <el-option label="停用" value="INVALID"></el-option>
                     </el-select>
             </el-form-item>
-            <el-form-item label="验证码">
+            <!-- <el-form-item label="验证码">
               <el-input v-model="form.code" style="width: 30%;"></el-input>
-            </el-form-item>
+            </el-form-item> -->
             <!-- <el-form-item label="流量">
               <el-input v-model="form.flow" style="width: 30%;"></el-input>
             </el-form-item> -->
@@ -41,12 +41,13 @@
         data(){
         return {
                   form: {
-                    brokerage: '',
+                    brokerage: '123',
                     code: '',
-                    flow: '',
+                    flow: '12',
                     password: '',
                     status: '',
-                    username: ''
+                    username: '',
+                    percent: 20
                 },
               }
 

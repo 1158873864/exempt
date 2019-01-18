@@ -12,11 +12,17 @@
                 <el-input v-model="codeAddParameters.number" placeholder=""></el-input>
             </el-form-item>
             <el-form-item label="优先权">
-                <el-input v-model="codeAddParameters.priority" placeholder=""></el-input>
+                <el-input v-model="codeAddParameters.priority" type="number" placeholder=""></el-input>
             </el-form-item>
-            <el-form-item label="类型">
-                <el-input v-model="codeAddParameters.type" placeholder=""></el-input>
-            </el-form-item>
+            <el-form-item label="码类型">
+                    <el-select v-model="codeAddParameters.type" placeholder="">
+                    <el-option label="转账通码" value="TSOLID"></el-option>
+                    <el-option label="转账固码" value="TPASS"></el-option>
+                    <el-option label="收款通码离线码" value="RSOLID"></el-option>
+                    <el-option label="收款通码在线码" value="RPASSOFF"></el-option>
+                    <el-option label="收款固码(二开)" value="RPASSQR"></el-option>
+                    </el-select>
+                </el-form-item>
             <el-form-item>
                 <el-dropdown size="medium" split-button type="primary" @command="handleCommand">
                     {{ codeAddParameters.teamName }}
@@ -45,9 +51,9 @@ import { codeAdd,codesGet,teamsGet } from '@/api/company'
                     "duration": 5,
                     "info": "",
                     "number": "",
-                    "priority": "",
+                    "priority": 1,
                     "team": "",
-                    "type": "",
+                    "type": "TSOLID",
                     "teamName":"选择队伍"
                 },
                 codes:{},

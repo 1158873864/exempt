@@ -7,17 +7,18 @@
             height="500"
             border
             style="width: 100%">
-            <el-table-column prop="orderMoney" label="订单金额"  align="center"></el-table-column>
-            <el-table-column prop="payMoney" label="已付金额"  align="center"></el-table-column>
-            <el-table-column prop="time" label="时间"  align="center"></el-table-column>
-            <!-- <el-table-column prop="payCode" label="支付码"  align="center"></el-table-column>
-            <el-table-column prop="ip" label="ip"  align="center"></el-table-column>
-            <el-table-column prop="rechargeId" label="rechargeId"  align="center"></el-table-column>
-            <el-table-column prop="money" label="订单金额"  align="center"></el-table-column>
-            <el-table-column prop="payMoney" label="支付金额"  align="center"></el-table-column>
-            <el-table-column prop="uid" label="uid"  align="center"></el-table-column>
-            <el-table-column prop="imei" label="imei"  align="center"></el-table-column> -->
-
+            <el-table-column prop="orderNumber" label="系统编号"  align="center"></el-table-column>
+            <el-table-column prop="time" label="日期"  align="center"></el-table-column>
+            <el-table-column prop="merchantId" label="商户号"  align="center"></el-table-column>
+            <el-table-column prop="money" label="存款"  align="center"></el-table-column>
+            <el-table-column prop="nickname" label="支付宝昵称"  align="center"></el-table-column>
+            <el-table-column prop="rechargeId" label="充值方编号"  align="center"></el-table-column>
+            <el-table-column prop="merchantName" label="merchantName"  align="center"></el-table-column>
+            <el-table-column prop="orderId" label="orderId"  align="center"></el-table-column>
+            <el-table-column prop="orderState" label="支付状态"  align="center"></el-table-column>
+            <el-table-column prop="payTime" label="支付时间"  align="center"></el-table-column>
+            <el-table-column prop="paymoney" label="支付金额"  align="center"></el-table-column>
+  
 
         </el-table>
            <div class="block">
@@ -48,9 +49,17 @@ export default {
                       "post": "post",
               },
               teams:[{
-                      "orderMoney": 0,
-                      "payMoney": 0,
-                      "time": "2019-01-17T04:58:07.905Z"
+                    code: "string",
+                    merchantId: 0,
+                    merchantName: "string",
+                    money: 0,
+                    orderId: 0,
+                    orderNumber: "string",
+                    orderState: "WAITING_FOR_PAYING",
+                    payTime: "2019-01-18T05:34:14.271Z",
+                    paymoney: 0,
+                    rechargeId: "string",
+                    time: "2019-01-18T05:34:14.271Z"
                       }],
                 currentPage:1,
                 pagesize:10
@@ -81,7 +90,10 @@ export default {
                     });
                 }else{
                   if(response.data.length!=0)
-                    this.teams[0] = response.data;
+                    this.teams = response.data;
+                    this.teams.forEach(el => {
+                        el.orderState = (el.orderState=='WAITING_FOR_PAYING')?'等待支付':'PAID'?'已支付':'失效';
+                    });
                 }
             })
           },

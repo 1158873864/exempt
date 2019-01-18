@@ -65,6 +65,7 @@
                     this.getTeams();
                 },
                 getTeams(){
+                    console.log('asdasdasd',store.getters.uid)
                     cardsGetOne(store.getters.uid).then(response=>{
                         console.log(response,'sdll')
                          if(response.code!=200){

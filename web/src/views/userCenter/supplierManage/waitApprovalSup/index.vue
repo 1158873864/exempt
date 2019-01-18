@@ -6,26 +6,25 @@
             height="450"
             border
             style="width: 100%">
-            <el-table-column prop="alipayName" label="支付宝用户名"  align="center"></el-table-column>
-            <el-table-column prop="alipayUserId" label="支付宝ID"  align="center"></el-table-column>
+            <!-- <el-table-column prop="alipayName" label="支付宝用户名"  align="center"></el-table-column>
+            <el-table-column prop="alipayUserId" label="支付宝ID"  align="center"></el-table-column> -->
 
-            <el-table-column label='设备'>
+            <!-- <el-table-column label='设备'>
                <el-table-column prop="devices.id" label="设备序号"  align="center"></el-table-column>
                <el-table-column prop="devices.imei" label="设备信息"  align="center"></el-table-column>
 
-            </el-table-column>   
+            </el-table-column>    -->
             <el-table-column prop="id" label="id"  align="center"></el-table-column>
-            <el-table-column prop="loginId" label="登录ID"  align="center"></el-table-column>
+            <el-table-column prop="applicantId" label="登录ID"  align="center"></el-table-column>
             <el-table-column prop="status" label="状态"  align="center"></el-table-column>
             <el-table-column prop="time" label="时间"  align="center"></el-table-column>
             <el-table-column label="user">
-                <el-table-column prop="user.avatarUrl" label="avatarUrl"  align="center"></el-table-column>
+                <!-- <el-table-column prop="user.avatarUrl" label="avatarUrl"  align="center"></el-table-column> -->
                 <el-table-column prop="user.id" label="id"  align="center"></el-table-column>
                 <el-table-column prop="user.password" label="密码"  align="center"></el-table-column>
                 <el-table-column prop="user.role" label="角色"  align="center"></el-table-column>
                 <el-table-column prop="user.tableId" label="tableId"  align="center"></el-table-column>
                 <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column>
-                
             </el-table-column>
             <el-table-column label="操作" width="280" align="center">
                     <template scope="scope">
@@ -53,6 +52,7 @@
     
     <script>
     import { waitApprovalSup, ApprovalSup } from '@/api/company'
+    import store from '../../../../store'
         export default {
             data() {
                 return {
@@ -60,25 +60,22 @@
                     labelPosition: 'right',
                     
                     teams:[{
-                        alipayName: 'alipayName',
-                        alipayUserId:   'alipayUserId',
-                        devices:[{
-                            id: 'id',
-                            imei: 'imei'
-                        }],
-                        id: 'id',
-                        loginId: 'loginId',
-                        status: 'status',
-                        time: 'time',
-                        user:[{
-                            avatarUrl: 'avatarUrl',
-                            id: 'id',
-                            password: 'password',
-                            role: 'role',
-                            tableId: 'tableId',
-                            username: 'username'
-                        }]
-
+                        "id": 2,
+                        "user": {
+                            "id": 36,
+                            "username": "手动阀手动阀",
+                            "password": "$2a$10$T3C8CzyJMdLg4clNLO/sIeSZGodzzzI.W/Oan6/tizWfiVvRHwoWq",
+                            "role": 4,
+                            "tableId": 2,
+                            "cards": []
+                        },
+                        "applicantId": 1,
+                        "time": "Jan 18, 2019 1:47:19 PM",
+                        "approverId": 0,
+                        "status": "CHECKING",
+                        "devices": [],
+                        "priority": 0,
+                        "codeType": "NONE"
                         }
                     ],
                     currentPage:1
@@ -90,7 +87,15 @@
             methods: {
                 approval(index, row,state) {
                     console.log(row);
-                    ApprovalSup(row.id,state).then(response=> {
+                    row.state = state;
+                    ApprovalSup(
+                            row.id,
+                            row.priority,
+                            row.user.password,
+                            row.state,
+                            row.user.username,
+                            row.sid
+                        ).then(response=> {
                         if(response.data.infoCode){
                             this.$message({
                                 message: response.data.description,
@@ -126,6 +131,9 @@
                             });
                         }else{
                            this.teams = response.data;
+                           this.teams.forEach(el => {
+                               el.sid = store.getters.uid;
+                           });
                         }
                     })
                 },

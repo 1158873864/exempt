@@ -29,28 +29,32 @@ export function addAgent(brokerage, code, flow, password, status, username) {
     }
   })
 }
-export function addMerchant(alipay, balance, code, level, password, superior, username, wechat) {
+export function addMerchant(
+  alipay,
+  applyId,
+  level,
+  password,
+  username,
+  wechat) {
   return request({
     url: '/merchant/add',
     method: 'post',
     data: {
       alipay,
-      balance,
-      code,
+      applyId,
       level,
       password,
-      superior,
       username,
-      wechat
+      wechat,
     }
   })
 }
-export function addSupplier(alipayloginID, level, password, username) {
+export function addSupplier(id, level, password, username) {
   return request({
     url: '/supplier/add',
     method: 'post',
     data: {
-      alipayloginID,
+      id,
       level,
       password,
       username
@@ -81,6 +85,16 @@ export function deleteMerchant(aid) {
     method: 'get',
     params: {
       aid
+    }
+  })
+}
+export function updateMerchant(mid, username, password) {
+  return request({
+    url: '/merchant/update/'+mid,
+    method: 'put',
+    data: {
+      username,
+      password
     }
   })
 }
@@ -118,7 +132,7 @@ export function suppliersGet() {
 export function supplierUpdate(codeType, level, password, id) {
   return request({
     url: '/supplier/update/'+id,
-    method: 'post',
+    method: 'put',
     data: {
       codeType,
       level,

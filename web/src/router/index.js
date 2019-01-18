@@ -302,12 +302,12 @@ export const asyncRouterMap = [
                
         ]
       },
-      {
-        path: 'qrcodePersonal',
-        name: 'qrcodePersonal',
-        component: () => import('@/views/userCenter/qrCode/index'),
-        meta: { title: '获取二维码', role: ['用户中心'] },
-      }
+    //   {
+    //     path: 'qrcodePersonal',
+    //     name: 'qrcodePersonal',
+    //     component: () => import('@/views/userCenter/qrCode/index'),
+    //     meta: { title: '获取二维码', role: ['用户中心'] },
+    //   }
     ]
   },
 

@@ -71,14 +71,25 @@ export function waitApprovalMer() {
     }
   })
 }
-export function ApprovalMer(mid, state) {
+export function ApprovalMer(
+  alipay,
+  approverId,
+  level,
+  password,
+  status,
+  username,
+  wechat,mid) {
   return request({
     url: '/company/approval/merchant/'+mid,
-    method: 'get',
-    params: {
-      
-      state
-
+    method: 'put',
+    data: {
+      alipay,
+      approverId,
+      level,
+      password,
+      status,
+      username,
+      wechat
     }
   })
 }
@@ -90,14 +101,22 @@ export function waitApprovalSup() {
     }
   })
 }
-export function ApprovalSup(sid, state) {
+export function ApprovalSup(
+  id,
+  level,
+  password,
+  state,
+  username,
+  sid) {
   return request({
     url: '/company/approval/supplier/'+sid,
-    method: 'get',
-    params: {
-      
-      state
-
+    method: 'put',
+    data: {
+      id,// 0,		// 审核人的userid
+      level,// 0,
+      password,// "string",
+      state,// 0,	// 1通过申请/0拒绝
+      username// "string"
     }
   })
 }

@@ -11,6 +11,7 @@ public class SupplierUpdateParameters {
         this.codeType = codeType;
     }
 
+
     public String getPassword() {
         return password;
     }

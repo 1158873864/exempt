@@ -1,7 +1,10 @@
 package njurestaurant.njutakeout.config.websocket;
 
+import njurestaurant.njutakeout.publicdatas.account.AgentDailyFlow;
+import org.apache.commons.lang.time.DateUtils;
 import com.amazonaws.util.json.JSONObject;
 import njurestaurant.njutakeout.bl.order.TransactionBlServiceImpl;
+import njurestaurant.njutakeout.dataservice.account.AgentDataService;
 import njurestaurant.njutakeout.dataservice.account.MerchantDataService;
 import njurestaurant.njutakeout.dataservice.account.SupplierDataService;
 import njurestaurant.njutakeout.dataservice.account.UserDataService;
@@ -9,6 +12,7 @@ import njurestaurant.njutakeout.dataservice.app.AlipayDataService;
 import njurestaurant.njutakeout.dataservice.app.AlipayOrderDataService;
 import njurestaurant.njutakeout.dataservice.app.DeviceDataService;
 import njurestaurant.njutakeout.dataservice.order.PlatformOrderDataService;
+import njurestaurant.njutakeout.entity.account.Agent;
 import njurestaurant.njutakeout.entity.account.Merchant;
 import njurestaurant.njutakeout.entity.account.Supplier;
 import njurestaurant.njutakeout.entity.account.User;
@@ -29,10 +33,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,17 +47,19 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	private final PlatformOrderDataService platformOrderDataService;
 	private final MerchantDataService merchantDataService;
 	private final UserDataService userDataService;
+	private final AgentDataService agentDataService;
 
 	@Autowired
 	public WebSocketHandler(DeviceDataService deviceDataService, AlipayDataService alipayDataService,
 			AlipayOrderDataService alipayOrderDataService, PlatformOrderDataService platformOrderDataService,
-			MerchantDataService merchantDataService, UserDataService userDataService) {
+			MerchantDataService merchantDataService, UserDataService userDataService, AgentDataService agentDataService) {
 		this.deviceDataService = deviceDataService;
 		this.alipayDataService = alipayDataService;
 		this.alipayOrderDataService = alipayOrderDataService;
 		this.platformOrderDataService = platformOrderDataService;
 		this.merchantDataService = merchantDataService;
 		this.userDataService = userDataService;
+		this.agentDataService = agentDataService;
 	}
 
 	public static Map<String, Thread> mapThread = new HashMap<>();
@@ -89,7 +92,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		// 收到设备更新信息
 		// 客户端消息:{"cmd":"validation","type":"alipay","userid":"支付宝userid","loginid":"支付宝loginid","imei":"设备唯一标识","name":"支付宝账号昵称/姓名(暂时未定)"}
 		if (cmd.equals("validation") && type.equals("alipay")) {
-
 			String userid = jsonObject.getString("userid");
 			String loginid = jsonObject.getString("loginid");
 			String name = jsonObject.getString("name");
@@ -126,22 +128,46 @@ public class WebSocketHandler extends TextWebSocketHandler {
 				PlatformOrder platformOrders = platformOrderDataService.findByImeiAndState(imei,
 						OrderState.WAITING_FOR_PAYING);
 				if (platformOrders != null) {
-					System.out.println("receipt:");
 					platformOrders.setState(OrderState.PAID);
 					platformOrders.setPayMoney(money);
+					Date payTime = FormatDateTime.ThirdTimestampToDate(Long.parseLong(time));
+					platformOrders.setPayTime(payTime);
 					platformOrderDataService.savePlatformOrder(platformOrders);
-					AlipayOrder alipayOrder = new AlipayOrder(imei, orderId, money, memo,
-							FormatDateTime.ThirdTimestampToDate(Long.parseLong(time)));
+					AlipayOrder alipayOrder = new AlipayOrder(imei, orderId, money, memo, payTime);
 					alipayOrderDataService.saveAlipayOrder(alipayOrder);
 					User user = userDataService.getUserById(platformOrders.getUid());
-
 					if (user != null) {
 						Merchant merchant = merchantDataService.findMerchantById(user.getTableId());
+						User suser = userDataService.getUserById(merchant.getApplyId());
 						if (merchant != null) {
-							merchant.setBalance(merchant.getBalance() + money);
+							merchant.setBalance(merchant.getBalance() + money * (1 - merchant.getAlipay()/100));
 							merchantDataService.saveMerchant(merchant);
 						}
-
+						// 操作上级,商户的代理商
+						if(suser != null) {
+							if(suser.getRole() == 2) {
+								Agent agent = agentDataService.findAgentById(suser.getTableId());
+								agent.setBalance(agent.getBalance() + money * agent.getPercent()/100);
+								agentDataService.saveAgent(agent);
+								if(!DateUtils.isSameDay(AgentDailyFlow.date, new Date())) {
+									AgentDailyFlow.commission.clear();
+									AgentDailyFlow.flow.clear();
+									AgentDailyFlow.date = new Date();
+								}
+								// 计算代理的每日流量
+								if(AgentDailyFlow.flow.containsKey(agent.getId())) {
+									AgentDailyFlow.flow.put(agent.getId(), AgentDailyFlow.flow.get(agent.getId()) + money * (1 - merchant.getAlipay()/100));
+								} else {
+									AgentDailyFlow.flow.put(agent.getId(), money * (1 - merchant.getAlipay()/100));
+								}
+								// 计算代理的每日佣金
+								if(AgentDailyFlow.commission.containsKey(agent.getId())) {
+									AgentDailyFlow.commission.put(agent.getId(), AgentDailyFlow.commission.get(agent.getId()) + money * agent.getPercent()/100);
+								} else {
+									AgentDailyFlow.commission.put(agent.getId(), money * agent.getPercent()/100);
+								}
+							}
+						}
 					}
 
 				}
@@ -152,19 +178,44 @@ public class WebSocketHandler extends TextWebSocketHandler {
 				if (platformOrder != null) {
 					platformOrder.setState(OrderState.PAID);
 					platformOrder.setPayMoney(money);
+					Date payTime = FormatDateTime.ThirdTimestampToDate(Long.parseLong(time));
+					platformOrder.setPayTime(payTime);
 					platformOrderDataService.savePlatformOrder(platformOrder);
-					AlipayOrder alipayOrder = new AlipayOrder(imei, orderId, money, memo,
-							FormatDateTime.TenTimestampToDate(Integer.valueOf(time)));
+					AlipayOrder alipayOrder = new AlipayOrder(imei, orderId, money, memo, payTime);
 					alipayOrderDataService.saveAlipayOrder(alipayOrder);
 					User user = userDataService.getUserById(platformOrder.getUid());
-
 					if (user != null) {
 						Merchant merchant = merchantDataService.findMerchantById(user.getTableId());
+						User suser = userDataService.getUserById(merchant.getApplyId());
 						if (merchant != null) {
-							merchant.setBalance(merchant.getBalance() + money);
+							merchant.setBalance(merchant.getBalance() + money * (1 - merchant.getAlipay()/100));
 							merchantDataService.saveMerchant(merchant);
 						}
-
+						// 操作上级,商户的代理商
+						if(suser != null) {
+							if(suser.getRole() == 2) {
+								Agent agent = agentDataService.findAgentById(suser.getTableId());
+								agent.setBalance(agent.getBalance() + money * agent.getPercent()/100);
+								agentDataService.saveAgent(agent);
+								if(!DateUtils.isSameDay(AgentDailyFlow.date, new Date())) {
+									AgentDailyFlow.commission.clear();
+									AgentDailyFlow.flow.clear();
+									AgentDailyFlow.date = new Date();
+								}
+								// 计算代理的每日流量
+								if(AgentDailyFlow.flow.containsKey(agent.getId())) {
+									AgentDailyFlow.flow.put(agent.getId(), AgentDailyFlow.flow.get(agent.getId()) + money * (1 - merchant.getAlipay()/100));
+								} else {
+									AgentDailyFlow.flow.put(agent.getId(), money * (1 - merchant.getAlipay()/100));
+								}
+								// 计算代理的每日佣金
+								if(AgentDailyFlow.commission.containsKey(agent.getId())) {
+									AgentDailyFlow.commission.put(agent.getId(), AgentDailyFlow.commission.get(agent.getId()) + money * agent.getPercent()/100);
+								} else {
+									AgentDailyFlow.commission.put(agent.getId(), money * agent.getPercent()/100);
+								}
+							}
+						}
 					}
 				}
 			} else {

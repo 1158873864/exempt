@@ -1,11 +1,11 @@
 package njurestaurant.njutakeout.blservice.account;
 
 import njurestaurant.njutakeout.entity.account.Merchant;
-import njurestaurant.njutakeout.exception.UsernameIsExistentException;
 import njurestaurant.njutakeout.exception.WrongIdException;
+import njurestaurant.njutakeout.parameters.company.MerchantApprovalParameters;
+import njurestaurant.njutakeout.parameters.user.MerchantUpdateParameters;
 import njurestaurant.njutakeout.publicdatas.account.MerchantState;
 import njurestaurant.njutakeout.response.Response;
-import njurestaurant.njutakeout.response.SuccessResponse;
 import njurestaurant.njutakeout.response.user.MerchantAddResponse;
 import org.springframework.stereotype.Service;
 
@@ -23,10 +23,10 @@ public interface MerchantBlService {
     /**
      * update the merchant
      *
-     * @param merchant the new info of merchant
+     * @param merchantUpdateParameters the new info of merchant
      * @return
      */
-    MerchantAddResponse updateMerchant(Merchant merchant);
+    MerchantAddResponse updateMerchant(int id, MerchantUpdateParameters merchantUpdateParameters) throws WrongIdException;
 
     /**
      * select the record of merchant by id
@@ -41,7 +41,7 @@ public interface MerchantBlService {
      * @param id
      * @return
      */
-    Response ApprovalMerchant(int id, String state);
+    Response ApprovalMerchant(int id, MerchantApprovalParameters merchantApprovalParameters);
 
     /**
      * delete the merchant by id

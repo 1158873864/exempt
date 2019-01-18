@@ -11,6 +11,7 @@ import njurestaurant.njutakeout.response.JSONResponse;
 import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.SuccessResponse;
 import njurestaurant.njutakeout.response.WrongResponse;
+import njurestaurant.njutakeout.response.order.OrderListResponse;
 import njurestaurant.njutakeout.response.report.MerchantReport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ public class ReportController {
     @ApiOperation(value = "商户个人报表", notes = "商户查看个人的报表")
     @RequestMapping(value = "report/merchant/{id}", method = RequestMethod.GET)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = MerchantReport.class),
+            @ApiResponse(code = 200, message = "Success", response = OrderListResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
@@ -41,11 +42,11 @@ public class ReportController {
     @ApiOperation(value = "全部商户报表", notes = "管理员查看商户全部报表")
     @RequestMapping(value = "report/merchants", method = RequestMethod.GET)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = MerchantReport.class),
+            @ApiResponse(code = 200, message = "Success", response = OrderListResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
     public ResponseEntity<Response> merchantsReport() {
-        return new ResponseEntity<>(new JSONResponse(200, platformOrderBlService.merchantsOrderReport()), HttpStatus.OK);
+        return new ResponseEntity<>(new JSONResponse(200, platformOrderBlService.findAllPlatformOrders()), HttpStatus.OK);
     }
 }

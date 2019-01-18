@@ -10,14 +10,18 @@ public class Agent {
     private int id;
     @Column(name = "agentName")
     private String agentName;
-    @Column(name = "flow")
-    private String flow;
     @Column(name = "status")
     private String status;
     @Column(name = "verifyCode")
     private String verifyCode;
-    @Column(name = "dailyCommission")
-    private double dailyCommission;
+    /*代理商手续费*/
+    @Column(name = "percent")
+    private double percent;
+    /*代理商余额*/
+    @Column(name = "balance")
+    private double balance;
+    @Column(name = "withdrewMoney")
+    private double withdrewMoney;
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User userInfo;
@@ -25,21 +29,36 @@ public class Agent {
     public Agent() {
     }
 
-    public Agent(String agentName, String flow, String status, String verifyCode, double dailyCommission, User user) {
+    public Agent(String agentName, String status, double percent, double balance, User userInfo) {
         this.agentName = agentName;
-        this.flow = flow;
         this.status = status;
-        this.verifyCode = verifyCode;
-        this.dailyCommission = dailyCommission;
-        this.userInfo = user;
+        this.percent = percent;
+        this.balance = balance;
+        this.userInfo = userInfo;
     }
 
-    public Agent(String agentName, String flow, String status, String verifyCode, double dailyCommission) {
-        this.agentName = agentName;
-        this.flow = flow;
-        this.status = status;
-        this.verifyCode = verifyCode;
-        this.dailyCommission = dailyCommission;
+    public double getWithdrewMoney() {
+        return withdrewMoney;
+    }
+
+    public void setWithdrewMoney(double withdrewMoney) {
+        this.withdrewMoney = withdrewMoney;
+    }
+
+    public double getPercent() {
+        return percent;
+    }
+
+    public void setPercent(double percent) {
+        this.percent = percent;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
     }
 
     public User getUser() {
@@ -66,12 +85,13 @@ public class Agent {
         this.agentName = agentName;
     }
 
-    public String getFlow() {
-        return flow;
+
+    public User getUserInfo() {
+        return userInfo;
     }
 
-    public void setFlow(String flow) {
-        this.flow = flow;
+    public void setUserInfo(User userInfo) {
+        this.userInfo = userInfo;
     }
 
     public String getStatus() {
@@ -90,11 +110,4 @@ public class Agent {
         this.verifyCode = verifyCode;
     }
 
-    public double getDailyCommission() {
-        return dailyCommission;
-    }
-
-    public void setDailyCommission(double dailyCommission) {
-        this.dailyCommission = dailyCommission;
-    }
 }

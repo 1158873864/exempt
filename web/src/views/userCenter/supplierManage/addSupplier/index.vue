@@ -1,9 +1,6 @@
 <template>
         <div class="app-container">
           <el-form ref="form" :model="form" label-width="80px">
-            <el-form-item label="支付宝ID">
-              <el-input v-model="form.alipayloginID" style="width: 30%;"></el-input>
-            </el-form-item>
             <el-form-item label="等级">
                     <el-input v-model="form.level" style="width: 30%;"></el-input>
             </el-form-item>
@@ -23,18 +20,19 @@
 
 <script>
     import {addSupplier} from '@/api/role'
-    import Form from "../../../../components/form/index";
+    import Form from "../../../../components/form/index"
+    import store from '../../../../store'
 
     export default {
         name: "index",
         data(){
         return {
                   form: {
-                    alipayloginID: '1',
-                    level: 0,
+                    id: '1',
+                    level: 1,
                     password: '1',
                     username: '1'
-                  },             
+                  },
               }
 
         },
@@ -42,12 +40,15 @@
       components: {
         Form
       },
+      created(){
+        this.form.id = store.getters.uid;
+      },
       methods:{
         onSubmit(formName) {
           this.$refs[formName].validate((valid) => {
             if (valid) {
               // alert('submit!');
-              addSupplier(this.form.alipayloginID,this.form.level,this.form.password,this.form.username).then(response => {
+              addSupplier(this.form.id,this.form.level,this.form.password,this.form.username).then(response => {
                 // console.log(response.data.infoCode)
                 if(response.data.infoCode){
                    this.$message({

@@ -2,6 +2,7 @@ package njurestaurant.njutakeout.config;
 
 import njurestaurant.njutakeout.config.websocket.WebSocketHandler;
 import njurestaurant.njutakeout.config.websocket.WebSocketHandshakeInterceptor;
+import njurestaurant.njutakeout.dataservice.account.AgentDataService;
 import njurestaurant.njutakeout.dataservice.account.MerchantDataService;
 import njurestaurant.njutakeout.dataservice.account.SupplierDataService;
 import njurestaurant.njutakeout.dataservice.account.UserDataService;
@@ -9,6 +10,7 @@ import njurestaurant.njutakeout.dataservice.app.AlipayDataService;
 import njurestaurant.njutakeout.dataservice.app.AlipayOrderDataService;
 import njurestaurant.njutakeout.dataservice.app.DeviceDataService;
 import njurestaurant.njutakeout.dataservice.order.PlatformOrderDataService;
+import njurestaurant.njutakeout.entity.account.Agent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -37,15 +39,17 @@ public class WebSocketConfig extends WebMvcConfigurerAdapter implements WebSocke
     private final PlatformOrderDataService platformOrderDataService;
     private final MerchantDataService merchantDataService;
     private final UserDataService userDataService;
+    private final AgentDataService agentDataService;
 
     @Autowired
-    public WebSocketConfig(DeviceDataService deviceDataService, AlipayDataService alipayDataService, AlipayOrderDataService alipayOrderDataService, PlatformOrderDataService platformOrderDataService, MerchantDataService merchantDataService, UserDataService userDataService) {
+    public WebSocketConfig(DeviceDataService deviceDataService, AlipayDataService alipayDataService, AlipayOrderDataService alipayOrderDataService, PlatformOrderDataService platformOrderDataService, MerchantDataService merchantDataService, UserDataService userDataService, AgentDataService agentDataService) {
         this.deviceDataService = deviceDataService;
         this.alipayDataService = alipayDataService;
         this.alipayOrderDataService = alipayOrderDataService;
         this.platformOrderDataService = platformOrderDataService;
         this.merchantDataService = merchantDataService;
         this.userDataService = userDataService;
+        this.agentDataService = agentDataService;
     }
 
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
@@ -65,6 +69,6 @@ public class WebSocketConfig extends WebMvcConfigurerAdapter implements WebSocke
 
     @Bean
     public TextWebSocketHandler webSocketHandler() {
-        return new WebSocketHandler(deviceDataService, alipayDataService, alipayOrderDataService, platformOrderDataService, merchantDataService, userDataService);
+        return new WebSocketHandler(deviceDataService, alipayDataService, alipayOrderDataService, platformOrderDataService, merchantDataService, userDataService, agentDataService);
     }
 }

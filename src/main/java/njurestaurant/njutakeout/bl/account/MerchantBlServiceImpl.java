@@ -6,21 +6,20 @@ import njurestaurant.njutakeout.dataservice.account.UserDataService;
 import njurestaurant.njutakeout.entity.account.Merchant;
 import njurestaurant.njutakeout.entity.account.PersonalCard;
 import njurestaurant.njutakeout.entity.account.User;
-import njurestaurant.njutakeout.exception.UsernameIsExistentException;
 import njurestaurant.njutakeout.exception.WrongIdException;
+import njurestaurant.njutakeout.parameters.company.MerchantApprovalParameters;
+import njurestaurant.njutakeout.parameters.user.MerchantUpdateParameters;
 import njurestaurant.njutakeout.publicdatas.account.MerchantState;
 import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.SuccessResponse;
 import njurestaurant.njutakeout.response.WrongResponse;
 import njurestaurant.njutakeout.response.user.MerchantAddResponse;
-import njurestaurant.njutakeout.response.user.UserAddResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,12 +47,23 @@ public class MerchantBlServiceImpl implements MerchantBlService {
     /**
      * update the merchant
      *
-     * @param merchant the new info of merchant
+     * @param merchantUpdateParameters the new info of merchant
      * @return
      */
     @Override
-    public MerchantAddResponse updateMerchant(Merchant merchant) {
-        return new MerchantAddResponse(merchantDataService.saveMerchant(merchant).getId());
+    public MerchantAddResponse updateMerchant(int id, MerchantUpdateParameters merchantUpdateParameters) throws WrongIdException {
+        Merchant merchant = merchantDataService.findMerchantById(id);
+        if(merchant == null) {
+            throw new WrongIdException();
+        } else {
+            merchant.setName(merchantUpdateParameters.getName());
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            User user = merchant.getUser();
+            if(!user.getPassword().equals(merchantUpdateParameters.getPassword()))
+                user.setPassword(encoder.encode(merchantUpdateParameters.getPassword()));
+            merchant.setUser(user);
+            return new MerchantAddResponse(merchantDataService.saveMerchant(merchant).getId());
+        }
     }
 
     /**
@@ -67,12 +77,22 @@ public class MerchantBlServiceImpl implements MerchantBlService {
     }
 
     @Override
-    public Response ApprovalMerchant(int id, String state) {
+    public Response ApprovalMerchant(int id, MerchantApprovalParameters merchantApprovalParameters) {
         Merchant merchant = merchantDataService.findMerchantById(id);
         if(merchant != null) {
-            if(state.equals("1")) {
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            User user = merchant.getUser();
+            user.setPassword(encoder.encode(merchantApprovalParameters.getPassword()));
+            user.setUsername(merchantApprovalParameters.getUsername());
+            merchant.setUser(user);
+            merchant.setAlipay(merchantApprovalParameters.getAlipay());
+            merchant.setWechat(merchantApprovalParameters.getWechat());
+            merchant.setApproverId(merchantApprovalParameters.getApproverId());
+            merchant.setPriority(merchantApprovalParameters.getLevel());
+            merchant.setApprovalTime(new Date());
+            if(merchantApprovalParameters.getStatus() == 1) {
                 merchant.setStatus(MerchantState.PASS);
-            } else if(state.equals("0")){
+            } else if(merchantApprovalParameters.getStatus() == 0){
                 merchant.setStatus((MerchantState.REJECT));
             } else {
                 return new WrongResponse(10140, "Wrong state");
@@ -104,7 +124,7 @@ public class MerchantBlServiceImpl implements MerchantBlService {
         if(user == null || user.getId() == 0) {
             throw new WrongIdException();
         } else {
-            List<Merchant> result = JSONFilter(merchantDataService.getMerchantsBySuperior(Integer.toString(id)));
+            List<Merchant> result = JSONFilter(merchantDataService.getMerchantsByApplyId(id));
             return result;  //最好传id
         }
     }

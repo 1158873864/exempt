@@ -41,15 +41,15 @@
                 </el-form-item>
                 <el-form-item label="码类型">
                     <el-select v-model="newRow.codeType" placeholder="">
-                    <el-option label="转账通码" value="TSOLD"></el-option>
+                    <el-option label="转账通码" value="TSOLID"></el-option>
                     <el-option label="转账固码" value="TPASS"></el-option>
-                    <el-option label="收款通码离线码" value="RSOLD"></el-option>
+                    <el-option label="收款通码离线码" value="RSOLID"></el-option>
                     <el-option label="收款通码在线码" value="RPASSOFF"></el-option>
-                    <el-option label="收款固码(二开)" value="RPASSOR"></el-option>
+                    <el-option label="收款固码(二开)" value="RPASSQR"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="level">
-                    <el-input v-model="newRow.level" placeholder="level"></el-input>
+                    <el-input v-model="newRow.level" type="number" min="1" placeholder="level"></el-input>
                 </el-form-item>
                 <el-form-item label="password">
                     <el-input v-model="newRow.password" placeholder="password"></el-input>
@@ -77,7 +77,7 @@ import { suppliersGet,supplierUpdate } from '@/api/role'
                     }
                 ],
                 newRow: {
-                    "codeType": "",
+                    "codeType": "RSOLID",
                     "level": 0,
                     "password": "",
                     "user": {}

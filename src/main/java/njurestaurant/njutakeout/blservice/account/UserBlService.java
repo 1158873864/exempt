@@ -17,7 +17,7 @@ public interface UserBlService {
      * @return the login info to  response
      * @throws WrongUsernameOrPasswordException the username or password is error
      */
-    UserLoginResponse login(String username, String password) throws WrongUsernameOrPasswordException, CannotRegisterException;
+    UserLoginResponse login(String username, String password) throws WrongUsernameOrPasswordException, CannotRegisterException,RoleIdentityNotConformException;
 
     /**
      * get user openid
@@ -70,6 +70,6 @@ public interface UserBlService {
 
     Response deleteUserById(int id);
 
-    SuccessResponse appLogin(String username, String password, String imei) throws WrongUsernameOrPasswordException, CannotRegisterException;
+    SuccessResponse appLogin(String username, String password, String imei) throws WrongUsernameOrPasswordException, CannotRegisterException, RoleIdentityNotConformException;
 
 }

@@ -58,7 +58,7 @@ public class UserController {
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> login(@RequestBody UserLoginParameters userLoginParameters) {
+    public ResponseEntity<Response> login(@RequestBody UserLoginParameters userLoginParameters) throws RoleIdentityNotConformException {
         try {
             UserLoginResponse userLoginResponse = userBlService.login(userLoginParameters.getUsername(), userLoginParameters.getPassword());
             return new ResponseEntity<>(new JSONResponse(200, userLoginResponse), HttpStatus.OK);

@@ -6,6 +6,7 @@ package njurestaurant.njutakeout.springcontroller.app;
 import io.swagger.annotations.ApiOperation;
 import njurestaurant.njutakeout.blservice.account.UserBlService;
 import njurestaurant.njutakeout.exception.CannotRegisterException;
+import njurestaurant.njutakeout.exception.RoleIdentityNotConformException;
 import njurestaurant.njutakeout.exception.WrongUsernameOrPasswordException;
 import njurestaurant.njutakeout.parameters.app.AppLoginParameters;
 import njurestaurant.njutakeout.response.JSONResponse;
@@ -47,6 +48,8 @@ public class AppController {
             return new ResponseEntity<>(new JSONResponse(10003, e.getResponse()), HttpStatus.OK);
         } catch (CannotRegisterException e) {
             return new ResponseEntity<>(new JSONResponse(10006, e.getResponse()), HttpStatus.OK);
+        } catch (RoleIdentityNotConformException e){
+            return new ResponseEntity<>(new JSONResponse(10009,e.getResponse()), HttpStatus.OK);
         }
     }
 

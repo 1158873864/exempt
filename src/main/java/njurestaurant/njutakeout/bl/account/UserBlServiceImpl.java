@@ -116,24 +116,27 @@ public class UserBlServiceImpl implements UserBlService {
     }
 
     @Override
-    public SuccessResponse appLogin(String username, String password, String imei) throws WrongUsernameOrPasswordException, CannotRegisterException {
+    public SuccessResponse appLogin(String username, String password, String imei) throws WrongUsernameOrPasswordException, CannotRegisterException ,RoleIdentityNotConformException{
         if (username.length() == 0) {
             throw new CannotRegisterException();
         }
         if (userDataService.confirmPassword(username, password)) {
             User user = userDataService.getUserByUsername(username);
-            JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(username);
-            String token = jwtService.generateToken(jwtUser, EXPIRATION);
-            if(user.getRole() == 4) {
+            if (user.getRole() == 4) {
+                JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(username);
+                String token = jwtService.generateToken(jwtUser, EXPIRATION);
                 Supplier supplier = supplierDataService.findSupplierById(user.getTableId());
                 Device device = deviceDataService.findByImei(imei);
-                if(device == null)  {
+                if (device == null) {
                     device = new Device(imei, supplier);
                     device.setOnline(0);
                     deviceDataService.saveDevice(device);
                 }
+                return new SuccessResponse("login success");
+            } else {
+                throw  new RoleIdentityNotConformException();
             }
-            return new SuccessResponse("login success");
+
         } else {
             throw new WrongUsernameOrPasswordException();
         }

@@ -1,6 +1,9 @@
 <template>
   <div class="login-container">
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
+     <!-- <vue-recaptcha sitekey="6LdRB4sUAAAAAHGqNXwexwX7PpXiof_Lz0YHwQLS">
+    <button>Click me</button>
+  </vue-recaptcha> -->
       <h3 class="title">{{ title }}</h3>
       <el-form-item prop="用户名">
         <span class="svg-container">
@@ -31,17 +34,35 @@
       <div class="tips">
         <span style="margin-right:20px;">请输入账号密码</span>
       </div>
+          <div>
+        <vue-recaptcha
+          ref="recaptcha"
+          @verify="onVerify"
+          @expired="onExpired"
+          :sitekey="sitekey">
+        </vue-recaptcha>
+        <button @click="resetRecaptcha"> Reset ReCAPTCHA </button>
+      </div>
     </el-form>
   </div>
 </template>
-
+<script>
+  grecaptcha.ready(function() {
+      grecaptcha.execute('reCAPTCHA_site_key', {action: 'homepage'});
+  });
+  </script>
 <script>
 import { isvalidUsername } from '@/utils/validate'
 import { login } from '@/api/login'
 import store from '../../store'
 import {titleList, titleUpdate} from '@/api/company'
+import {codeVerify,codeVerify1} from '@/api/googleverify'
+// import {remotejs} from '@/components/remotejs'
+ import VueRecaptcha from 'vue-recaptcha';
+//  import {*} from '@/api/vue-recaptcha'
 export default {
   name: 'Login',
+  components: { VueRecaptcha },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!isvalidUsername(value)) {
@@ -69,7 +90,9 @@ export default {
       loading: false,
       pwdType: 'password',
       redirect: undefined,
-      title:"管理系统"
+      title:"管理系统",
+      sitekey:"6LdRB4sUAAAAAHGqNXwexwX7PpXiof_Lz0YHwQLS",
+      secretkey:'6LdRB4sUAAAAAOzE_J2uhZ4LDhbxkIUFqfx1N1gB'
     }
   },
   watch: {
@@ -81,6 +104,9 @@ export default {
     }
   },
   created(){
+    grecaptcha.ready(function() {
+      grecaptcha.execute('6LdRB4sUAAAAAHGqNXwexwX7PpXiof_Lz0YHwQLS', {action: 'homepage'});
+  });
     titleList().then(res => {
       if(res.code!=200){
         this.title = '管理系统'
@@ -88,6 +114,9 @@ export default {
         this.title = res.data[0].title;
       }
     })
+     codeVerify1().then(res=>{
+       console.log(res,'res')
+     })
   },
   methods: {
     showPwd() {
@@ -114,11 +143,45 @@ export default {
           return false
         }
       })
+    },
+     onSubmit(token) {
+    alert('thanks ' + document.getElementById('field').value);
+    },
+     onSubmit: function () {
+      this.$refs.invisibleRecaptcha.execute()
+    },
+    onVerify: function (response) {
+      console.log('Verify: ' + response,'key',this.secretkey)
+
+      codeVerify(response).then(res=>{
+        console.log(res)
+      })
+      console.log('qweaxcsd')
+    },
+    onExpired: function () {
+      console.log('Expired')
+    },
+    resetRecaptcha () {
+      this.$refs.recaptcha.reset() // Direct call reset method
+    },
+ 
+   validate(event) {
+    event.preventDefault();
+    if (!document.getElementById('field').value) {
+      alert("You must add text to the required field");
+    } else {
+      grecaptcha.execute();
     }
+  },
+ 
+   onload() {
+    var element = document.getElementById('submit');
+    element.onclick = validate;
+  }
+
   }
 }
 </script>
-
 <style rel="stylesheet/scss" lang="scss">
 $bg:#2d3a4b;
 $light_gray:#eee;

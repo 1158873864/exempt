@@ -55,7 +55,7 @@ const user = {
         console.log('get info')
         getInfo(state.uid).then(response => {
           const data = response.data
-          var roles = ['404', '面板']
+          var roles = ['404', '面板','用户信息','用户中心']
           if (data.permissions && data.permissions.length > 0) { // 验证返回的roles是否是一个非空数组
             roles = roles.concat(data.permissions)
             commit('SET_ROLES', roles)

@@ -13,12 +13,12 @@
             <el-table-column prop="money" label="存款"  align="center"></el-table-column>
             <el-table-column prop="nickname" label="支付宝昵称"  align="center"></el-table-column>
             <el-table-column prop="rechargeId" label="充值方编号"  align="center"></el-table-column>
-            <el-table-column prop="merchantName" label="merchantName"  align="center"></el-table-column>
-            <el-table-column prop="orderId" label="orderId"  align="center"></el-table-column>
+            <el-table-column prop="merchantName" label="商户名"  align="center"></el-table-column>
+            <!-- <el-table-column prop="orderId" label="orderId"  align="center"></el-table-column> -->
             <el-table-column prop="orderState" label="支付状态"  align="center"></el-table-column>
             <el-table-column prop="payTime" label="支付时间"  align="center"></el-table-column>
             <el-table-column prop="paymoney" label="支付金额"  align="center"></el-table-column>
-  
+   
 
         </el-table>
            <div class="block">

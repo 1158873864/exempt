@@ -10,7 +10,7 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      changeOrigin : true,
+      changeOrigin : true
     },
 
     // Various Dev Server settings

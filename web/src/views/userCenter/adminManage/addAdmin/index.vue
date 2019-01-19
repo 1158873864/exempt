@@ -19,8 +19,8 @@
             </el-form-item>
              <el-form-item label="状态">
                     <el-select v-model="form.status" placeholder="启用">
-                    <el-option label="启用" value="启用"></el-option>
-                    <el-option label="停用" value="停用"></el-option>
+                    <el-option label="启用" value="WORKING"></el-option>
+                    <el-option label="停用" value="INVALID"></el-option>
                     </el-select>
               </el-form-item>
             <el-form-item>
@@ -54,7 +54,7 @@
                     operator: '1',
                     password: '填写密码',
                     post: '选择岗位',
-                    status: '启用',
+                    status: 'WORKING',
                     team:'队伍',
                     username: '1',
                     teamName:'选择队伍',

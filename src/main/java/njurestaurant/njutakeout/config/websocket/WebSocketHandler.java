@@ -81,9 +81,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 //		System.out.println("123");
-		session.sendMessage(new TextMessage(message.getPayload()));
-		JSONObject jsonObject = new JSONObject(message.getPayload());
-		String cmd = jsonObject.getString("cmd");
+		//session.sendMessage(new TextMessage(message.getPayload()));
+        String string = message.getPayload();
+        System.out.println(string);
+		JSONObject jsonObject = new JSONObject(string);
+		String cmd = jsonObject .getString("cmd");
 		String type = jsonObject.getString("type");
 		String imei = jsonObject.getString("imei");
 
@@ -299,7 +301,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		// break;
 		// }
 		// }
-
+        socketSessionMap.remove(imei,session);
 		Device device = deviceDataService.findByImei(imei);
 		if (device != null) {
 			device.setOnline(0);

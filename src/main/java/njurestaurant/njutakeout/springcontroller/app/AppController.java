@@ -5,6 +5,7 @@ import net.sf.json.JSONObject;
 import njurestaurant.njutakeout.blservice.account.UserBlService;
 import njurestaurant.njutakeout.exception.CannotRegisterException;
 import njurestaurant.njutakeout.exception.SystemException;
+import njurestaurant.njutakeout.exception.RoleIdentityNotConformException;
 import njurestaurant.njutakeout.exception.WrongUsernameOrPasswordException;
 import njurestaurant.njutakeout.response.JSONResponse;
 import njurestaurant.njutakeout.response.Response;
@@ -49,6 +50,8 @@ public class AppController {
             return new ResponseEntity<>(new JSONResponse(10003, e.getResponse()), HttpStatus.OK);
         } catch (CannotRegisterException e) {
             return new ResponseEntity<>(new JSONResponse(10006, e.getResponse()), HttpStatus.OK);
+        } catch (RoleIdentityNotConformException e){
+            return new ResponseEntity<>(new JSONResponse(10009,e.getResponse()), HttpStatus.OK);
         }
     }
 

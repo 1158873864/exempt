@@ -203,11 +203,18 @@ export const asyncRouterMap = [
     },
     children: [
       {
+        path: 'userInfo',
+        name: 'userInfo',
+        component: () => import('@/views/userCenter/index'),
+        meta: { title: '用户信息', role: ['用户信息'] }
+      },
+      {
         path: 'agency',
         component: () => import('@/views/userCenter/agency/index'),
         name: 'agency',
         meta: { title: '代理管理',role:['代理管理'] },
         children: [
+          
           {
             path: 'addAgency',
             name: 'addAgency',

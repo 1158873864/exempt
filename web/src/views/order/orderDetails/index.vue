@@ -10,7 +10,7 @@
             <el-table-column prop="paymoney" label="成交金额"  align="center"></el-table-column>
             <el-table-column prop="rechargeId" label="充值方编号"  align="center"></el-table-column>
             <el-table-column prop="nickname" label="支付宝昵称"  align="center"></el-table-column>
-            <el-table-column prop="code" label="收款码"  align="center"></el-table-column>
+            <!-- <el-table-column prop="code" label="收款码"  align="center"></el-table-column> -->
             <el-table-column prop="time" label="订单时间"  align="center"></el-table-column>
             <el-table-column prop="orderState" label="状态"  align="center">
                  <template slot-scope="{row}">

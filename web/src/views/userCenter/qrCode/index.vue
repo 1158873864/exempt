@@ -8,6 +8,9 @@
             <el-form-item label="备注">
               <el-input v-model="formparameters.memo" style="width: 30%;"></el-input>
             </el-form-item>
+            <el-form-item label="ip">
+              <el-input v-model="formparameters.ip" style="width: 30%;"></el-input>
+            </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="getCode">获取二维码</el-button>
                 <!-- <el-button>取消</el-button> -->
@@ -47,12 +50,12 @@ import {qrCodeGet,redirect} from '@/api/personal'
             },
             created(){
                 // this.getData();
-                // this.merchantId = store.getters.uid
+                this.merchantId = store.getters.uid
                 this.formparameters.time = Date.parse(new Date())/1000;
                 // this.img_src = this.urlBase+this.showqrcodeurl;
                 // console.log(this.img_src)
                 // const prodEnv = require('../../../../config/prod.env')
-                this.BASE_API = 'http://10.107.30.218:8080';
+                this.BASE_API = 'https://junrongcenter.com:8080';
                 this.img_src = this.urlBase+this.BASE_API;
             },
             methods:{

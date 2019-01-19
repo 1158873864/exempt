@@ -83,6 +83,9 @@ export function getTreePermissions(){
     title: '用户中心',
     children: [
         {
+            title: '用户信息',
+        },
+        {
             title: '代理管理' ,
             children: [
                 {

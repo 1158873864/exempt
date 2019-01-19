@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
 
 public class FormatDateTime {
@@ -82,6 +83,11 @@ public class FormatDateTime {
         return myFmt.format(dt);
     }
 
+    public static String dateToString(Date date, String pattern) {
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        return sdf.format(date);
+    }
+
     /**
      * 10位时间戳转换成date
      * @param time 10位时间戳
@@ -113,5 +119,27 @@ public class FormatDateTime {
             e.printStackTrace();
         }
         return date;
+    }
+
+    /**
+     * 判断的d1日期是否在d2之前/为同一天
+     *
+     * @param d1
+     * @param d2
+     * @return
+     */
+    public static boolean isDayBeforeOrEqualThan(Date d1, Date d2) {
+        Calendar c1 = Calendar.getInstance();
+        c1.setTime(d1);
+        Calendar c2 = Calendar.getInstance();
+        c2.setTime(d2);
+        if (c1.get(Calendar.YEAR) < c2.get(Calendar.YEAR)) {
+            return true;
+        } else if(c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)) {
+            if(c1.get(Calendar.MONTH) < c2.get(Calendar.MONTH)) return true;
+            else if(c1.get(Calendar.MONTH) == c2.get(Calendar.MONTH)) {
+                return c1.get(Calendar.DAY_OF_MONTH) <= c2.get(Calendar.DAY_OF_MONTH);
+            } else return false;
+        } else return false;
     }
 }

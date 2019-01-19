@@ -8,22 +8,49 @@ public class AgentInfoResponse extends Response {
     private int uid;
     private String name;
     private String status;      // 状态
-    private double percent;
+    private double alipay;
+    private double wechat;
     private double balance;
     private User userInfo;
     private double dailyFlow;       // 当日流量
     private double dailyCommission;     // 当日佣金
 
-    public AgentInfoResponse(int id, int uid, String name, String status, double percent, double balance, User userInfo, double dailyFlow, double dailyCommission) {
+    public AgentInfoResponse(int id, int uid, String name, String status, double alipay, double wechat, double balance, User userInfo, double dailyFlow, double dailyCommission) {
         this.id = id;
         this.uid = uid;
         this.name = name;
         this.status = status;
-        this.percent = percent;
+        this.alipay = alipay;
+        this.wechat = wechat;
         this.balance = balance;
         this.userInfo = userInfo;
         this.dailyFlow = dailyFlow;
         this.dailyCommission = dailyCommission;
+    }
+
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
+
+    public double getAlipay() {
+        return alipay;
+    }
+
+    public void setAlipay(double alipay) {
+        this.alipay = alipay;
+    }
+
+    public double getWechat() {
+        return wechat;
+    }
+
+    public void setWechat(double wechat) {
+        this.wechat = wechat;
     }
 
     public int getId() {
@@ -48,14 +75,6 @@ public class AgentInfoResponse extends Response {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public double getPercent() {
-        return percent;
-    }
-
-    public void setPercent(double percent) {
-        this.percent = percent;
     }
 
     public double getBalance() {

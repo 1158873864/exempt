@@ -5,8 +5,15 @@ import njurestaurant.njutakeout.dataservice.order.PlatformOrderDataService;
 import njurestaurant.njutakeout.entity.order.PlatformOrder;
 import njurestaurant.njutakeout.publicdatas.order.OrderState;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +29,7 @@ public class PlatformOrderDataServiceImpl implements PlatformOrderDataService {
     @Override
     public PlatformOrder findById(int id) {
         Optional<PlatformOrder> platformOrderOption = platformOrderDao.findById(id);
-        if(platformOrderOption.isPresent()) return platformOrderOption.get();
+        if (platformOrderOption.isPresent()) return platformOrderOption.get();
         else return null;
     }
 
@@ -69,5 +76,19 @@ public class PlatformOrderDataServiceImpl implements PlatformOrderDataService {
     @Override
     public void savePlatformOrders(List<PlatformOrder> platformOrders) {
         platformOrderDao.saveAll(platformOrders);
+    }
+
+    @Override
+    public List<PlatformOrder> findPlatformByDate(Date startDate, Date endDate) {
+        return platformOrderDao.findAll(dateBetween(startDate, endDate));
+    }
+
+    private Specification<PlatformOrder> dateBetween(Date startDate, Date endDate) {
+        return new Specification<PlatformOrder>() {
+            @Override
+            public Predicate toPredicate(Root<PlatformOrder> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                return cb.between(root.get("time"), startDate, endDate);
+            }
+        };
     }
 }

@@ -4,13 +4,31 @@ public class AgentAddParameters {
     private String username;
     private String password;
     private String status;
-    private double percent;
+    private double alipay;
+    private double wechat;
 
-    public AgentAddParameters(String username, String password, String status, double percent) {
+    public AgentAddParameters(String username, String password, String status, double alipay, double wechat) {
         this.username = username;
         this.password = password;
         this.status = status;
-        this.percent = percent;
+        this.alipay = alipay;
+        this.wechat = wechat;
+    }
+
+    public double getAlipay() {
+        return alipay;
+    }
+
+    public void setAlipay(double alipay) {
+        this.alipay = alipay;
+    }
+
+    public double getWechat() {
+        return wechat;
+    }
+
+    public void setWechat(double wechat) {
+        this.wechat = wechat;
     }
 
     public String getPassword() {
@@ -35,13 +53,5 @@ public class AgentAddParameters {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public double getPercent() {
-        return percent;
-    }
-
-    public void setPercent(double percent) {
-        this.percent = percent;
     }
 }

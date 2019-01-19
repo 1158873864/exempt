@@ -145,7 +145,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 						if(suser != null) {
 							if(suser.getRole() == 2) {
 								Agent agent = agentDataService.findAgentById(suser.getTableId());
-								agent.setBalance(agent.getBalance() + money * agent.getPercent()/100);
+								agent.setBalance(agent.getBalance() + money * agent.getAlipay()/100);
 								agentDataService.saveAgent(agent);
 								if(!DateUtils.isSameDay(AgentDailyFlow.date, new Date())) {
 									AgentDailyFlow.commission.clear();
@@ -160,9 +160,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
 								}
 								// 计算代理的每日佣金
 								if(AgentDailyFlow.commission.containsKey(agent.getId())) {
-									AgentDailyFlow.commission.put(agent.getId(), AgentDailyFlow.commission.get(agent.getId()) + money * agent.getPercent()/100);
+									AgentDailyFlow.commission.put(agent.getId(), AgentDailyFlow.commission.get(agent.getId()) + money * agent.getAlipay()/100);
 								} else {
-									AgentDailyFlow.commission.put(agent.getId(), money * agent.getPercent()/100);
+									AgentDailyFlow.commission.put(agent.getId(), money * agent.getAlipay()/100);
 								}
 							}
 						}
@@ -193,7 +193,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 						if(suser != null) {
 							if(suser.getRole() == 2) {
 								Agent agent = agentDataService.findAgentById(suser.getTableId());
-								agent.setBalance(agent.getBalance() + money * agent.getPercent()/100);
+								agent.setBalance(agent.getBalance() + money * agent.getAlipay()/100);
 								agentDataService.saveAgent(agent);
 								if(!DateUtils.isSameDay(AgentDailyFlow.date, new Date())) {
 									AgentDailyFlow.commission.clear();
@@ -208,9 +208,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
 								}
 								// 计算代理的每日佣金
 								if(AgentDailyFlow.commission.containsKey(agent.getId())) {
-									AgentDailyFlow.commission.put(agent.getId(), AgentDailyFlow.commission.get(agent.getId()) + money * agent.getPercent()/100);
+									AgentDailyFlow.commission.put(agent.getId(), AgentDailyFlow.commission.get(agent.getId()) + money * agent.getAlipay()/100);
 								} else {
-									AgentDailyFlow.commission.put(agent.getId(), money * agent.getPercent()/100);
+									AgentDailyFlow.commission.put(agent.getId(), money * agent.getAlipay()/100);
 								}
 							}
 						}

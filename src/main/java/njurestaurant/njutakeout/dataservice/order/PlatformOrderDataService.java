@@ -3,6 +3,7 @@ package njurestaurant.njutakeout.dataservice.order;
 import njurestaurant.njutakeout.entity.order.PlatformOrder;
 import njurestaurant.njutakeout.publicdatas.order.OrderState;
 
+import java.util.Date;
 import java.util.List;
 
 public interface PlatformOrderDataService {
@@ -25,4 +26,6 @@ public interface PlatformOrderDataService {
     PlatformOrder findByImeiAndState(String imei, OrderState orderState);
 
     void savePlatformOrders(List<PlatformOrder> platformOrders);
+
+    List<PlatformOrder> findPlatformByDate(Date startDate, Date endDate);
 }

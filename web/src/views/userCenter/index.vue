@@ -1,23 +1,19 @@
 <template>
     <div>
-        <el-card v-if="userInfo.role==1" class="box-card">
+        <!-- <el-card v-if="userInfo.role==1" class="box-card">
             <div slot="header" class="clearfix">
                 <span>个人信息</span>
-                <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
             </div>
-            <!-- <div class="text item"> -->
-                <!-- {{'列表内容 ' + o }} -->
             <div  class="text item">{{ "id:" + info.id }},</div>
             <div  class="text item">{{ 'staffName:' + info.staffName }}</div>
             <div  class="text item">{{ 'team:' + info.team }}</div>
-            <div  class="text item">{{ 'addTime:' + info.addTime }}</div>
+            <div  class="text item">{{ '添加时间:' + info.addTime }}</div>
             <div  class="text item">{{ 'verifyCode:' + info.verifyCode }}</div>
             <div  class="text item">{{ 'operator:' + info.operator }}</div>
-            <div  class="text item">{{ 'status:' + info.status }}</div>
+            <div  class="text item">{{ '状态:' + info.status }}</div>
             <div  class="text item">{{ 'post:' + info.post }}</div>
             <div  class="text item">{{ 'role: ' + userInfo.role }}</div>
-            <!-- </div> -->
-        </el-card>
+        </el-card> -->
         <el-card v-if="userInfo.role==2" class="box-card">
             <div slot="header" class="clearfix">
                 <span>个人信息</span>
@@ -29,11 +25,11 @@
             <div  class="text item">{{ 'balance: ' + info.balance }}</div>
             <div  class="text item">{{ 'id: ' + info.id }}</div>
             <div  class="text item">{{ 'percent: ' + info.percent }}</div>
-            <div  class="text item">{{ 'status: ' + info.status }}</div>
+            <div  class="text item">{{ '状态: ' + info.status }}</div>
             <div  class="text item">{{ 'role: ' + userInfo.role }}</div>
             <!-- </div> -->
         </el-card>
-        <el-card v-if="userInfo.role==3||userInfo.role==4" class="box-card">
+        <el-card v-if="userInfo.role==3" class="box-card">
             <div slot="header" class="clearfix">
                 <span>个人信息</span>
                 <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
@@ -48,12 +44,12 @@
                     {{ '余额:' + info.balance }}
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" @click="withdrew">提现</el-button>
+                    <el-button type="primary" @click="openDialog">提现</el-button>
                 </el-form-item>
             </el-form>
-            <!-- <div  class="text item">{{ 'status:' + info.status }}</div>
+            <!-- <div  class="text item">{{ '状态:' + info.status }}</div>
             <div  class="text item">{{ 'verifyCode:' + info.verifyCode }}</div>
-            <div  class="text item">{{ 'addTime:' + info.addTime }}</div>
+            <div  class="text item">{{ '添加时间:' + info.addTime }}</div>
             <div  class="text item">{{ 'name:' + info.name }}</div>
             <div  class="text item">{{ 'applyId:' + info.applyId }}</div>
             <div  class="text item">{{ 'approverId:' + info.approverId }}</div>
@@ -66,11 +62,11 @@
         <el-table :data="list" style="width: 100%;padding-top: 15px;">
             <!-- <el-table-column label="id" min-width="200" prop="id"></el-table-column> -->
             <el-table-column label="卡号" min-width="200" prop="cardNumber"></el-table-column>
-            <el-table-column label="name" min-width="200" prop="name"></el-table-column>
+            <el-table-column label="姓名" min-width="200" prop="name"></el-table-column>
             <el-table-column label="银行" min-width="200" prop="bank"></el-table-column>
-            <el-table-column label="accountWithBank" min-width="200" prop="accountWithBank"></el-table-column>
-            <el-table-column label="bin" min-width="200" prop="bin"></el-table-column>
-            <el-table-column label="status" min-width="200" prop="status"></el-table-column>
+            <el-table-column label="开户行" min-width="200" prop="accountWithBank"></el-table-column>
+            <el-table-column label="银行编号" min-width="200" prop="bin"></el-table-column>
+            <el-table-column label="状态" min-width="200" prop="status"></el-table-column>
         <!-- </el-table-column>
             <template slot-scope="scope">
                 ¥{{ scope.row.price | toThousandFilter }}
@@ -82,13 +78,38 @@
             </template>
             </el-table-column> -->
         </el-table>
-
+ <el-dialog title="修改供码用户信息" :visible.sync="dialogFormVisible">
+            <el-form :model="newRow">
+                <!-- <el-form-item label="cardId">
+                    <el-input v-model="newRow.cardId" placeholder="area"></el-input>
+                </el-form-item> -->
+                <!-- <el-form-item label="id">
+                    <el-input v-model="newRow.id" placeholder="area"></el-input>
+                </el-form-item> -->
+                <el-form-item label="取款数">
+                    <el-input v-model="newRow.money" placeholder="area"></el-input>
+                </el-form-item>
+                <!-- <el-form-item label="type">
+                    <el-input v-model="newRow.type" placeholder="area"></el-input>
+                </el-form-item> -->
+                <el-form-item label="提现到卡号">
+                    <el-select v-model="newRow.cardId" placeholder="">
+                    <el-option v-for="card in list" :key="card.id" :label="card.carNumber" :value="card.id"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="getMoney">确 定</el-button>
+            </div>
+    </el-dialog>
     </div>
 </template>
 
 <script>
 import { getInfo } from '@/api/login'
 import store from '../../store'
+import { withdrew } from '@/api/transaction'
 // getInfo(uid)
 export default {
   filters: {
@@ -105,18 +126,33 @@ export default {
   },
   data() {
     return {
-      list: null,
-      info:{},
-      userInfo:{}
+        list: null,
+        info:{},
+        userInfo:{},
+        newRowIndex:1,
+        dialogFormVisible: false,
+        newRow:{
+            cardId: 0,
+            id: 0,
+            money: 0,
+            type: "string"
+        }
     }
   },
   created() {
     this.fetchData()
   },
   methods: {
+    openDialog() {
+        this.dialogFormVisible=true;
+        this.newRow.type = this.userInfo.role==2?'agent':'merchant';
+        this.newRow.id = store.getters.uid;
+        console.log('opendialog')
+        //this.newRow = JSON.parse(JSON.stringify(row));
+            },
     fetchData() {
-      getInfo(store.getters.uid).then(response => {
-    //   getInfo(27).then(response => {
+    //   getInfo(store.getters.uid).then(response => {
+      getInfo(33).then(response => {
         if(response.data.info.userInfo)
         {
             this.userInfo  = response.data.info.userInfo
@@ -130,8 +166,28 @@ export default {
         console.log(this.userInfo)
       })
     },
-    withdrew(){
-
+    getMoney(){
+        console.log('get money',this.newRow)
+        withdrew(
+            this.newRow.cardId,
+            this.newRow.id,
+            // 33,
+            this.newRow.money,
+            this.newRow.type).then(res =>{
+                    if(res.code!=200){
+                        this.$message({
+                            message: res.data.description,
+                            type: 'warning'
+                        });
+                    }else{
+                        
+                         this.$message({
+                            message: '提交提现申请成功',
+                            type: 'success'
+                        });
+                    }
+            })
+            this.dialogFormVisible=false;
     }
   }
 

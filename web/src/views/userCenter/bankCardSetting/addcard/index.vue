@@ -17,8 +17,11 @@
                     <el-input v-model="form.number"></el-input>
             </el-form-item>
             <el-form-item label="状态">
-                    <el-input v-model="form.status"></el-input>
-            </el-form-item>
+                    <el-select v-model="form.status" placeholder="启用">
+                    <el-option label="启用" value="启用"></el-option>
+                    <el-option label="停用" value="停用"></el-option>
+                    </el-select>
+              </el-form-item>
 
             <el-form-item>
                 <el-button type="primary" @click="onSubmit('form')">添加</el-button>
@@ -36,12 +39,12 @@
         data(){
         return {
             form: {
-              accountOfBank: '1',
-              bank: '1',
-              bin: '1',
-              name: '1',
-              number: '1',
-              status:'1',
+              accountOfBank: '',
+              bank: '',
+              bin: '',
+              name: '',
+              number: '',
+              status:'',
               uid: 0
           },
           

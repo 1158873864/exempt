@@ -132,7 +132,7 @@
                         }else{
                            this.teams = response.data;
                            this.teams.forEach(el => {
-                               el.sid = store.getters.uid;
+                               el.sid = el.id;
                            });
                         }
                     })

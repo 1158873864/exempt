@@ -399,7 +399,7 @@ export const asyncRouterMap = [
       {
         path: 'agencyReport',
         // component: () => import('@/views/report/agencyReport/index'),
-        component: () => import('@/views/report/merchantsReport/merchants/index'),
+        component: () => import('@/views/report/agencyReport/index'),
         name: 'agencyReport',
         meta: { title: '代理报表',role:['代理报表'] }
       }

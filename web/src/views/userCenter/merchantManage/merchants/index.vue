@@ -119,7 +119,7 @@ import store from '../../../../store'
         },
         methods: {
              updateSupplier() {
-                updateMerchant(store.getters.uid,this.newRow.user.username,this.newRow.user.password).then(response=> {
+                updateMerchant(this.newRow.id,this.newRow.user.username,this.newRow.user.password).then(response=> {
                     if(response.code!=200){
                         this.$message({
                             message: response.data.description,

@@ -33,7 +33,7 @@ export function withdrewGet(id, operatorId) {
   return request({
     url: '/withdrew/get/'+id,
     method: 'get',
-    data:{
+    params:{
         operatorId,//: 0,		// 处理人的userid
     }
   })
@@ -44,9 +44,9 @@ export function withdrewList(uid) {
     method: 'get'
   })
 }
-export function withdrewsWaiting(uid) {
+export function withdrewsWaiting() {
   return request({
-    url: '/withdrews/waiting/'+uid,
+    url: '/withdrews/waiting',
     method: 'get'
   })
 }

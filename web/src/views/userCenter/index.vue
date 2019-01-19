@@ -14,22 +14,7 @@
             <div  class="text item">{{ 'post:' + info.post }}</div>
             <div  class="text item">{{ 'role: ' + userInfo.role }}</div>
         </el-card> -->
-        <el-card v-if="userInfo.role==2" class="box-card">
-            <div slot="header" class="clearfix">
-                <span>个人信息</span>
-                <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
-            </div>
-            <!-- <div class="text item"> -->
-                <!-- {{'列表内容 ' + o }} -->
-            <div  class="text item">{{ "agentName: " + info.agentName }},</div>
-            <div  class="text item">{{ 'balance: ' + info.balance }}</div>
-            <div  class="text item">{{ 'id: ' + info.id }}</div>
-            <div  class="text item">{{ 'percent: ' + info.percent }}</div>
-            <div  class="text item">{{ '状态: ' + info.status }}</div>
-            <div  class="text item">{{ 'role: ' + userInfo.role }}</div>
-            <!-- </div> -->
-        </el-card>
-        <el-card v-if="userInfo.role==3" class="box-card">
+        <el-card v-if="userInfo.role==3||userInfo.role==2" class="box-card">
             <div slot="header" class="clearfix">
                 <span>个人信息</span>
                 <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
@@ -151,8 +136,8 @@ export default {
         //this.newRow = JSON.parse(JSON.stringify(row));
             },
     fetchData() {
-    //   getInfo(store.getters.uid).then(response => {
-      getInfo(33).then(response => {
+      getInfo(store.getters.uid).then(response => {
+    //   getInfo(33).then(response => {
         if(response.data.info.userInfo)
         {
             this.userInfo  = response.data.info.userInfo

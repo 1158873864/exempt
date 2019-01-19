@@ -144,21 +144,16 @@ export function getTreePermissions(){
 
     title: '财务管理',
     children: [
-        {
-            title: '收款码列表' ,
-            children: [
                 {
-                    title: '所有收款码' ,
+                    title: '抢单',
                 },
                 {
-                    title: '添加收款码' ,
-                }
+                    title: '处理单子',
+                },
             ]
-        },
-        {
-            title: '银行卡列表',
-        },
-    ]
+        
+        
+    
 },
 {
     title: '报表统计',

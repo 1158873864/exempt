@@ -329,32 +329,44 @@ export const asyncRouterMap = [
     },
     children: [
       {
-        path: 'receiveCodeList',
-        component: () => import('@/views/financeManage/receiveCodeList/index'),
-        redirect: '/receiveCodeList/codes',
-        name: 'receiveCodeList',
-        meta: { title: '收款码列表',role:['收款码列表'] },
-        children: [
-          {
-            path: 'codes',
-            name: 'codes',
-            component: () => import('@/views/companyManage/moneyReceiveCode/codes/index'),
-            meta: { title: '所有收款码',role:['所有收款码'] },
-          },
-          {
-            path: 'codeAdd',
-            name: 'codeAdd',
-            component: () => import('@/views/companyManage/moneyReceiveCode/codeAdd/index'),
-            meta: { title: '添加收款码',role:['添加收款码']},
-          }
-        ]
+        path: 'withdrewWaiting',
+        name: 'withdrewWaiting',
+        component: () => import('@/views/financeManage/agencyWithdrew/index'),
+        meta: { title: '抢单', role: ['抢单'] },
       },
       {
-        path: 'bankCardList',
-        component: () => import('@/views/companyManage/bankCard/cards/index'),
-        name: 'bankCardList',
-        meta: { title: '银行卡列表',role:['银行卡列表'] }
+        path: 'mylist',
+        name: 'mylist',
+        component: () => import('@/views/financeManage/agencyWithdrew/mylist'),
+        meta: { title: '处理单子', role: ['处理单子'] },
       },
+      // {
+      //   path: 'receiveCodeList',
+      //   component: () => import('@/views/financeManage/receiveCodeList/index'),
+      //   redirect: '/receiveCodeList/codes',
+      //   name: 'receiveCodeList',
+      //   meta: { title: '收款码列表',role:['收款码列表'] },
+      //   children: [
+      //     {
+      //       path: 'codes',
+      //       name: 'codes',
+      //       component: () => import('@/views/companyManage/moneyReceiveCode/codes/index'),
+      //       meta: { title: '所有收款码',role:['所有收款码'] },
+      //     },
+      //     {
+      //       path: 'codeAdd',
+      //       name: 'codeAdd',
+      //       component: () => import('@/views/companyManage/moneyReceiveCode/codeAdd/index'),
+      //       meta: { title: '添加收款码',role:['添加收款码']},
+      //     }
+      //   ]
+      // },
+      // {
+      //   path: 'bankCardList',
+      //   component: () => import('@/views/companyManage/bankCard/cards/index'),
+      //   name: 'bankCardList',
+      //   meta: { title: '银行卡列表',role:['银行卡列表'] }
+      // },
 
     ]
   },

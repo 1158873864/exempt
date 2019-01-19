@@ -58,7 +58,7 @@ public class UserController {
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> login(@RequestBody UserLoginParameters userLoginParameters) {
+    public ResponseEntity<Response> login(@RequestBody UserLoginParameters userLoginParameters) throws RoleIdentityNotConformException {
         try {
             UserLoginResponse userLoginResponse = userBlService.login(userLoginParameters.getUsername(), userLoginParameters.getPassword());
             return new ResponseEntity<>(new JSONResponse(200, userLoginResponse), HttpStatus.OK);
@@ -159,7 +159,7 @@ public class UserController {
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             User user = new User(agentAddParameters.getUsername(), encoder.encode(agentAddParameters.getPassword()), 2, new ArrayList<>());
-            Agent agent = new Agent(agentAddParameters.getUsername(), agentAddParameters.getFlow(), agentAddParameters.getStatus(), agentAddParameters.getCode(), agentAddParameters.getBrokerage(), user);
+            Agent agent = new Agent(agentAddParameters.getUsername(), agentAddParameters.getStatus(), agentAddParameters.getPercent(), 0, user);
             AgentAddResponse agentAddResponse = agentBlService.addAgent(agent);
             user.setTableId(agentAddResponse.getAgentId());
             userBlService.updateUser(user);
@@ -177,12 +177,12 @@ public class UserController {
     public ResponseEntity<Response> addMerchant(@RequestBody MerchantAddParameters merchantAddParameters) {
         if(userBlService.checkUsername(merchantAddParameters.getUsername())) {
             return new ResponseEntity<>(new JSONResponse(10100, new UsernameIsExistentException().getResponse()), HttpStatus.OK);
-        } else if(StringUtils.isBlank(merchantAddParameters.getUsername())) {
-            return new ResponseEntity<>(new JSONResponse(10110, new BlankInputException().getResponse()), HttpStatus.OK);
+        } else if(StringUtils.isBlank(merchantAddParameters.getUsername()) || StringUtils.isBlank(merchantAddParameters.getPassword())) {
+            return new ResponseEntity<>(new JSONResponse(10120, new BlankInputException().getResponse()), HttpStatus.OK);
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             User user = new User(merchantAddParameters.getUsername(), encoder.encode(merchantAddParameters.getPassword()), 3, new ArrayList<>());
-            Merchant merchant = new Merchant(merchantAddParameters.getAlipay(), merchantAddParameters.getWechat(), merchantAddParameters.getBalance(), MerchantState.WAITING, merchantAddParameters.getCode(), new Date(), merchantAddParameters.getUsername(), merchantAddParameters.getSuperior(), user, merchantAddParameters.getLevel());
+            Merchant merchant = new Merchant(merchantAddParameters.getAlipay(), merchantAddParameters.getWechat(), 0, MerchantState.WAITING, new Date(), merchantAddParameters.getUsername(), merchantAddParameters.getApplyId(), user, merchantAddParameters.getLevel());
             MerchantAddResponse merchantAddResponse = merchantBlService.addMerchant(merchant);
             user.setTableId(merchant.getId());
             userBlService.updateUser(user);
@@ -205,7 +205,7 @@ public class UserController {
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             User user = new User(supplierAddParameters.getUsername(), encoder.encode(supplierAddParameters.getPassword()), 4, new ArrayList<>());
-            Supplier supplier = new Supplier(user, new Date(), SupplierState.CHECKING, new ArrayList<>(), supplierAddParameters.getLevel(), njurestaurant.njutakeout.publicdatas.app.CodeType.NONE);
+            Supplier supplier = new Supplier(user, supplierAddParameters.getId(), new Date(), SupplierState.CHECKING, new ArrayList<>(), supplierAddParameters.getLevel(), njurestaurant.njutakeout.publicdatas.app.CodeType.NONE);
             try {
                 UserAddResponse userAddResponse = supplierBlService.addSupplier(supplier);
                 user.setTableId(userAddResponse.getTableId());
@@ -217,21 +217,40 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "更改供码用户信息", notes = "管理员修改供码用户信息")
-    @RequestMapping(value = "supplier/update/{id}", method = RequestMethod.POST)
+    @ApiOperation(value = "更改商家用户信息", notes = "商家修改个人用户信息")
+    @RequestMapping(value = "merchant/update/{mid}", method = RequestMethod.PUT)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> updateSupplier(@PathVariable("id")int id, @RequestBody SupplierUpdateParameters supplierUpdateParameters) {
+    public ResponseEntity<Response> updateMerchant(@PathVariable("mid")int id, @RequestBody MerchantUpdateParameters merchantUpdateParameters) {
+        if(StringUtils.isBlank(merchantUpdateParameters.getPassword())) {
+            return new ResponseEntity<>(new JSONResponse(10120, new WrongResponse(10120, "密码不能为空.")), HttpStatus.OK);
+        }
+        try {
+            merchantBlService.updateMerchant(id, merchantUpdateParameters);
+            return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("更新成功")), HttpStatus.OK);
+        } catch (WrongIdException e) {
+            return new ResponseEntity<>(new JSONResponse(10160, e.getResponse()), HttpStatus.OK);
+        }
+    }
+
+    @ApiOperation(value = "更改供码用户信息", notes = "供码用户修改供码用户信息")
+    @RequestMapping(value = "supplier/update/{sid}", method = RequestMethod.PUT)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> updateSupplier(@PathVariable("sid")int id, @RequestBody SupplierUpdateParameters supplierUpdateParameters) {
         try {
             supplierBlService.updateSupplier(id, supplierUpdateParameters);
-            return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("update success")), HttpStatus.OK);
+            return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("更新成功")), HttpStatus.OK);
         } catch (WrongIdException e) {
             return new ResponseEntity<>(new JSONResponse(10160, e.getResponse()), HttpStatus.OK);
         } catch (BlankInputException e) {
-            return new ResponseEntity<>(new JSONResponse(10170, new WrongResponse(10170, "输入错误")), HttpStatus.EXPECTATION_FAILED);
+            return new ResponseEntity<>(new JSONResponse(10170, new WrongResponse(10170, "输入错误")), HttpStatus.OK);
         }
     }
 
@@ -319,7 +338,7 @@ public class UserController {
     @ApiOperation(value = "代理商列表", notes = "查看全部代理商")
     @RequestMapping(value = "/agents", method = RequestMethod.GET)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = Agent.class),
+            @ApiResponse(code = 200, message = "Success", response = AgentInfoResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
@@ -346,8 +365,6 @@ public class UserController {
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
     public ResponseEntity<Response> showMerchants() {
-        List<Merchant> merchantList = merchantBlService.findAllMerchants();
-
         return new ResponseEntity<>(new JSONResponse(200, merchantBlService.findAllMerchants()), HttpStatus.OK);
     }
 

@@ -35,6 +35,6 @@ public interface MerchantDataService {
 
     List<Merchant> getMerchantsByState(MerchantState merchantState);
 
-    List<Merchant> getMerchantsBySuperior(String superior);
+    List<Merchant> getMerchantsByApplyId(int id);
 
 }

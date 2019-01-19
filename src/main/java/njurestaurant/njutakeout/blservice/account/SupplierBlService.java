@@ -4,6 +4,7 @@ import njurestaurant.njutakeout.entity.account.Supplier;
 import njurestaurant.njutakeout.exception.BlankInputException;
 import njurestaurant.njutakeout.exception.UsernameIsExistentException;
 import njurestaurant.njutakeout.exception.WrongIdException;
+import njurestaurant.njutakeout.parameters.company.SupplierApprovalParameters;
 import njurestaurant.njutakeout.parameters.user.SupplierUpdateParameters;
 import njurestaurant.njutakeout.publicdatas.account.SupplierState;
 import njurestaurant.njutakeout.response.Response;
@@ -21,7 +22,7 @@ public interface SupplierBlService {
     UserAddResponse addSupplier(Supplier supplier) throws UsernameIsExistentException;
 
 
-    Response approvalSupplier(int mid, String state);
+    Response approvalSupplier(int mid, SupplierApprovalParameters supplierApprovalParameters);
 
     void delSupplierById(int id);
 

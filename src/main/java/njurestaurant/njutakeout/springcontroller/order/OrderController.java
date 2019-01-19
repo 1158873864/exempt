@@ -13,6 +13,7 @@ import njurestaurant.njutakeout.response.JSONResponse;
 import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.SuccessResponse;
 import njurestaurant.njutakeout.response.WrongResponse;
+import njurestaurant.njutakeout.response.order.OrderListResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,10 +29,10 @@ public class OrderController {
         this.platformOrderBlService = platformOrderBlService;
     }
 
-    @ApiOperation(value = "订单列表", notes = "查看全部订单")
+    @ApiOperation(value = "订单明细", notes = "查看全部订单明细")
     @RequestMapping(value = "order/list", method = RequestMethod.GET)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = PlatformOrder.class),
+            @ApiResponse(code = 200, message = "Success", response = OrderListResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody

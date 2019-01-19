@@ -42,7 +42,7 @@ public class PersonalCardController {
             PersonalCardAddResponse personalCardAddResponse = personalCardBlService.addPersonalCard(personalCardAddParameters);
             return new ResponseEntity<>(new JSONResponse(200, personalCardAddResponse), HttpStatus.OK);
         } catch (IsExistentException e) {
-            return new ResponseEntity<>(new JSONResponse(10110, e.getResponse()), HttpStatus.OK);
+            return new ResponseEntity<>(new JSONResponse(10110, new WrongResponse(10110, "已有该卡号。")), HttpStatus.OK);
         } catch (WrongIdException e) {
             return new ResponseEntity<>(new JSONResponse(10160, e.getResponse()), HttpStatus.OK);
         }

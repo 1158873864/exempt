@@ -9,6 +9,7 @@ import njurestaurant.njutakeout.entity.account.*;
 import njurestaurant.njutakeout.entity.app.Device;
 import njurestaurant.njutakeout.entity.company.Post;
 import njurestaurant.njutakeout.exception.*;
+import njurestaurant.njutakeout.publicdatas.account.AgentDailyFlow;
 import njurestaurant.njutakeout.publicdatas.account.Role;
 import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.SuccessResponse;
@@ -27,6 +28,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserBlServiceImpl implements UserBlService {
@@ -116,24 +118,27 @@ public class UserBlServiceImpl implements UserBlService {
     }
 
     @Override
-    public SuccessResponse appLogin(String username, String password, String imei) throws WrongUsernameOrPasswordException, CannotRegisterException {
+    public SuccessResponse appLogin(String username, String password, String imei) throws WrongUsernameOrPasswordException, CannotRegisterException ,RoleIdentityNotConformException{
         if (username.length() == 0) {
             throw new CannotRegisterException();
         }
         if (userDataService.confirmPassword(username, password)) {
             User user = userDataService.getUserByUsername(username);
-            JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(username);
-            String token = jwtService.generateToken(jwtUser, EXPIRATION);
-            if(user.getRole() == 4) {
+            if (user.getRole() == 4) {
+                JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(username);
+                String token = jwtService.generateToken(jwtUser, EXPIRATION);
                 Supplier supplier = supplierDataService.findSupplierById(user.getTableId());
                 Device device = deviceDataService.findByImei(imei);
-                if(device == null)  {
+                if (device == null) {
                     device = new Device(imei, supplier);
                     device.setOnline(0);
                     deviceDataService.saveDevice(device);
                 }
+                return new SuccessResponse("login success");
+            } else {
+                throw  new RoleIdentityNotConformException();
             }
-            return new SuccessResponse("login success");
+
         } else {
             throw new WrongUsernameOrPasswordException();
         }
@@ -254,7 +259,11 @@ public class UserBlServiceImpl implements UserBlService {
                 userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost(staff.getPost()).getPermission());
             } else if (user.getRole() == 2) {
                 Agent agent = agentDataService.findAgentById(user.getTableId());
-                agent.setUser(null);
+                List<PersonalCard> cardList = agent.getUser().getCards();
+                cardList.stream().peek(c -> c.setUser(null)).collect(Collectors.toList());
+                double flow = AgentDailyFlow.flow.containsKey(agent.getId()) ? AgentDailyFlow.flow.get(agent.getId()) : 0;
+                double commission = AgentDailyFlow.commission.containsKey(agent.getId()) ? AgentDailyFlow.commission.get(agent.getId()) : 0;
+                AgentInfoResponse agentInfoResponse = new AgentInfoResponse(agent.getId(), agent.getUser().getId(), agent.getAgentName(), agent.getStatus(), agent.getPercent(), agent.getBalance(), agent.getUser(), flow, commission );
                 userInfoResponse.setInfo(agent);
                 userInfoResponse.setPost("代理商");
                 userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost("代理商").getPermission());

@@ -9,5 +9,5 @@ import java.util.List;
 public interface MerchantDao extends JpaRepository<Merchant, Integer> {
     List<Merchant> findMerchantByStatus(MerchantState merchantState);
 
-    List<Merchant> findMerchantsBySuperior(String superior);
+    List<Merchant> findMerchantsByApplyId(int id);
 }

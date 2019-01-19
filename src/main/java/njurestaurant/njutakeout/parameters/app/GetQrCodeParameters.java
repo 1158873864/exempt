@@ -17,8 +17,10 @@ public class GetQrCodeParameters {
     private String merchantId;
     private String time;
     private String sign;
+    /*选择收款的二维码*/
+    private String type;
 
-    public GetQrCodeParameters(String ip, String id, String money, String memo, String merchantId, String time, String sign) {
+    public GetQrCodeParameters(String ip, String id, String money, String memo, String merchantId, String time, String sign, String type) {
         this.ip = ip;
         this.id = id;
         this.money = money;
@@ -26,6 +28,15 @@ public class GetQrCodeParameters {
         this.merchantId = merchantId;
         this.time = time;
         this.sign = sign;
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getMerchantId() {

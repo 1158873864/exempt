@@ -5,21 +5,17 @@ import java.util.Date;
 public class MerchantAddParameters {
     private String username;
     private String password;
-    private String alipay;
-    private String wechat;
-    private double balance;
-    private String code;
-    private String superior;
+    private double alipay;
+    private double wechat;
+    private int applyId;
     private int level;
 
-    public MerchantAddParameters(String username, String password, String alipay, String wechat, double balance, String code, String superior, int level) {
+    public MerchantAddParameters(String username, String password, double alipay, double wechat, int applyId, int level) {
         this.username = username;
         this.password = password;
         this.alipay = alipay;
         this.wechat = wechat;
-        this.balance = balance;
-        this.code = code;
-        this.superior = superior;
+        this.applyId = applyId;
         this.level = level;
     }
 
@@ -31,13 +27,6 @@ public class MerchantAddParameters {
         this.level = level;
     }
 
-    public String getSuperior() {
-        return superior;
-    }
-
-    public void setSuperior(String superior) {
-        this.superior = superior;
-    }
 
     public MerchantAddParameters() {
     }
@@ -58,35 +47,27 @@ public class MerchantAddParameters {
         this.username = username;
     }
 
-    public String getAlipay() {
+    public double getAlipay() {
         return alipay;
     }
 
-    public void setAlipay(String alipay) {
+    public void setAlipay(double alipay) {
         this.alipay = alipay;
     }
 
-    public String getWechat() {
+    public double getWechat() {
         return wechat;
     }
 
-    public void setWechat(String wechat) {
+    public void setWechat(double wechat) {
         this.wechat = wechat;
     }
 
-    public double getBalance() {
-        return balance;
+    public int getApplyId() {
+        return applyId;
     }
 
-    public void setBalance(double balance) {
-        this.balance = balance;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
+    public void setApplyId(int applyId) {
+        this.applyId = applyId;
     }
 }

@@ -291,13 +291,13 @@ export const asyncRouterMap = [
             path: 'cards',
             name: 'cards',
             component: () => import('@/views/userCenter/bankCardSetting/cards/index'),
-            meta: { title: '所有银行卡',role:['个人所有银行卡'] },
+            meta: { title: '个人所有银行卡',role:['个人所有银行卡'] },
           },
           {
             path: 'cardAdd',
             name: 'cardAdd',
             component: () => import('@/views/userCenter/bankCardSetting/addcard/index'),
-            meta: { title: '添加银行卡',role:['个人添加银行卡'], breadcrumb: false },
+            meta: { title: '个人添加银行卡',role:['个人添加银行卡'], breadcrumb: false },
             breadcrumb: false
           },
           {
@@ -309,12 +309,12 @@ export const asyncRouterMap = [
                
         ]
       },
-    //   {
-    //     path: 'qrcodePersonal',
-    //     name: 'qrcodePersonal',
-    //     component: () => import('@/views/userCenter/qrCode/index'),
-    //     meta: { title: '获取二维码', role: ['用户中心'] },
-    //   }
+      {
+        path: 'qrcodePersonal',
+        name: 'qrcodePersonal',
+        component: () => import('@/views/userCenter/qrCode/index'),
+        meta: { title: '获取二维码', role: ['用户中心'] },
+      }
     ]
   },
 

@@ -3,7 +3,7 @@
         <el-card v-if="userInfo.role==1" class="box-card">
             <div slot="header" class="clearfix">
                 <span>个人信息</span>
-                <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+                <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
             </div>
             <!-- <div class="text item"> -->
                 <!-- {{'列表内容 ' + o }} -->
@@ -21,7 +21,7 @@
         <el-card v-if="userInfo.role==2" class="box-card">
             <div slot="header" class="clearfix">
                 <span>个人信息</span>
-                <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+                <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
             </div>
             <!-- <div class="text item"> -->
                 <!-- {{'列表内容 ' + o }} -->
@@ -36,31 +36,38 @@
         <el-card v-if="userInfo.role==3||userInfo.role==4" class="box-card">
             <div slot="header" class="clearfix">
                 <span>个人信息</span>
-                <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+                <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
             </div>
             <!-- <div class="text item"> -->
                 <!-- {{'列表内容 ' + o }} -->
-            <div  class="text item">{{ "id:" + info.id }},</div>
+            <!-- <div  class="text item">{{ "id:" + info.id }},</div>
             <div  class="text item">{{ 'alipay:' + info.alipay }}</div>
-            <div  class="text item">{{ 'wechat:' + info.wechat }}</div>
-            <div  class="text item">{{ 'balance:' + info.balance }}</div>
-            <div  class="text item">{{ 'status:' + info.status }}</div>
+            <div  class="text item">{{ 'wechat:' + info.wechat }}</div> -->
+            <el-form>
+                <el-form-item>
+                    {{ '余额:' + info.balance }}
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="withdrew">提现</el-button>
+                </el-form-item>
+            </el-form>
+            <!-- <div  class="text item">{{ 'status:' + info.status }}</div>
             <div  class="text item">{{ 'verifyCode:' + info.verifyCode }}</div>
             <div  class="text item">{{ 'addTime:' + info.addTime }}</div>
             <div  class="text item">{{ 'name:' + info.name }}</div>
             <div  class="text item">{{ 'applyId:' + info.applyId }}</div>
             <div  class="text item">{{ 'approverId:' + info.approverId }}</div>
             <div  class="text item">{{ 'approvalTime:' + info.approvalTime }}</div>
-            <div  class="text item">{{ 'priority:' + info.priority }}</div>
-            <div  class="text item">{{ 'withdrewMoney:' + info.withdrewMoney }}</div>
-            <div  class="text item">{{ 'role: ' + userInfo.role }}</div>
+            <div  class="text item">{{ 'priority:' + info.priority }}</div> -->
+            <!-- <div  class="text item">{{ '正在提现的金额:' + info.withdrewMoney }}</div> -->
+            <!-- <div  class="text item">{{ 'role: ' + userInfo.role }}</div> -->
             <!-- </div> -->
         </el-card>
         <el-table :data="list" style="width: 100%;padding-top: 15px;">
-            <el-table-column label="id" min-width="200" prop="id"></el-table-column>
-            <el-table-column label="cardNumber" min-width="200" prop="cardNumber"></el-table-column>
+            <!-- <el-table-column label="id" min-width="200" prop="id"></el-table-column> -->
+            <el-table-column label="卡号" min-width="200" prop="cardNumber"></el-table-column>
             <el-table-column label="name" min-width="200" prop="name"></el-table-column>
-            <el-table-column label="bank" min-width="200" prop="bank"></el-table-column>
+            <el-table-column label="银行" min-width="200" prop="bank"></el-table-column>
             <el-table-column label="accountWithBank" min-width="200" prop="accountWithBank"></el-table-column>
             <el-table-column label="bin" min-width="200" prop="bin"></el-table-column>
             <el-table-column label="status" min-width="200" prop="status"></el-table-column>
@@ -108,8 +115,8 @@ export default {
   },
   methods: {
     fetchData() {
-    //   getInfo(store.getters.uid).then(response => {
-      getInfo(29).then(response => {
+      getInfo(store.getters.uid).then(response => {
+    //   getInfo(27).then(response => {
         if(response.data.info.userInfo)
         {
             this.userInfo  = response.data.info.userInfo
@@ -122,8 +129,12 @@ export default {
         this.info = response.data.info;
         console.log(this.userInfo)
       })
+    },
+    withdrew(){
+
     }
   }
+
 }
 </script>
 <style>

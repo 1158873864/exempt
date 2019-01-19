@@ -8,8 +8,11 @@
             <el-form-item label="密码">
               <el-input v-model="form.password" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="佣金比例">
-              <el-input v-model="form.percent" style="width: 30%;"></el-input>
+            <el-form-item label="支付宝点位">
+              <el-input v-model="form.alipay" style="width: 30%;"></el-input>
+            </el-form-item>
+            <el-form-item label="微信点位">
+              <el-input v-model="form.wechat" style="width: 30%;"></el-input>
             </el-form-item>
             <el-form-item label="状态">
                     <el-select v-model="form.status" placeholder="启用">
@@ -41,13 +44,11 @@
         data(){
         return {
                   form: {
-                    brokerage: '123',
-                    code: '',
-                    flow: '12',
-                    password: '',
-                    status: '',
-                    username: '',
-                    percent: 20
+                    alipay: 20,
+                    password: "",
+                    status: "启用",
+                    username: "",
+                    wechat: 20
                 },
               }
 
@@ -61,7 +62,7 @@
           this.$refs[formName].validate((valid) => {
             if (valid) {
               // alert('submit!');
-              addAgent(this.form.brokerage,this.form.code,this.form.flow,this.form.password,this.form.status,this.form.username).then(response => {
+              addAgent(this.form.alipay,this.form.password,this.form.status,this.form.username,this.form.wechat).then(response => {
                 // console.log(response.data.infoCode)
                 if(response.data.infoCode){
                    this.$message({

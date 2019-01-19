@@ -110,7 +110,7 @@ public class UserBlServiceImpl implements UserBlService {
                         break;
                 }
 
-                return new UserLoginResponse(token, user.getRole(), user.getId(), postAndPermissionBlService.getPostAndPermissionsByPost(post).getPermission());
+                return new UserLoginResponse(token, user.getRole(), user.getId(), postAndPermissionBlService.getPostAndPermissionsByPost(post) == null ? new ArrayList<>() : postAndPermissionBlService.getPostAndPermissionsByPost(post).getPermission());
             } else {
                 throw new WrongUsernameOrPasswordException();
             }
@@ -253,32 +253,39 @@ public class UserBlServiceImpl implements UserBlService {
             }
             if (user.getRole() == 1) {
                 Staff staff = staffDataService.findStaffById(user.getTableId());
-                staff.setUser(null);
+                List<PersonalCard> cardList = staff.getUser().getCards();
+                cardList.stream().peek(c -> c.setUser(null)).collect(Collectors.toList());
                 userInfoResponse.setInfo(staff);
                 userInfoResponse.setPost(staff.getPost());
-                userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost(staff.getPost()).getPermission());
+                if (postAndPermissionBlService.getPostAndPermissionsByPost(staff.getPost()) == null)  userInfoResponse.setPermission(new ArrayList<>());
+                else userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost(staff.getPost()).getPermission());
             } else if (user.getRole() == 2) {
                 Agent agent = agentDataService.findAgentById(user.getTableId());
                 List<PersonalCard> cardList = agent.getUser().getCards();
                 cardList.stream().peek(c -> c.setUser(null)).collect(Collectors.toList());
                 double flow = AgentDailyFlow.flow.containsKey(agent.getId()) ? AgentDailyFlow.flow.get(agent.getId()) : 0;
                 double commission = AgentDailyFlow.commission.containsKey(agent.getId()) ? AgentDailyFlow.commission.get(agent.getId()) : 0;
-                AgentInfoResponse agentInfoResponse = new AgentInfoResponse(agent.getId(), agent.getUser().getId(), agent.getAgentName(), agent.getStatus(), agent.getPercent(), agent.getBalance(), agent.getUser(), flow, commission );
+                AgentInfoResponse agentInfoResponse = new AgentInfoResponse(agent.getId(), agent.getUser().getId(), agent.getAgentName(), agent.getStatus(), agent.getAlipay(), agent.getWechat(), agent.getBalance(), agent.getUser(), flow, commission );
                 userInfoResponse.setInfo(agent);
                 userInfoResponse.setPost("代理商");
-                userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost("代理商").getPermission());
+                if (postAndPermissionBlService.getPostAndPermissionsByPost("代理商") == null)  userInfoResponse.setPermission(new ArrayList<>());
+                else userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost("代理商").getPermission());
             } else if (user.getRole() == 3) {
                 Merchant merchant = merchantDataService.findMerchantById(user.getTableId());
-                merchant.setUser(null);
+                List<PersonalCard> personalCardList = merchant.getUser().getCards();
+                if(personalCardList.size() > 0) personalCardList.stream().peek(p -> p.setUser(null)).collect(Collectors.toList());
                 userInfoResponse.setInfo(merchant);
                 userInfoResponse.setPost("商户");
-                userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost("商户").getPermission());
+                if (postAndPermissionBlService.getPostAndPermissionsByPost("商户") == null)  userInfoResponse.setPermission(new ArrayList<>());
+                else userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost("商户").getPermission());
             } else if (user.getRole() == 4) {
                 Supplier supplier = supplierDataService.findSupplierById(user.getTableId());
-                supplier.setUser(null);
+                List<PersonalCard> personalCardList = supplier.getUser().getCards();
+                if(personalCardList.size() > 0) personalCardList.stream().peek(p -> p.setUser(null)).collect(Collectors.toList());
                 userInfoResponse.setInfo(supplier);
                 userInfoResponse.setPost("供码用户");
-                userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost("供码用户").getPermission());
+                if (postAndPermissionBlService.getPostAndPermissionsByPost("供码用户") == null)  userInfoResponse.setPermission(new ArrayList<>());
+                else userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost("供码用户").getPermission());
             } else {
                 return new WrongResponse(10150, "Wrong role.");
             }

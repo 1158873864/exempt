@@ -48,4 +48,6 @@ public interface UserDataService {
     User getUserById(int id);
 
     List<User> getUserByRole(int role);
+
+    List<User> getAll();
 }

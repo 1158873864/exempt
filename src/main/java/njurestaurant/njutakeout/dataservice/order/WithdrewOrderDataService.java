@@ -3,6 +3,7 @@ package njurestaurant.njutakeout.dataservice.order;
 import njurestaurant.njutakeout.entity.order.WithdrewOrder;
 import njurestaurant.njutakeout.publicdatas.order.WithdrewState;
 
+import java.util.Date;
 import java.util.List;
 
 public interface WithdrewOrderDataService {
@@ -17,4 +18,6 @@ public interface WithdrewOrderDataService {
     List<WithdrewOrder> findByState(WithdrewState withdrewState);
 
     List<WithdrewOrder> findByOperatorId(int id);
+
+    List<WithdrewOrder> findByDateRange(Date d1, Date d2);
 }

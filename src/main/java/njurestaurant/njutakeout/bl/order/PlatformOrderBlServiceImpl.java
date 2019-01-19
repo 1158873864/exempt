@@ -5,16 +5,14 @@ import njurestaurant.njutakeout.dataservice.account.MerchantDataService;
 import njurestaurant.njutakeout.dataservice.account.UserDataService;
 import njurestaurant.njutakeout.dataservice.app.AlipayDataService;
 import njurestaurant.njutakeout.dataservice.order.PlatformOrderDataService;
-import njurestaurant.njutakeout.entity.account.Merchant;
 import njurestaurant.njutakeout.entity.account.User;
 import njurestaurant.njutakeout.entity.app.Alipay;
 import njurestaurant.njutakeout.entity.order.PlatformOrder;
 import njurestaurant.njutakeout.exception.BlankInputException;
 import njurestaurant.njutakeout.exception.WrongIdException;
 import njurestaurant.njutakeout.parameters.order.PlatformUpdateParameters;
-import njurestaurant.njutakeout.publicdatas.order.OrderState;
 import njurestaurant.njutakeout.response.order.OrderListResponse;
-import njurestaurant.njutakeout.response.report.MerchantReport;
+import njurestaurant.njutakeout.response.report.MerchantReportResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -117,20 +115,21 @@ public class PlatformOrderBlServiceImpl implements PlatformOrderBlService {
     }
 
     @Override
-    public List<MerchantReport> merchantsOrderReport() {
+    public List<MerchantReportResponse> merchantsOrderReport() {
         List<PlatformOrder> platformOrders = platformOrderDataService.findAll();
         List<User> merchantUser = userDataService.getUserByRole(3);
         Map<Integer, String> usernameMap = new HashMap<>();
         for (User user : merchantUser) {
             usernameMap.put(user.getId(), user.getUsername());
         }
-        return platformOrders.stream().map(p -> {
-            if (usernameMap.containsKey(p.getUid())) {
-                MerchantReport merchantReport = new MerchantReport(usernameMap.get(p.getUid()), p.getMoney(), p.getPayMoney(), p.getTime(), p.getState());
-                return merchantReport;
-            } else {
-                return null;
-            }
-        }).filter(p -> p != null).collect(Collectors.toList());
+        return null;
+//        return platformOrders.stream().map(p -> {
+//            if (usernameMap.containsKey(p.getUid())) {
+//                MerchantReportResponse merchantReportResponse = new MerchantReportResponse(usernameMap.get(p.getUid()), p.getMoney(), p.getPayMoney(), p.getTime(), p.getState());
+//                return merchantReportResponse;
+//            } else {
+//                return null;
+//            }
+//        }).filter(p -> p != null).collect(Collectors.toList());
     }
 }

@@ -98,4 +98,9 @@ public class UserDataServiceImpl implements UserDataService {
     public List<User> getUserByRole(int role) {
         return userDao.findUsersByRole(role);
     }
+
+    @Override
+    public List<User> getAll() {
+        return userDao.findAll();
+    }
 }

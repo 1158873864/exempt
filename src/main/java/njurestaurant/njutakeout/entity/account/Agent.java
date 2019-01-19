@@ -12,14 +12,15 @@ public class Agent {
     private String agentName;
     @Column(name = "status")
     private String status;
-    @Column(name = "verifyCode")
-    private String verifyCode;
     /*代理商手续费*/
-    @Column(name = "percent")
-    private double percent;
+    @Column(name = "alipay")
+    private double alipay;
+    @Column(name = "wechat")
+    private double wechat;
     /*代理商余额*/
     @Column(name = "balance")
     private double balance;
+    /*正在提现的金额*/
     @Column(name = "withdrewMoney")
     private double withdrewMoney;
     @OneToOne(cascade=CascadeType.ALL)
@@ -29,11 +30,13 @@ public class Agent {
     public Agent() {
     }
 
-    public Agent(String agentName, String status, double percent, double balance, User userInfo) {
+    public Agent(String agentName, String status, double alipay, double wechat, double balance, double withdrewMoney, User userInfo) {
         this.agentName = agentName;
         this.status = status;
-        this.percent = percent;
+        this.alipay = alipay;
+        this.wechat = wechat;
         this.balance = balance;
+        this.withdrewMoney = withdrewMoney;
         this.userInfo = userInfo;
     }
 
@@ -45,12 +48,20 @@ public class Agent {
         this.withdrewMoney = withdrewMoney;
     }
 
-    public double getPercent() {
-        return percent;
+    public double getAlipay() {
+        return alipay;
     }
 
-    public void setPercent(double percent) {
-        this.percent = percent;
+    public void setAlipay(double alipay) {
+        this.alipay = alipay;
+    }
+
+    public double getWechat() {
+        return wechat;
+    }
+
+    public void setWechat(double wechat) {
+        this.wechat = wechat;
     }
 
     public double getBalance() {
@@ -100,14 +111,6 @@ public class Agent {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getVerifyCode() {
-        return verifyCode;
-    }
-
-    public void setVerifyCode(String verifyCode) {
-        this.verifyCode = verifyCode;
     }
 
 }

@@ -1,21 +1,23 @@
 package njurestaurant.njutakeout.springcontroller.app;
 
-//import njurestaurant.njutakeout.config.websocket.WebSocketHandshakeInterceptor;
-//import org.springframework.messaging.handler.annotation.MessageMapping;
-//import org.springframework.messaging.handler.annotation.SendTo;
 import io.swagger.annotations.ApiOperation;
+import net.sf.json.JSONObject;
 import njurestaurant.njutakeout.blservice.account.UserBlService;
 import njurestaurant.njutakeout.exception.CannotRegisterException;
+import njurestaurant.njutakeout.exception.SystemException;
 import njurestaurant.njutakeout.exception.RoleIdentityNotConformException;
 import njurestaurant.njutakeout.exception.WrongUsernameOrPasswordException;
-import njurestaurant.njutakeout.parameters.app.AppLoginParameters;
 import njurestaurant.njutakeout.response.JSONResponse;
 import njurestaurant.njutakeout.response.Response;
-import njurestaurant.njutakeout.response.user.UserLoginResponse;
+import njurestaurant.njutakeout.response.WrongResponse;
+import njurestaurant.njutakeout.util.HttpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class AppController {
@@ -50,6 +52,27 @@ public class AppController {
             return new ResponseEntity<>(new JSONResponse(10006, e.getResponse()), HttpStatus.OK);
         } catch (RoleIdentityNotConformException e){
             return new ResponseEntity<>(new JSONResponse(10009,e.getResponse()), HttpStatus.OK);
+        }
+    }
+
+    @ApiOperation(value = "googleApi", notes = "谷歌api验证")
+    @RequestMapping(value = "google/api", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Response> googleApi(@RequestParam("rp")String response) {
+    	System.out.println("googleApi...");
+    	Map<String, String> map = new HashMap<>();
+    	map.put("response", response);
+    	map.put("secret", "6LdRB4sUAAAAAOzE_J2uhZ4LDhbxkIUFqfx1N1gB");
+    	JSONObject jsonObject = JSONObject.fromObject(map);
+    	System.out.println("JSON:" + jsonObject);
+        try {
+            String returnStr = HttpUtil.postData("https://www.google.com/recaptcha/api/siteverify", jsonObject.toString(), "application/json");
+            System.out.println(returnStr);
+            jsonObject = JSONObject.fromObject(returnStr);
+            String success = jsonObject.getString("success");
+            return new ResponseEntity<>(new JSONResponse(200, success), HttpStatus.OK);
+        } catch (SystemException e) {
+            return new ResponseEntity<>(new JSONResponse(10001, new WrongResponse(10001, "系统出错。")), HttpStatus.OK);
         }
     }
 

@@ -159,7 +159,7 @@ public class UserController {
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             User user = new User(agentAddParameters.getUsername(), encoder.encode(agentAddParameters.getPassword()), 2, new ArrayList<>());
-            Agent agent = new Agent(agentAddParameters.getUsername(), agentAddParameters.getStatus(), agentAddParameters.getPercent(), 0, user);
+            Agent agent = new Agent(agentAddParameters.getUsername(), agentAddParameters.getStatus(), agentAddParameters.getAlipay(), agentAddParameters.getWechat(),0, 0,user);
             AgentAddResponse agentAddResponse = agentBlService.addAgent(agent);
             user.setTableId(agentAddResponse.getAgentId());
             userBlService.updateUser(user);

@@ -361,6 +361,17 @@ public class TransactionBlServiceImpl implements TransactionBlService {
         if(withdrewOrder == null || withdrewOrder.getState() != WithdrewState.DEALING || withdrewOrder.getOperateId() != withdrewDealParameters.getOperatorId()) throw new WrongIdException();
         if("SUCCESS".equals(withdrewDealParameters.getState())) {
             withdrewOrder.setState(WithdrewState.SUCCESS);
+            if("merchant".equals(withdrewOrder.getType())) {
+                User u = userDataService.getUserById(withdrewOrder.getApplicantId());
+                Merchant merchant = merchantDataService.findMerchantById(u.getTableId());
+                merchant.setWithdrewMoney(merchant.getWithdrewMoney() - withdrewOrder.getMoney());  // 减少商户正在提现的金额
+                merchantDataService.saveMerchant(merchant);
+            } else if("agent".equals(withdrewOrder.getType())) {
+                User u = userDataService.getUserById(withdrewOrder.getApplicantId());
+                Agent agent = agentDataService.findAgentById(u.getTableId());
+                agent.setWithdrewMoney(agent.getWithdrewMoney() - withdrewOrder.getMoney());  // 减少商户正在提现的金额
+                agentDataService.saveAgent(agent);
+            }
         } else if("FAILED".equals(withdrewDealParameters.getState())) {
             withdrewOrder.setState(WithdrewState.FAILED);
             if("merchant".equals(withdrewOrder.getType())) {
@@ -368,11 +379,13 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                 Merchant merchant = merchantDataService.findMerchantById(u.getTableId());
                 merchant.setBalance(merchant.getBalance() + withdrewOrder.getMoney());  // 增加商户余额
                 merchant.setWithdrewMoney(merchant.getWithdrewMoney() - withdrewOrder.getMoney());  // 减少商户正在提现的金额
+                merchantDataService.saveMerchant(merchant);
             } else if("agent".equals(withdrewOrder.getType())) {
                 User u = userDataService.getUserById(withdrewOrder.getApplicantId());
                 Agent agent = agentDataService.findAgentById(u.getTableId());
                 agent.setBalance(agent.getBalance() + withdrewOrder.getMoney());  // 增加商户余额
                 agent.setWithdrewMoney(agent.getWithdrewMoney() - withdrewOrder.getMoney());  // 减少商户正在提现的金额
+                agentDataService.saveAgent(agent);
             }
         } else throw new BlankInputException(); // 审批状态错误
         withdrewOrder.setOperateTime(new Date());

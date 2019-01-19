@@ -41,14 +41,14 @@
           @expired="onExpired"
           :sitekey="sitekey">
         </vue-recaptcha>
-        <button @click="resetRecaptcha"> Reset ReCAPTCHA </button>
+        <!-- <button @click="resetRecaptcha"> Reset ReCAPTCHA </button> -->
       </div>
     </el-form>
   </div>
 </template>
 <script>
   grecaptcha.ready(function() {
-      grecaptcha.execute('reCAPTCHA_site_key', {action: 'homepage'});
+      grecaptcha.execute('6LdRB4sUAAAAAHGqNXwexwX7PpXiof_Lz0YHwQLS', {action: 'homepage'});
   });
   </script>
 <script>

@@ -104,9 +104,6 @@ export default {
     }
   },
   created(){
-    grecaptcha.ready(function() {
-      grecaptcha.execute('6LdRB4sUAAAAAHGqNXwexwX7PpXiof_Lz0YHwQLS', {action: 'homepage'});
-  });
     titleList().then(res => {
       if(res.code!=200){
         this.title = '管理系统'
@@ -114,9 +111,7 @@ export default {
         this.title = res.data[0].title;
       }
     })
-     codeVerify1().then(res=>{
-       console.log(res,'res')
-     })
+
   },
   methods: {
     showPwd() {

@@ -86,12 +86,11 @@
             methods: {
                 getWithdrew(id){
                     withdrewGet(id, store.getters.uid).then(response=>{
-                        console.log(res)
                         if(response.infoCode!=200){
-                        this.$message({
-                            message: response.data.description,
-                            type: 'warning'
-                        });
+                            this.$message({
+                                message: response.data.description,
+                                type: 'warning'
+                            });
                         }else{
                             this.$message({
                             message: '抢单成功',

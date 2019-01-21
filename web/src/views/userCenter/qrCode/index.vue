@@ -31,7 +31,7 @@
 <script>
 import store from '../../../store'
 import {qrCodeGet,redirect} from '@/api/personal'
-// import BASE_API from '../../../../config/prod.env'
+import config from '../../../../config'
 
     export default {
          data() {
@@ -44,7 +44,7 @@ import {qrCodeGet,redirect} from '@/api/personal'
                     merchantId:'9',
                     money: '0.01',
                     sign:'1234132',
-                    time:'time',
+                    time:'123123',
                     type:'alipay'
                    },
                    urlBase:"http://qr.liantu.com/api.php?text=",
@@ -53,13 +53,10 @@ import {qrCodeGet,redirect} from '@/api/personal'
                 }
             },
             created(){
-                // this.getData();
                 this.formparameters.merchantId = store.getters.uid
                 this.formparameters.time = Date.parse(new Date())/1000;
-                // this.img_src = this.urlBase+this.showqrcodeurl;
-                // console.log(this.img_src)
-                // const prodEnv = require('../../../../config/prod.env')
-                this.BASE_API = 'https://junrongcenter.com:8080';
+                console.log(this.$route.path,location.href,this.config)
+                this.BASE_API = process.env.BASE_API;
                 this.img_src = this.urlBase+this.BASE_API;
             },
             methods:{

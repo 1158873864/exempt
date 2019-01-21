@@ -6,7 +6,7 @@
         height="450"
         border
         style="width: 100%">
-        <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column>
+        <!-- <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column> -->
         <el-table-column prop="name" label="商户名"  align="center"></el-table-column>
         <el-table-column prop="alipay" label="支付宝点位"  align="center"></el-table-column>
         <el-table-column prop="wechat" label="微信号点位"  align="center"></el-table-column>

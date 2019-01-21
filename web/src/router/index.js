@@ -440,12 +440,12 @@ export const asyncRouterMap = [
         name: 'orderDetails',
         meta: { title: '订单明细',role:['订单明细'] }
       },
-      {
-        path: 'withdrawOrder',
-        component: () => import('@/views/order/withdrawOrder/index'),
-        name: 'withdrawOrder',
-        meta: { title: '商户提现订单',role:['商户提现订单'] }
-      },
+      // {
+      //   path: 'withdrawOrder',
+      //   component: () => import('@/views/order/withdrawOrder/index'),
+      //   name: 'withdrawOrder',
+      //   meta: { title: '商户提现订单',role:['商户提现订单'] }
+      // },
       {
         path: 'codeChangeOrder',
         component: () => import('@/views/order/codeChangeOrder/index'),

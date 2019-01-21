@@ -13,10 +13,16 @@ import { asyncRouterMap, constantRouterMap } from '@/router'
 //   }
 // }
 function hasPermission(roles, permissionRoles) {
-  console.log(permissionRoles, roles.some(role => permissionRoles.indexOf(role) >= 0))
+  console.log('setpermission',permissionRoles,roles, roles.some(role => permissionRoles.indexOf(role) >= 0))
   if (roles.indexOf('admin') >= 0) return true // admin permission passed directly
   if (!permissionRoles) return true
   return roles.some(role => permissionRoles.indexOf(role) >= 0)
+  // if (roles.some(role => permissionRoles.indexOf(role) >= 0))
+  // {
+  //   return true;
+  // }else{
+
+  // }
 }
 /**
  * 递归过滤异步路由表，返回符合用户角色权限的路由表

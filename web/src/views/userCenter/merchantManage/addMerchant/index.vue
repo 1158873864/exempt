@@ -2,7 +2,7 @@
         <div class="app-container">
           <el-form ref="form" :model="form" label-width="100px">      
             <el-form-item label="支付宝点位">
-              <el-input v-model="form.alipay" style="width: 30%;"></el-input>
+              <el-input v-model="form.alipay" style="width: 30%;" type="number"></el-input>
             </el-form-item>
             <!-- <el-form-item label="申请人id">
               <el-input v-model="form.applyId" style="width: 30%;"></el-input>
@@ -17,7 +17,7 @@
                     <el-input v-model="form.username" style="width: 30%;"></el-input>
             </el-form-item>
             <el-form-item label="微信点位">
-                    <el-input v-model="form.wechat" style="width: 30%;"></el-input>
+                    <el-input v-model="form.wechat" style="width: 30%;" type="number"></el-input>
             </el-form-item>
         
       

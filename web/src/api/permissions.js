@@ -107,6 +107,9 @@ export function getTreePermissions(){
                 },
                 {
                     title: '所有供码用户',
+                },
+                {
+                    title: '供码用户',
                 }
             ]
         },

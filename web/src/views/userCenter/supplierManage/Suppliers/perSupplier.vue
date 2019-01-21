@@ -62,6 +62,7 @@
 
 <script>
 import { suppliersGet,supplierUpdate } from '@/api/role'
+import store from '../../../../store'
     export default {
         data() {
             return {
@@ -137,21 +138,26 @@ import { suppliersGet,supplierUpdate } from '@/api/role'
             },
             getTeams(){
                 suppliersGet().then(response=>{
-                    console.log(response,'sdll')
+                    console.log(response,'sdll',store.getters.uid)
                      if(response.code!=200){
                         this.$message({
                             message: response.data.description,
                             type: 'warning'
                         });
                     }else{
-                       this.teams = response.data;
-
-                        this.teams.forEach(el => {
+                       var teams = response.data;
+                        var a ={};
+                        teams.forEach(el => {
                             el.devices.forEach(de=>{
                                 console.log(de.imei)
                                 de.device_team = de.imei +' '+ (de.online?'在线':'离线');
                             })
-                        });
+                            if(el.user.id == store.getters.uid){
+                                a = el;
+                            }
+                        })
+                        this.teams = [a]
+                        console.log(this.teams)
                     }
                 })
             }

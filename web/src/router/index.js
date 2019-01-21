@@ -252,6 +252,12 @@ export const asyncRouterMap = [
             name: 'suppliers',
             component: () => import('@/views/userCenter/supplierManage/Suppliers/index'),
             meta: { title: '所有供码用户',role:['所有供码用户'] }
+          },
+          {
+            path: 'persupplier',
+            name: 'persupplier',
+            component: () => import('@/views/userCenter/supplierManage/Suppliers/perSupplier'),
+            meta: { title: '供码用户', role: ['供码用户'] }
           }    
         ]
       },

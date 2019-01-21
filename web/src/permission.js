@@ -8,7 +8,7 @@ import { getToken } from '@/utils/auth' // 验权
 const whiteList = ['/login'] // 不重定向白名单
 // permission judge function
 function hasPermission(roles, permissionRoles) {
-  console.log(permissionRoles, roles.some(role => permissionRoles.indexOf(role) >= 0))
+  console.log('ppp',permissionRoles, roles.some(role => permissionRoles.indexOf(role) >= 0))
   if (roles.indexOf('admin') >= 0) return true // admin permission passed directly
   if (!permissionRoles) return true
   return roles.some(role => permissionRoles.indexOf(role) >= 0)

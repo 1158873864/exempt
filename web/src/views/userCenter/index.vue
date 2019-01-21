@@ -7,12 +7,12 @@
             <!-- <div  class="text item">{{ "id:" + info.id }},</div> -->
             <div  class="text item">{{ '用户名: ' + userInfo.username }}</div>
             <div  class="text item">{{ '所属团队: ' + info.team }}</div>
-            <div  class="text item">{{ '添加时间: ' + info.addTime }}</div>
+            <div  class="text item">{{ '添加时间: ' + gettime(info.addTime) }}</div>
             <!-- <div  class="text item">{{ 'verifyCode:' + info.verifyCode }}</div>
             <div  class="text item">{{ 'operator:' + info.operator }}</div> -->
             <div  class="text item">{{ '状态: ' + info.status }}</div>
             <div  class="text item">{{ '岗位: ' + info.post }}</div>
-            <div  class="text item">{{ '角色: ' + userInfo.role }}</div>
+            <div  class="text item">{{ '角色: ' + userInfo.role_ch }}</div>
         </el-card>
          <el-card v-if="userInfo.role==4" class="box-card">
             <div slot="header" class="clearfix">
@@ -30,7 +30,7 @@
             <!-- <div  class="text item">{{ 'verifyCode:' + info.verifyCode }}</div>
             <div  class="text item">{{ 'operator:' + info.operator }}</div> -->
             <div  class="text item">{{ '状态: ' + info.status }}</div>
-            <div  class="text item">{{ '角色: ' + userInfo.role }}</div>
+            <div  class="text item">{{ '角色: ' + userInfo.role_ch }}</div>
         </el-card>
                 <el-card v-if="userInfo.role==2" class="box-card">
             <div slot="header" class="clearfix">
@@ -46,7 +46,7 @@
             <!-- <div  class="text item">{{ 'verifyCode:' + info.verifyCode }}</div>
             <div  class="text item">{{ 'operator:' + info.operator }}</div> -->
             <div  class="text item">{{ '状态: ' + info.status }}</div>
-            <div  class="text item">{{ '角色: ' + userInfo.role }}</div>
+            <div  class="text item">{{ '角色: ' + userInfo.role_ch }}</div>
             <el-form>
                 <el-form-item>
                     {{ '余额:' + info.balance }}
@@ -71,7 +71,7 @@
             <!-- <div  class="text item">{{ 'verifyCode:' + info.verifyCode }}</div>
             <div  class="text item">{{ 'operator:' + info.operator }}</div> -->
             <div  class="text item">{{ '状态: ' + info.status }}</div>
-            <div  class="text item">{{ '角色: ' + userInfo.role }}</div>
+            <div  class="text item">{{ '角色: ' + userInfo.role_ch }}</div>
             <el-form>
                 <el-form-item>
                     {{ '余额:' + info.balance }}
@@ -132,6 +132,7 @@
 import { getInfo } from '@/api/login'
 import store from '../../store'
 import { withdrew } from '@/api/transaction'
+import { getTime } from '@/utils/index'
 // getInfo(uid)
 export default {
   filters: {
@@ -183,10 +184,15 @@ export default {
         {
             this.userInfo  = response.data.info.user
         }
-            this.list = this.userInfo.cards;
+        this.list = this.userInfo.cards;
+        this.userInfo.role_ch = this.userInfo.role==1?'管理员':this.userInfo.role==2?'代理': this.userInfo.role==3?'商户':'供码用户';
         this.info = response.data.info;
-        console.log(this.userInfo)
+        this.info.status = (this.info.status=='启用'||this.info.status=='WORKING')?'启用':'停用';
+        console.log(this.userInfo,'klkll')
       })
+    },
+    gettime(date){
+        return getTime(date);
     },
     getMoney(){
         console.log('get money',this.newRow)

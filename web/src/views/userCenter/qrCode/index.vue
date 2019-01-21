@@ -11,6 +11,9 @@
             <el-form-item label="ip">
               <el-input v-model="formparameters.ip" style="width: 30%;"></el-input>
             </el-form-item>
+            <el-form-item label="type">
+              <el-input v-model="formparameters.type" style="width: 30%;"></el-input>
+            </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="getCode">获取二维码</el-button>
                 <!-- <el-button>取消</el-button> -->
@@ -42,7 +45,7 @@ import {qrCodeGet,redirect} from '@/api/personal'
                     money: '0.01',
                     sign:'1234132',
                     time:'time',
-                    type:''
+                    type:'alipay'
                    },
                    urlBase:"http://qr.liantu.com/api.php?text=",
                    showqrcodeurl:'alipays://platformapi/startapp?appId=20000123%26actionType=scan%26biz_data={"s": "money","u":"2088022126490523","a":"0.1","m":"11547555613680009"}',
@@ -62,7 +65,7 @@ import {qrCodeGet,redirect} from '@/api/personal'
             methods:{
                 getCode(){
                      this.formparameters.time = Date.parse(new Date())/1000;
-                    qrCodeGet(this.formparameters.id, this.formparameters.ip, this.formparameters.memo, this.formparameters.merchantId, this.formparameters.money, this.formparameters.sign, this.formparameters.time ).then(res=>{
+                    qrCodeGet(this.formparameters.id, this.formparameters.ip, this.formparameters.memo, this.formparameters.merchantId, this.formparameters.money, this.formparameters.sign, this.formparameters.time,this.formparameters.type ).then(res=>{
                         console.log(res)
                          if(res.code!=200){
                             this.$message({

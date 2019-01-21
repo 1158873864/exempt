@@ -27,7 +27,7 @@ export function cardsGetOne(uid) {
     method: 'get'
   })
 }
-export function qrCodeGet(id, ip, memo, merchantId, money, sign, time ) { 
+export function qrCodeGet(id, ip, memo, merchantId, money, sign, time,type ) { 
   return request({
     url:'/qrCode/get',
     method: 'post',
@@ -38,7 +38,8 @@ export function qrCodeGet(id, ip, memo, merchantId, money, sign, time ) {
       merchantId,
       money,
       sign,
-      time
+      time,
+      type
     }
   })
 }

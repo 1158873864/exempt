@@ -41,7 +41,8 @@ import {qrCodeGet,redirect} from '@/api/personal'
                     merchantId:'9',
                     money: '0.01',
                     sign:'1234132',
-                    time:'time'
+                    time:'time',
+                    type:''
                    },
                    urlBase:"http://qr.liantu.com/api.php?text=",
                    showqrcodeurl:'alipays://platformapi/startapp?appId=20000123%26actionType=scan%26biz_data={"s": "money","u":"2088022126490523","a":"0.1","m":"11547555613680009"}',
@@ -50,7 +51,7 @@ import {qrCodeGet,redirect} from '@/api/personal'
             },
             created(){
                 // this.getData();
-                this.merchantId = store.getters.uid
+                this.formparameters.merchantId = store.getters.uid
                 this.formparameters.time = Date.parse(new Date())/1000;
                 // this.img_src = this.urlBase+this.showqrcodeurl;
                 // console.log(this.img_src)

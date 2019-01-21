@@ -293,12 +293,12 @@ export const asyncRouterMap = [
         name: 'bankCardSetting',
         meta: { title: '银行卡设置',role:['银行卡设置'] },
         children: [
-          {
-            path: 'cards',
-            name: 'cards',
-            component: () => import('@/views/userCenter/bankCardSetting/cards/index'),
-            meta: { title: '个人所有银行卡',role:['个人所有银行卡'] },
-          },
+          // {
+          //   path: 'cards',
+          //   name: 'cards',
+          //   component: () => import('@/views/userCenter/bankCardSetting/cards/index'),
+          //   meta: { title: '个人所有银行卡',role:['个人所有银行卡'] },
+          // },
           {
             path: 'cardAdd',
             name: 'cardAdd',

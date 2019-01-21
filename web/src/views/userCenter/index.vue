@@ -1,20 +1,20 @@
 <template>
     <div>
-        <!-- <el-card v-if="userInfo.role==1" class="box-card">
+        <el-card v-if="userInfo.role==1" class="box-card">
             <div slot="header" class="clearfix">
                 <span>个人信息</span>
             </div>
-            <div  class="text item">{{ "id:" + info.id }},</div>
-            <div  class="text item">{{ 'staffName:' + info.staffName }}</div>
-            <div  class="text item">{{ 'team:' + info.team }}</div>
-            <div  class="text item">{{ '添加时间:' + info.addTime }}</div>
-            <div  class="text item">{{ 'verifyCode:' + info.verifyCode }}</div>
-            <div  class="text item">{{ 'operator:' + info.operator }}</div>
-            <div  class="text item">{{ '状态:' + info.status }}</div>
-            <div  class="text item">{{ 'post:' + info.post }}</div>
-            <div  class="text item">{{ 'role: ' + userInfo.role }}</div>
-        </el-card> -->
-        <el-card v-if="userInfo.role==3||userInfo.role==2" class="box-card">
+            <!-- <div  class="text item">{{ "id:" + info.id }},</div> -->
+            <div  class="text item">{{ '用户名: ' + userInfo.username }}</div>
+            <div  class="text item">{{ '所属团队: ' + info.team }}</div>
+            <div  class="text item">{{ '添加时间: ' + info.addTime }}</div>
+            <!-- <div  class="text item">{{ 'verifyCode:' + info.verifyCode }}</div>
+            <div  class="text item">{{ 'operator:' + info.operator }}</div> -->
+            <div  class="text item">{{ '状态: ' + info.status }}</div>
+            <div  class="text item">{{ '岗位: ' + info.post }}</div>
+            <div  class="text item">{{ '角色: ' + userInfo.role }}</div>
+        </el-card>
+         <el-card v-if="userInfo.role==4" class="box-card">
             <div slot="header" class="clearfix">
                 <span>个人信息</span>
                 <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
@@ -24,6 +24,29 @@
             <!-- <div  class="text item">{{ "id:" + info.id }},</div>
             <div  class="text item">{{ 'alipay:' + info.alipay }}</div>
             <div  class="text item">{{ 'wechat:' + info.wechat }}</div> -->
+            <div  class="text item">{{ '用户名: ' + userInfo.username }}</div>
+            <div  class="text item">{{ '添加时间: ' + info.time }}</div>
+            <div  class="text item">{{ '审批时间: ' + info.approvalTime }}</div>
+            <!-- <div  class="text item">{{ 'verifyCode:' + info.verifyCode }}</div>
+            <div  class="text item">{{ 'operator:' + info.operator }}</div> -->
+            <div  class="text item">{{ '状态: ' + info.status }}</div>
+            <div  class="text item">{{ '角色: ' + userInfo.role }}</div>
+        </el-card>
+                <el-card v-if="userInfo.role==2" class="box-card">
+            <div slot="header" class="clearfix">
+                <span>个人信息</span>
+                <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
+            </div>
+            <!-- <div class="text item"> -->
+                <!-- {{'列表内容 ' + o }} -->
+            <!-- <div  class="text item">{{ "id:" + info.id }},</div>
+            <div  class="text item">{{ 'alipay:' + info.alipay }}</div>
+            <div  class="text item">{{ 'wechat:' + info.wechat }}</div> -->
+            <div  class="text item">{{ '用户名: ' + userInfo.username }}</div>
+            <!-- <div  class="text item">{{ 'verifyCode:' + info.verifyCode }}</div>
+            <div  class="text item">{{ 'operator:' + info.operator }}</div> -->
+            <div  class="text item">{{ '状态: ' + info.status }}</div>
+            <div  class="text item">{{ '角色: ' + userInfo.role }}</div>
             <el-form>
                 <el-form-item>
                     {{ '余额:' + info.balance }}
@@ -32,17 +55,31 @@
                     <el-button type="primary" @click="openDialog">提现</el-button>
                 </el-form-item>
             </el-form>
-            <!-- <div  class="text item">{{ '状态:' + info.status }}</div>
-            <div  class="text item">{{ 'verifyCode:' + info.verifyCode }}</div>
-            <div  class="text item">{{ '添加时间:' + info.addTime }}</div>
-            <div  class="text item">{{ 'name:' + info.name }}</div>
-            <div  class="text item">{{ 'applyId:' + info.applyId }}</div>
-            <div  class="text item">{{ 'approverId:' + info.approverId }}</div>
-            <div  class="text item">{{ 'approvalTime:' + info.approvalTime }}</div>
-            <div  class="text item">{{ 'priority:' + info.priority }}</div> -->
-            <!-- <div  class="text item">{{ '正在提现的金额:' + info.withdrewMoney }}</div> -->
-            <!-- <div  class="text item">{{ 'role: ' + userInfo.role }}</div> -->
-            <!-- </div> -->
+        </el-card>
+        <el-card v-if="userInfo.role==3" class="box-card">
+            <div slot="header" class="clearfix">
+                <span>个人信息</span>
+                <!-- <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button> -->
+            </div>
+            <!-- <div class="text item"> -->
+                <!-- {{'列表内容 ' + o }} -->
+            <!-- <div  class="text item">{{ "id:" + info.id }},</div>
+            <div  class="text item">{{ 'alipay:' + info.alipay }}</div>
+            <div  class="text item">{{ 'wechat:' + info.wechat }}</div> -->
+            <div  class="text item">{{ '用户名: ' + userInfo.username }}</div>
+            <div  class="text item">{{ '添加时间: ' + info.addTime }}</div>
+            <!-- <div  class="text item">{{ 'verifyCode:' + info.verifyCode }}</div>
+            <div  class="text item">{{ 'operator:' + info.operator }}</div> -->
+            <div  class="text item">{{ '状态: ' + info.status }}</div>
+            <div  class="text item">{{ '角色: ' + userInfo.role }}</div>
+            <el-form>
+                <el-form-item>
+                    {{ '余额:' + info.balance }}
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="openDialog">提现</el-button>
+                </el-form-item>
+            </el-form>
         </el-card>
         <el-table :data="list" style="width: 100%;padding-top: 15px;">
             <!-- <el-table-column label="id" min-width="200" prop="id"></el-table-column> -->
@@ -79,7 +116,7 @@
                 </el-form-item> -->
                 <el-form-item label="提现到卡号">
                     <el-select v-model="newRow.cardId" placeholder="">
-                    <el-option v-for="card in list" :key="card.id" :label="card.carNumber" :value="card.id"></el-option>
+                    <el-option v-for="card in list" :key="card.id" :label="card.cardNumber" :value="card.cardNumber"></el-option>
                     </el-select>
                 </el-form-item>
             </el-form>

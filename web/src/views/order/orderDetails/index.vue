@@ -44,6 +44,7 @@
 
     <script>
     import { ordersGet } from '@/api/order'
+    import { getTime } from '@/utils/index'
         export default {
             data() {
                 return {
@@ -89,8 +90,14 @@
                                 type: 'warning'
                             });
                         }else{
-                            if(response.data.length!=0)
+                            if(response.data.length!=0){
                                 this.teams = response.data;
+                                this.teams.forEach(el => {
+                                   el.time = getTime(el.time)
+                                   el.approvalTime = getTime(el.approvalTime)
+                                   el.payTime = getTime(el.payTime)
+                               })
+                            }
                         }
                     })
                 },

@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-    <div>所有商户</div>
+    <div>我的商户</div>
         <el-table
         :data="teams.slice((currentPage-1)*pagesize,currentPage*pagesize)"
         height="450"
@@ -18,7 +18,6 @@
             <el-button type="success" size="small" v-if="row.status=='审批通过'">审批通过</el-button>
             <el-tag type="success" v-if="row.status=='审批通过'">{{ row.approvalTime }}</el-tag>
             <el-button type="info" size="small" v-else-if="row.status=='等待审批'">等待审批</el-button>
-             <el-tag type="warning" v-if="row.status=='等待审批'">{{ row.addTime }}</el-tag>
             <el-button type="warning" size="small" v-else-if="row.status=='审批不通过'">审批不通过</el-button>
              <el-tag type="warning" v-if="row.status=='审批不通过'">{{ row.approvalTime }}</el-tag>
             </template>
@@ -64,9 +63,9 @@
 </template>
 
 <script>
-import { merchantsGet,updateMerchant } from '@/api/role'
+import { merchantsMy,updateMerchant } from '@/api/role'
 import store from '../../../../store'
-import {getTime} from '@/utils/index'
+import getTime from '@/utils/index'
     export default {
         data() {
             return {
@@ -156,7 +155,7 @@ import {getTime} from '@/utils/index'
                 this.getTeams();
             },
             getTeams(){
-                merchantsGet().then(response=>{
+                merchantsMy(store.getters.uid).then(response=>{
                     console.log(response,'sdll')
                      if(response.data.infoCod){
                         this.$message({
@@ -170,8 +169,7 @@ import {getTime} from '@/utils/index'
                            el.wechat = el.wechat+'%';
                            el.alipay = el.alipay+'%';
                            el.addTime = getTime(el.addTime)
-                        // console.log(getTime(new Date()))
-                           el.approvalTime = getTime(el.approvalTime)
+                        //    el.approvalTime = getTime(el.approvalTime)
                        });
                     }
                 })

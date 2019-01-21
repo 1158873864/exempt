@@ -25,8 +25,8 @@
             <div  class="text item">{{ 'alipay:' + info.alipay }}</div>
             <div  class="text item">{{ 'wechat:' + info.wechat }}</div> -->
             <div  class="text item">{{ '用户名: ' + userInfo.username }}</div>
-            <div  class="text item">{{ '添加时间: ' + info.time }}</div>
-            <div  class="text item">{{ '审批时间: ' + info.approvalTime }}</div>
+            <div  class="text item">{{ '添加时间: ' + gettime(info.time) }}</div>
+            <div  class="text item">{{ '审批时间: ' + gettime(info.approvalTime) }}</div>
             <!-- <div  class="text item">{{ 'verifyCode:' + info.verifyCode }}</div>
             <div  class="text item">{{ 'operator:' + info.operator }}</div> -->
             <div  class="text item">{{ '状态: ' + info.status }}</div>
@@ -67,7 +67,7 @@
             <div  class="text item">{{ 'alipay:' + info.alipay }}</div>
             <div  class="text item">{{ 'wechat:' + info.wechat }}</div> -->
             <div  class="text item">{{ '用户名: ' + userInfo.username }}</div>
-            <div  class="text item">{{ '添加时间: ' + info.addTime }}</div>
+            <div  class="text item">{{ '添加时间: ' + gettime(info.addTime) }}</div>
             <!-- <div  class="text item">{{ 'verifyCode:' + info.verifyCode }}</div>
             <div  class="text item">{{ 'operator:' + info.operator }}</div> -->
             <div  class="text item">{{ '状态: ' + info.status }}</div>

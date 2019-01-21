@@ -126,6 +126,12 @@ export function merchantsGet() {
     method: 'get'
   })
 }
+export function merchantsMy(id) {
+  return request({
+    url: '/myMerchants/'+id,
+    method: 'get'
+  })
+}
 export function suppliersGet() {
   return request({
     url: '/suppliers',

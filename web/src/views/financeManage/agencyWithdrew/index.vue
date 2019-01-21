@@ -54,6 +54,7 @@
   import Table from "../../../components/table/index"
   import {withdrewsWaiting,withdrewGet} from '@/api/transaction'
   import store from '../../../store'
+  import {getTime} from '@/utils/index'
      export default {
             data() {
                 return {
@@ -122,6 +123,9 @@
                             });
                         }else{
                            this.teams = response.data;
+                           this.teams.forEach(el => {
+                               el.applyTime = getTime(el.applyTime)
+                           });
                         }
                     })
                 },

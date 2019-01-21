@@ -284,6 +284,12 @@ export const asyncRouterMap = [
             name: 'merchants',
             component: () => import('@/views/userCenter/merchantManage/merchants/index'),
             meta: { title: '所有商户',role:['所有商户'] }
+          },
+          {
+            path: 'mymerchants',
+            name: 'mymerchants',
+            component: () => import('@/views/userCenter/merchantManage/myMerchants/index'),
+            meta: { title: '我的商户',role:['我的商户'] }
           }    
         ]
       },

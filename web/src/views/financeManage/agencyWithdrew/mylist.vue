@@ -133,6 +133,7 @@
                            this.teams = response.data;
                            this.teams.forEach(el => {
                                el.memo = ''
+                               el.applyTime = getTime(el.applyTime)
                            });
                         }
                     })

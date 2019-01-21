@@ -124,6 +124,9 @@ export function getTreePermissions(){
                 },
                 {
                     title: '所有商户',
+                },
+                {
+                    title: '我的商户',
                 }
             ]
         },

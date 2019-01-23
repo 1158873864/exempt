@@ -21,7 +21,7 @@ public class Supplier {
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
-    /*申请人的userid*/
+    /*申请人的id*/
     @Column(name = "applicantId")
     private int applicantId;
     /*添加事件*/
@@ -30,6 +30,7 @@ public class Supplier {
     /*审批事件*/
     @Column(name = "approvalTime")
     private Date approvalTime;
+    /*审批人*/
     @Column(name = "approverId")
     private int approverId;
     /*审批状态*/

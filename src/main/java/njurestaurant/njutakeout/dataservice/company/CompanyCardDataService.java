@@ -8,6 +8,7 @@ import java.util.List;
 public interface CompanyCardDataService {
     /**
      * save the bank card of company
+     *
      * @param companyCard the company bank card
      * @return
      */
@@ -31,4 +32,6 @@ public interface CompanyCardDataService {
     void deleteCompanyCardById(int id);
 
     CompanyCard findCompanyById(int id);
+
+    CompanyCard findCompanyCardByCardNumber(String cardNumber);
 }

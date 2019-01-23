@@ -1,10 +1,10 @@
 package njurestaurant.njutakeout.parameters.order;
 
 public class WithdrewParameters {
-    private int id;
-    private String type;
-    private double money;
-    private int cardId;
+    private int id;//user表下的id
+    private String type;//角色
+    private double money;//提现金额
+    private int cardId;//提现卡号
 
     public WithdrewParameters(int id, String type, double money, int cardId) {
         this.id = id;

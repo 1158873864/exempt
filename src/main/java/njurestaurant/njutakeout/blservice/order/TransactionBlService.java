@@ -2,9 +2,7 @@ package njurestaurant.njutakeout.blservice.order;
 
 import njurestaurant.njutakeout.entity.order.PlatformOrder;
 import njurestaurant.njutakeout.entity.order.WithdrewOrder;
-import njurestaurant.njutakeout.exception.BlankInputException;
-import njurestaurant.njutakeout.exception.WrongIdException;
-import njurestaurant.njutakeout.exception.WrongInputException;
+import njurestaurant.njutakeout.exception.*;
 import njurestaurant.njutakeout.parameters.app.GetQrCodeParameters;
 import njurestaurant.njutakeout.parameters.order.WithdrewDealParameters;
 import njurestaurant.njutakeout.parameters.order.WithdrewParameters;
@@ -14,7 +12,7 @@ import njurestaurant.njutakeout.response.transaction.GetQrCodeResponse;
 import java.util.List;
 
 public interface TransactionBlService {
-    GetQrCodeResponse getQrCode(GetQrCodeParameters getQrCodeParameters) throws WrongIdException, BlankInputException;
+    GetQrCodeResponse getQrCode(GetQrCodeParameters getQrCodeParameters) throws WrongIdException, BlankInputException, IPRiskControlException, IDRiskControlException, TooLittleMoneyException;
 
     void addDevice();
 

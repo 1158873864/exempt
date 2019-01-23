@@ -207,7 +207,7 @@ export const asyncRouterMap = [
         name: 'userInfo',
         component: () => import('@/views/userCenter/index'),
         meta: { title: '用户信息', role: ['用户信息'] }
-      },
+       },
       {
         path: 'agency',
         component: () => import('@/views/userCenter/agency/index'),
@@ -299,12 +299,6 @@ export const asyncRouterMap = [
         name: 'bankCardSetting',
         meta: { title: '银行卡设置',role:['银行卡设置'] },
         children: [
-          // {
-          //   path: 'cards',
-          //   name: 'cards',
-          //   component: () => import('@/views/userCenter/bankCardSetting/cards/index'),
-          //   meta: { title: '个人所有银行卡',role:['个人所有银行卡'] },
-          // },
           {
             path: 'cardAdd',
             name: 'cardAdd',
@@ -318,7 +312,12 @@ export const asyncRouterMap = [
             component: () => import('@/views/userCenter/bankCardSetting/personalcards/index'),
             meta: { title: '个人银行卡',role:['个人银行卡'] },
           },
-               
+           {
+            path: 'cardskiting',
+            name: 'cardskiting',
+            component: () => import('@/views/userCenter/bankCardSetting/cardskiting/index'),
+            meta: { title: '提现历史',role:['提现历史'] },
+           }    
         ]
       },
       {

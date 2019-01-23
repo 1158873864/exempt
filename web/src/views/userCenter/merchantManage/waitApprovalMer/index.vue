@@ -67,7 +67,7 @@
             },
             methods: {
                 approval(index, row,status) {
-                    console.log(row);
+                    // console.log(row);
                     ApprovalMer(
                             row.alipay,
                             row.approverId,

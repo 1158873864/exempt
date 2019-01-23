@@ -6,13 +6,13 @@
             height="250"
             border
             style="width: 100%">
-            <el-table-column prop="accountWithBank" label="accountWithBank" width="180"></el-table-column>
-            <el-table-column prop="bank" label="bank" width="180"></el-table-column>
-            <el-table-column prop="bin" label="bin" width="180"></el-table-column>
-            <el-table-column prop="cardNumber" label="cardNumber" width="180"></el-table-column>
+            <el-table-column prop="accountWithBank" label="银行卡号" width="180"></el-table-column>
+            <el-table-column prop="bank" label="银行" width="180"></el-table-column>
+            <el-table-column prop="bin" label="编号" width="180"></el-table-column>
+            <!-- <el-table-column prop="cardNumber" label="數字" width="180"></el-table-column> -->
             <el-table-column prop="id" label="id" width="180"></el-table-column>
-            <el-table-column prop="name" label="name" width="180"></el-table-column>
-            <el-table-column prop="status" label="status" width="180"></el-table-column>
+            <el-table-column prop="name" label="名字" width="180"></el-table-column>
+            <el-table-column prop="status" label="状态" width="180"></el-table-column>
         </el-table>
         <div class="block">
             <span class="demonstration">调整每页显示条数</span>

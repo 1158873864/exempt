@@ -141,6 +141,8 @@ export function getTreePermissions(){
                 },
                 {
                     title: '个人银行卡' ,
+                },{
+                    title:'提现历史'
                 }
             ]
         },

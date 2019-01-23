@@ -7,7 +7,7 @@ export function merchantsReport() {
 }
 
 export function getPermerchantReport(uid) {
-  console.log(uid)
+  // console.log(uid)
   return request({
       url: 'report/merchant/'+uid,
     method: 'get'

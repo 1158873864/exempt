@@ -3,10 +3,10 @@
           <el-form ref="form" :model="form" label-width="80px">
       
             <el-form-item label="用户名">
-                    <el-input v-model="form.username" style="width: 30%;"></el-input>
+                    <el-input v-model="form.username" style="width: 30%;" onkeyup="this.value=this.value.replace(/[^a-zA-Z]/g,'')"  placeholder="不能使用中文"></el-input>
             </el-form-item>
             <el-form-item label="密码">
-              <el-input v-model="form.password" style="width: 30%;"></el-input>
+              <el-input v-model="form.password" style="width: 30%;" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')"></el-input>
             </el-form-item>
             <el-form-item label="支付宝点位">
               <el-input v-model="form.alipay" style="width: 30%;"></el-input>
@@ -16,8 +16,8 @@
             </el-form-item>
             <el-form-item label="状态">
                     <el-select v-model="form.status" placeholder="启用">
-                    <el-option label="启用" value="WORKING"></el-option>
-                    <el-option label="停用" value="INVALID"></el-option>
+                    <el-option label="启用" value="启用"></el-option>
+                    <el-option label="停用" value="停用"></el-option>
                     </el-select>
             </el-form-item>
             <!-- <el-form-item label="验证码">

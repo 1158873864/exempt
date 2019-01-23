@@ -13,7 +13,7 @@ import { asyncRouterMap, constantRouterMap } from '@/router'
 //   }
 // }
 function hasPermission(roles, permissionRoles) {
-  console.log('setpermission',permissionRoles,roles, roles.some(role => permissionRoles.indexOf(role) >= 0))
+  // console.log('setpermission',permissionRoles,roles, roles.some(role => permissionRoles.indexOf(role) >= 0))
   if (roles.indexOf('admin') >= 0) return true // admin permission passed directly
   if (!permissionRoles) return true
   return roles.some(role => permissionRoles.indexOf(role) >= 0)
@@ -31,15 +31,15 @@ function hasPermission(roles, permissionRoles) {
  */
 function filterAsyncRouter(routes, roles) {
   const res = []
-  console.log(routes)
-  console.log(roles)
+  // console.log(routes)
+  // console.log(roles)
   routes.forEach(route => {
     const tmp = { ...route }
-    console.log(tmp)
+    // console.log(tmp)
     var flag = hasPermission(roles, tmp.meta.role)
-    console.log(flag,tmp)
+    // console.log(flag,tmp)
     if (flag) {
-      console.log(tmp.meta.role)
+      // console.log(tmp.meta.role)
       if (tmp.children) {
         tmp.children = filterAsyncRouter(tmp.children, roles)
       }
@@ -47,7 +47,7 @@ function filterAsyncRouter(routes, roles) {
     }
   })
 
-  console.log('res',res)
+  // console.log('res',res)
   return res
 }
 
@@ -72,7 +72,7 @@ const permission = {
         } else {
           accessedRouters = filterAsyncRouter(asyncRouterMap, roles)
         }
-        console.log(accessedRouters,'accessedRouters')
+        // console.log(accessedRouters,'accessedRouters')
         commit('SET_ROUTERS', accessedRouters)
         resolve()
       })

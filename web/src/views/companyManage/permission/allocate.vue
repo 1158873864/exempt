@@ -20,7 +20,7 @@
                     show-checkbox
                     node-key="title"
                     ref="tree"
-                    show-checkbox
+                   
                    >
                 </el-tree>
             <el-form-item>

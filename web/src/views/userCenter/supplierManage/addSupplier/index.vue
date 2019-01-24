@@ -1,8 +1,13 @@
 <template>
   <div class="app-container">
     <el-form ref="form" :model="form" label-width="80px">
-      <el-form-item label="等级">
-        <el-input v-model="form.level" style="width: 30%;"></el-input>
+      <el-form-item label="用户名">
+        <el-input
+          v-model="form.username"
+          style="width: 30%;"
+          onkeyup="this.value=this.value.replace(/[^a-zA-Z]/g,'')"
+          placeholder="不能使用中文"
+        ></el-input>
       </el-form-item>
       <el-form-item label="密码">
         <el-input
@@ -11,13 +16,15 @@
           onkeyup="value=value.replace(/[^\w\.\/]/ig,'')"
         ></el-input>
       </el-form-item>
-      <el-form-item label="用户名">
-        <el-input
-          v-model="form.username"
-          style="width: 30%;"
-          onkeyup="this.value=this.value.replace(/[^a-zA-Z]/g,'')"
-          placeholder="不能使用中文"
-        ></el-input>
+      <el-form-item label="等级">
+          <el-select v-model="form.level" placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit('form')">添加</el-button>
@@ -41,7 +48,23 @@ export default {
         level: 1,
         password: "1",
         username: "1"
-      }
+      },
+        options: [{
+          value: '1',
+          label: '1'
+        }, {
+          value: '2',
+          label: '2'
+        }, {
+          value: '3',
+          label: '3'
+        }, {
+          value: '4',
+          label: '4'
+        }, {
+          value: '5',
+          label: '5'
+        }],
     };
   },
 

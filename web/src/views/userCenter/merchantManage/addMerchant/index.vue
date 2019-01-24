@@ -1,24 +1,24 @@
 <template>
   <div class="app-container">
     <el-form ref="form" :model="form" label-width="100px">
+      <el-form-item label="用户名">
+        <el-input v-model="form.username" style="width: 30%;" type="text" onkeyup="this.value=this.value.replace(/[^a-zA-Z]/g,'')" placeholder="不能使用中文"></el-input>
+      </el-form-item>
+      <el-form-item label="密码">
+        <el-input v-model="form.password" style="width: 30%;" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')"></el-input>
+      </el-form-item>
+      <el-form-item label="等级">
+        <el-input v-model="form.level" type="number" min="1"  style="width: 30%;"></el-input>
+      </el-form-item>
+      <el-form-item label="微信点位">
+        <el-input v-model="form.wechat" style="width: 30%;" type="number"></el-input>
+      </el-form-item>
       <el-form-item label="支付宝点位">
         <el-input v-model="form.alipay" style="width: 30%;" type="number"></el-input>
       </el-form-item>
       <!-- <el-form-item label="申请人id">
               <el-input v-model="form.applyId" style="width: 30%;"></el-input>
       </el-form-item>-->
-      <el-form-item label="等级">
-        <el-input v-model="form.level" style="width: 30%;"></el-input>
-      </el-form-item>
-      <el-form-item label="密码">
-        <el-input v-model="form.password" style="width: 30%;" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')"></el-input>
-      </el-form-item>
-      <el-form-item label="用户名">
-        <el-input v-model="form.username" style="width: 30%;" type="text" onkeyup="this.value=this.value.replace(/[^a-zA-Z]/g,'')" placeholder="不能使用中文"></el-input>
-      </el-form-item>
-      <el-form-item label="微信点位">
-        <el-input v-model="form.wechat" style="width: 30%;" type="number"></el-input>
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit('form')">添加</el-button>
         <el-button>取消</el-button>
@@ -36,12 +36,12 @@ export default {
   data() {
     return {
       form: {
-        alipay: 0,
+        alipay: 12,
         applyId: 1,
-        level: 0,
+        level: 1,
         password: "",
         username: "",
-        wechat: 0
+        wechat: 12
       }
     };
   },

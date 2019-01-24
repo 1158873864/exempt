@@ -54,7 +54,7 @@
                     operator: '1',
                     password: '填写密码',
                     post: '选择岗位',
-                    status: '启用',
+                    status: 'WORKING',
                     team:'队伍',
                     username: '1',
                     teamName:'选择队伍',

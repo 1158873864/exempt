@@ -20,10 +20,7 @@ import njurestaurant.njutakeout.entity.app.Alipay;
 import njurestaurant.njutakeout.entity.app.Device;
 import njurestaurant.njutakeout.entity.order.PlatformOrder;
 import njurestaurant.njutakeout.entity.order.WithdrewOrder;
-import njurestaurant.njutakeout.exception.BlankInputException;
-import njurestaurant.njutakeout.exception.IsExistentException;
-import njurestaurant.njutakeout.exception.WrongIdException;
-import njurestaurant.njutakeout.exception.WrongInputException;
+import njurestaurant.njutakeout.exception.*;
 import njurestaurant.njutakeout.parameters.app.CheckOnlineParameters;
 import njurestaurant.njutakeout.parameters.app.GetQrCodeParameters;
 import njurestaurant.njutakeout.parameters.order.WithdrewDealParameters;
@@ -60,8 +57,20 @@ public class TransactionBlServiceImpl implements TransactionBlService {
     private final DeviceDataService deviceDataService;
     private final WithdrewOrderDataService withdrewOrderDataService;
     private final AgentDataService agentDataService;
-
-
+    private static Map<String, String> map = new HashMap<>();
+    private static Map<String, Integer> map1 = new HashMap<>();
+    private static Map<String, String> map2 = new HashMap<>();
+    private static Map<String, String> map3 = new HashMap<>();
+    private static Map<String, Integer> map4 = new HashMap<>();
+    private static Map<String, String> map5 = new HashMap<>();
+    private static Map<String, String> map6 = new HashMap<>();
+    private int ip_threshold = 5;//ip阈值，设定超过该次数的ip，将被认为是恶意ip，将被封死，暂设为5次。
+    private int id_threshold = 5;//id阈值，设定超过该次数的id，将被认为是刷单id，将被锁定掉30分钟，暂设为5次。
+    private double money_threshold = 0.01; //订单筛选，0.01元及其以下订单直接返回金额过小(0.01可修改)
+    private long ip_time_interval_risk = 1000;//同一ip两次访问的风险时间间隔，暂设为1000ms
+    private long ip_time_interval_safe = 5000;//同一ip两次访问的安全时间间隔，暂设为5000ms
+    private long id_time_interval_risk = 1000;//同一id两次访问的风险时间间隔，暂设为1000ms
+    private long id_time_interval_safe = 5000;//同一id两次访问的安全时间间隔，暂设为5000ms
     private final String TRANSFERSOLIDURL = "alipays://platformapi/startapp?appId=20000123&actionType=scan&biz_data={\"s\": \"money\",\"u\":\"";
     private final String TRANSFERPASSURL = "alipays://platformapi/startapp?appId=09999988&actionType=toAccount&sourceId=contactAmount&chatLoginId=&chatUserId=";
 
@@ -98,13 +107,70 @@ public class TransactionBlServiceImpl implements TransactionBlService {
      * @throws WrongIdException 供码用户id错误/用户id对应的用户身份不为商户 抛出异常
      */
     @Override
-    public GetQrCodeResponse getQrCode(GetQrCodeParameters getQrCodeParameters) throws WrongIdException, BlankInputException {
+    public GetQrCodeResponse getQrCode(GetQrCodeParameters getQrCodeParameters) throws WrongIdException, BlankInputException, IPRiskControlException, IDRiskControlException,TooLittleMoneyException {
+        if (Double.parseDouble(getQrCodeParameters.getMoney()) <= money_threshold) {
+            throw new TooLittleMoneyException();
+        }
         Integer id = StringParseUtil.StringToInt(getQrCodeParameters.getMerchantId());
         if (StringParseUtil.StringToInt(getQrCodeParameters.getTime()) == null || StringParseUtil.StringToDouble(getQrCodeParameters.getMoney()) == null) {
             throw new BlankInputException();
         }
         double money = StringParseUtil.StringToDouble(getQrCodeParameters.getMoney());
         Date date = FormatDateTime.TenTimestampToDate(StringParseUtil.StringToInt(getQrCodeParameters.getTime()));
+
+        map2.put(getQrCodeParameters.getIp(), String.valueOf(date.getTime()));//ip,十三位时间戳 ms，记录每个ip每次访问的时间
+        map5.put(getQrCodeParameters.getId(), String.valueOf(date.getTime()));//id, 记录每个id每次访问的时间
+
+        //封死ip
+        if (map1.containsKey(getQrCodeParameters.getIp()))
+            if (map1.get(getQrCodeParameters.getIp()) > ip_threshold)
+                throw new IPRiskControlException();
+
+        //防刷单，此编号如果多次访问需要锁定掉30分钟
+        if (map4.containsKey(getQrCodeParameters.getIp()))
+            if (map4.get(getQrCodeParameters.getId()) > id_threshold) {
+                if (!map6.containsKey(getQrCodeParameters.getId()))
+                    map6.put(getQrCodeParameters.getId(), String.valueOf(date.getTime()));
+                if ((Long.parseLong(map5.get(getQrCodeParameters.getId())) - Long.parseLong(map6.get(getQrCodeParameters.getId()))) < 1000 * 60 * 30)
+                    throw new IDRiskControlException();
+                else
+                    map3.remove(getQrCodeParameters.getId());
+            }
+
+        //ip风控机制，检测同IP恶意访问
+        if (!map.containsKey(getQrCodeParameters.getIp())) {
+            map.put(getQrCodeParameters.getIp(), String.valueOf(date.getTime()));//记录每个ip首次访问时间
+            map1.put(getQrCodeParameters.getIp(), 1);
+        } else {
+            if ((Long.parseLong(map2.get(getQrCodeParameters.getIp())) - Long.parseLong(map.get(getQrCodeParameters.getIp()))) > ip_time_interval_safe && map1.get(getQrCodeParameters.getIp()) > 0) {
+                map.remove(getQrCodeParameters.getIp());//将大于安全时间的ip从map中移除，下次访问会作为新ip重新记录
+                map1.put(getQrCodeParameters.getIp(), map1.get(getQrCodeParameters.getIp()) - 1);
+            }
+            if (map.containsKey(getQrCodeParameters.getIp()))
+                if ((Long.parseLong(map2.get(getQrCodeParameters.getIp())) - Long.parseLong(map.get(getQrCodeParameters.getIp()))) < ip_time_interval_risk) {
+                    map.put(getQrCodeParameters.getIp(), String.valueOf(date.getTime()));
+                    map1.put(getQrCodeParameters.getIp(), map1.get(getQrCodeParameters.getIp()) + 1);//更新每个ip的首次访问时间（将后来的访问时间，作为下一次访问的首次访问时间）
+                }
+
+        }
+
+        //防刷单机制，商户方提供充值编号
+        if (!map3.containsKey(getQrCodeParameters.getId())) {
+            map3.put(getQrCodeParameters.getId(), String.valueOf(date.getTime()));//记录每个id首次访问时间
+            map4.put(getQrCodeParameters.getId(), 1);
+        } else {
+            if ((Long.parseLong(map5.get(getQrCodeParameters.getId())) - Long.parseLong(map3.get(getQrCodeParameters.getId()))) > id_time_interval_safe && map4.get(getQrCodeParameters.getId()) > 0) {
+                map3.remove(getQrCodeParameters.getId());//将大于安全时间的id从map中移除，下次访问会作为新id重新记录
+                map4.put(getQrCodeParameters.getId(), map4.get(getQrCodeParameters.getId()) - 1);
+            }
+            if (map3.containsKey(getQrCodeParameters.getId()))
+                if ((Long.parseLong(map5.get(getQrCodeParameters.getId())) - Long.parseLong(map3.get(getQrCodeParameters.getId()))) < id_time_interval_risk) {
+                    map3.put(getQrCodeParameters.getId(), String.valueOf(date.getTime()));
+                    map4.put(getQrCodeParameters.getId(), map4.get(getQrCodeParameters.getId()) + 1);//更新每个id的首次访问时间（将后来的访问时间，作为下一次访问的首次访问时间）
+                }
+
+        }
+
         if (id == null) {
             throw new WrongIdException();
         } else {
@@ -121,6 +187,8 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                 // id正确，开始寻找供码用户
                 Random random = new Random();
                 List<Supplier> supplierList = supplierDataService.findSuppliersByLevel(merchant.getPriority());
+                System.out.println(merchant.getPriority());
+                System.out.println(supplierList);
                 int len = supplierList.size();
                 int randomNumber;
                 Supplier chosenSupplier = null;
@@ -163,7 +231,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                                 alipayDataService.saveAlipay(alipay);
                             }
                             break; // 支付宝在线
-                        } else if(getReceiptCodeResponse != null && getReceiptCodeResponse.getStatus().equals("failed")) {
+                        } else if (getReceiptCodeResponse != null && getReceiptCodeResponse.getStatus().equals("failed")) {
                             chosenDevice.setOnline(0);
                             deviceDataService.saveDevice(chosenDevice);
                             dLen--;
@@ -171,9 +239,9 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                     }
 
                     if (dLen == 0) {
-                    	len--;
-                    	continue; // 没有任何一个合适的设备
-                    	
+                        len--;
+                        continue; // 没有任何一个合适的设备
+
                     }
 
                     // 找到一个设备支付宝账号在线的供码者
@@ -183,7 +251,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                         continue;
                     } else break;
                 }
-                
+
                 // 没有一个供码者符合条件, 返回失败
                 if (len == 0) return null;
                 // 订单号生成规则： 1+10位的时间戳（从web端接收的）+两位随机数+用户的userid后四位不足补0 （支付宝通道则第一位为1）
@@ -195,14 +263,14 @@ public class TransactionBlServiceImpl implements TransactionBlService {
 
                 // 检查供码者设定的供码类型, 获取收款码
                 String qrCode = null;
-          
+
                 switch (chosenSupplier.getCodeType()) {
                     case RPASSOFF: // 收款通码离线码
                         qrCode = alipayDataService.findById(chosenDevice.getAlipayId()).getPassOffCode();
                         System.out.println("off:" + qrCode);
                         break;
                     case RPASSQR:   //收款通码在线码
-                    	
+
                         qrCode = alipayDataService.findById(chosenDevice.getAlipayId()).getPassQrCode();
                         System.out.println(qrCode);
                         break;
@@ -219,7 +287,8 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                 PlatformOrder platformOrder = new PlatformOrder(orderId, OrderState.WAITING_FOR_PAYING, date, qrCode, getQrCodeParameters.getIp(), getQrCodeParameters.getId(), money, user.getId(), chosenDevice.getImei());
                 platformOrder.setType(getQrCodeParameters.getType());
                 // 需要支付宝的收款码
-                if(getQrCodeParameters.getType().equals("alipay")) platformOrder.setTableId(chosenDevice.getAlipayId());
+                if (getQrCodeParameters.getType().equals("alipay"))
+                    platformOrder.setTableId(chosenDevice.getAlipayId());
                 // else 微信收款码
                 platformOrderDataService.savePlatformOrder(platformOrder);
                 return new GetQrCodeResponse("/redirect", "success", orderId);
@@ -269,37 +338,37 @@ public class TransactionBlServiceImpl implements TransactionBlService {
      * @return
      */
     private GetReceiptCodeResponse checkAlipayOnline(String imei, String userId) {
-    	WebSocketHandler.sendMessageToUser(imei, new TextMessage(String.valueOf(new CheckOnlineParameters(imei, userId))));
-        
-    	Thread thread = Thread.currentThread();
-    	WebSocketHandler.mapThread.put(imei, thread);
+        WebSocketHandler.sendMessageToUser(imei, new TextMessage(String.valueOf(new CheckOnlineParameters(imei, userId))));
+
+        Thread thread = Thread.currentThread();
+        WebSocketHandler.mapThread.put(imei, thread);
         try {
-			thread.sleep(100000);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-        
+            thread.sleep(10000);
+        } catch (InterruptedException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
         TextMessage textMessage = WebSocketHandler.msgMap.get(imei);
         System.out.println(textMessage.toString());
-        if(textMessage == null || StringUtils.isBlank(textMessage.getPayload()))	return null;
+        if (textMessage == null || StringUtils.isBlank(textMessage.getPayload())) return null;
         //{"cmd":"passcode","imei":"304517300097652","type":"alipay","status":"success","userid":"2088022126490523","qrcode":"","offqrcode":""}
-            try {
-                JSONObject jsonObject = new JSONObject(textMessage.getPayload());
-                String cmd = jsonObject.getString("cmd");
-                String type = jsonObject.getString("type");
-                String im = jsonObject.getString("imei");
+        try {
+            JSONObject jsonObject = new JSONObject(textMessage.getPayload());
+            String cmd = jsonObject.getString("cmd");
+            String type = jsonObject.getString("type");
+            String im = jsonObject.getString("imei");
 //                String msg = jsonObject.getString("msg");
-                String userid = jsonObject.getString("userid");
-                String qrCode = jsonObject.getString("qrcode");
-                String offQrCode = jsonObject.getString("offqrcode");
-                String status = jsonObject.getString("status");
+            String userid = jsonObject.getString("userid");
+            String qrCode = jsonObject.getString("qrcode");
+            String offQrCode = jsonObject.getString("offqrcode");
+            String status = jsonObject.getString("status");
 
-                return new GetReceiptCodeResponse(cmd, type, im, status, "msg", userid, qrCode, offQrCode);
-            } catch (JSONException e) {
-                return null;
-            }
+            return new GetReceiptCodeResponse(cmd, type, im, status, "msg", userid, qrCode, offQrCode);
+        } catch (JSONException e) {
+            return null;
         }
+    }
 
     @Override
     public PlatformOrder findPlatformOrderByImeiAndState(String imei, OrderState orderState) {
@@ -309,22 +378,24 @@ public class TransactionBlServiceImpl implements TransactionBlService {
     @Override
     public WithdrewOrder addWithdrewOrder(WithdrewParameters withdrewParameters) throws WrongIdException, BlankInputException, WrongInputException {
         User user = userDataService.getUserById(withdrewParameters.getId());
-        if(user == null) throw new WrongIdException();
+        if (user == null) throw new WrongIdException();
         double balance = 0.0;
 
-        if("merchant".equals(withdrewParameters.getType())) {   // 商家提出提款操作
-            if(user.getRole() != 3) throw new WrongIdException();
+        if ("merchant".equals(withdrewParameters.getType())) {   // 商家提出提款操作
+            if (user.getRole() != 3) throw new WrongIdException();
             Merchant merchant = merchantDataService.findMerchantById(user.getTableId());
             balance = merchant.getBalance();
-            if(Double.doubleToLongBits(balance) < Double.doubleToLongBits(withdrewParameters.getMoney())) throw new WrongInputException();
+            if (Double.doubleToLongBits(balance) < Double.doubleToLongBits(withdrewParameters.getMoney()))
+                throw new WrongInputException();
             merchant.setBalance(merchant.getBalance() - withdrewParameters.getMoney());
             merchant.setWithdrewMoney(merchant.getWithdrewMoney() + withdrewParameters.getMoney());
             merchantDataService.saveMerchant(merchant);
-        } else if("agent".equals(withdrewParameters.getType())) {
-            if(user.getRole() != 2) throw new WrongIdException();
+        } else if ("agent".equals(withdrewParameters.getType())) {
+            if (user.getRole() != 2) throw new WrongIdException();
             Agent agent = agentDataService.findAgentById(user.getTableId());
             balance = agent.getBalance();
-            if(Double.doubleToLongBits(balance) < Double.doubleToLongBits(withdrewParameters.getMoney())) throw new WrongInputException();
+            if (Double.doubleToLongBits(balance) < Double.doubleToLongBits(withdrewParameters.getMoney()))
+                throw new WrongInputException();
             agent.setBalance(agent.getBalance() - withdrewParameters.getMoney());
             agent.setWithdrewMoney(agent.getWithdrewMoney() + withdrewParameters.getMoney());
             agentDataService.saveAgent(agent);
@@ -344,10 +415,10 @@ public class TransactionBlServiceImpl implements TransactionBlService {
     @Override
     public void grabWithdrewOrderById(int oid, int uid) throws WrongIdException, WrongInputException {
         User user = userDataService.getUserById(uid);
-        if(user == null) throw new WrongIdException();
+        if (user == null) throw new WrongIdException();
         WithdrewOrder withdrewOrder = withdrewOrderDataService.findWithdrewOrderById(oid);
-        if(withdrewOrder == null)   throw new WrongIdException();
-        if(withdrewOrder.getState() != WithdrewState.WAITING)   throw new WrongInputException();
+        if (withdrewOrder == null) throw new WrongIdException();
+        if (withdrewOrder.getState() != WithdrewState.WAITING) throw new WrongInputException();
         withdrewOrder.setState(WithdrewState.DEALING);
         withdrewOrder.setOperateId(uid);
         withdrewOrderDataService.saveWithdrewOrder(withdrewOrder);
@@ -356,31 +427,32 @@ public class TransactionBlServiceImpl implements TransactionBlService {
     @Override
     public void dealWithdrewOrder(int id, WithdrewDealParameters withdrewDealParameters) throws WrongIdException, BlankInputException {
         User user = userDataService.getUserById(withdrewDealParameters.getOperatorId());
-        if(user == null) throw new WrongIdException();
+        if (user == null) throw new WrongIdException();
         WithdrewOrder withdrewOrder = withdrewOrderDataService.findWithdrewOrderById(id);
-        if(withdrewOrder == null || withdrewOrder.getState() != WithdrewState.DEALING || withdrewOrder.getOperateId() != withdrewDealParameters.getOperatorId()) throw new WrongIdException();
-        if("SUCCESS".equals(withdrewDealParameters.getState())) {
+        if (withdrewOrder == null || withdrewOrder.getState() != WithdrewState.DEALING || withdrewOrder.getOperateId() != withdrewDealParameters.getOperatorId())
+            throw new WrongIdException();
+        if ("SUCCESS".equals(withdrewDealParameters.getState())) {
             withdrewOrder.setState(WithdrewState.SUCCESS);
-            if("merchant".equals(withdrewOrder.getType())) {
+            if ("merchant".equals(withdrewOrder.getType())) {
                 User u = userDataService.getUserById(withdrewOrder.getApplicantId());
                 Merchant merchant = merchantDataService.findMerchantById(u.getTableId());
                 merchant.setWithdrewMoney(merchant.getWithdrewMoney() - withdrewOrder.getMoney());  // 减少商户正在提现的金额
                 merchantDataService.saveMerchant(merchant);
-            } else if("agent".equals(withdrewOrder.getType())) {
+            } else if ("agent".equals(withdrewOrder.getType())) {
                 User u = userDataService.getUserById(withdrewOrder.getApplicantId());
                 Agent agent = agentDataService.findAgentById(u.getTableId());
                 agent.setWithdrewMoney(agent.getWithdrewMoney() - withdrewOrder.getMoney());  // 减少商户正在提现的金额
                 agentDataService.saveAgent(agent);
             }
-        } else if("FAILED".equals(withdrewDealParameters.getState())) {
+        } else if ("FAILED".equals(withdrewDealParameters.getState())) {
             withdrewOrder.setState(WithdrewState.FAILED);
-            if("merchant".equals(withdrewOrder.getType())) {
+            if ("merchant".equals(withdrewOrder.getType())) {
                 User u = userDataService.getUserById(withdrewOrder.getApplicantId());
                 Merchant merchant = merchantDataService.findMerchantById(u.getTableId());
                 merchant.setBalance(merchant.getBalance() + withdrewOrder.getMoney());  // 增加商户余额
                 merchant.setWithdrewMoney(merchant.getWithdrewMoney() - withdrewOrder.getMoney());  // 减少商户正在提现的金额
                 merchantDataService.saveMerchant(merchant);
-            } else if("agent".equals(withdrewOrder.getType())) {
+            } else if ("agent".equals(withdrewOrder.getType())) {
                 User u = userDataService.getUserById(withdrewOrder.getApplicantId());
                 Agent agent = agentDataService.findAgentById(u.getTableId());
                 agent.setBalance(agent.getBalance() + withdrewOrder.getMoney());  // 增加商户余额
@@ -394,9 +466,9 @@ public class TransactionBlServiceImpl implements TransactionBlService {
     }
 
     @Override
-    public List<WithdrewOrder> getMyWithdrewOrder(int id) throws WrongIdException{
+    public List<WithdrewOrder> getMyWithdrewOrder(int id) throws WrongIdException {
         User user = userDataService.getUserById(id);
-        if(user == null || user.getRole() != 1) throw new WrongIdException();
+        if (user == null || user.getRole() != 1) throw new WrongIdException();
         return withdrewOrderDataService.findByOperatorId(id);
     }
 }

@@ -20,7 +20,7 @@
                     show-checkbox
                     node-key="title"
                     ref="tree"
-                    show-checkbox
+                   
                    >
                 </el-tree>
             <el-form-item>
@@ -36,6 +36,7 @@
 <script>
 import { permissionAllocate,postGet } from '@/api/company'
 import { getTreePermissions } from '@/api/permissions'
+import {getIds} from '@/utils/treeids'
 
     export default {
         data() {
@@ -95,7 +96,8 @@ import { getTreePermissions } from '@/api/permissions'
             },
             getCheckedKeys(){
                 this.permissionaddParameters.permission = this.$refs.tree.getCheckedKeys();
-                console.log(this.permissionaddParameters.permission)
+                this.permissionaddParameters.permission = this.permissionaddParameters.permission.concat(this.$refs.tree.getHalfCheckedKeys());
+                // console.log(this.permissionaddParameters.permission,this.permissionaddParameters.permission1 )
             },
             handleChange(val) {
                 console.log(val);

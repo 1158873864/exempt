@@ -28,6 +28,8 @@ public class Alipay {
     private String imei;
     @Column(name = "name")
     private String name;
+    @Column(name = "wealth")
+    private double wealth;
 
     public Alipay() {
     }
@@ -42,7 +44,7 @@ public class Alipay {
         this.imei = imei;
     }
 
-    public Alipay(String loginId, String userId, String solidCode, String passQrCode, String passOffCode, String imei, String name) {
+    public Alipay(String loginId, String userId, String solidCode, String passQrCode, String passOffCode, String imei, String name ,double wealth) {
         this.loginId = loginId;
         this.userId = userId;
         this.solidCode = solidCode;
@@ -50,6 +52,7 @@ public class Alipay {
         this.passOffCode = passOffCode;
         this.imei = imei;
         this.name = name;
+        this.wealth = wealth;
     }
 
     public String getSolidCode() {
@@ -114,5 +117,13 @@ public class Alipay {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public double getWealth() {
+        return wealth;
+    }
+
+    public void setWealth(double wealth) {
+        this.wealth = wealth;
     }
 }

@@ -36,9 +36,6 @@
     </div>
     <el-dialog title="修改供码用户信息" :visible.sync="dialogFormVisible">
             <el-form :model="newRow">
-                <el-form-item label="username">
-                    <el-input v-model="newRow.user.username" placeholder="area"></el-input>
-                </el-form-item>
                 <el-form-item label="码类型">
                     <el-select v-model="newRow.codeType" placeholder="">
                     <el-option label="转账通码" value="TSOLID"></el-option>
@@ -52,7 +49,7 @@
                     <el-input v-model="newRow.level" type="number" min="1" placeholder="level"></el-input>
                 </el-form-item>
                 <el-form-item label="password">
-                    <el-input v-model="newRow.password" placeholder="password"></el-input>
+                    <el-input v-model="newRow.user.password" placeholder="password"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -77,10 +74,11 @@ import { suppliersGet,supplierUpdate } from '@/api/role'
                     }
                 ],
                 newRow: {
-                    "codeType": "RSOLID",
+                    "codeType": "RPASSOFF",
                     "level": 0,
                     "password": "",
-                    "user": {}
+                    "user": {},
+                     "priority": 0,
                     },
                 currentPage:1,
                 pagesize:10,
@@ -93,7 +91,7 @@ import { suppliersGet,supplierUpdate } from '@/api/role'
         },
         methods: {
             updateSupplier() {
-                supplierUpdate(this.newRow.codeType,this.newRow.level,this.newRow.password,this.newRow.id).then(response=> {
+                supplierUpdate(this.newRow.codeType,this.newRow.level,this.newRow.user.password,this.newRow.id).then(response=> {
                     if(response.code!=200){
                         this.$message({
                             message: response.data.description,
@@ -111,13 +109,18 @@ import { suppliersGet,supplierUpdate } from '@/api/role'
             },
             openDialog(index,row) {
                 this.dialogFormVisible=true;
+                // console.log(row)
+                this.newRow = row;
+                // if(row.codeType==None){
+                //     this.newRow.codeType = 'TSOLID'
+                // }else{
+                //      this.newRow.codeType = row.codeType;
+                // }
+                this.newRow.level = row.priority;
+                // this.newRow.password = row.user.password;
                 //this.newRow = JSON.parse(JSON.stringify(row));
-                this.newRow = this.teams[index];
-                this.newRow.password=this.teams[index].user.password;
-                this.newRow.level=this.teams[index].priority;
-                console.log(this.newRow);
                 this.newRowIndex = index;
-                console.log(index);
+                console.log(this.newRow);
 
             },
             handleSizeChange(val) {

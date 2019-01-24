@@ -28,4 +28,13 @@ public class AlipayDataServiceImpl implements AlipayDataService {
     public Alipay saveAlipay(Alipay alipay) {
         return alipayDao.save(alipay);
     }
+
+    @Override
+    public Alipay findByLoginId(String loginId) {
+        Alipay alipay = alipayDao.findByLoginId(loginId);
+        if (alipay != null)
+            return alipay;
+        else
+            return null;
+    }
 }

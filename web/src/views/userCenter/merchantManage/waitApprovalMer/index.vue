@@ -7,7 +7,7 @@
             border
             style="width: 100%">
             <el-table-column prop="alipay" label="支付宝点位"  align="center"></el-table-column>
-            <el-table-column prop="approverId" label="approverId"  align="center"></el-table-column>
+            <el-table-column prop="approverId" label="审核人id"  align="center"></el-table-column>
             <el-table-column prop="priority" label="等级"  align="center"></el-table-column>
             <el-table-column prop="user.password" label="密码"  align="center"></el-table-column>
             <el-table-column prop="status" label="状态"  align="center"></el-table-column>
@@ -67,7 +67,7 @@
             },
             methods: {
                 approval(index, row,status) {
-                    console.log(row);
+                    // console.log(row);
                     ApprovalMer(
                             row.alipay,
                             row.approverId,

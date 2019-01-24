@@ -53,6 +53,7 @@
     <script>
     import { waitApprovalSup, ApprovalSup } from '@/api/company'
     import store from '../../../../store'
+    import {getTime} from '@/utils/index'
         export default {
             data() {
                 return {
@@ -132,7 +133,8 @@
                         }else{
                            this.teams = response.data;
                            this.teams.forEach(el => {
-                               el.sid = store.getters.uid;
+                               el.sid = el.id;
+                               el.time = getTime(el.time)
                            });
                         }
                     })

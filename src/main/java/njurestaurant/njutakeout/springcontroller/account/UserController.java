@@ -205,7 +205,7 @@ public class UserController {
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             User user = new User(supplierAddParameters.getUsername(), encoder.encode(supplierAddParameters.getPassword()), 4, new ArrayList<>());
-            Supplier supplier = new Supplier(user, supplierAddParameters.getId(), new Date(), SupplierState.CHECKING, new ArrayList<>(), supplierAddParameters.getLevel(), njurestaurant.njutakeout.publicdatas.app.CodeType.NONE);
+            Supplier supplier = new Supplier(user, supplierAddParameters.getId(), new Date(), SupplierState.CHECKING, new ArrayList<>(), supplierAddParameters.getLevel(), CodeType.TSOLID);
             try {
                 UserAddResponse userAddResponse = supplierBlService.addSupplier(supplier);
                 user.setTableId(userAddResponse.getTableId());

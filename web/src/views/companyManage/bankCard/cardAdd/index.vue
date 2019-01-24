@@ -22,8 +22,8 @@
             </el-form-item>
              <el-form-item label="状态">
                     <el-select v-model="cardAddParameters.status" placeholder="启用">
-                    <el-option label="启用" value="启用"></el-option>
-                    <el-option label="停用" value="停用"></el-option>
+                    <el-option label="启用" value="WORKING"></el-option>
+                    <el-option label="停用" value="INVALID"></el-option>
                     </el-select>
                 </el-form-item>
             <el-form-item>

@@ -6,7 +6,7 @@
         height="450"
         border
         style="width: 100%">
-        <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column>
+        <!-- <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column> -->
         <el-table-column prop="name" label="商户名"  align="center"></el-table-column>
         <el-table-column prop="alipay" label="支付宝点位"  align="center"></el-table-column>
         <el-table-column prop="wechat" label="微信号点位"  align="center"></el-table-column>
@@ -18,6 +18,7 @@
             <el-button type="success" size="small" v-if="row.status=='审批通过'">审批通过</el-button>
             <el-tag type="success" v-if="row.status=='审批通过'">{{ row.approvalTime }}</el-tag>
             <el-button type="info" size="small" v-else-if="row.status=='等待审批'">等待审批</el-button>
+             <el-tag type="warning" v-if="row.status=='等待审批'">{{ row.addTime }}</el-tag>
             <el-button type="warning" size="small" v-else-if="row.status=='审批不通过'">审批不通过</el-button>
              <el-tag type="warning" v-if="row.status=='审批不通过'">{{ row.approvalTime }}</el-tag>
             </template>
@@ -65,6 +66,7 @@
 <script>
 import { merchantsGet,updateMerchant } from '@/api/role'
 import store from '../../../../store'
+import {getTime} from '@/utils/index'
     export default {
         data() {
             return {
@@ -119,7 +121,7 @@ import store from '../../../../store'
         },
         methods: {
              updateSupplier() {
-                updateMerchant(store.getters.uid,this.newRow.user.username,this.newRow.user.password).then(response=> {
+                updateMerchant(this.newRow.id,this.newRow.user.username,this.newRow.user.password).then(response=> {
                     if(response.code!=200){
                         this.$message({
                             message: response.data.description,
@@ -167,6 +169,9 @@ import store from '../../../../store'
                            el.status=el.status=='WAITING'?'等待审批':'PASS'?'审批通过':'审批不通过';
                            el.wechat = el.wechat+'%';
                            el.alipay = el.alipay+'%';
+                           el.addTime = getTime(el.addTime)
+                        // console.log(getTime(new Date()))
+                           el.approvalTime = getTime(el.approvalTime)
                        });
                     }
                 })

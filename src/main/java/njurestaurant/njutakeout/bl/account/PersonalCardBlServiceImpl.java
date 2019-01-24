@@ -1,7 +1,6 @@
 package njurestaurant.njutakeout.bl.account;
 
 import njurestaurant.njutakeout.blservice.account.PersonalCardBlService;
-import njurestaurant.njutakeout.blservice.account.UserBlService;
 import njurestaurant.njutakeout.dataservice.account.PersonalCardDataService;
 import njurestaurant.njutakeout.dataservice.account.UserDataService;
 import njurestaurant.njutakeout.entity.account.PersonalCard;
@@ -9,13 +8,10 @@ import njurestaurant.njutakeout.entity.account.User;
 import njurestaurant.njutakeout.exception.IsExistentException;
 import njurestaurant.njutakeout.exception.WrongIdException;
 import njurestaurant.njutakeout.parameters.user.PersonalCardAddParameters;
-import njurestaurant.njutakeout.response.Response;
-import njurestaurant.njutakeout.response.WrongResponse;
 import njurestaurant.njutakeout.response.user.PersonalCardAddResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,7 +36,7 @@ public class PersonalCardBlServiceImpl implements PersonalCardBlService {
         if(personalCardDataService.findPersonalCardByCardNumber(personalCardAddParameters.getNumber()) != null) {
             throw new IsExistentException();
         }
-        PersonalCard tmp = personalCardDataService.savePersonalCard(new PersonalCard(personalCardAddParameters.getNumber(), personalCardAddParameters.getName(), personalCardAddParameters.getBank(),personalCardAddParameters.getAccountOfBank(), personalCardAddParameters.getBin(), personalCardAddParameters.getStatus(), user));
+        PersonalCard tmp = personalCardDataService.savePersonalCard(new PersonalCard(personalCardAddParameters.getNumber(), personalCardAddParameters.getName(), personalCardAddParameters.getBank(),personalCardAddParameters.getAccountOfBank(), personalCardAddParameters.getBin(), 0.0, personalCardAddParameters.getStatus(), user));
         return new PersonalCardAddResponse(tmp.getId());
     }
 

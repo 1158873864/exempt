@@ -7,8 +7,8 @@
             </el-form-item>
              <el-form-item label="状态">
                     <el-select v-model="teamAddParameters.status" placeholder="启用">
-                    <el-option label="启用" value="启用"></el-option>
-                    <el-option label="停用" value="停用"></el-option>
+                    <el-option label="启用" value="WORKING"></el-option>
+                    <el-option label="停用" value="INVALID"></el-option>
                     </el-select>
                 </el-form-item>
             <el-form-item label="团队名">
@@ -35,7 +35,7 @@ import store from '../../../../store'
                 teamAddParameters: {
                         "area": "区域",
                         "operator": "1",
-                        "status": "启用",
+                        "status": "WORKING",
                         "supervisor": "supervisor",
                         "teamName": "团队名",
                         "verifyCode": "verifyCode"

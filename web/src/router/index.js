@@ -207,7 +207,7 @@ export const asyncRouterMap = [
         name: 'userInfo',
         component: () => import('@/views/userCenter/index'),
         meta: { title: '用户信息', role: ['用户信息'] }
-      },
+       },
       {
         path: 'agency',
         component: () => import('@/views/userCenter/agency/index'),
@@ -252,6 +252,12 @@ export const asyncRouterMap = [
             name: 'suppliers',
             component: () => import('@/views/userCenter/supplierManage/Suppliers/index'),
             meta: { title: '所有供码用户',role:['所有供码用户'] }
+          },
+          {
+            path: 'persupplier',
+            name: 'persupplier',
+            component: () => import('@/views/userCenter/supplierManage/Suppliers/perSupplier'),
+            meta: { title: '供码用户', role: ['供码用户'] }
           }    
         ]
       },
@@ -278,6 +284,12 @@ export const asyncRouterMap = [
             name: 'merchants',
             component: () => import('@/views/userCenter/merchantManage/merchants/index'),
             meta: { title: '所有商户',role:['所有商户'] }
+          },
+          {
+            path: 'mymerchants',
+            name: 'mymerchants',
+            component: () => import('@/views/userCenter/merchantManage/myMerchants/index'),
+            meta: { title: '我的商户',role:['我的商户'] }
           }    
         ]
       },
@@ -288,16 +300,10 @@ export const asyncRouterMap = [
         meta: { title: '银行卡设置',role:['银行卡设置'] },
         children: [
           {
-            path: 'cards',
-            name: 'cards',
-            component: () => import('@/views/userCenter/bankCardSetting/cards/index'),
-            meta: { title: '所有银行卡',role:['个人所有银行卡'] },
-          },
-          {
             path: 'cardAdd',
             name: 'cardAdd',
             component: () => import('@/views/userCenter/bankCardSetting/addcard/index'),
-            meta: { title: '添加银行卡',role:['个人添加银行卡'], breadcrumb: false },
+            meta: { title: '个人添加银行卡',role:['个人添加银行卡'], breadcrumb: false },
             breadcrumb: false
           },
           {
@@ -306,15 +312,20 @@ export const asyncRouterMap = [
             component: () => import('@/views/userCenter/bankCardSetting/personalcards/index'),
             meta: { title: '个人银行卡',role:['个人银行卡'] },
           },
-               
+           {
+            path: 'cardskiting',
+            name: 'cardskiting',
+            component: () => import('@/views/userCenter/bankCardSetting/cardskiting/index'),
+            meta: { title: '提现历史',role:['提现历史'] },
+           }    
         ]
       },
-    //   {
-    //     path: 'qrcodePersonal',
-    //     name: 'qrcodePersonal',
-    //     component: () => import('@/views/userCenter/qrCode/index'),
-    //     meta: { title: '获取二维码', role: ['用户中心'] },
-    //   }
+      {
+        path: 'qrcodePersonal',
+        name: 'qrcodePersonal',
+        component: () => import('@/views/userCenter/qrCode/index'),
+        meta: { title: '获取二维码', role: ['用户中心'] },
+      }
     ]
   },
 
@@ -329,32 +340,44 @@ export const asyncRouterMap = [
     },
     children: [
       {
-        path: 'receiveCodeList',
-        component: () => import('@/views/financeManage/receiveCodeList/index'),
-        redirect: '/receiveCodeList/codes',
-        name: 'receiveCodeList',
-        meta: { title: '收款码列表',role:['收款码列表'] },
-        children: [
-          {
-            path: 'codes',
-            name: 'codes',
-            component: () => import('@/views/companyManage/moneyReceiveCode/codes/index'),
-            meta: { title: '所有收款码',role:['所有收款码'] },
-          },
-          {
-            path: 'codeAdd',
-            name: 'codeAdd',
-            component: () => import('@/views/companyManage/moneyReceiveCode/codeAdd/index'),
-            meta: { title: '添加收款码',role:['添加收款码']},
-          }
-        ]
+        path: 'withdrewWaiting',
+        name: 'withdrewWaiting',
+        component: () => import('@/views/financeManage/agencyWithdrew/index'),
+        meta: { title: '抢单', role: ['抢单'] },
       },
       {
-        path: 'bankCardList',
-        component: () => import('@/views/companyManage/bankCard/cards/index'),
-        name: 'bankCardList',
-        meta: { title: '银行卡列表',role:['银行卡列表'] }
+        path: 'mylist',
+        name: 'mylist',
+        component: () => import('@/views/financeManage/agencyWithdrew/mylist'),
+        meta: { title: '处理单子', role: ['处理单子'] },
       },
+      // {
+      //   path: 'receiveCodeList',
+      //   component: () => import('@/views/financeManage/receiveCodeList/index'),
+      //   redirect: '/receiveCodeList/codes',
+      //   name: 'receiveCodeList',
+      //   meta: { title: '收款码列表',role:['收款码列表'] },
+      //   children: [
+      //     {
+      //       path: 'codes',
+      //       name: 'codes',
+      //       component: () => import('@/views/companyManage/moneyReceiveCode/codes/index'),
+      //       meta: { title: '所有收款码',role:['所有收款码'] },
+      //     },
+      //     {
+      //       path: 'codeAdd',
+      //       name: 'codeAdd',
+      //       component: () => import('@/views/companyManage/moneyReceiveCode/codeAdd/index'),
+      //       meta: { title: '添加收款码',role:['添加收款码']},
+      //     }
+      //   ]
+      // },
+      // {
+      //   path: 'bankCardList',
+      //   component: () => import('@/views/companyManage/bankCard/cards/index'),
+      //   name: 'bankCardList',
+      //   meta: { title: '银行卡列表',role:['银行卡列表'] }
+      // },
 
     ]
   },
@@ -399,7 +422,7 @@ export const asyncRouterMap = [
       {
         path: 'agencyReport',
         // component: () => import('@/views/report/agencyReport/index'),
-        component: () => import('@/views/report/merchantsReport/merchants/index'),
+        component: () => import('@/views/report/agencyReport/index'),
         name: 'agencyReport',
         meta: { title: '代理报表',role:['代理报表'] }
       }
@@ -422,12 +445,12 @@ export const asyncRouterMap = [
         name: 'orderDetails',
         meta: { title: '订单明细',role:['订单明细'] }
       },
-      {
-        path: 'withdrawOrder',
-        component: () => import('@/views/order/withdrawOrder/index'),
-        name: 'withdrawOrder',
-        meta: { title: '商户提现订单',role:['商户提现订单'] }
-      },
+      // {
+      //   path: 'withdrawOrder',
+      //   component: () => import('@/views/order/withdrawOrder/index'),
+      //   name: 'withdrawOrder',
+      //   meta: { title: '商户提现订单',role:['商户提现订单'] }
+      // },
       {
         path: 'codeChangeOrder',
         component: () => import('@/views/order/codeChangeOrder/index'),

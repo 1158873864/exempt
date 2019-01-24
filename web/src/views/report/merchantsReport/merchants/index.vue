@@ -7,18 +7,31 @@
             height="500"
             border
             style="width: 100%">
-            <el-table-column prop="orderNumber" label="系统编号"  align="center"></el-table-column>
-            <el-table-column prop="time" label="日期"  align="center"></el-table-column>
-            <el-table-column prop="merchantId" label="商户号"  align="center"></el-table-column>
-            <el-table-column prop="money" label="存款"  align="center"></el-table-column>
-            <el-table-column prop="nickname" label="支付宝昵称"  align="center"></el-table-column>
-            <el-table-column prop="rechargeId" label="充值方编号"  align="center"></el-table-column>
+            <el-table-column prop="agentProfit" label="代理收益"  align="center"></el-table-column>
+            <el-table-column prop="availiableDeposit" label="实际存款"  align="center"></el-table-column>
+            <el-table-column prop="balance" label="余额"  align="center"></el-table-column>
+            <el-table-column prop="companyProfit" label="公司收益"  align="center"></el-table-column>
+            <el-table-column prop="date" label="日期"  align="center"></el-table-column>
+            <el-table-column prop="deposit" label="存款"  align="center"></el-table-column>
             <el-table-column prop="merchantName" label="商户名"  align="center"></el-table-column>
-            <!-- <el-table-column prop="orderId" label="orderId"  align="center"></el-table-column> -->
-            <el-table-column prop="orderState" label="支付状态"  align="center"></el-table-column>
-            <el-table-column prop="payTime" label="支付时间"  align="center"></el-table-column>
-            <el-table-column prop="paymoney" label="支付金额"  align="center"></el-table-column>
-   
+            <el-table-column prop="number" label="编码"  align="center"></el-table-column>
+            <el-table-column prop="platformAnalyseList" label="平台分析"  align="center">
+                <template slot-scope="scope">
+                    <el-tag :type="device.type?'success':'info'" v-for="device in scope.row.platformAnalyseList" :key="device.type">{{ device.type }} : {{ device.money }}</el-tag>
+                </template>
+            </el-table-column>
+            <!-- <el-table-column prop="platformAnalyseList" label="platformAnalyseList"  align="center"></el-table-column> -->
+            <!-- <el-table-column prop="successOrders" label="成功订单数"  align="center"></el-table-column> -->
+            <!-- <el-table-column prop="totalOrders" label="总订单数"  align="center"></el-table-column> -->
+            <el-table-column prop="totalOrders" label="订单成功率"  align="center">
+                <template slot-scope="scope">
+                    <el-tag type="'success'" v-if="scope.row.totalOrders!=0">{{ scope.row.successOrders / scope.row.totalOrders * 100}}%</el-tag>
+                    <el-tag type="'success'" v-else>0%</el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column prop="username" label="用户名"  align="center"></el-table-column>
+            <el-table-column prop="withdrewed" label="已提现"  align="center"></el-table-column>
+            <el-table-column prop="withdrewing" label="冻结余额"  align="center"></el-table-column>
 
         </el-table>
            <div class="block">

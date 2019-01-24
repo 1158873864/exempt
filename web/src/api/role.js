@@ -15,17 +15,20 @@ export function addAdmin(code, operator, password, post, status, team, username)
     }
   })
 }
-export function addAgent(brokerage, code, flow, password, status, username) {
+export function addAgent(alipay,
+  password,
+  status,
+  username,
+  wechat) {
   return request({
     url: '/agent/add',
     method: 'post',
     data: {
-      brokerage,
-      code,
-      flow,
+      alipay,
       password,
       status,
-      username
+      username,
+      wechat
     }
   })
 }
@@ -120,6 +123,12 @@ export function agentsGet() {
 export function merchantsGet() {
   return request({
     url: '/merchants',
+    method: 'get'
+  })
+}
+export function merchantsMy(id) {
+  return request({
+    url: '/myMerchants/'+id,
     method: 'get'
   })
 }

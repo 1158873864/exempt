@@ -1,5 +1,9 @@
 import request from '@/utils/request'
-export function withdraw() {
+
+export function withdrew(cardId,
+  id,
+  money,
+  type) {
   return request({
     url: '/withdrew ',
     method: 'post',
@@ -11,7 +15,7 @@ export function withdraw() {
     }
   })
 }
-export function withdrawDeal(
+export function withdrewDeal(
     id, memo,
     operatorId,
     state) {
@@ -25,24 +29,24 @@ export function withdrawDeal(
     }
   })
 }
-export function withdrawGet(id, operatorId) {
+export function withdrewGet(id, operatorId) {
   return request({
     url: '/withdrew/get/'+id,
     method: 'get',
-    data:{
+    params:{
         operatorId,//: 0,		// 处理人的userid
     }
   })
 }
-export function withdrawList(uid) {
+export function withdrewList(uid) {
   return request({
     url: '/withdrew/list/'+uid,
     method: 'get'
   })
 }
-export function withdrawsWaiting(uid) {
+export function withdrewsWaiting() {
   return request({
-    url: '/withdrews/waiting/'+uid,
+    url: '/withdrews/waiting',
     method: 'get'
   })
 }

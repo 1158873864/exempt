@@ -119,37 +119,39 @@ public class ReportBlServiceImpl implements ReportBlService {
                             Merchant merchant = merchantMap.get(platformOrder.getUid());
                             switch (platformOrder.getType()) {
                                 case "alipay":
-                                    merchantReportResponse.setAvailiableDeposit(merchantReportResponse.getAvailiableDeposit() + platformOrder.getPayMoney() * (1 - merchant.getAlipay() / 100));
+                                    merchantReportResponse.setAvailiableDeposit(merchantReportResponse.getAvailiableDeposit() + platformOrder.getPayMoney() * (1 - merchant.getAlipay() / 100)); //
                                     break;
                                 case "wechat":
                                     merchantReportResponse.setAvailiableDeposit(merchantReportResponse.getAvailiableDeposit() + platformOrder.getPayMoney() * (1 - merchant.getWechat() / 100));
                                     break;
                             }
                             if (platformOrder.getTime() != null && DateUtils.isSameDay(date, platformOrder.getTime())) { // 和查询日期同一天
-                                Agent agent = agentMap.get(merchant.getApplyId());
-                                List<PlatformAnalyse> platformAnalyses = null;
-                                PlatformAnalyse temp = null;
-                                switch (platformOrder.getType()) {
-                                    case "alipay":  // 支付宝
-                                        if (agent != null)
-                                            merchantReportResponse.setAgentProfit(merchantReportResponse.getAgentProfit() + platformOrder.getPayMoney() * agent.getAlipay() / 100);    // 代理分润
-                                        platformAnalyses = dailyAnalyse(merchantReportResponse.getPlatformAnalyseList(), "支付宝", platformOrder.getPayMoney());
-                                        merchantReportResponse.setPlatformAnalyseList(platformAnalyses);    // 每日量分析
-                                        merchantReportResponse.setCompanyProfit(merchant.getAlipay() / 100 * platformOrder.getPayMoney() + merchantReportResponse.getCompanyProfit());    // 公司分润
-                                        break;
-                                    case "wechat":  // 微信
-                                        if (agent != null)
-                                            merchantReportResponse.setAgentProfit(merchantReportResponse.getAgentProfit() + platformOrder.getPayMoney() * agent.getWechat() / 100);    // 代理分润
-                                        platformAnalyses = dailyAnalyse(merchantReportResponse.getPlatformAnalyseList(), "微信", platformOrder.getPayMoney());
-                                        merchantReportResponse.setPlatformAnalyseList(platformAnalyses);
-                                        merchantReportResponse.setCompanyProfit(merchant.getWechat() / 100 * platformOrder.getPayMoney() + merchantReportResponse.getCompanyProfit());
-                                        break;
-                                    case "cloudpay":    // 云闪付
+                                if (agentMap.containsKey(merchant.getApplyId())) {
+                                    Agent agent = agentMap.get(merchant.getApplyId());
+                                    List<PlatformAnalyse> platformAnalyses = null;
+                                    PlatformAnalyse temp = null;
+                                    switch (platformOrder.getType()) {
+                                        case "alipay":  // 支付宝
+                                            if (agent != null)
+                                                merchantReportResponse.setAgentProfit(merchantReportResponse.getAgentProfit() + platformOrder.getPayMoney() * agent.getAlipay() / 100);    // 代理分润
+                                            platformAnalyses = dailyAnalyse(merchantReportResponse.getPlatformAnalyseList(), "支付宝", platformOrder.getPayMoney());
+                                            merchantReportResponse.setPlatformAnalyseList(platformAnalyses);    // 每日量分析
+                                            merchantReportResponse.setCompanyProfit((merchant.getAlipay() - agent.getAlipay()) / 100 * platformOrder.getPayMoney() + merchantReportResponse.getCompanyProfit());    // 公司分润
+                                            break;
+                                        case "wechat":  // 微信
+                                            if (agent != null)
+                                                merchantReportResponse.setAgentProfit(merchantReportResponse.getAgentProfit() + platformOrder.getPayMoney() * agent.getWechat() / 100);    // 代理分润
+                                            platformAnalyses = dailyAnalyse(merchantReportResponse.getPlatformAnalyseList(), "微信", platformOrder.getPayMoney());
+                                            merchantReportResponse.setPlatformAnalyseList(platformAnalyses);
+                                            merchantReportResponse.setCompanyProfit((merchant.getWechat() - agent.getWechat()) / 100 * platformOrder.getPayMoney() + merchantReportResponse.getCompanyProfit());
+                                            break;
+                                        case "cloudpay":    // 云闪付
 //                                        platformAnalyses = dailyAnalyse(merchantReportResponse.getPlatformAnalyseList(), "云闪付", platformOrder.getMoney());
 //                                        merchantReportResponse.setPlatformAnalyseList(platformAnalyses);
-                                        break;
-                                    default:
-                                        break;
+                                            break;
+                                        default:
+                                            break;
+                                    }
                                 }
                             }
 
@@ -237,7 +239,7 @@ public class ReportBlServiceImpl implements ReportBlService {
                 plist.add(new PlatformAnalyse("支付宝", 0));
                 plist.add(new PlatformAnalyse("微信", 0));
                 plist.add(new PlatformAnalyse("云闪付", 0));
-                agentReportResponseMap.put(agent.getUser().getId(), new AgentReportResponse(number, date, agent.getUser().getUsername(), agent.getAgentName(), 0.0, 0.0, dlist, plist, 0.0, 0.0));
+                agentReportResponseMap.put(agent.getUser().getId(), new AgentReportResponse(number, date, agent.getUser().getUsername(), agent.getAgentName(), agent.getAlipay(), agent.getWechat(), dlist, plist, 0.0, 0.0));
             }
         }
         if (merchantList.size() > 0) {
@@ -264,14 +266,14 @@ public class ReportBlServiceImpl implements ReportBlService {
                     switch (platformOrder.getType()) {
                         case "alipay":
                             dlist = dailyAnalyse(agentReportResponse.getDepositList(), "支付宝", platformOrder.getPayMoney());
-                            plist = dailyAnalyse(agentReportResponse.getProfitList(), "支付宝", platformOrder.getPayMoney() * agentReportResponse.getAlipay() /100);
+                            plist = dailyAnalyse(agentReportResponse.getProfitList(), "支付宝", platformOrder.getPayMoney() * agentReportResponse.getAlipay() / 100);
                             agentReportResponse.setDepositList(dlist);
                             agentReportResponse.setProfitList(plist);
                             agentReportResponseMap.put(merchant.getApplyId(), agentReportResponse);
                             break;
                         case "wechat":
                             dlist = dailyAnalyse(agentReportResponse.getDepositList(), "微信", platformOrder.getPayMoney());
-                            plist = dailyAnalyse(agentReportResponse.getProfitList(), "微信", platformOrder.getPayMoney() * agentReportResponse.getWechat()/100);
+                            plist = dailyAnalyse(agentReportResponse.getProfitList(), "微信", platformOrder.getPayMoney() * agentReportResponse.getWechat() / 100);
                             agentReportResponse.setDepositList(dlist);
                             agentReportResponse.setProfitList(plist);
                             agentReportResponseMap.put(merchant.getApplyId(), agentReportResponse);
@@ -288,7 +290,7 @@ public class ReportBlServiceImpl implements ReportBlService {
         }
         if (withdrewOrders.size() > 0) { // 提款
             for (WithdrewOrder withdrewOrder : withdrewOrders) {
-                if(withdrewOrder.getState() != WithdrewState.SUCCESS) continue; // 过滤未成功的提款
+                if (withdrewOrder.getState() != WithdrewState.SUCCESS) continue; // 过滤未成功的提款
                 Agent agent = agentMap.get(withdrewOrder.getApplicantId());
                 if (agent != null) {
                     AgentReportResponse agentReportResponse = agentReportResponseMap.get(agent.getUser().getId());

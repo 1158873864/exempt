@@ -17,8 +17,10 @@ public interface ChangeBlService {
 
     QRcodeChangeOrder addQRcodeChangeOrder(QRcodeChangeParameters QRcodeChangeParameters) throws WrongIdException, WrongInputException, PersonalCardDoesNotExistException, AlipayNotExistException;
 
-    CardChangeOrder addCardChangeOrder(CardChangeParameters CardChangeParameters) throws WrongIdException, WrongInputException, PersonalCardDoesNotExistException, CompanyCardDoesNotExistException;
-//    List<WithdrewOrder> getAllWaitingWithdrewOrder();
+    CardChangeOrder addP2CCardChangeOrder(CardChangeParameters CardChangeParameters) throws WrongIdException, WrongInputException, PersonalCardDoesNotExistException, CompanyCardDoesNotExistException;
+
+    CardChangeOrder addC2PCardChangeOrder(CardChangeParameters CardChangeParameters) throws WrongIdException, WrongInputException, PersonalCardDoesNotExistException, CompanyCardDoesNotExistException;
+    //    List<WithdrewOrder> getAllWaitingWithdrewOrder();
 //
 //    void grabWithdrewOrderById(int oid, int uid) throws WrongIdException, WrongInputException;
 //

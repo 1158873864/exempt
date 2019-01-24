@@ -19,8 +19,10 @@ import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.SuccessResponse;
 import njurestaurant.njutakeout.response.WrongResponse;
 import njurestaurant.njutakeout.response.user.UserAddResponse;
+import njurestaurant.njutakeout.util.RSAUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +40,12 @@ public class SupplierBlServiceImpl implements SupplierBlService {
         this.userDataService = userDataService;
         this.supplierDataService = supplierDataService;
     }
+
+    @Value(value = "${spring.encrypt.publicKey}")
+    private String publicKey;
+
+    @Value(value = "${spring.encrypt.privateKey}")
+    private String privateKey;
 
     /**
      *
@@ -103,6 +111,11 @@ public class SupplierBlServiceImpl implements SupplierBlService {
                 cardList.stream().peek(c -> c.setUser(null)).collect(Collectors.toList());
                 List<Device> devices = supplier.getDevices();
                 devices.stream().peek(d -> d.setSupplier(null)).collect(Collectors.toList());
+                User user = supplier.getUser();
+                if(user != null) {
+                    if(StringUtils.isNotBlank(user.getOriginPassword()))    user.setOriginPassword(RSAUtils.decryptDataOnJava(user.getOriginPassword(), privateKey));
+                    else user.setOriginPassword("");
+                }
             }
         }
         return suppliers;
@@ -118,10 +131,11 @@ public class SupplierBlServiceImpl implements SupplierBlService {
             throw new BlankInputException();
         } else {
             User user = supplier.getUser();
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            if(!supplierUpdateParameters.getPassword().equals(user.getPassword()))
-                user.setPassword(encoder.encode(supplierUpdateParameters.getPassword()));
-            supplier.setPriority(supplierUpdateParameters.getLevel());
+            user.setOriginPassword(RSAUtils.encryptedDataOnJava(supplierUpdateParameters.getPassword(), publicKey));
+//            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+//            if(!supplierUpdateParameters.getPassword().equals(user.getPassword()))
+//                user.setPassword(encoder.encode(supplierUpdateParameters.getPassword()));
+//            supplier.setPriority(supplierUpdateParameters.getLevel());
             supplier.setUser(user);
             switch (supplierUpdateParameters.getCodeType()) {
                 case "TSOLID":

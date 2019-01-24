@@ -17,8 +17,10 @@ import njurestaurant.njutakeout.response.SuccessResponse;
 import njurestaurant.njutakeout.response.WrongResponse;
 import njurestaurant.njutakeout.response.company.StaffAddResponse;
 import njurestaurant.njutakeout.response.user.*;
+import njurestaurant.njutakeout.util.RSAUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -48,8 +50,8 @@ public class UserController {
         this.logBlService = logBlService;
     }
 
-
-
+    @Value(value = "${spring.encrypt.publicKey}")
+    private String publicKey;
 
     @ApiOperation(value = "用户登录", notes = "验证用户登录并返回token")
     @RequestMapping(value = "account/login", method = RequestMethod.POST)
@@ -134,7 +136,7 @@ public class UserController {
     public ResponseEntity<Response> addStaff(@RequestBody StaffAddParameters staffAddParameters) throws UsernameIsExistentException {
         if(!userBlService.checkUsername(staffAddParameters.getUsername())) {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            User user = new User(staffAddParameters.getUsername(), encoder.encode(staffAddParameters.getPassword()), 1, new ArrayList<>());
+            User user = new User(staffAddParameters.getUsername(), encoder.encode(staffAddParameters.getPassword()), RSAUtils.encryptedDataOnJava(staffAddParameters.getPassword(), publicKey), 1, new ArrayList<>());
             Staff staff = new Staff(staffAddParameters.getUsername(), staffAddParameters.getTeam(), new Date(), staffAddParameters.getCode(), staffAddParameters.getOperator(), staffAddParameters.getStatus(), staffAddParameters.getPost(), user);
             Staff result =  staffBlService.addStaff(staff);
             user.setTableId(result.getId());
@@ -158,7 +160,7 @@ public class UserController {
             return new ResponseEntity<>(new JSONResponse(10100, new UsernameIsExistentException().getResponse()), HttpStatus.OK);
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            User user = new User(agentAddParameters.getUsername(), encoder.encode(agentAddParameters.getPassword()), 2, new ArrayList<>());
+            User user = new User(agentAddParameters.getUsername(), encoder.encode(agentAddParameters.getPassword()), RSAUtils.encryptedDataOnJava(agentAddParameters.getPassword(), publicKey), 2, new ArrayList<>());
             Agent agent = new Agent(agentAddParameters.getUsername(), agentAddParameters.getStatus(), agentAddParameters.getAlipay(), agentAddParameters.getWechat(),0, 0,user);
             AgentAddResponse agentAddResponse = agentBlService.addAgent(agent);
             user.setTableId(agentAddResponse.getAgentId());
@@ -181,7 +183,7 @@ public class UserController {
             return new ResponseEntity<>(new JSONResponse(10120, new BlankInputException().getResponse()), HttpStatus.OK);
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            User user = new User(merchantAddParameters.getUsername(), encoder.encode(merchantAddParameters.getPassword()), 3, new ArrayList<>());
+            User user = new User(merchantAddParameters.getUsername(), encoder.encode(merchantAddParameters.getPassword()), RSAUtils.encryptedDataOnJava(merchantAddParameters.getPassword(), publicKey), 3, new ArrayList<>());
             Merchant merchant = new Merchant(merchantAddParameters.getAlipay(), merchantAddParameters.getWechat(), 0, MerchantState.WAITING, new Date(), merchantAddParameters.getUsername(), merchantAddParameters.getApplyId(), user, merchantAddParameters.getLevel());
             MerchantAddResponse merchantAddResponse = merchantBlService.addMerchant(merchant);
             user.setTableId(merchant.getId());
@@ -204,7 +206,7 @@ public class UserController {
             return new ResponseEntity<>(new JSONResponse(10110, new BlankInputException().getResponse()), HttpStatus.OK);
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-            User user = new User(supplierAddParameters.getUsername(), encoder.encode(supplierAddParameters.getPassword()), 4, new ArrayList<>());
+            User user = new User(supplierAddParameters.getUsername(), encoder.encode(supplierAddParameters.getPassword()), RSAUtils.encryptedDataOnJava(supplierAddParameters.getPassword(), publicKey), 4, new ArrayList<>());
             Supplier supplier = new Supplier(user, supplierAddParameters.getId(), new Date(), SupplierState.CHECKING, new ArrayList<>(), supplierAddParameters.getLevel(), CodeType.TSOLID);
             try {
                 UserAddResponse userAddResponse = supplierBlService.addSupplier(supplier);

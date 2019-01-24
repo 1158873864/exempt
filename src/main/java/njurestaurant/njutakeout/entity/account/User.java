@@ -20,6 +20,8 @@ public class User {
     private String username;
     @Column(name = "password")
     private String password;
+    @Column(name = "originPassword")
+    private String originPassword;
     @Column(name = "role")
     private int role;
     @Column(name = "tableId")
@@ -55,6 +57,13 @@ public class User {
         this.cards = cards;
     }
 
+    public User(String username, String password, String originPassword, int role, List<PersonalCard> cards) {
+        this.username = username;
+        this.originPassword = originPassword;
+        this.role = role;
+        this.cards = cards;
+    }
+
 //    public List<PersonalCardJsonResponse> getCards() {
 //        List<PersonalCardJsonResponse> personalCardJsonResponses = new ArrayList<>();
 //        if(cards.size() > 0) {
@@ -83,6 +92,15 @@ public class User {
 //        this.orders = orders;
 //        this.foods = foods;
 //    }
+
+
+    public String getOriginPassword() {
+        return originPassword;
+    }
+
+    public void setOriginPassword(String originPassword) {
+        this.originPassword = originPassword;
+    }
 
     public int getId() {
         return id;

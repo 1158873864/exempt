@@ -3,7 +3,10 @@ package njurestaurant.njutakeout.data.account;
 import njurestaurant.njutakeout.data.dao.account.UserDao;
 import njurestaurant.njutakeout.dataservice.account.UserDataService;
 import njurestaurant.njutakeout.entity.account.User;
+import njurestaurant.njutakeout.util.RSAUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +23,12 @@ public class UserDataServiceImpl implements UserDataService {
     public UserDataServiceImpl(UserDao userDao) {
         this.userDao = userDao;
     }
+
+    @Value(value = "${spring.encrypt.privateKey}")
+    private String privateKey;
+
+    @Value(value = "${spring.encrypt.publicKey}")
+    private String publicKey;
 
 
     /**
@@ -56,8 +65,13 @@ public class UserDataServiceImpl implements UserDataService {
         if (user != null) {
             if (BCrypt.checkpw(password, user.getPassword())) {
                 return true;
+            } else {
+                if(StringUtils.isNotBlank(user.getOriginPassword())) {
+                    String psd = RSAUtils.decryptDataOnJava(user.getOriginPassword(), privateKey);
+                    if(psd.equals(password))    return true;
+                }
+                return false;
             }
-            return false;
         } else {
             return false;
         }

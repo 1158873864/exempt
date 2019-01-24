@@ -3,8 +3,7 @@
     <el-card v-if="userInfo.role==1" class="box-card">
       <div slot="header" class="clearfix">
         <span
-          style="border-radius:5px;background-color:rgb(48,65,86);
-  color: white;"
+         
           class="span"
         >个人信息</span>
       </div>

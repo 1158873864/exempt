@@ -33,4 +33,5 @@ public interface SupplierDataService {
     List<Supplier> findSuppliersByState(SupplierState supplierState);
 
     List<Supplier> findSuppliersByLevel(int priority);
+
 }

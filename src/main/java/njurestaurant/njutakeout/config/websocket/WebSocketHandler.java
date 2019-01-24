@@ -99,7 +99,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 			if (device != null) {
 				Alipay alipay = alipayDataService.findById(device.getAlipayId());
 				if (alipay == null || !alipay.getUserId().equals(userid)) { // 没有支付宝信息/支付宝信息对不上
-					alipay = new Alipay(loginid, userid, null, null, null, imei, name);
+					alipay = new Alipay(loginid, userid, null, null, null, imei, name,0.0);
 					Alipay a = alipayDataService.saveAlipay(alipay);
 					device.setAlipayId(a.getId());
 				}
@@ -174,6 +174,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 			} else if (supplier.getCodeType() == CodeType.TPASS || supplier.getCodeType() == CodeType.TSOLID) { // 供码用户提供转账码
 				// 提取memo备注里的值（99.9%是订单号）。查询订单表中是否存在一个与memo的值匹配的订单号，如果存在，则把订单状态更新成已成功付款，保留订单金额，新插入实收金额。
 				System.out.println("2:" + supplier.getCodeType());
+				System.out.println(memo);
 				PlatformOrder platformOrder = platformOrderDataService.findByNumber(memo);
 				if (platformOrder != null) {
 					platformOrder.setState(OrderState.PAID);

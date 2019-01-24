@@ -1,9 +1,5 @@
 package njurestaurant.njutakeout.entity.account;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import javax.persistence.*;
 
 @Entity
@@ -23,6 +19,8 @@ public class PersonalCard {
     private String accountWithBank;
     @Column(name = "bin")
     private String bin;
+    @Column(name = "cardBalance")
+    private double cardBalance;
     @Column(name = "status")
     private String status;
     @ManyToOne(fetch = FetchType.EAGER)
@@ -32,12 +30,13 @@ public class PersonalCard {
     public PersonalCard() {
     }
 
-    public PersonalCard(String cardNumber, String name, String bank, String accountWithBank, String bin, String status, User user) {
+    public PersonalCard(String cardNumber, String name, String bank, String accountWithBank, String bin, Double balance, String status, User user) {
         this.cardNumber = cardNumber;
         this.name = name;
         this.bank = bank;
         this.accountWithBank = accountWithBank;
         this.bin = bin;
+        this.cardBalance = cardBalance;
         this.status = status;
         this.user = user;
     }
@@ -104,5 +103,13 @@ public class PersonalCard {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public double getCardBalance() {
+        return cardBalance;
+    }
+
+    public void setCardBalance(double cardBalance) {
+        this.cardBalance = cardBalance;
     }
 }

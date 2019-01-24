@@ -7,4 +7,6 @@ public interface AlipayDataService {
     Alipay findById(int id);
 
     Alipay saveAlipay(Alipay alipay);
+
+    Alipay findByLoginId(String loginId);
 }

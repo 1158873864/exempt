@@ -5,9 +5,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import njurestaurant.njutakeout.blservice.order.TransactionBlService;
 import njurestaurant.njutakeout.entity.order.WithdrewOrder;
-import njurestaurant.njutakeout.exception.BlankInputException;
-import njurestaurant.njutakeout.exception.WrongIdException;
-import njurestaurant.njutakeout.exception.WrongInputException;
+import njurestaurant.njutakeout.exception.*;
 import njurestaurant.njutakeout.parameters.app.GetQrCodeParameters;
 import njurestaurant.njutakeout.parameters.order.WithdrewDealParameters;
 import njurestaurant.njutakeout.parameters.order.WithdrewParameters;
@@ -58,6 +56,12 @@ public class TransactionController {
             return new ResponseEntity<>(new JSONResponse(10300, new FailedToLoadCodeResponse("failed", "用户id出错。")), HttpStatus.OK);
         } catch (BlankInputException e) {
             return new ResponseEntity<>(new JSONResponse(10300, new FailedToLoadCodeResponse("failed", "参数错误。")), HttpStatus.OK);
+        } catch (IPRiskControlException e){
+            return new ResponseEntity<>(new JSONResponse(12345, new FailedToLoadCodeResponse("failed", "ip风控")), HttpStatus.OK);
+        }catch (IDRiskControlException e){
+            return new ResponseEntity<>(new JSONResponse(54321, new FailedToLoadCodeResponse("failed", "id防刷单")), HttpStatus.OK);
+        }catch (TooLittleMoneyException e){
+            return new ResponseEntity<>(new JSONResponse(88888, new FailedToLoadCodeResponse("failed", "订单金额过小")), HttpStatus.OK);
         }
     }
 

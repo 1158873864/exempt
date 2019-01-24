@@ -61,4 +61,9 @@ public class CompanyCardDataServiceImpl implements CompanyCardDataService {
             return optionalCompanyCard.get();
         } else return null;
     }
+
+    @Override
+    public CompanyCard findCompanyCardByCardNumber(String cardNumber) {
+        return companyCardDao.findCompanyCardByCardNumber(cardNumber);
+    }
 }

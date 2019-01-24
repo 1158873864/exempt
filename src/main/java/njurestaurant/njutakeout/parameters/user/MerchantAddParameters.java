@@ -1,7 +1,5 @@
 package njurestaurant.njutakeout.parameters.user;
 
-import java.util.Date;
-
 public class MerchantAddParameters {
     private String username;
     private String password;
@@ -9,14 +7,16 @@ public class MerchantAddParameters {
     private double wechat;
     private int applyId;
     private int level;
+    private String status;
 
-    public MerchantAddParameters(String username, String password, double alipay, double wechat, int applyId, int level) {
+    public MerchantAddParameters(String username, String password, double alipay, double wechat, int applyId, int level, String status) {
         this.username = username;
         this.password = password;
         this.alipay = alipay;
         this.wechat = wechat;
         this.applyId = applyId;
         this.level = level;
+        this.status = status;
     }
 
     public int getLevel() {
@@ -69,5 +69,13 @@ public class MerchantAddParameters {
 
     public void setApplyId(int applyId) {
         this.applyId = applyId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

@@ -1,8 +1,6 @@
 package njurestaurant.njutakeout.entity.account;
 
-import njurestaurant.njutakeout.entity.app.Alipay;
 import njurestaurant.njutakeout.entity.app.Device;
-import njurestaurant.njutakeout.publicdatas.account.SupplierState;
 import njurestaurant.njutakeout.publicdatas.app.CodeType;
 
 import javax.persistence.*;
@@ -35,7 +33,7 @@ public class Supplier {
     private int approverId;
     /*审批状态*/
     @Column(name = "status")
-    private SupplierState status;
+    private String status;
     @OneToMany(mappedBy = "supplier", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
     private List<Device> devices;
     /*供码者等级*/
@@ -48,7 +46,7 @@ public class Supplier {
     public Supplier() {
     }
 
-    public Supplier(User user, int applicantId, Date time, SupplierState status, List<Device> devices, int priority, CodeType codeType) {
+    public Supplier(User user, int applicantId, Date time, String status, List<Device> devices, int priority, CodeType codeType) {
         this.user = user;
         this.applicantId = applicantId;
         this.time = time;
@@ -58,7 +56,7 @@ public class Supplier {
         this.codeType = codeType;
     }
 
-    public Supplier(User user, Date approvalTime, int approverId, SupplierState status, List<Device> devices, int priority) {
+    public Supplier(User user, Date approvalTime, int approverId, String status, List<Device> devices, int priority) {
         this.user = user;
         this.approvalTime = approvalTime;
         this.approverId = approverId;
@@ -124,11 +122,11 @@ public class Supplier {
         this.time = time;
     }
 
-    public SupplierState getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(SupplierState status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

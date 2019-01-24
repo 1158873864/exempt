@@ -61,16 +61,16 @@ public class SupplierBlServiceImpl implements SupplierBlService {
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             User user = supplier.getUser();
-            user.setUsername(supplierApprovalParameters.getUsername());
-            user.setPassword(encoder.encode(supplierApprovalParameters.getPassword()));
+//            user.setUsername(supplierApprovalParameters.getUsername());
+//            user.setPassword(encoder.encode(supplierApprovalParameters.getPassword()));
             supplier.setUser(user);
             supplier.setPriority(supplierApprovalParameters.getLevel());
             supplier.setApprovalTime(new Date());
             supplier.setApproverId(supplierApprovalParameters.getId());
             if(supplierApprovalParameters.getState() == 1) {
-                supplier.setStatus(SupplierState.PASS);
+                supplier.setStatus("启用");
             } else if (supplierApprovalParameters.getState() == 0) {
-                supplier.setStatus(SupplierState.REJECT);
+                supplier.setStatus("停用");
             } else {
                 return new WrongResponse(10140, "Wrong state");
             }

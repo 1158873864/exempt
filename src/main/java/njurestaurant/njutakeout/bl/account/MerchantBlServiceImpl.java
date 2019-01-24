@@ -82,18 +82,18 @@ public class MerchantBlServiceImpl implements MerchantBlService {
         if(merchant != null) {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             User user = merchant.getUser();
-            user.setPassword(encoder.encode(merchantApprovalParameters.getPassword()));
-            user.setUsername(merchantApprovalParameters.getUsername());
-            merchant.setUser(user);
-            merchant.setAlipay(merchantApprovalParameters.getAlipay());
-            merchant.setWechat(merchantApprovalParameters.getWechat());
-            merchant.setApproverId(merchantApprovalParameters.getApproverId());
-            merchant.setPriority(merchantApprovalParameters.getLevel());
-            merchant.setApprovalTime(new Date());
+//            user.setPassword(encoder.encode(merchantApprovalParameters.getPassword()));
+//            user.setUsername(merchantApprovalParameters.getUsername());
+//            merchant.setUser(user);
+//            merchant.setAlipay(merchantApprovalParameters.getAlipay());
+//            merchant.setWechat(merchantApprovalParameters.getWechat());
+//            merchant.setApproverId(merchantApprovalParameters.getApproverId());
+//            merchant.setPriority(merchantApprovalParameters.getLevel());
+//            merchant.setApprovalTime(new Date());
             if(merchantApprovalParameters.getStatus() == 1) {
-                merchant.setStatus(MerchantState.PASS);
+                merchant.setStatus("启用");
             } else if(merchantApprovalParameters.getStatus() == 0){
-                merchant.setStatus((MerchantState.REJECT));
+                merchant.setStatus("停用");
             } else {
                 return new WrongResponse(10140, "Wrong state");
             }

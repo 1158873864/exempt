@@ -17,7 +17,7 @@ public interface UserBlService {
      * @return the login info to  response
      * @throws WrongUsernameOrPasswordException the username or password is error
      */
-    UserLoginResponse login(String username, String password) throws WrongUsernameOrPasswordException, CannotRegisterException,RoleIdentityNotConformException;
+    UserLoginResponse login(String username, String password) throws WrongUsernameOrPasswordException, CannotRegisterException,RoleIdentityNotConformException, BlockUpException, WaitingException;
 
     /**
      * get user openid

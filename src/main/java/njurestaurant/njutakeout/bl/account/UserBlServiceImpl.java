@@ -77,7 +77,7 @@ public class UserBlServiceImpl implements UserBlService {
      * @throws WrongUsernameOrPasswordException the username or password is error
      */
     @Override
-    public UserLoginResponse login(String username, String password) throws WrongUsernameOrPasswordException, CannotRegisterException {
+    public UserLoginResponse login(String username, String password) throws WrongUsernameOrPasswordException, CannotRegisterException, BlockUpException,WaitingException {
         if (username.length() == 0) {
             throw new CannotRegisterException();
         }
@@ -97,15 +97,29 @@ public class UserBlServiceImpl implements UserBlService {
                 String post = null;
                 switch (user.getRole()) {
                     case 1:
+                        Staff staff = staffDataService.findStaffById(user.getTableId());
+                        if (staff.getStatus().equals("停用"))
+                            throw new BlockUpException();
                         post = staffDataService.findStaffById(user.getTableId()).getPost();
                         break;
                     case 2:
+                        Agent agent = agentDataService.findAgentById(user.getTableId());
+                        if (agent.getStatus().equals("停用"))
+                            throw new BlockUpException();
                         post = "代理商";
                         break;
                     case 3:
+                        Merchant merchant = merchantDataService.findMerchantById(user.getTableId());
+                        if (agentDataService.findAgentById(merchant.getApplyId()) != null)
+                            throw new WaitingException();
+                            if (merchant.getStatus().equals("停用"))
+                                throw new BlockUpException();
                         post = "商户";
                         break;
                     case 4:
+                        Supplier supplier = supplierDataService.findSupplierById(user.getTableId());
+                        if (supplier.getStatus().equals("停用"))
+                            throw new BlockUpException();
                         post = "供码用户";
                         break;
                 }
@@ -118,7 +132,7 @@ public class UserBlServiceImpl implements UserBlService {
     }
 
     @Override
-    public SuccessResponse appLogin(String username, String password, String imei) throws WrongUsernameOrPasswordException, CannotRegisterException ,RoleIdentityNotConformException{
+    public SuccessResponse appLogin(String username, String password, String imei) throws WrongUsernameOrPasswordException, CannotRegisterException, RoleIdentityNotConformException {
         if (username.length() == 0) {
             throw new CannotRegisterException();
         }
@@ -136,7 +150,7 @@ public class UserBlServiceImpl implements UserBlService {
                 }
                 return new SuccessResponse("login success");
             } else {
-                throw  new RoleIdentityNotConformException();
+                throw new RoleIdentityNotConformException();
             }
 
         } else {
@@ -257,35 +271,45 @@ public class UserBlServiceImpl implements UserBlService {
                 cardList.stream().peek(c -> c.setUser(null)).collect(Collectors.toList());
                 userInfoResponse.setInfo(staff);
                 userInfoResponse.setPost(staff.getPost());
-                if (postAndPermissionBlService.getPostAndPermissionsByPost(staff.getPost()) == null)  userInfoResponse.setPermission(new ArrayList<>());
-                else userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost(staff.getPost()).getPermission());
+                if (postAndPermissionBlService.getPostAndPermissionsByPost(staff.getPost()) == null)
+                    userInfoResponse.setPermission(new ArrayList<>());
+                else
+                    userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost(staff.getPost()).getPermission());
             } else if (user.getRole() == 2) {
                 Agent agent = agentDataService.findAgentById(user.getTableId());
                 List<PersonalCard> cardList = agent.getUser().getCards();
                 cardList.stream().peek(c -> c.setUser(null)).collect(Collectors.toList());
                 double flow = AgentDailyFlow.flow.containsKey(agent.getId()) ? AgentDailyFlow.flow.get(agent.getId()) : 0;
                 double commission = AgentDailyFlow.commission.containsKey(agent.getId()) ? AgentDailyFlow.commission.get(agent.getId()) : 0;
-                AgentInfoResponse agentInfoResponse = new AgentInfoResponse(agent.getId(), agent.getUser().getId(), agent.getAgentName(), agent.getStatus(), agent.getAlipay(), agent.getWechat(), agent.getBalance(), agent.getUser(), flow, commission );
+                AgentInfoResponse agentInfoResponse = new AgentInfoResponse(agent.getId(), agent.getUser().getId(), agent.getAgentName(), agent.getStatus(), agent.getAlipay(), agent.getWechat(), agent.getBalance(), agent.getUser(), flow, commission);
                 userInfoResponse.setInfo(agent);
                 userInfoResponse.setPost("代理商");
-                if (postAndPermissionBlService.getPostAndPermissionsByPost("代理商") == null)  userInfoResponse.setPermission(new ArrayList<>());
-                else userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost("代理商").getPermission());
+                if (postAndPermissionBlService.getPostAndPermissionsByPost("代理商") == null)
+                    userInfoResponse.setPermission(new ArrayList<>());
+                else
+                    userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost("代理商").getPermission());
             } else if (user.getRole() == 3) {
                 Merchant merchant = merchantDataService.findMerchantById(user.getTableId());
                 List<PersonalCard> personalCardList = merchant.getUser().getCards();
-                if(personalCardList.size() > 0) personalCardList.stream().peek(p -> p.setUser(null)).collect(Collectors.toList());
+                if (personalCardList.size() > 0)
+                    personalCardList.stream().peek(p -> p.setUser(null)).collect(Collectors.toList());
                 userInfoResponse.setInfo(merchant);
                 userInfoResponse.setPost("商户");
-                if (postAndPermissionBlService.getPostAndPermissionsByPost("商户") == null)  userInfoResponse.setPermission(new ArrayList<>());
-                else userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost("商户").getPermission());
+                if (postAndPermissionBlService.getPostAndPermissionsByPost("商户") == null)
+                    userInfoResponse.setPermission(new ArrayList<>());
+                else
+                    userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost("商户").getPermission());
             } else if (user.getRole() == 4) {
                 Supplier supplier = supplierDataService.findSupplierById(user.getTableId());
                 List<PersonalCard> personalCardList = supplier.getUser().getCards();
-                if(personalCardList.size() > 0) personalCardList.stream().peek(p -> p.setUser(null)).collect(Collectors.toList());
+                if (personalCardList.size() > 0)
+                    personalCardList.stream().peek(p -> p.setUser(null)).collect(Collectors.toList());
                 userInfoResponse.setInfo(supplier);
                 userInfoResponse.setPost("供码用户");
-                if (postAndPermissionBlService.getPostAndPermissionsByPost("供码用户") == null)  userInfoResponse.setPermission(new ArrayList<>());
-                else userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost("供码用户").getPermission());
+                if (postAndPermissionBlService.getPostAndPermissionsByPost("供码用户") == null)
+                    userInfoResponse.setPermission(new ArrayList<>());
+                else
+                    userInfoResponse.setPermission(postAndPermissionBlService.getPostAndPermissionsByPost("供码用户").getPermission());
             } else {
                 return new WrongResponse(10150, "Wrong role.");
             }

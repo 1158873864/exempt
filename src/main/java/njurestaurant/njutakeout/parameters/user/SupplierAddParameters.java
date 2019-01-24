@@ -5,11 +5,13 @@ public class SupplierAddParameters {
     private String username;
     private String password;
     private int level;
+    private String status;
 
-    public SupplierAddParameters(String username, String password, int level) {
+    public SupplierAddParameters(String username, String password, int level, String status) {
         this.username = username;
         this.password = password;
         this.level = level;
+        this.status = status;
     }
 
     public int getId() {
@@ -42,6 +44,14 @@ public class SupplierAddParameters {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
 

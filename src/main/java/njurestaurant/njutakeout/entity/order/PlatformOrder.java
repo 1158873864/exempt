@@ -39,7 +39,7 @@ public class PlatformOrder {
     private int uid;
     @Column(name = "imei")
     private String imei;
-    /*收款码对应的用户信息id*/
+    /*收款码对应的用户(支付宝/微信的用户)信息id*/
     @Column(name = "table_id")
     private int tableId;
     /*支付宝/微信的订单*/

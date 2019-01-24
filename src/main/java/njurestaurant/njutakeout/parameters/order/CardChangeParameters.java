@@ -7,14 +7,14 @@ public class CardChangeParameters {
     private String cardNumber_in;
     //转账金额
     private double money;
-    //操作人username
-    private String operateUsername;
+    //操作人userId
+    private int operateId;
 
-    public CardChangeParameters(String cardNumber_out, String cardNumber_in, double money, String operateUsername) {
+    public CardChangeParameters(String cardNumber_out, String cardNumber_in, double money, int operateId) {
         this.cardNumber_out = cardNumber_out;
         this.cardNumber_in = cardNumber_in;
         this.money = money;
-        this.operateUsername = operateUsername;
+        this.operateId = operateId;
     }
 
     public String getCardNumber_out() {
@@ -41,11 +41,11 @@ public class CardChangeParameters {
         this.money = money;
     }
 
-    public String getOperateUsername() {
-        return operateUsername;
+    public int getOperateId() {
+        return operateId;
     }
 
-    public void setOperateUsername(String operateUsername) {
-        this.operateUsername = operateUsername;
+    public void setOperateId(int operateId) {
+        this.operateId = operateId;
     }
 }

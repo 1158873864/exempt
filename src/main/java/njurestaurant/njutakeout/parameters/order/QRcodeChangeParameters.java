@@ -7,18 +7,18 @@ public class QRcodeChangeParameters {
     private double money;
     //卡号
     private String cardNumber;
-    //操作人username
-    private String operateUsername;
+    //操作人userId
+    private int operateId;
 
     public QRcodeChangeParameters() {
 
     }
 
-    public QRcodeChangeParameters(String loginId, double money, String cardNumber, String operateUsername) {
+    public QRcodeChangeParameters(String loginId, double money, String cardNumber,int operateId) {
         this.loginId = loginId;
         this.money = money;
         this.cardNumber = cardNumber;
-        this.operateUsername = operateUsername;
+        this.operateId = operateId;
     }
 
     public String getLoginId() {
@@ -45,11 +45,11 @@ public class QRcodeChangeParameters {
         this.cardNumber = cardNumber;
     }
 
-    public String getOperateUsername() {
-        return operateUsername;
+    public int getOperateId() {
+        return operateId;
     }
 
-    public void setOperateUsername(String operateUsername) {
-        this.operateUsername = operateUsername;
+    public void setOperateId(int operateId) {
+        this.operateId = operateId;
     }
 }

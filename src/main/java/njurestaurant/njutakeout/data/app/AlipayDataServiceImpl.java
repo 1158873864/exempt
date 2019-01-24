@@ -6,6 +6,7 @@ import njurestaurant.njutakeout.entity.app.Alipay;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,5 +37,10 @@ public class AlipayDataServiceImpl implements AlipayDataService {
             return alipay;
         else
             return null;
+    }
+
+    @Override
+    public List<Alipay> findAll() {
+        return alipayDao.findAll();
     }
 }

@@ -61,19 +61,19 @@ public class ChangeController {
         }
     }
     
-    @ApiOperation(value = "内部卡账变", notes = "发起内部卡转账申请")
-    @RequestMapping(value = "internalaccountchange/card", method = RequestMethod.POST)
+    @ApiOperation(value = "内部卡账变(个人卡转入公司卡)", notes = "发起内部卡转账申请(个人卡转入公司卡)")
+    @RequestMapping(value = "internalaccountchange/P2Ccard", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> CardChangeOrder(@RequestBody CardChangeParameters CardChangeParameters) {
+    public ResponseEntity<Response> P2CCardChangeOrder(@RequestBody CardChangeParameters CardChangeParameters) {
         try {
-            changeBlService.addCardChangeOrder(CardChangeParameters);
+            changeBlService.addP2CCardChangeOrder(CardChangeParameters);
             return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("发出转账成功，等待审核。")), HttpStatus.OK);
         } catch (WrongIdException e) {
-            return new ResponseEntity<>(new JSONResponse(10160, new WrongResponse(10160, "该用户无法进行该提现操作。")), HttpStatus.OK);
+            return new ResponseEntity<>(new JSONResponse(10160, new WrongResponse(10160, "该用户无法进行该转账操作。")), HttpStatus.OK);
         } catch (WrongInputException e) {
             return new ResponseEntity<>(new JSONResponse(10410, new WrongResponse(10410, "提现金额大于该用户现有的余额。")), HttpStatus.OK);
         }catch (PersonalCardDoesNotExistException e){
@@ -82,5 +82,25 @@ public class ChangeController {
             return new ResponseEntity<>(new JSONResponse(10412, new WrongResponse(10412, "公司银行卡不存在。")), HttpStatus.OK);
         }
     }
-
+    @ApiOperation(value = "内部卡账变(公司卡转入个人卡)", notes = "发起内部卡转账申请(公司卡转入个人卡)")
+    @RequestMapping(value = "internalaccountchange/C2Pcard", method = RequestMethod.POST)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> C2PCardChangeOrder(@RequestBody CardChangeParameters CardChangeParameters) {
+        try {
+            changeBlService.addC2PCardChangeOrder(CardChangeParameters);
+            return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("发出转账成功，等待审核。")), HttpStatus.OK);
+        } catch (WrongIdException e) {
+            return new ResponseEntity<>(new JSONResponse(10160, new WrongResponse(10160, "该用户无法进行该转账操作。")), HttpStatus.OK);
+        } catch (WrongInputException e) {
+            return new ResponseEntity<>(new JSONResponse(10410, new WrongResponse(10410, "提现金额大于该用户现有的余额。")), HttpStatus.OK);
+        }catch (PersonalCardDoesNotExistException e){
+            return new ResponseEntity<>(new JSONResponse(10411, new WrongResponse(10411, "个人银行卡不存在。")), HttpStatus.OK);
+        }catch (CompanyCardDoesNotExistException e){
+            return new ResponseEntity<>(new JSONResponse(10412, new WrongResponse(10412, "公司银行卡不存在。")), HttpStatus.OK);
+        }
+    }
 }

@@ -11,8 +11,10 @@ public class Alipay {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    /*支付宝的登录账号*/
     @Column(name = "loginId")
     private String loginId;
+    /*支付宝的用户名*/
     @Column(name = "userId")
     private String userId;
     /*固码*/

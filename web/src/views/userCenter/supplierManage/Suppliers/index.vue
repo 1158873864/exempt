@@ -38,11 +38,11 @@
             <el-form :model="newRow">
                 <el-form-item label="码类型">
                     <el-select v-model="newRow.codeType" placeholder="">
-                    <el-option label="转账通码" value="TSOLID"></el-option>
-                    <el-option label="转账固码" value="TPASS"></el-option>
-                    <el-option label="收款通码离线码" value="RSOLID"></el-option>
-                    <el-option label="收款通码在线码" value="RPASSOFF"></el-option>
-                    <el-option label="收款固码(二开)" value="RPASSQR"></el-option>
+                    <el-option label="转账通码" value="TPASS"></el-option>
+                    <el-option label="转账固码" value="TSOLID"></el-option>
+                    <el-option label="收款通码离线码" value="RPASSOFF "></el-option>
+                    <el-option label="收款通码在线码" value="RPASSQR"></el-option>
+                    <el-option label="收款固码(二开)" value="RSOLID"></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="level">

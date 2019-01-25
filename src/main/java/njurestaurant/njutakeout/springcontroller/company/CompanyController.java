@@ -250,7 +250,7 @@ public class CompanyController {
     @ResponseBody
     public ResponseEntity<Response> approvalMerchants() {
 
-        return new ResponseEntity<>(new JSONResponse(200, merchantBlService.findMerchantsByState(MerchantState.WAITING)), HttpStatus.OK);
+        return new ResponseEntity<>(new JSONResponse(200, merchantBlService.findMerchantsByState("停用")), HttpStatus.OK);
     }
 
     @ApiOperation(value = "审批供码账号", notes = "管理员审批待审批供码用户账号")
@@ -273,7 +273,7 @@ public class CompanyController {
     @ResponseBody
     public ResponseEntity<Response> approvalSuppliers() {
 
-        return new ResponseEntity<>(new JSONResponse(200, supplierBlService.findSupplierByState(SupplierState.CHECKING)), HttpStatus.OK);
+        return new ResponseEntity<>(new JSONResponse(200, supplierBlService.findSupplierByState("停用")), HttpStatus.OK);
     }
 
     @ApiOperation(value = "删除银行卡", notes = "删除银行卡")

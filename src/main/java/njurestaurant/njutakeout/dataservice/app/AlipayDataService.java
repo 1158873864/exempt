@@ -13,4 +13,8 @@ public interface AlipayDataService {
     Alipay findByLoginId(String loginId);
 
     List<Alipay> findAll();
+
+    Alipay findByUserId(String userid);
+
+
 }

@@ -63,11 +63,11 @@ public class AgentBlServiceImpl implements AgentBlService {
                 List<PersonalCard> cardList = agent.getUser().getCards();
                 cardList.stream().peek(c -> c.setUser(null)).collect(Collectors.toList());
                 User user = agent.getUser();
-                if(user != null) {
-                    if(StringUtils.isNotBlank(user.getOriginPassword()))
-                        user.setOriginPassword(RSAUtils.decryptDataOnJava(user.getOriginPassword(), privateKey));
-                    else user.setOriginPassword("");
-                }
+//                if(user != null) {
+//                    if(StringUtils.isNotBlank(user.getOriginPassword()))
+//                        user.setOriginPassword(RSAUtils.decryptDataOnJava(user.getOriginPassword(), privateKey));
+//                    else user.setOriginPassword("");
+//                }
             }
             agentInfoResponses = agents.stream().map(agent -> {
                 double flow = AgentDailyFlow.flow.containsKey(agent.getId()) ? AgentDailyFlow.flow.get(agent.getId()) : 0;

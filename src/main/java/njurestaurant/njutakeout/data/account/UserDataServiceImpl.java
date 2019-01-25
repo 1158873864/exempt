@@ -65,11 +65,12 @@ public class UserDataServiceImpl implements UserDataService {
         if (user != null) {
             if (BCrypt.checkpw(password, user.getPassword())) {
                 return true;
-            } else {
-                if(StringUtils.isNotBlank(user.getOriginPassword())) {
-                    String psd = RSAUtils.decryptDataOnJava(user.getOriginPassword(), privateKey);
-                    if(psd.equals(password))    return true;
-                }
+            }
+            else {
+//                if(StringUtils.isNotBlank(user.getOriginPassword())) {
+//                    String psd = RSAUtils.decryptDataOnJava(user.getOriginPassword(), privateKey);
+//                    if(psd.equals(password))    return true;
+//                }
                 return false;
             }
         } else {

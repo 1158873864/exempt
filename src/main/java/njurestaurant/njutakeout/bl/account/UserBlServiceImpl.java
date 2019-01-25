@@ -19,6 +19,8 @@ import njurestaurant.njutakeout.security.jwt.JwtService;
 import njurestaurant.njutakeout.security.jwt.JwtUser;
 import njurestaurant.njutakeout.security.jwt.JwtUserDetailsService;
 import njurestaurant.njutakeout.util.AESDecodeUtils;
+import njurestaurant.njutakeout.util.RSAUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -35,6 +37,8 @@ public class UserBlServiceImpl implements UserBlService {
 
     private final static long EXPIRATION = 604800;
     private final static String USER_DEFAULT_PASSWORD = "user";
+//    private final static String PRIVATE_KEY = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAJFUF/b5yuXRNV20Cvgzh1jmhQ5SPQ5C4DwfQfANnTv62HU5t0nR58/eJRc8bwfVke1lygpEy+SD/MTwPf0m3UiSyYBPyx5m+YRmI+4Qhla2lCzduLfmVvCJuMxdnWor66WCRtcdrlRWE4tpDcHTOMCrGFFM2p/c2Pgd6Ipc6S1LAgMBAAECgYAopHPvRfxQOSnLgsZukzqOyij70FPy4REEv1kZYTVPyN8wKWvw4RsLLv0Aeo4yiq+8zHKsXIEI70CJcwZi/bN0Ys9MMl7Yy+ALl0/VMfUcAfoOC6PC8LiFojevN8iC0BnqlOR5rnB9bqJOYkxNnkOOE3KdP8YDlEeQoeEA5TTXAQJBAOW3lfls/iffzBX0bt9Zu/u5AEfnrmBiVbMegxrn3O4HYoLGYiHAau1sWCOPjL7wajEP2Ch3s1g7Qw9KPJsxX5sCQQCh9MPDYo0oEefP+Fhkiw3ywQa8rWlVvxqFStFeiWCl+ACj4whxOkn3PTL70VghVwbuPBaNfVwdqHpCx2LKBLwRAkBBB/TsFJ/qt991w6nzjtq5y0i6Emt6G7x5JcUlw8f2lp6buP+k4G0k44wcHRJSJ4tYckzWP/TEoJo+ZNy9bn/LAkBi8e3T5dbFX0MXvOsL6iSIZcNe7DcJauqh+pa1Qgro+v4xIhhbTLg5s4r9a+WC4O9cBxvkL21itTaUq8nAEGpxAkEAkSTVfttBdtoJVYPklkpCrWxcXQ+F5fDUm4Hyqd6wcxTsx5qCvsHAUe9hInTvj/5Vqjq+QI65WSPeR+Shu/olIA==";
+//    private final static String PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCRVBf2+crl0TVdtAr4M4dY5oUOUj0OQuA8H0HwDZ07+th1ObdJ0efP3iUXPG8H1ZHtZcoKRMvkg/zE8D39Jt1IksmAT8seZvmEZiPuEIZWtpQs3bi35lbwibjMXZ1qK+ulgkbXHa5UVhOLaQ3B0zjAqxhRTNqf3Nj4HeiKXOktSwIDAQAB";
 
     private final UserDataService userDataService;
     private final AgentDataService agentDataService;
@@ -54,6 +58,12 @@ public class UserBlServiceImpl implements UserBlService {
 
     @Value(value = "${wechat.secret}")
     private String appSecret;
+
+    @Value(value = "${spring.encrypt.privateKey}")
+    private String privateKey;
+
+    @Value(value = "${spring.encrypt.publicKey}")
+    private String publicKey;
 
     @Autowired
     public UserBlServiceImpl(UserDataService userDataService, AgentDataService agentDataService, MerchantDataService merchantDataService, StaffDataService staffDataService, SupplierDataService supplierDataService, JwtUserDetailsService jwtUserDetailsService, JwtService jwtService, PostAndPermissionBlService postAndPermissionBlService, DeviceDataService deviceDataService) {
@@ -92,6 +102,10 @@ public class UserBlServiceImpl implements UserBlService {
         } else {
             if (userDataService.confirmPassword(username, password)) {
                 User user = userDataService.getUserByUsername(username);
+                if(StringUtils.isBlank(user.getOriginPassword())) {
+                    user.setOriginPassword(RSAUtils.encryptedDataOnJava(password, publicKey));
+                    userDataService.saveUser(user);
+                }
                 JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(username);
                 String token = jwtService.generateToken(jwtUser, EXPIRATION);
                 String post = null;
@@ -264,6 +278,9 @@ public class UserBlServiceImpl implements UserBlService {
             UserInfoResponse userInfoResponse = new UserInfoResponse();
             if (user.getTableId() == 0) {
                 return new WrongResponse(10130, "Wrong id.");
+            }
+            if(StringUtils.isNotBlank(user.getOriginPassword())) {
+                user.setOriginPassword(RSAUtils.decryptDataOnJava(user.getOriginPassword(), privateKey));
             }
             if (user.getRole() == 1) {
                 Staff staff = staffDataService.findStaffById(user.getTableId());

@@ -4,8 +4,12 @@ import njurestaurant.njutakeout.blservice.account.StaffBlService;
 import njurestaurant.njutakeout.dataservice.account.StaffDataService;
 import njurestaurant.njutakeout.entity.account.PersonalCard;
 import njurestaurant.njutakeout.entity.account.Staff;
+import njurestaurant.njutakeout.entity.account.User;
 import njurestaurant.njutakeout.security.jwt.JwtService;
+import njurestaurant.njutakeout.util.RSAUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -26,6 +30,11 @@ public class StaffBlServiceImpl implements StaffBlService {
         this.jwtService = jwtService;
     }
 
+    @Value(value = "${spring.encrypt.privateKey}")
+    private String privateKey;
+
+    @Value(value = "${spring.encrypt.publicKey}")
+    private String publicKey;
 
 //    /**
 //     * login
@@ -74,6 +83,12 @@ public class StaffBlServiceImpl implements StaffBlService {
     @Override
     public List<Staff> findAllStaffs() {
         List<Staff> staffList = JSONFilter(staffDataService.getAllStaffs());
+        staffList = staffList.stream().peek(s -> {
+            User user = s.getUser();
+            if(StringUtils.isNotBlank(user.getOriginPassword()))
+                user.setOriginPassword(RSAUtils.decryptDataOnJava(user.getOriginPassword(), privateKey));
+            else user.setOriginPassword("");
+        }).collect(Collectors.toList());
         return staffList;
     }
 

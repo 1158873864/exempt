@@ -68,7 +68,7 @@ import { suppliersGet,supplierUpdate } from '@/api/role'
                 teams:[{
                     "priority": 0,
                     "devices": [],
-                    "status": "",
+                    "status": "启用",
                     "user": {},
                     "devices_team":" ",
                     }

@@ -11,7 +11,7 @@
             <el-table-column prop="date" label="日期"  align="center"></el-table-column>
             <el-table-column prop="username" label="用户名"  align="center"></el-table-column>
             <el-table-column prop="agentName" label="代理名"  align="center"></el-table-column>
-            <el-table-column prop="alipay" label="案例点位"  align="center"></el-table-column>
+            <el-table-column prop="alipay" label="支付宝点位"  align="center"></el-table-column>
             <el-table-column prop="wechat" label="微信点位"  align="center"></el-table-column>
             <!-- <el-table-column prop="depositList" label="depositList"  align="center"></el-table-column> -->
             <el-table-column prop="withdrewed" label="已提现"  align="center"></el-table-column>

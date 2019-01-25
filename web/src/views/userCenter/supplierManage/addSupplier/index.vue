@@ -10,22 +10,24 @@
         ></el-input>
       </el-form-item>
       <el-form-item label="密码">
-        <el-input
-          v-model="form.password"
-          style="width: 30%;"
-          onkeyup="value=value.replace(/[^\w\.\/]/ig,'')"
-        ></el-input>
+        <el-input  v-model="form.password"    style="width: 30%;"  onkeyup="value=value.replace(/[^\w\.\/]/ig,'')"></el-input>
       </el-form-item>
       <el-form-item label="等级">
-          <el-select v-model="form.level" placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
+        <el-select v-model="form.level" placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
+        </el-select>
       </el-form-item>
+       <el-form-item label="状态">
+                    <el-select v-model="form.status" placeholder="启用">
+                    <el-option label="启用" value="启用"></el-option>
+                    <el-option label="停用" value="停用"></el-option>
+                    </el-select>
+            </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit('form')">添加</el-button>
         <el-button>取消</el-button>
@@ -49,25 +51,30 @@ export default {
         password: "1",
         username: "1"
       },
-        options: [{
-          value: '1',
-          label: '1'
-        }, {
-          value: '2',
-          label: '2'
-        }, {
-          value: '3',
-          label: '3'
-        }, {
-          value: '4',
-          label: '4'
-        }, {
-          value: '5',
-          label: '5'
-        }],
+      options: [
+        {
+          value: "1",
+          label: "1"
+        },
+        {
+          value: "2",
+          label: "2"
+        },
+        {
+          value: "3",
+          label: "3"
+        },
+        {
+          value: "4",
+          label: "4"
+        },
+        {
+          value: "5",
+          label: "5"
+        }
+      ]
     };
   },
-
   components: {
     Form
   },
@@ -83,7 +90,8 @@ export default {
             this.form.id,
             this.form.level,
             this.form.password,
-            this.form.username
+            this.form.username,
+            this.form.status
           )
             .then(response => {
               // console.log(response.data.infoCode)

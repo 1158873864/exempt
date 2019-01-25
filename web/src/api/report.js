@@ -14,6 +14,17 @@ export function getPermerchantReport(uid) {
   })
 }
 
+export function fundingReport(){
+  
+  return request({
+    url: '/report/funding',
+    method: 'get',
+    // params:{
+    //   startDate,
+    //   endDate
+    // }
+  })
+}
 export function agencyReport(){
   
   return request({
@@ -23,5 +34,21 @@ export function agencyReport(){
     //   startDate,
     //   endDate
     // }
+  })
+}
+export function receiveCodeReport(){
+  
+  return request({
+    url: '/report/receiptCode',
+    method: 'get',
+
+  })
+}
+export function supplierReport(){
+  
+  return request({
+    url: '/report/supplier',
+    method: 'get',
+
   })
 }

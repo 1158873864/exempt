@@ -2,7 +2,13 @@
   <div class="chart-container">
       <!-- <div>商户报表</div> -->
     <!-- <chart height="100%" width="100%"/> -->
-     <el-table :data="teams.slice((currentPage-1)*pagesize,currentPage*pagesize)" height="500"  border   style="width: 100%">
+      <el-input
+      v-model="searchStr"
+      style="width:30vw;margin:20px 0 20px 0;"
+      suffix-icon="el-icon-search"
+      placeholder="请输入搜索内容"
+    ></el-input>
+     <el-table :data="filterData.slice((currentPage-1)*pagesize,currentPage*pagesize)" height="500"  border   style="width: 100%">
             <el-table-column prop="number" label="编码"  align="center"></el-table-column>         
             <el-table-column prop="merchantName" label="商户名"  align="center"></el-table-column>           
             <el-table-column prop="username" label="用户名"  align="center"></el-table-column>           
@@ -70,12 +76,23 @@ export default {
                     payTime: "2019-01-18T05:34:14.271Z",
                     paymoney: 0,
                     rechargeId: "string",
-                    time: "2019-01-18T05:34:14.271Z"
+                    time: "2019-01-18T05:34:14.271Z",
+                    balance:''
                       }],
                 currentPage:1,
-                pagesize:10
+                pagesize:10,
+                searchStr:''
           }
       },
+      computed: {
+    filterData() {
+      return this.teams.filter(item => {
+        var reg = new RegExp(this.searchStr, "i");
+        console.log(item.merchantName);
+        return !this.searchStr || reg.test(item.merchantName) || reg.test(item.balance);
+      });
+    }
+  },
       created(){
           this.getData();
       },

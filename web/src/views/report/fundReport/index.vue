@@ -2,8 +2,14 @@
   <div class="chart-container">
       <!-- <div>商户报表</div> -->
     <!-- <chart height="100%" width="100%"/> -->
+    <el-input
+      v-model="searchStr"
+      style="width:30vw;margin:20px 0 20px 0;"
+      suffix-icon="el-icon-search"
+      placeholder="请输入搜索内容"
+    ></el-input>
      <el-table
-            :data="teams.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+            :data="filterData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             height="500"
             border
             style="width: 100%">
@@ -49,9 +55,19 @@ export default {
                     supplierToCom: 0
                       }],
                 currentPage:1,
-                pagesize:10
+                pagesize:10,
+                searchStr:''
           }
       },
+       computed: {
+    filterData() {
+      return this.teams.filter(item => {
+        var reg = new RegExp(this.searchStr, "i");
+        console.log(item.supplierToCom);
+        return !this.searchStr || reg.test(item.supplierToCom) || reg.test(item.comToAgent);
+      });
+    }
+  },
       created(){
           this.getData();
       },

@@ -29,4 +29,6 @@ public interface TransactionBlService {
     void dealWithdrewOrder(int id, WithdrewDealParameters withdrewDealParameters) throws WrongIdException, BlankInputException;
 
     List<WithdrewOrder> getMyWithdrewOrder(int id) throws WrongIdException;
+
+    List<WithdrewOrder> getWithdrewOrder();
 }

@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class ChangeBlServiceImpl implements ChangeBlService {
@@ -126,4 +127,16 @@ public class ChangeBlServiceImpl implements ChangeBlService {
         } else
             throw new WrongIdException();
     }
+
+    @Override
+    public List<QRcodeChangeOrder> getQRcodeChangeHistory() {
+        return changeOrderDataService.findAllQrCodeChangeOrder();
+    }
+
+    @Override
+    public List<CardChangeOrder> getCardChangeHistory() {
+        return changeOrderDataService.findAllCardChangeOrder();
+    }
+
+
 }

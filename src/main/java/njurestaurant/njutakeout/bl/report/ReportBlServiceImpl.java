@@ -588,7 +588,7 @@ public class ReportBlServiceImpl implements ReportBlService {
         Map<String, Integer> alipayMap = new HashMap<>();
         if (supplierList.size() > 0) {
             for (Supplier supplier : supplierList) {
-                if(supplier.getStatus() == SupplierState.PASS) {
+                if(supplier.getStatus().equals("通过")) {
                     supplierMap.put(supplier.getId(), supplier);
                 }
             }

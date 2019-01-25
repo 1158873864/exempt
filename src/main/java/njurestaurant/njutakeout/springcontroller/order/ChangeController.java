@@ -54,13 +54,13 @@ public class ChangeController {
             return new ResponseEntity<>(new JSONResponse(10160, new WrongResponse(10160, "该用户无法进行该提现操作。")), HttpStatus.OK);
         } catch (WrongInputException e) {
             return new ResponseEntity<>(new JSONResponse(10410, new WrongResponse(10410, "提现金额大于该用户现有的余额。")), HttpStatus.OK);
-        }catch (PersonalCardDoesNotExistException e){
+        } catch (PersonalCardDoesNotExistException e) {
             return new ResponseEntity<>(new JSONResponse(10411, new WrongResponse(10411, "个人银行卡不存在。")), HttpStatus.OK);
         } catch (AlipayNotExistException e) {
             return new ResponseEntity<>(new JSONResponse(1001, new WrongResponse(1001, "支付宝账号不存在。")), HttpStatus.OK);
         }
     }
-    
+
     @ApiOperation(value = "内部卡账变(个人卡转入公司卡)", notes = "发起内部卡转账申请(个人卡转入公司卡)")
     @RequestMapping(value = "internalaccountchange/P2Ccard", method = RequestMethod.POST)
     @ApiResponses(value = {
@@ -76,12 +76,13 @@ public class ChangeController {
             return new ResponseEntity<>(new JSONResponse(10160, new WrongResponse(10160, "该用户无法进行该转账操作。")), HttpStatus.OK);
         } catch (WrongInputException e) {
             return new ResponseEntity<>(new JSONResponse(10410, new WrongResponse(10410, "转入金额大于该用户现有的余额。")), HttpStatus.OK);
-        }catch (PersonalCardDoesNotExistException e){
+        } catch (PersonalCardDoesNotExistException e) {
             return new ResponseEntity<>(new JSONResponse(10411, new WrongResponse(10411, "个人银行卡不存在。")), HttpStatus.OK);
-        }catch (CompanyCardDoesNotExistException e){
+        } catch (CompanyCardDoesNotExistException e) {
             return new ResponseEntity<>(new JSONResponse(10412, new WrongResponse(10412, "公司银行卡不存在。")), HttpStatus.OK);
         }
     }
+
     @ApiOperation(value = "内部卡账变(公司卡转入个人卡)", notes = "发起内部卡转账申请(公司卡转入个人卡)")
     @RequestMapping(value = "internalaccountchange/C2Pcard", method = RequestMethod.POST)
     @ApiResponses(value = {
@@ -97,10 +98,60 @@ public class ChangeController {
             return new ResponseEntity<>(new JSONResponse(10160, new WrongResponse(10160, "该用户无法进行该转账操作。")), HttpStatus.OK);
         } catch (WrongInputException e) {
             return new ResponseEntity<>(new JSONResponse(10410, new WrongResponse(10410, "转出金额大于公司现有的余额。")), HttpStatus.OK);
-        }catch (PersonalCardDoesNotExistException e){
+        } catch (PersonalCardDoesNotExistException e) {
             return new ResponseEntity<>(new JSONResponse(10411, new WrongResponse(10411, "个人银行卡不存在。")), HttpStatus.OK);
-        }catch (CompanyCardDoesNotExistException e){
+        } catch (CompanyCardDoesNotExistException e) {
             return new ResponseEntity<>(new JSONResponse(10412, new WrongResponse(10412, "公司银行卡不存在。")), HttpStatus.OK);
         }
     }
+
+//    @ApiOperation(value = "查看某个用户发起的内部码账变订单", notes = "查看某个用户发起的内部码账变订单")
+//    @RequestMapping(value = "internalaccountchange/qrcode/history/{id}", method = RequestMethod.POST)
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+//            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+//            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+//    @ResponseBody
+//    public ResponseEntity<Response> GetQRcodeChangeOrderById(@PathVariable("id") int id) {
+//        try {
+//            return new ResponseEntity<>(new JSONResponse(200, changeBlService.getQRcodeChangeHistoryById(id)), HttpStatus.OK);
+//        } catch (WrongIdException e) {
+//            e.printStackTrace();
+//            return new ResponseEntity<>(new JSONResponse(10160, e.getResponse()), HttpStatus.OK);
+//        }
+//    }
+
+    @ApiOperation(value = "查看内部码账变订单", notes = "查看内部码账变订单")
+    @RequestMapping(value = "internalaccountchange/qrcode/history", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> GetQRcodeChangeOrder() {
+        return new ResponseEntity<>(new JSONResponse(200, changeBlService.getQRcodeChangeHistory()), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "查看内部卡账变订单", notes = "查看内部卡账变订单")
+    @RequestMapping(value = "internalaccountchange/card/history", method = RequestMethod.POST)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> GetCardChangeOrder() {
+        return new ResponseEntity<>(new JSONResponse(200, changeBlService.getCardChangeHistory()), HttpStatus.OK);
+    }
+
+//    @ApiOperation(value = "查看内部卡转入账变订单", notes = "查看内部卡转入账变订单")
+//    @RequestMapping(value = "internalaccountchange/cardIn/history", method = RequestMethod.POST)
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+//            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+//            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+//    @ResponseBody
+//    public ResponseEntity<Response> GetCardChangeOrderById() {
+//        return new ResponseEntity<>(new JSONResponse(200, changeBlService.getAllCardChangeHistory()), HttpStatus.OK);
+//
+//    }
 }

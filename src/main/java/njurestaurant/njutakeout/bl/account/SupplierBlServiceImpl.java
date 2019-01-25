@@ -152,6 +152,7 @@ public class SupplierBlServiceImpl implements SupplierBlService {
                     break;
                 case "RPASSQR":
                     supplier.setCodeType(CodeType.RPASSQR);
+                    break;
                 default:
                     throw new BlankInputException();
             }

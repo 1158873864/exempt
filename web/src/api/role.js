@@ -93,7 +93,7 @@ export function deleteMerchant(aid) {
 }
 export function updateMerchant(mid, username, password) {
   return request({
-    url: '/merchant/update/'+mid,
+    url: '/merchant/update/' + mid,
     method: 'put',
     data: {
       username,
@@ -105,7 +105,7 @@ export function deleteSupplier(sid) {
   return request({
     url: '/supplier/delete',
     method: 'get',
-    params: {sid }
+    params: { sid }
   })
 }
 export function adminsGet() {
@@ -128,7 +128,7 @@ export function merchantsGet() {
 }
 export function merchantsMy(id) {
   return request({
-    url: '/myMerchants/'+id,
+    url: '/myMerchants/' + id,
     method: 'get'
   })
 }
@@ -140,12 +140,51 @@ export function suppliersGet() {
 }
 export function supplierUpdate(codeType, level, password, id) {
   return request({
-    url: '/supplier/update/'+id,
+    url: '/supplier/update/' + id,
     method: 'put',
     data: {
       codeType,
       level,
       password
+    }
+  })
+}
+export function qrcode(cardNumber, loginId, money, operateId) {
+  return request({
+    url: '/internalaccountchange/qrcode',
+    method: 'post',
+    data: {
+      cardNumber, loginId, money, operateId
+    }
+  })
+}
+export function Pcard(cardNumber_in, cardNumber_out, money, operateId) {
+  return request({
+    url: '/internalaccountchange/C2Pcard',
+    method: 'post',
+    data: {
+      cardNumber_in, cardNumber_out, money, operateId
+    }
+  })
+}
+export function Ccard(cardNumber_in, cardNumber_out, money, operateId) {
+  return request({
+    url: '/internalaccountchange/P2Ccard ',
+    method: 'post',
+    data: {
+      cardNumber_in, cardNumber_out, money, operateId
+    }
+  })
+}
+export function withdrew(cardId,id,money,type) {
+  return request({
+    url: '/withdrew',
+    method: 'post',
+    data: {
+      cardId,
+      id,
+      money,
+      type
     }
   })
 }

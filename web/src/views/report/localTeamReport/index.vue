@@ -2,16 +2,22 @@
   <div class="chart-container">
       <!-- <div>商户报表</div> -->
     <!-- <chart height="100%" width="100%"/> -->
+     <el-input
+      v-model="searchStr"
+      style="width:30vw;margin:20px 0 20px 0;"
+      suffix-icon="el-icon-search"
+      placeholder="请输入搜索内容"
+    ></el-input>
      <el-table
-            :data="teams.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+            :data="filterData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             height="500"
             border
             style="width: 100%">
-            <el-table-column prop="date" label="date"  align="center"></el-table-column>
-            <el-table-column prop="number" label="number"  align="center"></el-table-column>
-            <el-table-column prop="realReceipt" label="realReceipt"  align="center"></el-table-column>
-            <el-table-column prop="supplierName" label="supplierName"  align="center"></el-table-column>
-            <el-table-column prop="withdrew" label="withdrew"  align="center"></el-table-column>
+            <el-table-column prop="date" label="日期"  align="center"></el-table-column>
+            <el-table-column prop="number" label="编号"  align="center"></el-table-column>
+            <el-table-column prop="realReceipt" label="转账金額"  align="center"></el-table-column>
+            <el-table-column prop="supplierName" label="供码用戶名"  align="center"></el-table-column>
+            <el-table-column prop="withdrew" label="提现金額"  align="center"></el-table-column>
         </el-table>
            <div class="block">
             <el-pagination
@@ -48,9 +54,19 @@ export default {
                       withdrew: 0
                       }],
                 currentPage:1,
-                pagesize:10
+                pagesize:10,
+                searchStr:''
           }
       },
+        computed: {
+    filterData() {
+      return this.teams.filter(item => {
+        var reg = new RegExp(this.searchStr, "i");
+        console.log(item.supplierName);
+        return !this.searchStr || reg.test(item.supplierName) || reg.test(item.realReceipt);
+      });
+    }
+  },
       created(){
           this.getData();
       },

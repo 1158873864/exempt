@@ -7,5 +7,4 @@ module.exports = {
   // BASE_API: '"http://172.31.198.55:8080"',
   // BASE_API: '"http://ijehj4.natappfree.cc"'
   BASE_API: '"http://47.102.146.253:1024"'
-
 }

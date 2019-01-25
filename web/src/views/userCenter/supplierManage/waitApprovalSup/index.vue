@@ -14,16 +14,16 @@
                <el-table-column prop="devices.imei" label="设备信息"  align="center"></el-table-column>
 
             </el-table-column>    -->
-            <el-table-column prop="id" label="id"  align="center"></el-table-column>
-            <el-table-column prop="applicantId" label="登录ID"  align="center"></el-table-column>
+            <!-- <el-table-column prop="id" label="id"  align="center"></el-table-column> -->
+            <!-- <el-table-column prop="applicantId" label="登录ID"  align="center"></el-table-column> -->
             <el-table-column prop="status" label="状态"  align="center"></el-table-column>
             <el-table-column prop="time" label="时间"  align="center"></el-table-column>
             <el-table-column label="user">
                 <!-- <el-table-column prop="user.avatarUrl" label="avatarUrl"  align="center"></el-table-column> -->
-                <el-table-column prop="user.id" label="id"  align="center"></el-table-column>
-                <el-table-column prop="user.password" label="密码"  align="center"></el-table-column>
+                <!-- <el-table-column prop="user.id" label="id"  align="center"></el-table-column> -->
+                <!-- <el-table-column prop="user.password" label="密码"  align="center"></el-table-column> -->
                 <el-table-column prop="user.role" label="角色"  align="center"></el-table-column>
-                <el-table-column prop="user.tableId" label="tableId"  align="center"></el-table-column>
+                <!-- <el-table-column prop="user.tableId" label="tableId"  align="center"></el-table-column> -->
                 <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column>
             </el-table-column>
             <el-table-column label="操作" width="280" align="center">
@@ -66,14 +66,14 @@
                             "id": 36,
                             "username": "手动阀手动阀",
                             "password": "$2a$10$T3C8CzyJMdLg4clNLO/sIeSZGodzzzI.W/Oan6/tizWfiVvRHwoWq",
-                            "role": 4,
+                            "role": "4",
                             "tableId": 2,
                             "cards": []
                         },
                         "applicantId": 1,
                         "time": "Jan 18, 2019 1:47:19 PM",
                         "approverId": 0,
-                        "status": "CHECKING",
+                        "status": "启用",
                         "devices": [],
                         "priority": 0,
                         "codeType": "NONE"

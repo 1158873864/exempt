@@ -2,30 +2,31 @@ package njurestaurant.njutakeout.bl.report;
 
 import javafx.application.Platform;
 import njurestaurant.njutakeout.blservice.report.ReportBlService;
-import njurestaurant.njutakeout.dataservice.account.AgentDataService;
-import njurestaurant.njutakeout.dataservice.account.MerchantDataService;
-import njurestaurant.njutakeout.dataservice.account.SupplierDataService;
-import njurestaurant.njutakeout.dataservice.account.UserDataService;
+import njurestaurant.njutakeout.dataservice.account.*;
+import njurestaurant.njutakeout.dataservice.app.AlipayDataService;
+import njurestaurant.njutakeout.dataservice.app.DeviceDataService;
+import njurestaurant.njutakeout.dataservice.company.CompanyCardDataService;
 import njurestaurant.njutakeout.dataservice.company.TeamDataService;
+import njurestaurant.njutakeout.dataservice.order.ChangeOrderDataService;
 import njurestaurant.njutakeout.dataservice.order.PlatformOrderDataService;
 import njurestaurant.njutakeout.dataservice.order.WithdrewOrderDataService;
-import njurestaurant.njutakeout.entity.account.Agent;
-import njurestaurant.njutakeout.entity.account.Merchant;
-import njurestaurant.njutakeout.entity.account.User;
-import njurestaurant.njutakeout.entity.order.PlatformOrder;
-import njurestaurant.njutakeout.entity.order.WithdrewOrder;
+import njurestaurant.njutakeout.entity.account.*;
+import njurestaurant.njutakeout.entity.app.Alipay;
+import njurestaurant.njutakeout.entity.app.Device;
+import njurestaurant.njutakeout.entity.company.CompanyCard;
+import njurestaurant.njutakeout.entity.order.*;
 import njurestaurant.njutakeout.exception.WrongInputException;
+import njurestaurant.njutakeout.publicdatas.account.SupplierState;
 import njurestaurant.njutakeout.publicdatas.order.OrderState;
 import njurestaurant.njutakeout.publicdatas.order.WithdrewState;
-import njurestaurant.njutakeout.response.report.AgentReportResponse;
-import njurestaurant.njutakeout.response.report.MerchantReportResponse;
-import njurestaurant.njutakeout.response.report.PlatformAnalyse;
+import njurestaurant.njutakeout.response.report.*;
 import njurestaurant.njutakeout.util.FormatDateTime;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.jws.soap.SOAPBinding;
 import java.util.*;
 
 @Service
@@ -36,17 +37,25 @@ public class ReportBlServiceImpl implements ReportBlService {
     private final SupplierDataService supplierDataService;
     private final MerchantDataService merchantDataService;
     private final AgentDataService agentDataService;
-    private final TeamDataService teamDataService;
+    private final AlipayDataService alipayDataService;
+    private final ChangeOrderDataService changeOrderDataService;
+    private final DeviceDataService deviceDataService;
+    private final PersonalCardDataService personalCardDataService;
+    private final CompanyCardDataService companyCardDataService;
 
     @Autowired
-    public ReportBlServiceImpl(PlatformOrderDataService platformOrderDataService, WithdrewOrderDataService withdrewOrderDataService, UserDataService userDataService, SupplierDataService supplierDataService, MerchantDataService merchantDataService, AgentDataService agentDataService, TeamDataService teamDataService) {
+    public ReportBlServiceImpl(PlatformOrderDataService platformOrderDataService, WithdrewOrderDataService withdrewOrderDataService, UserDataService userDataService, SupplierDataService supplierDataService, MerchantDataService merchantDataService, AgentDataService agentDataService, DeviceDataService deviceDataService, AlipayDataService alipayDataService, ChangeOrderDataService changeOrderDataService, PersonalCardDataService personalCardDataService, CompanyCardDataService companyCardDataService) {
         this.platformOrderDataService = platformOrderDataService;
         this.withdrewOrderDataService = withdrewOrderDataService;
         this.userDataService = userDataService;
         this.supplierDataService = supplierDataService;
         this.merchantDataService = merchantDataService;
         this.agentDataService = agentDataService;
-        this.teamDataService = teamDataService;
+        this.deviceDataService = deviceDataService;
+        this.alipayDataService = alipayDataService;
+        this.changeOrderDataService = changeOrderDataService;
+        this.companyCardDataService = companyCardDataService;
+        this.personalCardDataService = personalCardDataService;
     }
 
     /**
@@ -119,37 +128,39 @@ public class ReportBlServiceImpl implements ReportBlService {
                             Merchant merchant = merchantMap.get(platformOrder.getUid());
                             switch (platformOrder.getType()) {
                                 case "alipay":
-                                    merchantReportResponse.setAvailiableDeposit(merchantReportResponse.getAvailiableDeposit() + platformOrder.getPayMoney() * (1 - merchant.getAlipay() / 100));
+                                    merchantReportResponse.setAvailiableDeposit(merchantReportResponse.getAvailiableDeposit() + platformOrder.getPayMoney() * (1 - merchant.getAlipay() / 100)); //
                                     break;
                                 case "wechat":
                                     merchantReportResponse.setAvailiableDeposit(merchantReportResponse.getAvailiableDeposit() + platformOrder.getPayMoney() * (1 - merchant.getWechat() / 100));
                                     break;
                             }
                             if (platformOrder.getTime() != null && DateUtils.isSameDay(date, platformOrder.getTime())) { // 和查询日期同一天
-                                Agent agent = agentMap.get(merchant.getApplyId());
-                                List<PlatformAnalyse> platformAnalyses = null;
-                                PlatformAnalyse temp = null;
-                                switch (platformOrder.getType()) {
-                                    case "alipay":  // 支付宝
-                                        if (agent != null)
-                                            merchantReportResponse.setAgentProfit(merchantReportResponse.getAgentProfit() + platformOrder.getPayMoney() * agent.getAlipay() / 100);    // 代理分润
-                                        platformAnalyses = dailyAnalyse(merchantReportResponse.getPlatformAnalyseList(), "支付宝", platformOrder.getPayMoney());
-                                        merchantReportResponse.setPlatformAnalyseList(platformAnalyses);    // 每日量分析
-                                        merchantReportResponse.setCompanyProfit(merchant.getAlipay() / 100 * platformOrder.getPayMoney() + merchantReportResponse.getCompanyProfit());    // 公司分润
-                                        break;
-                                    case "wechat":  // 微信
-                                        if (agent != null)
-                                            merchantReportResponse.setAgentProfit(merchantReportResponse.getAgentProfit() + platformOrder.getPayMoney() * agent.getWechat() / 100);    // 代理分润
-                                        platformAnalyses = dailyAnalyse(merchantReportResponse.getPlatformAnalyseList(), "微信", platformOrder.getPayMoney());
-                                        merchantReportResponse.setPlatformAnalyseList(platformAnalyses);
-                                        merchantReportResponse.setCompanyProfit(merchant.getWechat() / 100 * platformOrder.getPayMoney() + merchantReportResponse.getCompanyProfit());
-                                        break;
-                                    case "cloudpay":    // 云闪付
+                                if (agentMap.containsKey(merchant.getApplyId())) {
+                                    Agent agent = agentMap.get(merchant.getApplyId());
+                                    List<PlatformAnalyse> platformAnalyses = null;
+                                    PlatformAnalyse temp = null;
+                                    switch (platformOrder.getType()) {
+                                        case "alipay":  // 支付宝
+                                            if (agent != null)
+                                                merchantReportResponse.setAgentProfit(merchantReportResponse.getAgentProfit() + platformOrder.getPayMoney() * agent.getAlipay() / 100);    // 代理分润
+                                            platformAnalyses = dailyAnalyse(merchantReportResponse.getPlatformAnalyseList(), "支付宝", platformOrder.getPayMoney());
+                                            merchantReportResponse.setPlatformAnalyseList(platformAnalyses);    // 每日量分析
+                                            merchantReportResponse.setCompanyProfit((merchant.getAlipay()) / 100 * platformOrder.getPayMoney() + merchantReportResponse.getCompanyProfit());    // 公司分润
+                                            break;
+                                        case "wechat":  // 微信
+                                            if (agent != null)
+                                                merchantReportResponse.setAgentProfit(merchantReportResponse.getAgentProfit() + platformOrder.getPayMoney() * agent.getWechat() / 100);    // 代理分润
+                                            platformAnalyses = dailyAnalyse(merchantReportResponse.getPlatformAnalyseList(), "微信", platformOrder.getPayMoney());
+                                            merchantReportResponse.setPlatformAnalyseList(platformAnalyses);
+                                            merchantReportResponse.setCompanyProfit((merchant.getWechat()) / 100 * platformOrder.getPayMoney() + merchantReportResponse.getCompanyProfit());
+                                            break;
+                                        case "cloudpay":    // 云闪付
 //                                        platformAnalyses = dailyAnalyse(merchantReportResponse.getPlatformAnalyseList(), "云闪付", platformOrder.getMoney());
 //                                        merchantReportResponse.setPlatformAnalyseList(platformAnalyses);
-                                        break;
-                                    default:
-                                        break;
+                                            break;
+                                        default:
+                                            break;
+                                    }
                                 }
                             }
 
@@ -200,12 +211,14 @@ public class ReportBlServiceImpl implements ReportBlService {
             c1.set(Calendar.MINUTE, 0);
             c1.set(Calendar.SECOND, 0);
             c1.set(Calendar.MILLISECOND, 0);
+            startDate = c1.getTime();
             Calendar c2 = Calendar.getInstance();
             c2.setTime(endDate);
             c2.set(Calendar.HOUR, 23);
             c2.set(Calendar.MINUTE, 59);
             c2.set(Calendar.SECOND, 59);
             c2.set(Calendar.MILLISECOND, 999);
+            endDate = c2.getTime();
             if (DateUtils.isSameDay(startDate, endDate)) date = FormatDateTime.dateToString(startDate, "yyyy-MM-dd");
             else
                 date = FormatDateTime.dateToString(startDate, "yyyy-MM-dd") + "~" + FormatDateTime.dateToString(endDate, "yyyy-MM-dd");
@@ -237,7 +250,7 @@ public class ReportBlServiceImpl implements ReportBlService {
                 plist.add(new PlatformAnalyse("支付宝", 0));
                 plist.add(new PlatformAnalyse("微信", 0));
                 plist.add(new PlatformAnalyse("云闪付", 0));
-                agentReportResponseMap.put(agent.getUser().getId(), new AgentReportResponse(number, date, agent.getUser().getUsername(), agent.getAgentName(), 0.0, 0.0, dlist, plist, 0.0, 0.0));
+                agentReportResponseMap.put(agent.getUser().getId(), new AgentReportResponse(number, date, agent.getUser().getUsername(), agent.getAgentName(), agent.getAlipay(), agent.getWechat(), dlist, plist, 0.0, 0.0));
             }
         }
         if (merchantList.size() > 0) {
@@ -264,14 +277,14 @@ public class ReportBlServiceImpl implements ReportBlService {
                     switch (platformOrder.getType()) {
                         case "alipay":
                             dlist = dailyAnalyse(agentReportResponse.getDepositList(), "支付宝", platformOrder.getPayMoney());
-                            plist = dailyAnalyse(agentReportResponse.getProfitList(), "支付宝", platformOrder.getPayMoney() * agentReportResponse.getAlipay() /100);
+                            plist = dailyAnalyse(agentReportResponse.getProfitList(), "支付宝", platformOrder.getPayMoney() * agentReportResponse.getAlipay() / 100);
                             agentReportResponse.setDepositList(dlist);
                             agentReportResponse.setProfitList(plist);
                             agentReportResponseMap.put(merchant.getApplyId(), agentReportResponse);
                             break;
                         case "wechat":
                             dlist = dailyAnalyse(agentReportResponse.getDepositList(), "微信", platformOrder.getPayMoney());
-                            plist = dailyAnalyse(agentReportResponse.getProfitList(), "微信", platformOrder.getPayMoney() * agentReportResponse.getWechat()/100);
+                            plist = dailyAnalyse(agentReportResponse.getProfitList(), "微信", platformOrder.getPayMoney() * agentReportResponse.getWechat() / 100);
                             agentReportResponse.setDepositList(dlist);
                             agentReportResponse.setProfitList(plist);
                             agentReportResponseMap.put(merchant.getApplyId(), agentReportResponse);
@@ -288,7 +301,7 @@ public class ReportBlServiceImpl implements ReportBlService {
         }
         if (withdrewOrders.size() > 0) { // 提款
             for (WithdrewOrder withdrewOrder : withdrewOrders) {
-                if(withdrewOrder.getState() != WithdrewState.SUCCESS) continue; // 过滤未成功的提款
+                if (withdrewOrder.getState() != WithdrewState.SUCCESS) continue; // 过滤未成功的提款
                 Agent agent = agentMap.get(withdrewOrder.getApplicantId());
                 if (agent != null) {
                     AgentReportResponse agentReportResponse = agentReportResponseMap.get(agent.getUser().getId());
@@ -332,5 +345,305 @@ public class ReportBlServiceImpl implements ReportBlService {
         }
         platformAnalyses.add(temp);
         return platformAnalyses;
+    }
+
+    /**
+     * 收款码报表(支付宝)
+     * 编号number
+     * 日期（xxxx-xx-xx ~xxxx-xx-xx）data1,data2
+     * 供码用户名supplierName
+     * 支付宝账号
+     * 该支付宝号的实收账款
+     * 该支付宝提现到自己绑定的个人银行卡的金额
+     *
+     * @param startDate 报表开始时间
+     * @param endDate   报表结束时间
+     * @return 收款码报表
+     * @throws WrongInputException 时间输入错误
+     */
+    @Override
+    public List<ReceiptCodeReportResponse> getReportOfReceiptCode(Date startDate, Date endDate) throws WrongInputException {
+        // 判断输入的时间格式是否错误
+        if (startDate == null) startDate = new Date();
+        if (endDate == null) endDate = new Date();
+        String date;
+        if (FormatDateTime.isDayBeforeOrEqualThan(startDate, endDate)) {
+            Calendar c1 = Calendar.getInstance();
+            c1.setTime(startDate);
+            c1.set(Calendar.HOUR, 0);
+            c1.set(Calendar.MINUTE, 0);
+            c1.set(Calendar.SECOND, 0);
+            c1.set(Calendar.MILLISECOND, 0);
+            startDate = c1.getTime();
+            Calendar c2 = Calendar.getInstance();
+            c2.setTime(endDate);
+            c2.set(Calendar.HOUR, 23);
+            c2.set(Calendar.MINUTE, 59);
+            c2.set(Calendar.SECOND, 59);
+            c2.set(Calendar.MILLISECOND, 999);
+            endDate = c2.getTime();
+            if (DateUtils.isSameDay(startDate, endDate)) date = FormatDateTime.dateToString(startDate, "yyyy-MM-dd");
+            else
+                date = FormatDateTime.dateToString(startDate, "yyyy-MM-dd") + "~" + FormatDateTime.dateToString(endDate, "yyyy-MM-dd");
+        } else {
+            throw new WrongInputException();
+        }
+
+        // 数据准备
+        List<Alipay> alipayList = alipayDataService.findAll();
+        List<Device> deviceList = deviceDataService.findAll();
+        List<PlatformOrder> platformOrderList = platformOrderDataService.findPlatformByDate(startDate, endDate);
+        List<QRcodeChangeOrder> qRcodeChangeOrderList = changeOrderDataService.findAllQrCodeChangeOrderByDate(startDate, endDate);
+
+        Map<Integer, Alipay> alipayMap = new HashMap<>();
+        Map<String, Device> deviceMap = new HashMap<>();
+        Map<String, ReceiptCodeReportResponse> receiptCodeReportResponseMap = new HashMap<>();
+        if (deviceList.size() > 0) {
+            for (Device device : deviceList) {
+                deviceMap.put(device.getImei(), device);
+            }
+        }
+        if (alipayList.size() > 0) {
+            for (Alipay alipay : alipayList) {
+                String name = "";
+                if (deviceMap.containsKey(alipay.getImei())) { // 该支付宝账号有对应的设备号
+                    Supplier supplier = deviceMap.get(alipay.getImei()).getSupplier();
+                    if (supplier != null) { // 该设备有对应的供码用户账号
+                        name = supplier.getUser().getUsername();
+                    } else continue;
+                } else continue;    // 该支付宝账号没有对应的设备号
+                if (alipay.getLoginId() == null) continue;
+                alipayMap.put(alipay.getId(), alipay);
+                String number = "A" + String.format("%08d", alipay.getId());
+                receiptCodeReportResponseMap.put(alipay.getLoginId(), new ReceiptCodeReportResponse(number, date, name, alipay.getLoginId(), 0, 0));
+            }
+        }
+
+        // 根据平台订单计算该支付宝实收金额
+        if (platformOrderList.size() > 0) {
+            for (PlatformOrder platformOrder : platformOrderList) {
+                if (platformOrder.getState() != OrderState.PAID) continue;   // 不是已成功的订单
+                if (!alipayMap.containsKey(platformOrder.getTableId())) continue; //没有该支付宝id对应的账号信息
+                Alipay alipay = alipayMap.get(platformOrder.getTableId());
+                if (receiptCodeReportResponseMap.containsKey(alipay.getLoginId())) {
+                    ReceiptCodeReportResponse receiptCodeReportResponse = receiptCodeReportResponseMap.get(alipay.getLoginId());
+                    receiptCodeReportResponse.setPayMoney(platformOrder.getPayMoney() + receiptCodeReportResponse.getPayMoney());
+                    receiptCodeReportResponseMap.put(alipay.getLoginId(), receiptCodeReportResponse);
+                }
+            }
+        }
+        // 根据内部码帐变订单计算该支付宝提现到个人卡的金额
+        if (qRcodeChangeOrderList.size() > 0) {
+            for (QRcodeChangeOrder qRcodeChangeOrder : qRcodeChangeOrderList) {
+                if (qRcodeChangeOrder.getState() != WithdrewState.SUCCESS) continue; // 没有提现成功的订单
+                if (receiptCodeReportResponseMap.containsKey(qRcodeChangeOrder.getLoginId())) {
+                    ReceiptCodeReportResponse receiptCodeReportResponse = receiptCodeReportResponseMap.get(qRcodeChangeOrder.getLoginId());
+                    receiptCodeReportResponse.setWithdrew(receiptCodeReportResponse.getWithdrew() + qRcodeChangeOrder.getRealMoney());
+                    receiptCodeReportResponseMap.put(qRcodeChangeOrder.getLoginId(), receiptCodeReportResponse);
+                }
+            }
+        }
+        List<ReceiptCodeReportResponse> result = new ArrayList<>();
+        // 生成报表
+        for (Map.Entry<String, ReceiptCodeReportResponse> entry : receiptCodeReportResponseMap.entrySet()) {
+            result.add(entry.getValue());
+        }
+        return result;
+    }
+
+    /**
+     * 资金报表（公司内部）
+     * 编号number
+     * 日期（xxxx-xx-xx ~xxxx-xx-xx）data1,data2
+     * 供码用户的个人银行卡转入到公司银行卡的金额
+     * 公司银行卡转出到代理商个人银行卡的金额
+     * 公司银行卡转出到商户个人银行卡的金额
+     *
+     * @param startDate 开始时间
+     * @param endDate   报表统计的技术时间
+     * @return 资金报表
+     * @throws WrongInputException 时间格式输入错误
+     */
+    @Override
+    public List<FundingReportResponse> getReportOfFunding(Date startDate, Date endDate) throws WrongInputException {
+        // 判断输入的时间格式是否错误
+        if (startDate == null) startDate = new Date();
+        if (endDate == null) endDate = new Date();
+        String date;
+        if (FormatDateTime.isDayBeforeOrEqualThan(startDate, endDate)) {
+            Calendar c1 = Calendar.getInstance();
+            c1.setTime(startDate);
+            c1.set(Calendar.HOUR, 0);
+            c1.set(Calendar.MINUTE, 0);
+            c1.set(Calendar.SECOND, 0);
+            c1.set(Calendar.MILLISECOND, 0);
+            startDate = c1.getTime();
+            Calendar c2 = Calendar.getInstance();
+            c2.setTime(endDate);
+            c2.set(Calendar.HOUR, 23);
+            c2.set(Calendar.MINUTE, 59);
+            c2.set(Calendar.SECOND, 59);
+            c2.set(Calendar.MILLISECOND, 999);
+            endDate = c2.getTime();
+            if (DateUtils.isSameDay(startDate, endDate)) date = FormatDateTime.dateToString(startDate, "yyyy-MM-dd");
+            else
+                date = FormatDateTime.dateToString(startDate, "yyyy-MM-dd") + "~" + FormatDateTime.dateToString(endDate, "yyyy-MM-dd");
+        } else {
+            throw new WrongInputException();
+        }
+
+        List<CardChangeOrder> cardChangeOrderList = changeOrderDataService.findAllCardChangeOrderByDate(startDate, endDate);
+        List<PersonalCard> personalCardList = personalCardDataService.findAllCards();
+        List<CompanyCard> companyCardList = companyCardDataService.findAllCompanyCards();
+        Map<String, PersonalCard> personalCardMap = new HashMap<>();
+        Map<String, CompanyCard> companyCardMap = new HashMap<>();
+
+        if (personalCardList.size() > 0) {
+            for (PersonalCard personalCard : personalCardList) {
+                personalCardMap.put(personalCard.getCardNumber(), personalCard);
+            }
+        }
+        if (companyCardList.size() > 0) {
+            for (CompanyCard companyCard : companyCardList) {
+                companyCardMap.put(companyCard.getCardNumber(), companyCard);
+            }
+        }
+
+        double supplierToCom = 0, comToAgent = 0, comToMerchant = 0;
+        if (cardChangeOrderList.size() > 0) {
+            for (CardChangeOrder cardChangeOrder : cardChangeOrderList) {
+                if (personalCardMap.containsKey(cardChangeOrder.getCardNumber_out())) {  // 供码用户的个人银行卡转入到公司银行卡的记录
+                    if (companyCardMap.containsKey(cardChangeOrder.getCardNumber_in())) {
+                        User user = personalCardMap.get(cardChangeOrder.getCardNumber_out()).getUser();
+                        if (user == null || user.getRole() != 4) continue; // 该卡号没有所属用户,或者该卡不是供码用户的卡
+                        supplierToCom += cardChangeOrder.getMoney_in();
+                    }
+                } else if (companyCardMap.containsKey(cardChangeOrder.getCardNumber_out())) {
+                    User user = personalCardMap.get(cardChangeOrder.getCardNumber_in()).getUser();
+                    if (user != null && user.getRole() == 2)
+                        comToAgent += cardChangeOrder.getMoney_out();   // 公司银行卡转出到代理商个人银行卡的记录
+                    else if (user != null && user.getRole() == 3)
+                        comToMerchant += cardChangeOrder.getMoney_out();  //公司银行卡转出到商户个人银行卡的记录
+                }
+            }
+        }
+        List<FundingReportResponse> result = new ArrayList<>();
+        String number = "F" + String.format("%08d", 1);
+        result.add(new FundingReportResponse(number, date, supplierToCom, comToAgent, comToMerchant));
+
+        return result;
+    }
+
+    /**
+     * 团队报表（就是供码用户报表）
+     * 编号number
+     * 日期（xxxx-xx-xx ~xxxx-xx-xx）data1,data2
+     * 供码用户名supplierName
+     * 该供码用户所有支付宝的实收账款
+     * 该供码用户所有支付宝提现到自己绑定的个人银行卡的金额
+     *
+     * @param startDate 时间域开始时间
+     * @param endDate   时间域结束时间
+     * @return 返回供码用户报表
+     * @throws WrongInputException 时间格式错误异常
+     */
+    @Override
+    public List<SupplierReportResponse> getReportOfSupplier(Date startDate, Date endDate) throws WrongInputException {
+        // 判断输入的时间格式是否错误
+        if (startDate == null) startDate = new Date();
+        if (endDate == null) endDate = new Date();
+        String date;
+        if (FormatDateTime.isDayBeforeOrEqualThan(startDate, endDate)) {
+            Calendar c1 = Calendar.getInstance();
+            c1.setTime(startDate);
+            c1.set(Calendar.HOUR, 0);
+            c1.set(Calendar.MINUTE, 0);
+            c1.set(Calendar.SECOND, 0);
+            c1.set(Calendar.MILLISECOND, 0);
+            startDate = c1.getTime();
+            Calendar c2 = Calendar.getInstance();
+            c2.setTime(endDate);
+            c2.set(Calendar.HOUR, 23);
+            c2.set(Calendar.MINUTE, 59);
+            c2.set(Calendar.SECOND, 59);
+            c2.set(Calendar.MILLISECOND, 999);
+            endDate = c2.getTime();
+            if (DateUtils.isSameDay(startDate, endDate)) date = FormatDateTime.dateToString(startDate, "yyyy-MM-dd");
+            else
+                date = FormatDateTime.dateToString(startDate, "yyyy-MM-dd") + "~" + FormatDateTime.dateToString(endDate, "yyyy-MM-dd");
+        } else {
+            throw new WrongInputException();
+        }
+
+        // 数据准备
+        List<Alipay> alipayList = alipayDataService.findAll();
+        List<Device> deviceList = deviceDataService.findAll();
+        List<Supplier> supplierList = supplierDataService.getAllSuppliers();
+        List<PlatformOrder> platformOrderList = platformOrderDataService.findPlatformByDate(startDate, endDate);
+        List<QRcodeChangeOrder> qRcodeChangeOrderList = changeOrderDataService.findAllQrCodeChangeOrderByDate(startDate, endDate);
+
+        Map<Integer, Supplier> supplierMap = new HashMap<>();
+        Map<String, Integer> deviceMap = new HashMap<>();
+        Map<Integer, SupplierReportResponse> supplierReportResponseMap = new HashMap<>();
+        Map<String, Integer> alipayMap = new HashMap<>();
+        if (supplierList.size() > 0) {
+            for (Supplier supplier : supplierList) {
+                if(supplier.getStatus().equals("通过")) {
+                    supplierMap.put(supplier.getId(), supplier);
+                }
+            }
+        }
+        if (deviceList.size() > 0) {
+            for (Device device : deviceList) {
+                if (device.getSupplier() != null && supplierMap.containsKey(device.getSupplier().getId())) {    // 筛选不存在的供码用户
+                    Supplier supplier = device.getSupplier();
+                    String number = "Gm" + String.format("%08d", supplier.getId());
+                    SupplierReportResponse supplierReportResponse = new SupplierReportResponse(number, date, supplier.getUser().getUsername(), 0, 0);
+                    supplierReportResponseMap.put(supplier.getId(), supplierReportResponse);
+                    deviceMap.put(device.getImei(), supplier.getId());
+                }
+            }
+        }
+        if (alipayList.size() > 0) {
+            for (Alipay alipay : alipayList) {
+                if (deviceMap.containsKey(alipay.getImei())) { // 该支付宝账号有对应的设备号
+                    int sid = deviceMap.get(alipay.getImei());
+                    alipayMap.put(alipay.getLoginId(), sid);
+                }
+            }
+        }
+
+        if (platformOrderList.size() > 0) {
+            for (PlatformOrder platformOrder : platformOrderList) {
+                if (platformOrder.getState() != OrderState.PAID) continue; // 过滤没有成功的订单
+                if (deviceMap.containsKey(platformOrder.getImei())) {
+                    int sid = deviceMap.get(platformOrder.getImei());
+                    if (supplierReportResponseMap.containsKey(sid)) {
+                        SupplierReportResponse supplierReportResponse = supplierReportResponseMap.get(deviceMap.get(platformOrder.getImei()));
+                        supplierReportResponse.setRealReceipt(platformOrder.getPayMoney() + supplierReportResponse.getRealReceipt());
+                        supplierReportResponseMap.put(sid, supplierReportResponse);
+                    }
+                }
+            }
+        }
+        if (qRcodeChangeOrderList.size() > 0) {
+            for (QRcodeChangeOrder qRcodeChangeOrder : qRcodeChangeOrderList) {
+                if (qRcodeChangeOrder.getState() != WithdrewState.SUCCESS) continue;
+                if (alipayMap.containsKey(qRcodeChangeOrder.getLoginId())) {
+                    int sid = alipayMap.get(qRcodeChangeOrder.getLoginId());
+                    SupplierReportResponse supplierReportResponse = supplierReportResponseMap.get(sid);
+                    supplierReportResponse.setWithdrew(supplierReportResponse.getWithdrew() + qRcodeChangeOrder.getRealMoney());
+                    supplierReportResponseMap.put(sid, supplierReportResponse);
+                }
+            }
+        }
+
+        // 生成报表
+        List<SupplierReportResponse> supplierReportResponses = new ArrayList<>();
+        for(Map.Entry<Integer, SupplierReportResponse> entry : supplierReportResponseMap.entrySet()) {
+            supplierReportResponses.add(entry.getValue());
+        }
+
+        return supplierReportResponses;
     }
 }

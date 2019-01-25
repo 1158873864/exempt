@@ -14,7 +14,10 @@ import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.SuccessResponse;
 import njurestaurant.njutakeout.response.WrongResponse;
 import njurestaurant.njutakeout.response.user.MerchantAddResponse;
+import njurestaurant.njutakeout.util.RSAUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +35,12 @@ public class MerchantBlServiceImpl implements MerchantBlService {
         this.merchantDataService = merchantDataService;
         this.userDataService = userDataService;
     }
+
+    @Value(value = "${spring.encrypt.publicKey}")
+    private String publicKey;
+
+    @Value(value = "${spring.encrypt.privateKey}")
+    private String privateKey;
 
     /**
      * add a new merchant
@@ -57,10 +66,11 @@ public class MerchantBlServiceImpl implements MerchantBlService {
             throw new WrongIdException();
         } else {
             merchant.setName(merchantUpdateParameters.getName());
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             User user = merchant.getUser();
-            if(!user.getPassword().equals(merchantUpdateParameters.getPassword()))
-                user.setPassword(encoder.encode(merchantUpdateParameters.getPassword()));
+            user.setOriginPassword(RSAUtils.encryptedDataOnJava(merchantUpdateParameters.getPassword(), publicKey));
+//            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+//            if(!user.getPassword().equals(merchantUpdateParameters.getPassword()))
+//                user.setPassword(encoder.encode(merchantUpdateParameters.getPassword()));
             merchant.setUser(user);
             return new MerchantAddResponse(merchantDataService.saveMerchant(merchant).getId());
         }
@@ -82,18 +92,18 @@ public class MerchantBlServiceImpl implements MerchantBlService {
         if(merchant != null) {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             User user = merchant.getUser();
-            user.setPassword(encoder.encode(merchantApprovalParameters.getPassword()));
-            user.setUsername(merchantApprovalParameters.getUsername());
-            merchant.setUser(user);
-            merchant.setAlipay(merchantApprovalParameters.getAlipay());
-            merchant.setWechat(merchantApprovalParameters.getWechat());
-            merchant.setApproverId(merchantApprovalParameters.getApproverId());
-            merchant.setPriority(merchantApprovalParameters.getLevel());
-            merchant.setApprovalTime(new Date());
+//            user.setPassword(encoder.encode(merchantApprovalParameters.getPassword()));
+//            user.setUsername(merchantApprovalParameters.getUsername());
+//            merchant.setUser(user);
+//            merchant.setAlipay(merchantApprovalParameters.getAlipay());
+//            merchant.setWechat(merchantApprovalParameters.getWechat());
+//            merchant.setApproverId(merchantApprovalParameters.getApproverId());
+//            merchant.setPriority(merchantApprovalParameters.getLevel());
+//            merchant.setApprovalTime(new Date());
             if(merchantApprovalParameters.getStatus() == 1) {
-                merchant.setStatus(MerchantState.PASS);
+                merchant.setStatus("启用");
             } else if(merchantApprovalParameters.getStatus() == 0){
-                merchant.setStatus((MerchantState.REJECT));
+                merchant.setStatus("停用");
             } else {
                 return new WrongResponse(10140, "Wrong state");
             }
@@ -112,8 +122,7 @@ public class MerchantBlServiceImpl implements MerchantBlService {
     @Override
     public List<Merchant> findAllMerchants() {
         List<Merchant> merchantList = merchantDataService.getAllMerchants();
-        JSONFilter(merchantList);
-        return merchantList;
+        return JSONFilter(merchantList);
     }
 
 
@@ -132,8 +141,7 @@ public class MerchantBlServiceImpl implements MerchantBlService {
     @Override
     public List<Merchant> findMerchantsByState(MerchantState merchantState) {
         List<Merchant> merchantList = merchantDataService.getMerchantsByState(merchantState);
-        JSONFilter(merchantList);
-        return merchantList;
+        return JSONFilter(merchantList);
     }
 
     private List<Merchant> JSONFilter(List<Merchant> merchantList) {
@@ -141,6 +149,11 @@ public class MerchantBlServiceImpl implements MerchantBlService {
             for(Merchant merchant : merchantList) {
                 List<PersonalCard> cardList = merchant.getUser().getCards();
                 cardList.stream().peek(c -> c.setUser(null)).collect(Collectors.toList());
+                User user = merchant.getUser();
+                if(user != null) {
+                    if(StringUtils.isNotBlank(user.getOriginPassword()))    user.setOriginPassword(RSAUtils.decryptDataOnJava(user.getOriginPassword(), privateKey));
+                    else user.setOriginPassword("");
+                }
             }
         }
         return merchantList;

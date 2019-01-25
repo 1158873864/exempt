@@ -4,11 +4,15 @@ import njurestaurant.njutakeout.blservice.account.AgentBlService;
 import njurestaurant.njutakeout.dataservice.account.AgentDataService;
 import njurestaurant.njutakeout.entity.account.Agent;
 import njurestaurant.njutakeout.entity.account.PersonalCard;
+import njurestaurant.njutakeout.entity.account.User;
 import njurestaurant.njutakeout.exception.UsernameIsExistentException;
 import njurestaurant.njutakeout.publicdatas.account.AgentDailyFlow;
 import njurestaurant.njutakeout.response.user.AgentAddResponse;
 import njurestaurant.njutakeout.response.user.AgentInfoResponse;
+import njurestaurant.njutakeout.util.RSAUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,6 +22,12 @@ import java.util.stream.Collectors;
 @Service
 public class AgentBlServiceImpl implements AgentBlService {
     private final AgentDataService agentDataService;
+
+    @Value(value = "${spring.encrypt.privateKey}")
+    private String privateKey;
+
+    @Value(value = "${spring.encrypt.publicKey}")
+    private String publicKey;
 
     @Autowired
     public AgentBlServiceImpl(AgentDataService agentDataService) {
@@ -49,9 +59,15 @@ public class AgentBlServiceImpl implements AgentBlService {
         List<Agent> agents = agentDataService.getAllAgent();
         List<AgentInfoResponse> agentInfoResponses = new ArrayList<>();
         if(agents.size() != 0) {
-            for(Agent merchant : agents) {
-                List<PersonalCard> cardList = merchant.getUser().getCards();
+            for(Agent agent : agents) {
+                List<PersonalCard> cardList = agent.getUser().getCards();
                 cardList.stream().peek(c -> c.setUser(null)).collect(Collectors.toList());
+                User user = agent.getUser();
+                if(user != null) {
+                    if(StringUtils.isNotBlank(user.getOriginPassword()))
+                        user.setOriginPassword(RSAUtils.decryptDataOnJava(user.getOriginPassword(), privateKey));
+                    else user.setOriginPassword("");
+                }
             }
             agentInfoResponses = agents.stream().map(agent -> {
                 double flow = AgentDailyFlow.flow.containsKey(agent.getId()) ? AgentDailyFlow.flow.get(agent.getId()) : 0;

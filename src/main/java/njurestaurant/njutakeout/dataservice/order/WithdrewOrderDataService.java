@@ -20,4 +20,6 @@ public interface WithdrewOrderDataService {
     List<WithdrewOrder> findByOperatorId(int id);
 
     List<WithdrewOrder> findByDateRange(Date d1, Date d2);
+
+
 }

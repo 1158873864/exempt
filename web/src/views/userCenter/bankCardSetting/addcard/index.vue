@@ -16,9 +16,9 @@
             <el-form-item label="名字">
               <el-input v-model="form.name"></el-input>
             </el-form-item>
-            <!-- <el-form-item label="数字">
+            <el-form-item label="数字">
                     <el-input v-model="form.number"></el-input>
-            </el-form-item> -->
+            </el-form-item>
             <el-form-item label="状态">
                     <el-select v-model="form.status" placeholder="启用">
                     <el-option label="启用" value="启用"></el-option>

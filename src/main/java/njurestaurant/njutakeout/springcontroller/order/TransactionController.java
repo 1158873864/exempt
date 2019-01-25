@@ -84,6 +84,16 @@ public class TransactionController {
             return new ResponseEntity<>(new JSONResponse(10410, new WrongResponse(10410, "提现金额大于该用户现有的余额。")), HttpStatus.OK);
         }
     }
+    @ApiOperation(value = "查看提现记录", notes = "查看提现记录")
+    @RequestMapping(value = "withdrew/history", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> WithdrewHistory() {
+            return new ResponseEntity<>(new JSONResponse(200, transactionBlService.getWithdrewOrder()), HttpStatus.OK);
+    }
 
     @ApiOperation(value = "查看未处理的提现订单", notes = "财务查看未处理的提现订单")
     @RequestMapping(value = "withdrews/waiting", method = RequestMethod.GET)

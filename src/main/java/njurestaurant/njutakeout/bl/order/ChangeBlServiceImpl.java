@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class ChangeBlServiceImpl implements ChangeBlService {
@@ -41,7 +42,7 @@ public class ChangeBlServiceImpl implements ChangeBlService {
     //内部码账变订单
     @Override
     public QRcodeChangeOrder addQRcodeChangeOrder(QRcodeChangeParameters QRcodeChangeParameters) throws WrongIdException, WrongInputException, PersonalCardDoesNotExistException, AlipayNotExistException {
-        User user = userDataService.getUserByUsername(QRcodeChangeParameters.getOperateUsername());
+        User user = userDataService.getUserById(QRcodeChangeParameters.getOperateId());
 
         if (user == null) throw new WrongIdException();
         if (user.getRole() == 1 || user.getRole() == 4) {
@@ -60,17 +61,17 @@ public class ChangeBlServiceImpl implements ChangeBlService {
                 throw new PersonalCardDoesNotExistException();
             return changeOrderDataService.saveQRcodeChangeOrder(new QRcodeChangeOrder(
                     loginId, QRcodeChangeParameters.getMoney(), 0, pre_balance, QRcodeChangeParameters.getCardNumber(),
-                    personalCard.getCardBalance(), WithdrewState.WAITING, new Date(), QRcodeChangeParameters.getOperateUsername()));
+                    personalCard.getCardBalance(), WithdrewState.WAITING, new Date(),user.getUsername()));
             //到卡金额会在银行发短信后监控到更新，先写成0
             //安卓会发支付宝余额，在websocket
         } else
             throw new WrongIdException();
     }
 
-    //内部卡账变订单
+    //内部卡账变订单(个人到公司)
     @Override
-    public CardChangeOrder addCardChangeOrder(CardChangeParameters CardChangeParameters) throws WrongIdException, WrongInputException, PersonalCardDoesNotExistException,CompanyCardDoesNotExistException {
-        User user = userDataService.getUserByUsername(CardChangeParameters.getOperateUsername());
+    public CardChangeOrder addP2CCardChangeOrder(CardChangeParameters CardChangeParameters) throws WrongIdException, WrongInputException, PersonalCardDoesNotExistException,CompanyCardDoesNotExistException {
+        User user = userDataService.getUserById(CardChangeParameters.getOperateId());
         if (user == null)
             throw new WrongIdException();
         if (user.getRole() == 4) {
@@ -92,9 +93,50 @@ public class ChangeBlServiceImpl implements ChangeBlService {
             return changeOrderDataService.saveCardChangeOrder(new CardChangeOrder(
                     CardChangeParameters.getCardNumber_out(), CardChangeParameters.getCardNumber_in(),
                     CardChangeParameters.getMoney(), 0.0, card_in.getBalance(), WithdrewState.WAITING, new Date(),
-                    CardChangeParameters.getOperateUsername()));
+                    user.getUsername()));
         } else
             throw new WrongIdException();
     }
+
+    //内部卡账变订单（公司到个人）
+    @Override
+    public CardChangeOrder addC2PCardChangeOrder(CardChangeParameters CardChangeParameters) throws WrongIdException, WrongInputException, PersonalCardDoesNotExistException,CompanyCardDoesNotExistException {
+        User user = userDataService.getUserById(CardChangeParameters.getOperateId());
+        if (user == null)
+            throw new WrongIdException();
+        if (user.getRole() == 1) {
+            String cardNumber_out = CardChangeParameters.getCardNumber_out();
+            String cardNumber_in = CardChangeParameters.getCardNumber_in();
+            CompanyCard card_out = companyCardDataService.findCompanyCardByCardNumber(cardNumber_out);
+            PersonalCard card_in = personalCardDataService.findPersonalCardByCardNumber(cardNumber_in);
+            // PersonalCard card_in = personalCardDataService.findPersonalCardByCardNumber(cardNumber_in);
+            if (card_out == null )
+                throw new CompanyCardDoesNotExistException();
+            if (card_in == null )
+                throw new PersonalCardDoesNotExistException();
+            double card_out_balance = card_out.getBalance();
+            if (card_out_balance - CardChangeParameters.getMoney() < 0)
+                throw new WrongInputException();
+            card_out.setBalance(card_out_balance - CardChangeParameters.getMoney());
+            companyCardDataService.saveCompanyCard(card_out);
+
+            return changeOrderDataService.saveCardChangeOrder(new CardChangeOrder(
+                    CardChangeParameters.getCardNumber_out(), CardChangeParameters.getCardNumber_in(),
+                    CardChangeParameters.getMoney(), 0.0, card_in.getCardBalance(), WithdrewState.WAITING, new Date(),
+                    user.getUsername()));
+        } else
+            throw new WrongIdException();
+    }
+
+    @Override
+    public List<QRcodeChangeOrder> getQRcodeChangeHistory() {
+        return changeOrderDataService.findAllQrCodeChangeOrder();
+    }
+
+    @Override
+    public List<CardChangeOrder> getCardChangeHistory() {
+        return changeOrderDataService.findAllCardChangeOrder();
+    }
+
 
 }

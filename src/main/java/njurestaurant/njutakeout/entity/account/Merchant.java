@@ -1,7 +1,5 @@
 package njurestaurant.njutakeout.entity.account;
 
-import njurestaurant.njutakeout.publicdatas.account.MerchantState;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -20,7 +18,7 @@ public class Merchant {
     @Column(name = "balance")
     private double balance;
     @Column(name = "status")
-    private MerchantState status;
+    private String status;
     @Column(name = "verifyCode")
     private String verifyCode;
     @Column(name = "addTime")
@@ -46,7 +44,7 @@ public class Merchant {
     public Merchant() {
     }
 
-    public Merchant(double alipay, double wechat, double balance, MerchantState status, Date addTime, String name, int applyId, User user, int priority) {
+    public Merchant(double alipay, double wechat, double balance, String status, Date addTime, String name, int applyId, User user, int priority) {
         this.alipay = alipay;
         this.wechat = wechat;
         this.balance = balance;
@@ -60,7 +58,7 @@ public class Merchant {
 
 
 
-    public Merchant(double alipay, double wechat, double balance, MerchantState status, Date addTime, String name, int approverId, Date approvalTime, User user, int priority) {
+    public Merchant(double alipay, double wechat, double balance, String status, Date addTime, String name, int approverId, Date approvalTime, User user, int priority) {
         this.alipay = alipay;
         this.wechat = wechat;
         this.balance = balance;
@@ -145,11 +143,11 @@ public class Merchant {
         this.balance = balance;
     }
 
-    public MerchantState getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(MerchantState status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

@@ -203,6 +203,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                     // 查找该用户设备
                     List<Device> devices = chosenSupplier.getDevices();
                     int dLen = devices.size();
+                    // 选择一个合适的供码设备
                     while (dLen > 0) {
                         randomNumber = random.nextInt(dLen);
                         chosenDevice = devices.get(randomNumber);
@@ -220,10 +221,10 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                             dLen--;
                             continue;
                         }
-                        // 选择一个合适的供码设备
+
                         GetReceiptCodeResponse getReceiptCodeResponse = checkAlipayOnline(chosenDevice.getImei(), alipay.getUserId());
                         if (getReceiptCodeResponse != null && getReceiptCodeResponse.getStatus().equals("success")) {
-                            if (StringUtils.isBlank(alipay.getPassQrCode())) {
+                            if (StringUtils.isBlank(alipay.getPassQrCode())) {  // 该支付宝账号的二维码链接为空，向安卓端发送获取二维码的请求
                                 alipay.setPassQrCode(getReceiptCodeResponse.getQrcode());
                                 if (StringUtils.isBlank(alipay.getPassOffCode())) {
                                     alipay.setPassOffCode(getReceiptCodeResponse.getOffcode());
@@ -285,6 +286,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                         break;
                 }
                 PlatformOrder platformOrder = new PlatformOrder(orderId, OrderState.WAITING_FOR_PAYING, date, qrCode, getQrCodeParameters.getIp(), getQrCodeParameters.getId(), money, user.getId(), chosenDevice.getImei());
+                // 该订单是支付宝订单还是微信的订单
                 platformOrder.setType(getQrCodeParameters.getType());
                 // 需要支付宝的收款码
                 if (getQrCodeParameters.getType().equals("alipay"))
@@ -470,5 +472,10 @@ public class TransactionBlServiceImpl implements TransactionBlService {
         User user = userDataService.getUserById(id);
         if (user == null || user.getRole() != 1) throw new WrongIdException();
         return withdrewOrderDataService.findByOperatorId(id);
+    }
+
+    @Override
+    public List<WithdrewOrder> getWithdrewOrder() {
+        return withdrewOrderDataService.findAll();
     }
 }

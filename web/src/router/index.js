@@ -160,19 +160,19 @@ export const asyncRouterMap = [
         path: 'bankCard',
         name: 'bankCard',
         component: () => import('@/views/companyManage/bankCard/index'),
-        meta: { title: '公司银行卡管理',role:['银行卡管理'] },
+        meta: { title: '银行卡管理',role:['银行卡管理'] },
         children: [
           {
             path: 'cards',
             name: 'cards',
             component: () => import('@/views/companyManage/bankCard/cards/index'),
-            meta: { title: '公司所有银行卡',role:['所有银行卡'] },
+            meta: { title: '公司所有银行卡', role: ['公司所有银行卡'] },
           },
           {
             path: 'cardAdd',
             name: 'cardAdd',
             component: () => import('@/views/companyManage/bankCard/cardAdd/index'),
-            meta: { title: '公司添加银行卡',role:['添加银行卡'], breadcrumb: false },
+            meta: { title: '公司添加银行卡', role: ['公司添加银行卡'], breadcrumb: false },
             breadcrumb: false
           }
         ]
@@ -351,6 +351,24 @@ export const asyncRouterMap = [
         component: () => import('@/views/financeManage/agencyWithdrew/mylist'),
         meta: { title: '处理单子', role: ['处理单子'] },
       },
+      {
+        path: 'c2p',
+        name: 'c2p',
+        component: () => import('@/views/change/C2Pcard/index'),
+        meta: { title: '公司转个人', role: ['处理单子'] },
+      },
+      {
+        path: 'p2c',
+        name: 'p2c',
+        component: () => import('@/views/change/P2Ccard/index'),
+        meta: { title: '个人转公司', role: ['处理单子'] },
+      },
+      {
+        path: 'qrcode',
+        name: 'qrcode',
+        component: () => import('@/views/change/qrcode/index'),
+        meta: { title: '内部吗账变', role: ['处理单子'] },
+      },
       // {
       //   path: 'receiveCodeList',
       //   component: () => import('@/views/financeManage/receiveCodeList/index'),
@@ -394,8 +412,8 @@ export const asyncRouterMap = [
     children: [
       {
         path: 'receiveCodeReport',
-        // component: () => import('@/views/report/receiveCodeReport/index'),
-        component: () => import('@/views/report/merchantsReport/merchants/index'),
+        component: () => import('@/views/report/receiveCodeReport/index'),
+        // component: () => import('@/views/report/merchantsReport/merchants/index'),
         name: 'receiveCodeReport',
         meta: { title: '收款码报表',role:['收款码报表'] }
       },
@@ -407,15 +425,15 @@ export const asyncRouterMap = [
       },
       {
         path: 'localTeamReport',
-        // component: () => import('@/views/report/localTeamReport/index'),
-        component: () => import('@/views/report/merchantsReport/merchants/index'),
+        component: () => import('@/views/report/localTeamReport/index'),
+        // component: () => import('@/views/report/merchantsReport/merchants/index'),
         name: 'localTeamReport',
         meta: { title: '地方团队报表',role:['地方团队报表'] }
       },
       {
         path: 'fundReport',
         // component: () => import('@/views/report/fundReport/index'),
-        component: () => import('@/views/report/merchantsReport/merchants/index'),
+        component: () => import('@/views/report/fundReport/index'),
         name: 'fundReport',
         meta: { title: '资金报表',role:['资金报表'] }
       },

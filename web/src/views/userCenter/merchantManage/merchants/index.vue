@@ -1,8 +1,9 @@
 <template>
     <div class="app-container">
     <div>所有商户</div>
+     <el-input v-model="searchStr" suffix-icon="el-icon-search" placeholder="请输入搜索内容"></el-input>
         <el-table
-        :data="teams.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+        :data="filterData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
         height="450"
         border
         style="width: 100%">
@@ -16,11 +17,11 @@
         <el-table-column prop="status" label="状态"  align="center">
              <template slot-scope="{row}">
             <el-button type="success" size="small" v-if="row.status=='审批通过'">审批通过</el-button>
-            <el-tag type="success" v-if="row.status=='审批通过'">{{ row.approvalTime }}</el-tag>
+            <!-- <el-tag type="success" v-if="row.status=='审批通过'">{{ row.approvalTime }}</el-tag> -->
             <el-button type="info" size="small" v-else-if="row.status=='等待审批'">等待审批</el-button>
-             <el-tag type="warning" v-if="row.status=='等待审批'">{{ row.addTime }}</el-tag>
+             <!-- <el-tag type="warning" v-if="row.status=='等待审批'">{{ row.addTime }}</el-tag> -->
             <el-button type="warning" size="small" v-else-if="row.status=='审批不通过'">审批不通过</el-button>
-             <el-tag type="warning" v-if="row.status=='审批不通过'">{{ row.approvalTime }}</el-tag>
+             <!-- <el-tag type="warning" v-if="row.status=='审批不通过'">{{ row.approvalTime }}</el-tag> -->
             </template>
         </el-table-column>
         <el-table-column label="操作" fixed="right" align="center" >
@@ -113,9 +114,20 @@ import {getTime} from '@/utils/index'
                     "user": {}
                     },
                 newRowIndex:1,
-                dialogFormVisible: false
+                dialogFormVisible: false,
+                searchStr: '', // 新增
             }
         },
+        computed: {
+            filterData() {
+                return this.teams.filter((item) => {
+                    var reg = new RegExp(this.searchStr, 'i')
+                    console.log(item.name)
+                    return !this.searchStr || reg.test(item.name)
+                })
+            }
+        },
+
         created(){
             this.getData();
         },
@@ -171,7 +183,7 @@ import {getTime} from '@/utils/index'
                            el.alipay = el.alipay+'%';
                            el.addTime = getTime(el.addTime)
                         // console.log(getTime(new Date()))
-                           el.approvalTime = getTime(el.approvalTime)
+                        //    el.approvalTime = getTime(el.approvalTime)
                        });
                     }
                 })

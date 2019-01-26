@@ -14,7 +14,7 @@
     >
       <el-table-column prop="cardId" label="卡号" align="center"></el-table-column>
       <el-table-column prop="id" label="id" align="center"></el-table-column>
-      <el-table-column prop="money" label="余額" align="center"></el-table-column>
+      <el-table-column prop="money" label="金额" align="center"></el-table-column>
       <el-table-column prop="type" label="提现类型" align="center"></el-table-column>
     
     </el-table>

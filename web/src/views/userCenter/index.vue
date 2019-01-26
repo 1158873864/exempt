@@ -152,7 +152,7 @@ export default {
         this.userInfo.role_ch =
         this.userInfo.role == 1 ? "管理员" : this.userInfo.role == 2 ? "代理" : this.userInfo.role == 3 ? "商户" : "供码用户";
         this.info = response.data.info;
-        this.info.status = this.info.status == "已通过" || this.info.status == "WORKING" ? "未审批" : "未通过";
+        this.info.status = this.info.status == "已通过" || this.info.status == "WORKING" ? "未审批" : "已通过";
         // console.log(this.userInfo, "klkll");
       });
     },

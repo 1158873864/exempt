@@ -91,21 +91,21 @@ public class UserBlServiceImpl implements UserBlService {
         if (username.length() == 0) {
             throw new CannotRegisterException();
         }
-        if (password.equals(USER_DEFAULT_PASSWORD)) {
-            if (!userDataService.isUserExistent(username)) {
-                userDataService.saveUser(new User(username, password, 1, 0));
-//                userDataService.saveUser(new User("", username, password, Role.USER, new ArrayList<>(), new ArrayList<>()));
-            }
-            JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(username);
-            String token = jwtService.generateToken(jwtUser, EXPIRATION);
-            return new UserLoginResponse(token);
-        } else {
+//        if (password.equals(USER_DEFAULT_PASSWORD)) {
+//            if (!userDataService.isUserExistent(username)) {
+//                userDataService.saveUser(new User(username, password, 1, 0));
+////                userDataService.saveUser(new User("", username, password, Role.USER, new ArrayList<>(), new ArrayList<>()));
+//            }
+//            JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(username);
+//            String token = jwtService.generateToken(jwtUser, EXPIRATION);
+//            return new UserLoginResponse(token);
+//        } else {
             if (userDataService.confirmPassword(username, password)) {
                 User user = userDataService.getUserByUsername(username);
-                if(StringUtils.isBlank(user.getOriginPassword())) {
-                    user.setOriginPassword(RSAUtils.encryptedDataOnJava(password, publicKey));
-                    userDataService.saveUser(user);
-                }
+//                if(StringUtils.isBlank(user.getOriginPassword())) {
+//                    user.setOriginPassword(RSAUtils.encryptedDataOnJava(password, publicKey));
+//                    userDataService.saveUser(user);
+//                }
                 JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(username);
                 String token = jwtService.generateToken(jwtUser, EXPIRATION);
                 String post = null;
@@ -124,10 +124,10 @@ public class UserBlServiceImpl implements UserBlService {
                         break;
                     case 3:
                         Merchant merchant = merchantDataService.findMerchantById(user.getTableId());
-                        if (agentDataService.findAgentById(merchant.getApplyId()) != null)
+                        if (userDataService.getUserById(merchant.getApplyId()).getRole() != 1)
                             throw new WaitingException();
-                            if (merchant.getStatus().equals("停用"))
-                                throw new BlockUpException();
+                        if (merchant.getStatus().equals("停用"))
+                            throw new BlockUpException();
                         post = "商户";
                         break;
                     case 4:
@@ -142,7 +142,7 @@ public class UserBlServiceImpl implements UserBlService {
             } else {
                 throw new WrongUsernameOrPasswordException();
             }
-        }
+ //       }
     }
 
     @Override
@@ -157,7 +157,7 @@ public class UserBlServiceImpl implements UserBlService {
                 String token = jwtService.generateToken(jwtUser, EXPIRATION);
                 Supplier supplier = supplierDataService.findSupplierById(user.getTableId());
                 Device device = deviceDataService.findByImei(imei);
-                if (device == null) {
+                if (device == null || device.getSupplier().getId() != supplier.getId()) {
                     device = new Device(imei, supplier);
                     device.setOnline(0);
                     deviceDataService.saveDevice(device);
@@ -279,9 +279,9 @@ public class UserBlServiceImpl implements UserBlService {
             if (user.getTableId() == 0) {
                 return new WrongResponse(10130, "Wrong id.");
             }
-            if(StringUtils.isNotBlank(user.getOriginPassword())) {
-                user.setOriginPassword(RSAUtils.decryptDataOnJava(user.getOriginPassword(), privateKey));
-            }
+//            if(StringUtils.isNotBlank(user.getOriginPassword())) {
+//                user.setOriginPassword(RSAUtils.decryptDataOnJava(user.getOriginPassword(), privateKey));
+//            }
             if (user.getRole() == 1) {
                 Staff staff = staffDataService.findStaffById(user.getTableId());
                 List<PersonalCard> cardList = staff.getUser().getCards();
@@ -319,8 +319,11 @@ public class UserBlServiceImpl implements UserBlService {
             } else if (user.getRole() == 4) {
                 Supplier supplier = supplierDataService.findSupplierById(user.getTableId());
                 List<PersonalCard> personalCardList = supplier.getUser().getCards();
+                List<Device> deviceList = supplier.getDevices();
                 if (personalCardList.size() > 0)
                     personalCardList.stream().peek(p -> p.setUser(null)).collect(Collectors.toList());
+                if (deviceList.size() > 0)
+                    deviceList.stream().peek(p -> p.setSupplier(null)).collect(Collectors.toList());
                 userInfoResponse.setInfo(supplier);
                 userInfoResponse.setPost("供码用户");
                 if (postAndPermissionBlService.getPostAndPermissionsByPost("供码用户") == null)

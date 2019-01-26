@@ -33,7 +33,7 @@ public interface MerchantDataService {
      */
     List<Merchant> getAllMerchants();
 
-    List<Merchant> getMerchantsByState(MerchantState merchantState);
+    List<Merchant> getMerchantsByState(String status);
 
     List<Merchant> getMerchantsByApplyId(int id);
 

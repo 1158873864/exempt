@@ -54,5 +54,5 @@ public interface MerchantBlService {
 
     List<Merchant> findMerchantsBySuperior(int id) throws WrongIdException;
 
-    List<Merchant> findMerchantsByState(MerchantState merchantState);
+    List<Merchant> findMerchantsByState(String status);
 }

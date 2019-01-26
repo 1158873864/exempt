@@ -30,7 +30,7 @@ public interface SupplierDataService {
 
     List<Supplier> getAllSuppliers();
 
-    List<Supplier> findSuppliersByState(SupplierState supplierState);
+    List<Supplier> findSuppliersByState(String status);
 
     List<Supplier> findSuppliersByLevel(int priority);
 

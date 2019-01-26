@@ -67,7 +67,7 @@ public class MerchantBlServiceImpl implements MerchantBlService {
         } else {
             merchant.setName(merchantUpdateParameters.getName());
             User user = merchant.getUser();
-            user.setOriginPassword(RSAUtils.encryptedDataOnJava(merchantUpdateParameters.getPassword(), publicKey));
+ //           user.setOriginPassword(RSAUtils.encryptedDataOnJava(merchantUpdateParameters.getPassword(), publicKey));
 //            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 //            if(!user.getPassword().equals(merchantUpdateParameters.getPassword()))
 //                user.setPassword(encoder.encode(merchantUpdateParameters.getPassword()));
@@ -139,8 +139,8 @@ public class MerchantBlServiceImpl implements MerchantBlService {
     }
 
     @Override
-    public List<Merchant> findMerchantsByState(MerchantState merchantState) {
-        List<Merchant> merchantList = merchantDataService.getMerchantsByState(merchantState);
+    public List<Merchant> findMerchantsByState(String status) {
+        List<Merchant> merchantList = merchantDataService.getMerchantsByState(status);
         return JSONFilter(merchantList);
     }
 
@@ -150,10 +150,10 @@ public class MerchantBlServiceImpl implements MerchantBlService {
                 List<PersonalCard> cardList = merchant.getUser().getCards();
                 cardList.stream().peek(c -> c.setUser(null)).collect(Collectors.toList());
                 User user = merchant.getUser();
-                if(user != null) {
-                    if(StringUtils.isNotBlank(user.getOriginPassword()))    user.setOriginPassword(RSAUtils.decryptDataOnJava(user.getOriginPassword(), privateKey));
-                    else user.setOriginPassword("");
-                }
+//                if(user != null) {
+//                    if(StringUtils.isNotBlank(user.getOriginPassword()))    user.setOriginPassword(RSAUtils.decryptDataOnJava(user.getOriginPassword(), privateKey));
+//                    else user.setOriginPassword("");
+//                }
             }
         }
         return merchantList;

@@ -15,4 +15,7 @@ public interface DeviceDataService {
     void deleteById(int id);
 
     Device findByImei(String imei);
+
+    Device findByAlipayId(int id);
+
 }

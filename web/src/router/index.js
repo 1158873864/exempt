@@ -367,7 +367,7 @@ export const asyncRouterMap = [
         path: 'qrcode',
         name: 'qrcode',
         component: () => import('@/views/change/qrcode/index'),
-        meta: { title: '内部吗账变', role: ['处理单子'] },
+        meta: { title: '内部码账变', role: ['处理单子'] },
       },
       // {
       //   path: 'receiveCodeList',

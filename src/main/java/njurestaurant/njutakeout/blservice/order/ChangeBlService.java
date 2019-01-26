@@ -30,7 +30,11 @@ public interface ChangeBlService {
 ////    List<CardChangeOrder> getMyC2PCardChangeHistory(int id) throws WrongIdException;
 //    List<QRcodeChangeOrder> getQRcodeChangeHistoryById(int id) throws WrongIdException;
 
-    List<QRcodeChangeOrder> getQRcodeChangeHistory();
+    List<QRcodeChangeOrder> getQRcodeChangeHistory(int id) throws WrongIdException;
+
+  //  List<QRcodeChangeOrder> updateQRcodeChangeHistory(int id)throws WrongIdException;
+
+
     List<CardChangeOrder> getCardChangeHistory();
 
 //

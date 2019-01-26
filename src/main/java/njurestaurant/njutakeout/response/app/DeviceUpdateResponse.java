@@ -8,7 +8,17 @@ public class DeviceUpdateResponse {
     private String status = "success";
     private String err;
     private String imei;
+    @Override
+    public String toString() {
+        // TODO Auto-generated method stub
+        return "{" +
+                "cmd='" + cmd + '\'' +
+                ", status='" + status + '\'' +
+                ", err='" + err + '\'' +
+                ", imei='" + imei + '\'' +
+                '}';
 
+    }
     public DeviceUpdateResponse(String err, String imei) {
         this.err = err;
         this.imei = imei;

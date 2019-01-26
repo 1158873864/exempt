@@ -20,6 +20,7 @@ import njurestaurant.njutakeout.security.jwt.JwtUser;
 import njurestaurant.njutakeout.security.jwt.JwtUserDetailsService;
 import njurestaurant.njutakeout.util.AESDecodeUtils;
 import njurestaurant.njutakeout.util.RSAUtils;
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -87,7 +88,7 @@ public class UserBlServiceImpl implements UserBlService {
      * @throws WrongUsernameOrPasswordException the username or password is error
      */
     @Override
-    public UserLoginResponse login(String username, String password) throws WrongUsernameOrPasswordException, CannotRegisterException, BlockUpException,WaitingException {
+    public UserLoginResponse login(String username, String password) throws WrongUsernameOrPasswordException, CannotRegisterException, BlockUpException, WaitingException {
         if (username.length() == 0) {
             throw new CannotRegisterException();
         }
@@ -100,49 +101,49 @@ public class UserBlServiceImpl implements UserBlService {
 //            String token = jwtService.generateToken(jwtUser, EXPIRATION);
 //            return new UserLoginResponse(token);
 //        } else {
-            if (userDataService.confirmPassword(username, password)) {
-                User user = userDataService.getUserByUsername(username);
+        if (userDataService.confirmPassword(username, password)) {
+            User user = userDataService.getUserByUsername(username);
 //                if(StringUtils.isBlank(user.getOriginPassword())) {
 //                    user.setOriginPassword(RSAUtils.encryptedDataOnJava(password, publicKey));
 //                    userDataService.saveUser(user);
 //                }
-                JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(username);
-                String token = jwtService.generateToken(jwtUser, EXPIRATION);
-                String post = null;
-                switch (user.getRole()) {
-                    case 1:
-                        Staff staff = staffDataService.findStaffById(user.getTableId());
-                        if (staff.getStatus().equals("停用"))
-                            throw new BlockUpException();
-                        post = staffDataService.findStaffById(user.getTableId()).getPost();
-                        break;
-                    case 2:
-                        Agent agent = agentDataService.findAgentById(user.getTableId());
-                        if (agent.getStatus().equals("停用"))
-                            throw new BlockUpException();
-                        post = "代理商";
-                        break;
-                    case 3:
-                        Merchant merchant = merchantDataService.findMerchantById(user.getTableId());
-                        if (userDataService.getUserById(merchant.getApplyId()).getRole() != 1)
-                            throw new WaitingException();
-                        if (merchant.getStatus().equals("停用"))
-                            throw new BlockUpException();
-                        post = "商户";
-                        break;
-                    case 4:
-                        Supplier supplier = supplierDataService.findSupplierById(user.getTableId());
-                        if (supplier.getStatus().equals("停用"))
-                            throw new BlockUpException();
-                        post = "供码用户";
-                        break;
-                }
-
-                return new UserLoginResponse(token, user.getRole(), user.getId(), postAndPermissionBlService.getPostAndPermissionsByPost(post) == null ? new ArrayList<>() : postAndPermissionBlService.getPostAndPermissionsByPost(post).getPermission());
-            } else {
-                throw new WrongUsernameOrPasswordException();
+            JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(username);
+            String token = jwtService.generateToken(jwtUser, EXPIRATION);
+            String post = null;
+            switch (user.getRole()) {
+                case 1:
+                    Staff staff = staffDataService.findStaffById(user.getTableId());
+                    if (staff.getStatus().equals("停用"))
+                        throw new BlockUpException();
+                    post = staffDataService.findStaffById(user.getTableId()).getPost();
+                    break;
+                case 2:
+                    Agent agent = agentDataService.findAgentById(user.getTableId());
+                    if (agent.getStatus().equals("停用"))
+                        throw new BlockUpException();
+                    post = "代理商";
+                    break;
+                case 3:
+                    Merchant merchant = merchantDataService.findMerchantById(user.getTableId());
+                    if (userDataService.getUserById(merchant.getApplyId()).getRole() != 1)
+                        throw new WaitingException();
+                    if (merchant.getStatus().equals("停用"))
+                        throw new BlockUpException();
+                    post = "商户";
+                    break;
+                case 4:
+                    Supplier supplier = supplierDataService.findSupplierById(user.getTableId());
+                    if (supplier.getStatus().equals("停用"))
+                        throw new BlockUpException();
+                    post = "供码用户";
+                    break;
             }
- //       }
+
+            return new UserLoginResponse(token, user.getRole(), user.getId(), postAndPermissionBlService.getPostAndPermissionsByPost(post) == null ? new ArrayList<>() : postAndPermissionBlService.getPostAndPermissionsByPost(post).getPermission());
+        } else {
+            throw new WrongUsernameOrPasswordException();
+        }
+        //       }
     }
 
     @Override
@@ -156,12 +157,22 @@ public class UserBlServiceImpl implements UserBlService {
                 JwtUser jwtUser = (JwtUser) jwtUserDetailsService.loadUserByUsername(username);
                 String token = jwtService.generateToken(jwtUser, EXPIRATION);
                 Supplier supplier = supplierDataService.findSupplierById(user.getTableId());
+
                 Device device = deviceDataService.findByImei(imei);
                 if (device == null || device.getSupplier().getId() != supplier.getId()) {
                     device = new Device(imei, supplier);
                     device.setOnline(0);
                     deviceDataService.saveDevice(device);
                 }
+                List<Device> list = deviceDataService.findDevicesBySupplierId(supplier.getId());
+                List<Device> list1 = deviceDataService.findAll();
+                if (list != null && list.size() >= 1)
+                    list1.removeAll(list);
+                if (list1 != null && list1.size() >= 1)
+                    for (Device a : list)
+                        for (Device b : list1)
+                            if (a.getImei().equals(b.getImei()))
+                                deviceDataService.deleteById(b.getId()); //去除与当前登录的供码用户有相同设备号的记录，保证设备号的唯一性
                 return new SuccessResponse("login success");
             } else {
                 throw new RoleIdentityNotConformException();

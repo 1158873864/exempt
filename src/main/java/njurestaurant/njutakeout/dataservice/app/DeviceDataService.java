@@ -18,4 +18,5 @@ public interface DeviceDataService {
 
     Device findByAlipayId(int id);
 
+    List<Device> findDevicesBySupplierId(int id);
 }

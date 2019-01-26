@@ -50,12 +50,18 @@ public class ChangeOrderDataServiceImpl implements ChangeOrderDataService {
 
     @Override
     public List<CardChangeOrder> findAllCardChangeOrderByDate(Date startDate, Date endDate) {
-        return CardChangeOrderDao.findAll(dateBetweenOfCard(startDate, endDate));
+        return CardChangeOrderDao.findAll();
     }
 
     @Override
     public List<CardChangeOrder> findAllCardChangeOrder() {
         return CardChangeOrderDao.findAll();
+    }
+
+    @Override
+    public List<QRcodeChangeOrder> findQrCodeChangeOrderByOperateUsername(String username) {
+
+        return QRcodeChangeOrderDao.findQRcodeChangeOrderByOperateUsername(username);
     }
 
     private Specification<QRcodeChangeOrder> dateBetweenOfQrCode(Date startDate, Date endDate) {

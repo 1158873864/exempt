@@ -1,5 +1,6 @@
 package njurestaurant.njutakeout.entity.order;
 
+import njurestaurant.njutakeout.publicdatas.app.CodeType;
 import njurestaurant.njutakeout.publicdatas.order.OrderState;
 
 import javax.persistence.*;
@@ -45,11 +46,13 @@ public class PlatformOrder {
     /*支付宝/微信的订单*/
     @Column(name = "type")
     private String type;
+    @Column(name = "code_type")
+    private CodeType codetype;
 
     public PlatformOrder() {
     }
 
-    public PlatformOrder(String number, OrderState state, Date time, String ip, String rechargeId, double money, int uid) {
+    public PlatformOrder(String number, OrderState state, Date time, String ip, String rechargeId, double money, int uid, CodeType codetype) {
         this.number = number;
         this.state = state;
         this.time = time;
@@ -57,9 +60,10 @@ public class PlatformOrder {
         this.rechargeId = rechargeId;
         this.money = money;
         this.uid = uid;
+        this.codetype = codetype;
     }
 
-    public PlatformOrder(String number, OrderState state, Date time, String payCode, String ip, String rechargeId, double money, int uid, String imei) {
+    public PlatformOrder(String number, OrderState state, Date time, String payCode, String ip, String rechargeId, double money, int uid, String imei, CodeType codetype) {
         this.number = number;
         this.state = state;
         this.time = time;
@@ -69,6 +73,7 @@ public class PlatformOrder {
         this.money = money;
         this.uid = uid;
         this.imei = imei;
+        this.codetype = codetype;
     }
 
     public String getType() {
@@ -181,5 +186,13 @@ public class PlatformOrder {
 
     public void setPayCode(String payCode) {
         this.payCode = payCode;
+    }
+
+    public CodeType getCodetype() {
+        return codetype;
+    }
+
+    public void setCodetype(CodeType codetype) {
+        this.codetype = codetype;
     }
 }

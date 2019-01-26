@@ -30,7 +30,7 @@ public class QRcodeChangeOrder {
     //卡上余额
     @Column(name = "card_balance")
     private double cardBalance;
-    //审核状态(未审核、已审核)
+    //状态
     @Column(name = "state")
     private WithdrewState state;
     //操作时间

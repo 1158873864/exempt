@@ -9,4 +9,10 @@ import java.util.List;
 public interface QRcodeChangeOrderDao extends JpaRepository<QRcodeChangeOrder, Integer> {
 
     List<QRcodeChangeOrder> findAll(Specification<QRcodeChangeOrder> dateBetweenOfQrCode);
+
+    List<QRcodeChangeOrder> findQRcodeChangeOrderByOperateUsername(String username);
+
+    QRcodeChangeOrder findById(int id);
+
 }
+

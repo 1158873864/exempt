@@ -20,4 +20,6 @@ public interface ChangeOrderDataService {
 
     List<CardChangeOrder> findAllCardChangeOrder();
 
+    List<QRcodeChangeOrder> findQrCodeChangeOrderByOperateUsername(String username);
+
 }

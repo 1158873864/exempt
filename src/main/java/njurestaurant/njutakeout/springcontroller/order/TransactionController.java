@@ -62,6 +62,8 @@ public class TransactionController {
             return new ResponseEntity<>(new JSONResponse(54321, new FailedToLoadCodeResponse("failed", "id防刷单")), HttpStatus.OK);
         }catch (TooLittleMoneyException e){
             return new ResponseEntity<>(new JSONResponse(88888, new FailedToLoadCodeResponse("failed", "订单金额过小")), HttpStatus.OK);
+        }catch (OrderNotPayedException e){
+            return new ResponseEntity<>(new JSONResponse(1015, new FailedToLoadCodeResponse("failed", "订单未支付，不可获取二维码。")), HttpStatus.OK);
         }
     }
 

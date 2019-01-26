@@ -9,6 +9,7 @@ import njurestaurant.njutakeout.exception.PersonalCardDoesNotExistException;
 import njurestaurant.njutakeout.exception.WrongIdException;
 import njurestaurant.njutakeout.publicdatas.account.AgentDailyFlow;
 import njurestaurant.njutakeout.publicdatas.order.WithdrewState;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import com.amazonaws.util.json.JSONObject;
 import njurestaurant.njutakeout.dataservice.app.AlipayDataService;
@@ -102,10 +103,24 @@ public class WebSocketHandler extends TextWebSocketHandler {
             Device device = deviceDataService.findByImei(imei);
             if (device != null) {
                 Alipay alipay = alipayDataService.findById(device.getAlipayId());
-                if (alipay == null || !alipay.getUserId().equals(userid)) { // 没有支付宝信息/支付宝信息对不上
-                    alipay = new Alipay(loginid, userid, null, null, null, imei, name, 0.0);
-                    Alipay a = alipayDataService.saveAlipay(alipay);
-                    device.setAlipayId(a.getId());
+                if (alipay == null) { // 没有支付宝信息
+                    Alipay alipay1 = alipayDataService.findByUserId(userid);
+                    if (alipay1 != null)
+                        device.setAlipayId(alipay1.getId());
+                    else {
+                        alipay1 = new Alipay(loginid, userid, null, null, null, imei, name, 0.0);
+                        Alipay a = alipayDataService.saveAlipay(alipay1);
+                        device.setAlipayId(a.getId());
+                    }
+                } else if (!alipay.getUserId().equals(userid)) { // 支付宝信息对不上
+                    Alipay alipay2 = alipayDataService.findByUserId(userid);
+                    if (alipay2 != null)
+                        device.setAlipayId(alipay2.getId());
+                    else {
+                        alipay2 = new Alipay(loginid, userid, null, null, null, imei, name, 0.0);
+                        Alipay a = alipayDataService.saveAlipay(alipay2);
+                        device.setAlipayId(a.getId());
+                    }
                 }
                 device.setOnline(1); // 支付宝已登录
                 deviceDataService.saveDevice(device);
@@ -117,9 +132,23 @@ public class WebSocketHandler extends TextWebSocketHandler {
         //服务端消息:{"cmd":"getwealth","type":"alipay","imei":"设备唯一标识","userid":"支付宝userid"}
         //客户端消息:{"cmd":"wealth","type":"alipay","imei":"设备唯一标识","wealth":"余额","userid":"支付宝userid"}
         if (cmd.equals("wealth") && type.equals("alipay")) {
-            String userId = jsonObject.getString("userid");
+            String userId = (String) jsonObject.get("userid");
             Alipay alipay = alipayDataService.findByUserId(userId);
-            alipay.setWealth(Double.parseDouble(jsonObject.getString("wealth")));
+            if (alipay == null)
+                System.out.println("kkkkkkkkkkkkkkkkkkkkkkk");
+            else
+                System.out.println("qqqqqqqqqqqqqqqqqqqqqqqq");
+            String wealth = (String) jsonObject.get("wealth");
+            System.out.println(wealth);
+            if (!StringUtils.isBlank(wealth)) {
+                System.out.println(Double.parseDouble(wealth));
+                alipay.setWealth(Double.parseDouble(wealth));
+                System.out.println("33333333333");
+            } else {
+                alipay.setWealth(alipay.getWealth());
+                System.out.println("222222222222222");
+            }
+            alipayDataService.saveAlipay(alipay);
         }
         // 收到订单信息
         // 客户端消息(订单信息):{"cmd":"order","type":"alipay","imei":"设备唯一标识","orderId":"订单号","money":"订单金额","memo":"备注","time":"订单时间"}
@@ -132,13 +161,16 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
             Device device = deviceDataService.findByImei(imei);
             Supplier supplier = device.getSupplier();
-            System.out.println(jsonObject);
-            if (supplier.getCodeType() == CodeType.RPASSQR || supplier.getCodeType() == CodeType.RPASSOFF) { // 供码用户提供收款码
+            System.out.println(jsonObject.toString());
+            if ((platformOrderDataService.findByImeiAndCodeType(imei, CodeType.RPASSQR) != null && platformOrderDataService.findByImeiAndCodeType(imei, CodeType.RPASSQR).size() > 0)
+                    || (platformOrderDataService.findByImeiAndCodeType(imei, CodeType.RPASSOFF) != null && platformOrderDataService.findByImeiAndCodeType(imei, CodeType.RPASSOFF).size() > 0)) { // 供码用户提供收款码
                 System.out.println("1:" + supplier.getCodeType() + supplier.getId() + " " + imei);
                 // 提取imei，根据imei查询未付款的订单号，根据订单号把订单状态更新成已成功付款，保留订单金额，新插入实收金额。
-                PlatformOrder platformOrders = platformOrderDataService.findByImeiAndState(imei,
-                        OrderState.WAITING_FOR_PAYING);
-                if (platformOrders != null) {
+                PlatformOrder platformOrders = platformOrderDataService.findByImeiAndStateAndCodeType(imei, OrderState.WAITING_FOR_PAYING,CodeType.RPASSQR);
+                PlatformOrder platformOrders1 = platformOrderDataService.findByImeiAndStateAndCodeType(imei, OrderState.WAITING_FOR_PAYING,CodeType.RPASSOFF);
+                if (platformOrders != null || platformOrders1 != null ) {
+                    if (platformOrders1 !=null )
+                        platformOrders = platformOrders1;
                     platformOrders.setState(OrderState.PAID);
                     platformOrders.setPayMoney(money);
                     Date payTime = FormatDateTime.ThirdTimestampToDate(Long.parseLong(time));
@@ -182,7 +214,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
                     }
 
                 }
-            } else if (supplier.getCodeType() == CodeType.TPASS || supplier.getCodeType() == CodeType.TSOLID) { // 供码用户提供转账码
+            } else if ((platformOrderDataService.findByImeiAndCodeType(imei, CodeType.TPASS) != null && platformOrderDataService.findByImeiAndCodeType(imei, CodeType.TPASS).size() > 0)
+                    || (platformOrderDataService.findByImeiAndCodeType(imei, CodeType.TSOLID) != null && platformOrderDataService.findByImeiAndCodeType(imei, CodeType.TSOLID).size() > 0)) { // 供码用户提供转账码
                 // 提取memo备注里的值（99.9%是订单号）。查询订单表中是否存在一个与memo的值匹配的订单号，如果存在，则把订单状态更新成已成功付款，保留订单金额，新插入实收金额。
                 System.out.println("2:" + supplier.getCodeType());
                 System.out.println(memo);
@@ -266,13 +299,17 @@ public class WebSocketHandler extends TextWebSocketHandler {
         // 收到通码链接
         if (cmd.equals("passcode") && type.equals("alipay")) {
             msgMap.put(imei, message);
-            Thread thread = mapThread.get(imei);
-            thread.interrupt();
+            if (mapThread.containsKey(imei)) {
+                Thread thread = mapThread.get(imei);
+                thread.interrupt();
+                mapThread.remove(imei);
+            }
         }
 
         // 收到固码链接
         if (cmd.equals("solidcode") && type.equals("alipay")) {
         }
+
         //客户端提交提现状态
         //客户端消息:{"cmd":"tx","type":"alipay","imei":"设备唯一标识","status":"提现状态","userid":"支付宝userid","money":"提现金额","txdao":"提现到银行卡信息"}
         if (cmd.equals("tx") && type.equals("alipay")) {
@@ -284,14 +321,14 @@ public class WebSocketHandler extends TextWebSocketHandler {
 //					throw new WrongInputException();
             alipay.setWealth(alipay.getWealth() - Double.parseDouble((String) jsonObject.get("money"))); //先把钱给它扣掉，如果后面审批不成功，再给他加回来。
             alipayDataService.saveAlipay(alipay);
-            System.out.println(jsonObject.get("txdao")+"~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            System.out.println(jsonObject.get("txdao") + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
             String cardNumber = (String) jsonObject.get("txdao");
-            PersonalCard personalCard = personalCardDataService.findPersonalCardByCardNumber(cardNumber);
-            if (personalCard == null)
-                throw new PersonalCardDoesNotExistException();
+           // PersonalCard personalCard = personalCardDataService.findPersonalCardByCardNumber(cardNumber);
+//            if (personalCard == null)
+//                throw new PersonalCardDoesNotExistException();
             changeOrderDataService.saveQRcodeChangeOrder(new QRcodeChangeOrder(
                     alipay.getLoginId(), Double.parseDouble((String) jsonObject.get("money")), 0, pre_balance, cardNumber,
-                    personalCard.getCardBalance(), WithdrewState.WAITING, new Date(), deviceDataService.findByAlipayId(alipay.getId()).getSupplier().getUser().getUsername()));
+                    0, WithdrewState.WAITING, new Date(), deviceDataService.findByAlipayId(alipay.getId()).getSupplier().getUser().getUsername()));
             //到卡金额会在银行发短信后监控到更新，先写成0
             //安卓会发支付宝余额，在websocket
         }

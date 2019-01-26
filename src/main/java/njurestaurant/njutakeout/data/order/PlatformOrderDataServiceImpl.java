@@ -3,6 +3,7 @@ package njurestaurant.njutakeout.data.order;
 import njurestaurant.njutakeout.data.dao.order.PlatformOrderDao;
 import njurestaurant.njutakeout.dataservice.order.PlatformOrderDataService;
 import njurestaurant.njutakeout.entity.order.PlatformOrder;
+import njurestaurant.njutakeout.publicdatas.app.CodeType;
 import njurestaurant.njutakeout.publicdatas.order.OrderState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
@@ -81,6 +82,16 @@ public class PlatformOrderDataServiceImpl implements PlatformOrderDataService {
     @Override
     public List<PlatformOrder> findPlatformByDate(Date startDate, Date endDate) {
         return platformOrderDao.findAll(dateBetween(startDate, endDate));
+    }
+
+    @Override
+    public List<PlatformOrder> findByImeiAndCodeType(String imei, CodeType codeType) {
+        return platformOrderDao.findPlatformOrderByImeiAndCodetype(imei,codeType);
+    }
+
+    @Override
+    public PlatformOrder findByImeiAndStateAndCodeType(String imei, OrderState orderState, CodeType codeType) {
+        return platformOrderDao.findPlatformOrderByImeiAndStateAndCodetype(imei,orderState,codeType);
     }
 
     private Specification<PlatformOrder> dateBetween(Date startDate, Date endDate) {

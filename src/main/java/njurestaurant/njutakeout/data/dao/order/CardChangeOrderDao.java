@@ -9,6 +9,11 @@ import java.util.List;
 
 public interface CardChangeOrderDao extends JpaRepository<CardChangeOrder, Integer> {
 
-    List<CardChangeOrder> findAll(Specification<CardChangeOrder> dateBetweenOfCard);
+    List<CardChangeOrder> findAll();
+
+    List<CardChangeOrder> findByOperateUsername(String username);
+
+    CardChangeOrder findById(int id);
+
 
 }

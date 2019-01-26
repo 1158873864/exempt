@@ -2,9 +2,7 @@ package njurestaurant.njutakeout.bl.order;
 
 import com.amazonaws.util.json.JSONException;
 import com.amazonaws.util.json.JSONObject;
-import njurestaurant.njutakeout.blservice.account.UserBlService;
 import njurestaurant.njutakeout.blservice.order.TransactionBlService;
-import njurestaurant.njutakeout.config.WebSocketConfig;
 import njurestaurant.njutakeout.config.websocket.WebSocketHandler;
 import njurestaurant.njutakeout.dataservice.account.AgentDataService;
 import njurestaurant.njutakeout.dataservice.account.MerchantDataService;
@@ -28,10 +26,7 @@ import njurestaurant.njutakeout.parameters.order.WithdrewParameters;
 import njurestaurant.njutakeout.publicdatas.app.CodeType;
 import njurestaurant.njutakeout.publicdatas.order.OrderState;
 import njurestaurant.njutakeout.publicdatas.order.WithdrewState;
-import njurestaurant.njutakeout.response.JSONResponse;
-import njurestaurant.njutakeout.response.WrongResponse;
 import njurestaurant.njutakeout.response.app.GetReceiptCodeResponse;
-import njurestaurant.njutakeout.response.order.BizData;
 import njurestaurant.njutakeout.response.transaction.GetQrCodeResponse;
 import njurestaurant.njutakeout.util.FormatDateTime;
 import njurestaurant.njutakeout.util.StringParseUtil;
@@ -107,7 +102,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
      * @throws WrongIdException 供码用户id错误/用户id对应的用户身份不为商户 抛出异常
      */
     @Override
-    public GetQrCodeResponse getQrCode(GetQrCodeParameters getQrCodeParameters) throws WrongIdException, BlankInputException, IPRiskControlException, IDRiskControlException,TooLittleMoneyException {
+    public GetQrCodeResponse getQrCode(GetQrCodeParameters getQrCodeParameters) throws WrongIdException, BlankInputException, IPRiskControlException, IDRiskControlException, TooLittleMoneyException, OrderNotPayedException {
         if (Double.parseDouble(getQrCodeParameters.getMoney()) <= money_threshold) {
             throw new TooLittleMoneyException();
         }
@@ -231,6 +226,24 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                                 }
                                 alipayDataService.saveAlipay(alipay);
                             }
+                            //if (checkOrderIsExpired())
+                            if (chosenSupplier.getCodeType() == CodeType.RPASSOFF || chosenSupplier.getCodeType() == CodeType.RPASSQR) {
+                                PlatformOrder platformOrder = platformOrderDataService.findByImeiAndStateAndCodeType(getReceiptCodeResponse.getImei(), OrderState.WAITING_FOR_PAYING, CodeType.RPASSOFF);
+                                PlatformOrder platformOrder1 = platformOrderDataService.findByImeiAndStateAndCodeType(getReceiptCodeResponse.getImei(), OrderState.WAITING_FOR_PAYING, CodeType.RPASSQR);
+                                if (platformOrder != null && platformOrder1 == null)
+                                    if (checkOrderIsExpired(platformOrder.getTime())) {//如果过期，则置为过期
+                                        platformOrder.setState(OrderState.EXPIRED);
+                                        platformOrderDataService.savePlatformOrder(platformOrder);
+                                    } else
+                                        throw new OrderNotPayedException();//如果没过期，则抛异常
+                                if (platformOrder == null && platformOrder1 != null)
+                                    if (checkOrderIsExpired(platformOrder1.getTime())) {//如果过期，则置为过期
+                                        platformOrder1.setState(OrderState.EXPIRED);
+                                        platformOrderDataService.savePlatformOrder(platformOrder1);
+                                    } else
+                                        throw new OrderNotPayedException();//如果没过期，则抛异常
+                            }
+
                             break; // 支付宝在线
                         } else if (getReceiptCodeResponse != null && getReceiptCodeResponse.getStatus().equals("failed")) {
                             chosenDevice.setOnline(0);
@@ -264,8 +277,8 @@ public class TransactionBlServiceImpl implements TransactionBlService {
 
                 // 检查供码者设定的供码类型, 获取收款码
                 String qrCode = null;
-
-                switch (chosenSupplier.getCodeType()) {
+                CodeType codeType = chosenSupplier.getCodeType();
+                switch (codeType) {
                     case RPASSOFF: // 收款通码离线码
                         qrCode = alipayDataService.findById(chosenDevice.getAlipayId()).getPassOffCode();
                         System.out.println("off:" + qrCode);
@@ -285,7 +298,9 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                         qrCode = TRANSFERSOLIDURL + alipayDataService.findById(chosenDevice.getAlipayId()).getUserId() + "\",\"a\":\"" + money + "\",\"m\":\"" + orderId + "\"}";
                         break;
                 }
-                PlatformOrder platformOrder = new PlatformOrder(orderId, OrderState.WAITING_FOR_PAYING, date, qrCode, getQrCodeParameters.getIp(), getQrCodeParameters.getId(), money, user.getId(), chosenDevice.getImei());
+
+
+                PlatformOrder platformOrder = new PlatformOrder(orderId, OrderState.WAITING_FOR_PAYING, date, qrCode, getQrCodeParameters.getIp(), getQrCodeParameters.getId(), money, user.getId(), chosenDevice.getImei(), codeType);
                 // 该订单是支付宝订单还是微信的订单
                 platformOrder.setType(getQrCodeParameters.getType());
                 // 需要支付宝的收款码
@@ -304,7 +319,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
         if (platformOrder == null) { // 订单号错误
             throw new WrongIdException();
         } else if (platformOrder.getState() == OrderState.EXPIRED || checkOrderIsExpired(platformOrder.getTime())) {  //已失效
-            platformOrder.setState(OrderState.EXPIRED);
+            platformOrder.setState(OrderState.EXPIRED);//当扫码时，才会将状态置为已失效
             platformOrderDataService.savePlatformOrder(platformOrder);
             return "expired";
         } else if (platformOrder.getState() == OrderState.PAID) {
@@ -324,7 +339,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
         long diff = now.getTime() - date.getTime();
         int minutes = (int) (diff / (1000 * 60));
         // 预设失效时间为2分钟
-        if (minutes > 10) {
+        if (minutes > 2) {
             return true;
         } else {
             return false;
@@ -339,7 +354,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
      * @param userId 支付宝的账号
      * @return
      */
-    private GetReceiptCodeResponse checkAlipayOnline(String imei, String userId) {
+    private GetReceiptCodeResponse checkAlipayOnline(String imei, String userId) throws OrderNotPayedException {
         WebSocketHandler.sendMessageToUser(imei, new TextMessage(String.valueOf(new CheckOnlineParameters(imei, userId))));
 
         Thread thread = Thread.currentThread();
@@ -365,7 +380,6 @@ public class TransactionBlServiceImpl implements TransactionBlService {
             String qrCode = jsonObject.getString("qrcode");
             String offQrCode = jsonObject.getString("offqrcode");
             String status = jsonObject.getString("status");
-
             return new GetReceiptCodeResponse(cmd, type, im, status, "msg", userid, qrCode, offQrCode);
         } catch (JSONException e) {
             return null;

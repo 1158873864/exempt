@@ -91,13 +91,39 @@ export function deleteMerchant(aid) {
     }
   })
 }
-export function updateMerchant(mid, username, password) {
+export function updateMerchant(mid, alipay,
+  level,
+  name,
+  password,
+  status,
+  wechat) {
   return request({
     url: '/merchant/update/' + mid,
     method: 'put',
     data: {
-      username,
-      password
+      alipay,
+      level,
+      name,
+      password,
+      status,
+      wechat
+    }
+  })
+}
+export function updateAgent(aid, alipay,
+  name,
+  password,
+  status,
+  wechat) {
+  return request({
+    url: '/agent/update/' + aid,
+    method: 'put',
+    data: {
+      alipay,
+      name,
+      password,
+      status,
+      wechat
     }
   })
 }
@@ -138,14 +164,21 @@ export function suppliersGet() {
     method: 'get'
   })
 }
+<<<<<<< HEAD
 export function supplierUpdate(codeType, level, name,password, status,id) {
+=======
+export function supplierUpdate(codeType, level, password,status, id) {
+>>>>>>> 1f2a690a3b15e560d8c28879a64f14dcff0f5c7c
   return request({
     url: '/supplier/update/' + id,
     method: 'put',
     data: {
       codeType,
       level,
+<<<<<<< HEAD
       name,
+=======
+>>>>>>> 1f2a690a3b15e560d8c28879a64f14dcff0f5c7c
       password,
       status
     }

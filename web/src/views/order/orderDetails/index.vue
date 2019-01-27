@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <div class="app-container">
     <el-input v-model="searchStr" style="width:30vw;margin-bottom:20px;"  suffix-icon="el-icon-search" placeholder="请输入金額"></el-input>    
     <el-table
@@ -41,10 +42,55 @@
     </div>
   </div>
 </template>
+=======
+        <div class="app-container">
+             <el-input v-model="searchStr" suffix-icon="el-icon-search" placeholder="请输入搜索内容"></el-input>
+            <el-table
+            :data="filterData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+            border
+            style="width: 100%">
+            <el-table-column prop="orderNumber" label="订单编号"  align="center"></el-table-column>
+            <el-table-column prop="money" label="订单金额"  align="center"></el-table-column>
+            <el-table-column prop="paymoney" label="成交金额"  align="center"></el-table-column>
+            <el-table-column prop="rechargeId" label="充值方编号"  align="center"></el-table-column>
+            <el-table-column prop="nickname" label="支付宝昵称"  align="center"></el-table-column>
+            <!-- <el-table-column prop="code" label="收款码"  align="center"></el-table-column> -->
+            <el-table-column prop="time" label="订单时间"  align="center"></el-table-column>
+            <el-table-column prop="orderState" label="状态"  align="center">
+                 <template slot-scope="{row}">
+                    <el-button type="success" size="small" v-if="row.orderState=='PAID'">已支付</el-button>
+                    <el-tag type="success" v-if="row.orderState=='审批通过'">{{ row.approvalTime }}</el-tag>
+                    <el-button type="info" size="small" v-else-if="row.orderState=='WAITING_FOR_PAYING'">未付款</el-button>
+                    <el-button type="warning" size="small" v-else-if="row.orderState=='EXPIRED'">时间失效</el-button>
+                    <el-tag type="warning" v-if="row.orderState=='PAID'">{{ row.payTime }}</el-tag>
+                </template>
+            </el-table-column>
+            <!-- <el-table-column prop="payTime" label="到账时间"  align="center"></el-table-column> -->
+            <!-- <el-table-column prop="ip" label="ip"  align="center"></el-table-column> -->
+            <!-- <el-table-column prop="uid" label="uid"  align="center"></el-table-column> -->
+            <el-table-column prop="merchantName" label="商户"  align="center"></el-table-column>
+
+
+        </el-table>
+        <div class="block">
+            <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page.sync="currentPage"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="pagesize"
+            layout="sizes, prev, pager, next"
+            :total="1000">
+            </el-pagination>
+        </div>
+      </div>
+    </template>
+>>>>>>> 1f2a690a3b15e560d8c28879a64f14dcff0f5c7c
 
     <script>
 import { ordersGet } from "@/api/order";
 import { getTime } from "@/utils/index";
+import store from '../../../store';
 export default {
   data() {
     return {
@@ -67,7 +113,6 @@ export default {
       currentPage: 1,
       pagesize: 10,
       searchStr: "" ,// 新增
-      searchStrs:''
     };
   },
     computed: {
@@ -81,6 +126,7 @@ export default {
   },
   created() {
     this.getData();
+    console.log(store.getters.role)
   },
   methods: {
     handleSizeChange(val) {
@@ -110,6 +156,17 @@ export default {
               el.approvalTime = getTime(el.approvalTime);
               el.payTime = getTime(el.payTime);
             });
+            console.log(store.getters.role)
+            if(store.getters.role!=1)
+            {
+                var a = []
+                this.teams.forEach(el =>{
+                    if(el.merchantId==store.getters.uid) {
+                        a.push(el)
+                    }
+                })
+                this.teams = a;
+            }
           }
         }
       });

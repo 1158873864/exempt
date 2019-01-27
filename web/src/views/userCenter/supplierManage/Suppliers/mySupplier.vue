@@ -71,68 +71,6 @@
 <script>
 import {suppliersGet, supplierUpdate} from "@/api/role";
 import store from '../../../../store'
-<<<<<<< HEAD
-    export default {
-        data() {
-            return {
-                teams:[{
-                    "priority": 0,
-                    "devices": [],
-                    "status": "",
-                    "user": {},
-                    "devices_team":" ",
-                    }
-                ],
-                newRow: {
-                    "codeType": "RPASSOFF",
-                    "level": 0,
-                    "password": "",
-                    "user": {},
-                     "priority": 0,
-                    },
-                currentPage:1,
-                pagesize:10,
-                newRowIndex:1,
-                dialogFormVisible: false
-            }
-        },
-        created(){
-            this.getData();
-        },
-        methods: {
-            updateSupplier() {
-                supplierUpdate(this.newRow.codeType,this.newRow.level,this.newRow.user,this.newRow.user.password,store.getters.uid).then(response=> {
-                    if(response.code!=200){
-                        this.$message({
-                            message: response.data.description,
-                            type: 'warning'
-                        });
-                    }else{
-                        this.teams[this.newRowIndex].priority = this.newRow.level;
-                        this.dialogFormVisible = false;
-                         this.$message({
-                            message: '修改成功',
-                            type: 'success'
-                        });
-                    }
-                }); 
-            },
-            openDialog(index,row) {
-                this.dialogFormVisible=true;
-                // console.log(row)
-                this.newRow = row;
-                // if(row.codeType==None){
-                //     this.newRow.codeType = 'TSOLID'
-                // }else{
-                //      this.newRow.codeType = row.codeType;
-                // }
-                this.newRow.level = row.priority;
-                // this.newRow.password = row.user.password;
-                //this.newRow = JSON.parse(JSON.stringify(row));
-                this.newRowIndex = index;
-                console.log(this.newRow);
-
-=======
   export default {
     data() {
       return {
@@ -143,7 +81,6 @@ import store from '../../../../store'
             status: "启用",
             user: {
               username: ''
->>>>>>> 1f2a690a3b15e560d8c28879a64f14dcff0f5c7c
             },
             devices_team: " ",
             username: ''
@@ -245,11 +182,12 @@ import store from '../../../../store'
                                 de.device_team = de.imei +' '+ (de.online?'在线':'离线');
                             })
                             console.log(el.id,store.getters.uid)
-                            if(el.id == store.getters.uid){
-                                a = el
+                            if(el.applicantId == store.getters.uid){
+                                a.push(el)
+                                console.log(el)
                             }
                         })
-                        this.teams = [a]
+                        this.teams = a
                         console.log(this.teams)
                     }
                 })

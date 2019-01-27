@@ -38,6 +38,7 @@
       ></el-pagination>
     </div>
     <el-dialog title="修改供码用户信息" :visible.sync="dialogFormVisible">
+<<<<<<< HEAD
       <el-form :model="newRow">
         <el-form-item label="码类型">
           <el-select v-model="newRow.codeType" placeholder="">
@@ -68,6 +69,35 @@
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="updateSupplier">确 定</el-button>
       </div>
+=======
+            <el-form :model="newRow">
+                <el-form-item label="码类型">
+                    <el-select v-model="newRow.codeType" placeholder="">
+                    <el-option label="转账通码" value="TSOLID"></el-option>
+                    <el-option label="转账固码" value="TPASS"></el-option>
+                    <el-option label="收款通码离线码" value="RSOLID"></el-option>
+                    <el-option label="收款通码在线码" value="RPASSOFF"></el-option>
+                    <el-option label="收款固码(二开)" value="RPASSQR"></el-option>
+                    </el-select>
+                </el-form-item>
+                 <el-form-item label="状态">
+                    <el-select v-model="newRow.status" placeholder="启用">
+                    <el-option label="启用" value="启用"></el-option>
+                    <el-option label="停用" value="停用"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="level">
+                    <el-input v-model="newRow.level" type="number" min="1" placeholder="level"></el-input>
+                </el-form-item>
+                <el-form-item label="password">
+                    <el-input v-model="newRow.user.password" type="password" placeholder="password"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="updateSupplier">确 定</el-button>
+            </div>
+>>>>>>> 1f2a690a3b15e560d8c28879a64f14dcff0f5c7c
     </el-dialog>
   </div>
 </template>
@@ -120,12 +150,20 @@
     methods: {
       updateSupplier() {
         supplierUpdate(
+<<<<<<< HEAD
             this.newRow.codeType,
             this.newRow.level,
             this.newRow.user.username,
             this.newRow.user.password,
             this.newRow.status,
             this.newRow.id
+=======
+          this.newRow.codeType,
+          this.newRow.level,
+          this.newRow.user.password,
+          this.newRow.status,
+          this.newRow.id
+>>>>>>> 1f2a690a3b15e560d8c28879a64f14dcff0f5c7c
         ).then(response => {
           if (response.code != 200) {
             this.$message({

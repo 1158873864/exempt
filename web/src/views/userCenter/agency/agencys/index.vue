@@ -11,7 +11,12 @@
         <el-table-column prop="dailyFlow" label="流量"  align="center"></el-table-column>
         <el-table-column prop="dailyCommission" label="当日佣金"  align="center"></el-table-column>
         <el-table-column prop="status" label="状态"  align="center"></el-table-column>
-        
+        <el-table-column label="操作" fixed="right" align="center" >
+            <template scope="scope" >
+                <el-button size="small" 
+                        @click="openDialog(scope.$index,scope.row)">修改</el-button>
+            </template>
+        </el-table-column>
 
     </el-table>
     <div class="block">
@@ -50,7 +55,9 @@ import { agentsGet } from '@/api/role'
                 }
                 ],
                 currentPage:1,
-                pagesize:10
+                pagesize:10,
+                                dialogFormVisible: false,
+                searchStr: '', // 新增
             }
         },
         created(){
@@ -87,7 +94,14 @@ import { agentsGet } from '@/api/role'
                 {
                     this.getTeams();
                 }
-            }
+            },
+            openDialog(index,row) {
+                this.dialogFormVisible=true;
+                //this.newRow = JSON.parse(JSON.stringify(row));
+                this.newRow = row;
+                this.newRow.level = row.priority;
+
+            },
         }
     }
 </script>

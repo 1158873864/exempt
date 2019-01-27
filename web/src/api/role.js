@@ -91,13 +91,22 @@ export function deleteMerchant(aid) {
     }
   })
 }
-export function updateMerchant(mid, username, password) {
+export function updateMerchant(mid, alipay,
+  level,
+  name,
+  password,
+  status,
+  wechat) {
   return request({
     url: '/merchant/update/'+mid,
     method: 'put',
     data: {
-      username,
-      password
+      alipay,
+      level,
+      name,
+      password,
+      status,
+      wechat
     }
   })
 }

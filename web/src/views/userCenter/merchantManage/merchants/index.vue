@@ -4,24 +4,21 @@
      <el-input v-model="searchStr" suffix-icon="el-icon-search" placeholder="请输入搜索内容"></el-input>
         <el-table
         :data="filterData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-        height="450"
         border
         style="width: 100%">
         <!-- <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column> -->
         <el-table-column prop="name" label="商户名"  align="center"></el-table-column>
-        <el-table-column prop="alipay" label="支付宝点位"  align="center"></el-table-column>
-        <el-table-column prop="wechat" label="微信号点位"  align="center"></el-table-column>
+        <el-table-column prop="alipayp" label="支付宝点位"  align="center"></el-table-column>
+        <el-table-column prop="wechatp" label="微信号点位"  align="center"></el-table-column>
         <el-table-column prop="balance" label="余额"  align="center"></el-table-column>
         <el-table-column prop="applyId" label="代理商"  align="center"></el-table-column>
-        <el-table-column prop="addTime" label="申请时间"  align="center"></el-table-column>
-        <el-table-column prop="status" label="状态"  align="center">
+        <el-table-column prop="addTimep" label="申请时间"  align="center"></el-table-column>
+        <el-table-column prop="statusp" label="状态"  align="center">
              <template slot-scope="{row}">
-            <el-button type="success" size="small" v-if="row.status=='审批通过'">审批通过</el-button>
+            <el-button type="success" size="small" v-if="row.status=='启用'">启用</el-button>
             <!-- <el-tag type="success" v-if="row.status=='审批通过'">{{ row.approvalTime }}</el-tag> -->
-            <el-button type="info" size="small" v-else-if="row.status=='等待审批'">等待审批</el-button>
+            <el-button type="info" size="small" v-else-if="row.status=='停用'">停用</el-button>
              <!-- <el-tag type="warning" v-if="row.status=='等待审批'">{{ row.addTime }}</el-tag> -->
-            <el-button type="warning" size="small" v-else-if="row.status=='审批不通过'">审批不通过</el-button>
-             <!-- <el-tag type="warning" v-if="row.status=='审批不通过'">{{ row.approvalTime }}</el-tag> -->
             </template>
         </el-table-column>
         <el-table-column label="操作" fixed="right" align="center" >
@@ -44,16 +41,31 @@
         :page-sizes="[10, 20, 30, 40]"
         :page-size="pagesize"
         layout="sizes, prev, pager, next"
-        :total="1000">
+        :total="total">
         </el-pagination>
     </div>
-      <el-dialog title="修改供码用户信息" :visible.sync="dialogFormVisible">
+      <el-dialog title="修改商户信息" :visible.sync="dialogFormVisible">
             <el-form :model="newRow">
-                <el-form-item label="username">
+                <el-form-item label="用户名">
                     <el-input v-model="newRow.user.username" placeholder="area"></el-input>
                 </el-form-item>
-                <el-form-item label="password">
-                    <el-input v-model="newRow.user.password" placeholder="password"></el-input>
+                <el-form-item label="密码">
+                    <el-input v-model="newRow.user.password" type="password" placeholder="area"></el-input>
+                </el-form-item>
+                <el-form-item label="状态">
+                    <el-select v-model="newRow.user.status" placeholder="启用">
+                    <el-option label="启用" value="启用"></el-option>
+                    <el-option label="停用" value="停用"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="等级">
+                    <el-input v-model="newRow.level" placeholder="area"></el-input>
+                </el-form-item>
+                <el-form-item label="支付宝点位">
+                    <el-input v-model="newRow.alipay" placeholder="area"></el-input>
+                </el-form-item>
+                <el-form-item label="微信点位">
+                    <el-input v-model="newRow.wechat" placeholder="password"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -63,7 +75,6 @@
     </el-dialog>
   </div>
 </template>
-
 <script>
 import { merchantsGet,updateMerchant } from '@/api/role'
 import store from '../../../../store'
@@ -81,7 +92,7 @@ import {getTime} from '@/utils/index'
                     "id": 0,
                     "name": "string",
                     "priority": 0,	//用户星级
-                    "status": "WAITING",	//WAITING 等待审批/PASS 审批通过/ REJECT 审批不通过
+                    "status": "启用",	//WAITING 等待审批/PASS 审批通过/ REJECT 审批不通过
                     "user": {
                         "avatarUrl": "string",
                         "cards": [
@@ -125,6 +136,9 @@ import {getTime} from '@/utils/index'
                     console.log(item.name)
                     return !this.searchStr || reg.test(item.name)
                 })
+            },
+            total(){
+                return  this.teams.length
             }
         },
 
@@ -133,7 +147,13 @@ import {getTime} from '@/utils/index'
         },
         methods: {
              updateSupplier() {
-                updateMerchant(this.newRow.id,this.newRow.user.username,this.newRow.user.password).then(response=> {
+                updateMerchant(this.newRow.id,
+                this.newRow.alipay,
+                this.newRow.level,
+                this.newRow.user.name,
+                this.newRow.user.password,
+                this.newRow.user.status,
+                this.newRow.wechat).then(response=> {
                     if(response.code!=200){
                         this.$message({
                             message: response.data.description,
@@ -142,6 +162,7 @@ import {getTime} from '@/utils/index'
                     }else{
                         // this.teams[this.newRowIndex].priority = this.newRow.level;
                         this.dialogFormVisible = false;
+                        this.getData();
                          this.$message({
                             message: '修改成功',
                             type: 'success'
@@ -153,6 +174,7 @@ import {getTime} from '@/utils/index'
                 this.dialogFormVisible=true;
                 //this.newRow = JSON.parse(JSON.stringify(row));
                 this.newRow = row;
+                this.newRow.level = row.priority;
 
             },
             handleSizeChange(val) {
@@ -166,6 +188,7 @@ import {getTime} from '@/utils/index'
             },
             getData(){
                 this.getTeams();
+                
             },
             getTeams(){
                 merchantsGet().then(response=>{
@@ -178,13 +201,12 @@ import {getTime} from '@/utils/index'
                     }else{
                        this.teams = response.data;
                        this.teams.forEach(el => {
-                           el.status=el.status=='WAITING'?'等待审批':'PASS'?'审批通过':'审批不通过';
-                           el.wechat = el.wechat+'%';
-                           el.alipay = el.alipay+'%';
-                           el.addTime = getTime(el.addTime)
-                        // console.log(getTime(new Date()))
-                        //    el.approvalTime = getTime(el.approvalTime)
+                        //    el.statusp =el.status=='WAITING'?'等待审批':'PASS'?'审批通过':'审批不通过';
+                           el.wechatp = el.wechat+'%';
+                           el.alipayp = el.alipay+'%';
+                           el.addTimep = getTime(el.addTime)
                        });
+                      
                     }
                 })
             },

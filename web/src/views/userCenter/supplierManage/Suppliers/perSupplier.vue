@@ -49,7 +49,7 @@
                     <el-input v-model="newRow.level" type="number" min="1" placeholder="level"></el-input>
                 </el-form-item>
                 <el-form-item label="password">
-                    <el-input v-model="newRow.user.password" placeholder="password"></el-input>
+                    <el-input v-model="newRow.user.password" type="password" placeholder="password"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">

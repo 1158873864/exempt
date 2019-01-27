@@ -16,8 +16,8 @@
                  <template slot-scope="{row}">
                     <el-button type="success" size="small" v-if="row.orderState=='PAID'">已支付</el-button>
                     <el-tag type="success" v-if="row.orderState=='审批通过'">{{ row.approvalTime }}</el-tag>
-                    <el-button type="info" size="small" v-else-if="row.orderState=='WAITING_FOR_PAYING'">等待审批</el-button>
-                    <el-button type="warning" size="small" v-else-if="row.orderState=='EXPIRED'">审批不通过</el-button>
+                    <el-button type="info" size="small" v-else-if="row.orderState=='WAITING_FOR_PAYING'">未付款</el-button>
+                    <el-button type="warning" size="small" v-else-if="row.orderState=='EXPIRED'">时间失效</el-button>
                     <el-tag type="warning" v-if="row.orderState=='PAID'">{{ row.payTime }}</el-tag>
                 </template>
             </el-table-column>

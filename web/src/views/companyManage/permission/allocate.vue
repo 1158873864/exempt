@@ -3,7 +3,7 @@
     <div class="app-container">
         <el-form :label-position="labelPosition" :model="permissionaddParameters" class="demo-form-inline">
             <el-form-item label="职位">
-             <el-select  style="width: 200px" v-model="permissionaddParameters.post">
+             <el-select  style="width: 200px" v-model="permissionaddParameters.post" @change="getTeams">
                  <el-option
                     v-for="item in posts"
                     :key="item.id"
@@ -12,6 +12,21 @@
                     </el-option>
             </el-select >
             </el-form-item>
+             <el-table
+            :data="teams"
+            border
+            style="width: 100%">
+             <el-table-column
+                prop="post"
+                label="职位"
+                width="180">
+                </el-table-column>
+                <el-table-column
+                prop="permission"
+                label="权限"
+                    >
+                </el-table-column>
+            </el-table>
             <el-form-item label="权限">
             </el-form-item>
                 <el-tree
@@ -24,7 +39,7 @@
                    >
                 </el-tree>
             <el-form-item>
-                <el-button type="primary" @click="addpermission">添加</el-button>
+                <el-button type="primary" @click="addpermission">修改</el-button>
             </el-form-item>
         </el-form>
         
@@ -34,7 +49,7 @@
 </template>
 
 <script>
-import { permissionAllocate,postGet } from '@/api/company'
+import { permissionAllocate,postGet,checkSinglePermission } from '@/api/company'
 import { getTreePermissions } from '@/api/permissions'
 import {getIds} from '@/utils/treeids'
 
@@ -44,7 +59,7 @@ import {getIds} from '@/utils/treeids'
                 activeNames: ['1'],
                 labelPosition: 'right',
                 permissionaddParameters: {
-                        "post": "post",
+                        "post": "商户",
                         "permission": "permission",
                 },
                 currentPage:1,
@@ -53,7 +68,11 @@ import {getIds} from '@/utils/treeids'
                     children: 'children',
                     label: 'title'
                 },
-                posts:[{}]
+                posts:[{}],
+                teams:[{
+                        "post": "职位",
+                        "permission": "权限",
+                }]
             }
         },
         created(){
@@ -62,6 +81,34 @@ import {getIds} from '@/utils/treeids'
             this.getPost();
         },
         methods: {
+            getTeams(){
+                    checkSinglePermission(this.permissionaddParameters.post).then(response => {
+                            // console.log(response.data.infoCode)
+                            if(response.code!=200){
+                                this.$message({
+                                    message: response.data.description,
+                                    type: 'warning'
+                                });
+                            }else{
+                                this.$message({
+                                    message: '查询成功',
+                                    type: 'success'
+                                });
+                                // this.teams = {}
+                                // response.data.forEach(el => {
+                                //     el.permission = el.permission.join(',')
+                                // });
+                                var a = {}
+                                a.permission = response.data.permission.join(',');
+                                a.post = response.data.post;
+                                this.teams = [a]
+                                console.log(this.teams,'ppp;')
+                            }
+                            resolve()
+                        }).catch(error => {
+                            this.$message(error);
+                        })
+                },
             getPost(){
                  postGet().then(response=>{
                         console.log(response,'response')

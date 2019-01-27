@@ -83,12 +83,12 @@ public class StaffBlServiceImpl implements StaffBlService {
     @Override
     public List<Staff> findAllStaffs() {
         List<Staff> staffList = JSONFilter(staffDataService.getAllStaffs());
-        staffList = staffList.stream().peek(s -> {
-            User user = s.getUser();
-            if(StringUtils.isNotBlank(user.getOriginPassword()))
-                user.setOriginPassword(RSAUtils.decryptDataOnJava(user.getOriginPassword(), privateKey));
-            else user.setOriginPassword("");
-        }).collect(Collectors.toList());
+//        staffList = staffList.stream().peek(s -> {
+//            User user = s.getUser();
+//            if(StringUtils.isNotBlank(user.getOriginPassword()))
+//                user.setOriginPassword(RSAUtils.decryptDataOnJava(user.getOriginPassword(), privateKey));
+//            else user.setOriginPassword("");
+//        }).collect(Collectors.toList());
         return staffList;
     }
 

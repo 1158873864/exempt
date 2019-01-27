@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface SupplierDao extends JpaRepository<Supplier, Integer> {
-    List<Supplier> findSupplierByStatus(SupplierState supplierState);
+    List<Supplier> findSupplierByStatus(String status);
 
     List<Supplier> findSuppliersByPriority(int priority);
 }

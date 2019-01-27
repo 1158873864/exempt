@@ -50,8 +50,8 @@ public class SupplierDataServiceImpl implements SupplierDataService {
     }
 
     @Override
-    public List<Supplier> findSuppliersByState(SupplierState supplierState) {
-        return supplierDao.findSupplierByStatus(supplierState);
+    public List<Supplier> findSuppliersByState(String status) {
+        return supplierDao.findSupplierByStatus(status);
     }
 
     @Override

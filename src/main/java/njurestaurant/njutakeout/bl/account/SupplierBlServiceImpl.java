@@ -69,16 +69,16 @@ public class SupplierBlServiceImpl implements SupplierBlService {
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             User user = supplier.getUser();
-            user.setUsername(supplierApprovalParameters.getUsername());
-            user.setPassword(encoder.encode(supplierApprovalParameters.getPassword()));
+//            user.setUsername(supplierApprovalParameters.getUsername());
+//            user.setPassword(encoder.encode(supplierApprovalParameters.getPassword()));
             supplier.setUser(user);
             supplier.setPriority(supplierApprovalParameters.getLevel());
             supplier.setApprovalTime(new Date());
             supplier.setApproverId(supplierApprovalParameters.getId());
             if(supplierApprovalParameters.getState() == 1) {
-                supplier.setStatus(SupplierState.PASS);
+                supplier.setStatus("启用");
             } else if (supplierApprovalParameters.getState() == 0) {
-                supplier.setStatus(SupplierState.REJECT);
+                supplier.setStatus("停用");
             } else {
                 return new WrongResponse(10140, "Wrong state");
             }
@@ -99,8 +99,8 @@ public class SupplierBlServiceImpl implements SupplierBlService {
     }
 
     @Override
-    public List<Supplier> findSupplierByState(SupplierState supplierState) {
-        List<Supplier> supplierList = JSONFilter(supplierDataService.findSuppliersByState(supplierState));
+    public List<Supplier> findSupplierByState(String status) {
+        List<Supplier> supplierList = JSONFilter(supplierDataService.findSuppliersByState(status));
         return supplierList;
     }
 
@@ -112,10 +112,10 @@ public class SupplierBlServiceImpl implements SupplierBlService {
                 List<Device> devices = supplier.getDevices();
                 devices.stream().peek(d -> d.setSupplier(null)).collect(Collectors.toList());
                 User user = supplier.getUser();
-                if(user != null) {
-                    if(StringUtils.isNotBlank(user.getOriginPassword()))    user.setOriginPassword(RSAUtils.decryptDataOnJava(user.getOriginPassword(), privateKey));
-                    else user.setOriginPassword("");
-                }
+//                if(user != null) {
+//                    if(StringUtils.isNotBlank(user.getOriginPassword()))    user.setOriginPassword(RSAUtils.decryptDataOnJava(user.getOriginPassword(), privateKey));
+//                    else user.setOriginPassword("");
+//                }
             }
         }
         return suppliers;
@@ -131,7 +131,7 @@ public class SupplierBlServiceImpl implements SupplierBlService {
             throw new BlankInputException();
         } else {
             User user = supplier.getUser();
-            user.setOriginPassword(RSAUtils.encryptedDataOnJava(supplierUpdateParameters.getPassword(), publicKey));
+//            user.setOriginPassword(RSAUtils.encryptedDataOnJava(supplierUpdateParameters.getPassword(), publicKey));
 //            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 //            if(!supplierUpdateParameters.getPassword().equals(user.getPassword()))
 //                user.setPassword(encoder.encode(supplierUpdateParameters.getPassword()));
@@ -152,6 +152,7 @@ public class SupplierBlServiceImpl implements SupplierBlService {
                     break;
                 case "RPASSQR":
                     supplier.setCodeType(CodeType.RPASSQR);
+                    break;
                 default:
                     throw new BlankInputException();
             }

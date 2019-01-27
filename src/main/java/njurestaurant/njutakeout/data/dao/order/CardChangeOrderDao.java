@@ -10,4 +10,5 @@ import java.util.List;
 public interface CardChangeOrderDao extends JpaRepository<CardChangeOrder, Integer> {
 
     List<CardChangeOrder> findAll(Specification<CardChangeOrder> dateBetweenOfCard);
+
 }

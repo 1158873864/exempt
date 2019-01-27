@@ -35,12 +35,12 @@
         <span style="margin-right:20px;">请输入账号密码</span>
       </div>
           <div>
-        <vue-recaptcha
+        <!-- <vue-recaptcha
           ref="recaptcha"
           @verify="onVerify"
           @expired="onExpired"
           :sitekey="sitekey">
-        </vue-recaptcha>
+        </vue-recaptcha> -->
         <!-- <button @click="resetRecaptcha"> Reset ReCAPTCHA </button> -->
       </div>
     </el-form>
@@ -196,7 +196,7 @@ $light_gray:#eee;
       color: $light_gray;
       height: 47px;
       &:-webkit-autofill {
-        -webkit-box-shaow: 0 0 0px 1000px $bg inset !important;
+        -webkit-box-shadow: 0 0 0px 1000px $bg inset !important;
         -webkit-text-fill-color: #fff !important;
       }
     }

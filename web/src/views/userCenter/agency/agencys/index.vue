@@ -1,8 +1,9 @@
 <template>
-    <div class="app-container">
+  <div class="app-container">
     <div>所有代理商</div>
+     <el-input v-model="searchStr" suffix-icon="el-icon-search" placeholder="请输入搜索内容"></el-input>
         <el-table
-        :data="teams.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+        :data="filterData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
         height="450"
         border
         style="width: 100%">
@@ -20,21 +21,47 @@
 
     </el-table>
     <div class="block">
-        <el-pagination
+      <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
         :page-sizes="[10, 20, 30, 40]"
         :page-size="pagesize"
         layout="sizes, prev, pager, next"
-        :total="1000">
-        </el-pagination>
+        :total="total"
+      ></el-pagination>
     </div>
+     <el-dialog title="修改代理信息" :visible.sync="dialogFormVisible">
+            <el-form :model="newRow">
+                <!-- <el-form-item label="用户名">
+                    <el-input v-model="newRow.user.username" placeholder="area"></el-input>
+                </el-form-item> -->
+                <el-form-item label="密码">
+                    <el-input v-model="newRow.user.password" type="password" placeholder="area"></el-input>
+                </el-form-item>
+                <el-form-item label="状态">
+                    <el-select v-model="newRow.status" placeholder="启用">
+                    <el-option label="启用" value="启用"></el-option>
+                    <el-option label="停用" value="停用"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="支付宝点位">
+                    <el-input v-model="newRow.alipay" placeholder="area"></el-input>
+                </el-form-item>
+                <el-form-item label="微信点位">
+                    <el-input v-model="newRow.wechat" placeholder="password"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="updateSupplier">确 定</el-button>
+            </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { agentsGet } from '@/api/role'
+import { agentsGet,updateAgent } from '@/api/role'
     export default {
         data() {
             return {
@@ -58,12 +85,53 @@ import { agentsGet } from '@/api/role'
                 pagesize:10,
                                 dialogFormVisible: false,
                 searchStr: '', // 新增
+                newRow: {
+                "codeType": "",
+                "level": 0,
+                "password": "",
+                "user": {},
+                "status":"启用"
+                },
+            }
+        },
+        computed: {
+            filterData() {
+                return this.teams.filter(item => {
+                var reg = new RegExp(this.searchStr, "i");
+                return !this.searchStr || reg.test(item.userInfo.username);
+                });
+            },
+            total(){
+                return this.teams.length
             }
         },
         created(){
             this.getData();
         },
         methods: {
+            updateSupplier() {
+                updateAgent(this.newRow.uid,
+                this.newRow.alipay,
+                this.newRow.user.username,
+                this.newRow.user.password,
+                this.newRow.status,
+                this.newRow.wechat,).then(response=> {
+                    if(response.code!=200){
+                        this.$message({
+                            message: response.data.response.description,
+                            type: 'warning'
+                        });
+                    }else{
+                        // this.teams[this.newRowIndex].priority = this.newRow.level;
+                        this.dialogFormVisible = false;
+                        this.getData();
+                         this.$message({
+                            message: '修改成功',
+                            type: 'success'
+                        });
+                    }
+                });
+            },
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
                 this.pagesize=val;
@@ -99,13 +167,13 @@ import { agentsGet } from '@/api/role'
                 this.dialogFormVisible=true;
                 //this.newRow = JSON.parse(JSON.stringify(row));
                 this.newRow = row;
+                this.newRow.user = row.userInfo;
                 this.newRow.level = row.priority;
 
             },
         }
-    }
+};
 </script>
 
 <style scoped>
-
 </style>

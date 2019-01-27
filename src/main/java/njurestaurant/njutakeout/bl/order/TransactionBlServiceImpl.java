@@ -473,4 +473,9 @@ public class TransactionBlServiceImpl implements TransactionBlService {
         if (user == null || user.getRole() != 1) throw new WrongIdException();
         return withdrewOrderDataService.findByOperatorId(id);
     }
+
+    @Override
+    public List<WithdrewOrder> getWithdrewOrder() {
+        return withdrewOrderDataService.findAll();
+    }
 }

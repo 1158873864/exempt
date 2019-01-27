@@ -1,8 +1,8 @@
 <template>
         <div class="app-container">
+             <el-input v-model="searchStr" suffix-icon="el-icon-search" placeholder="请输入搜索内容"></el-input>
             <el-table
-            :data="teams.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-            height="500"
+            :data="filterData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             border
             style="width: 100%">
             <el-table-column prop="orderNumber" label="订单编号"  align="center"></el-table-column>
@@ -43,69 +43,92 @@
     </template>
 
     <script>
-    import { ordersGet } from '@/api/order'
-    import { getTime } from '@/utils/index'
-        export default {
-            data() {
-                return {
-                    teams:[{
-                        "id": 1,
-                        "number": "dfadfas",
-                        "state": "WAITING_FOR_PAYING",
-                        "payCode": "sadfsadf",
-                        "ip": "10.30.256.106",
-                        "rechargeId": "12",
-                        "money": 1,
-                        "payMoney": 0,
-                        "uid": 1,
-                        "imei": "12222222",
-                        "time":"2019-01-17T04:58:07.882Z"
-                        }
-                    ],
-                    currentPage:1,
-                    pagesize:10
-                }
-            },
-            created(){
-                this.getData();
-            },
-            methods: {
-                handleSizeChange(val) {
-                    console.log(`每页 ${val} 条`);
-                    this.pagesize=val;
-                },
-                handleCurrentChange(val) {
-                    console.log(`当前页: ${val}`);
-                    this.currentPage=val;
-                },
-                getData(){
-                    this.getTeams();
-                },
-                getTeams(){
-                    ordersGet().then(response=>{
-                        console.log(response,'sdll')
-                         if(response.code!=200){
-                            this.$message({
-                                message: response.data.description,
-                                type: 'warning'
-                            });
-                        }else{
-                            if(response.data.length!=0){
-                                this.teams = response.data;
-                                this.teams.forEach(el => {
-                                   el.time = getTime(el.time)
-                                   el.approvalTime = getTime(el.approvalTime)
-                                   el.payTime = getTime(el.payTime)
-                               })
-                            }
-                        }
-                    })
-                },
-
-            }
+import { ordersGet } from "@/api/order";
+import { getTime } from "@/utils/index";
+import store from '../../../store';
+export default {
+  data() {
+    return {
+      teams: [
+        {
+          id: 1,
+          number: "dfadfas",
+          state: "WAITING_FOR_PAYING",
+          payCode: "sadfsadf",
+          ip: "10.30.256.106",
+          rechargeId: "12",
+          money: 1,
+          payMoney: 0,
+          uid: 1,
+          imei: "12222222",
+          time: "",
+          merchantName:'',
         }
-    </script>
+      ],
+      currentPage: 1,
+      pagesize: 10,
+      searchStr: "" ,// 新增
+    };
+  },
+    computed: {
+    filterData() {
+      return this.teams.filter(item => {
+        var reg = new RegExp(this.searchStr, "i");
+        console.log(item.money);
+        return !this.searchStr || reg.test(item.money) || reg.test(item.merchantName)
+      });
+    },
+  },
+  created() {
+    this.getData();
+    console.log(store.getters.role)
+  },
+  methods: {
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      this.pagesize = val;
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+    },
+    getData() {
+      this.getTeams();
+    },
+    getTeams() {
+      ordersGet().then(response => {
+        console.log(response, "sdll");
+        if (response.code != 200) {
+          this.$message({
+            message: response.data.description,
+            type: "warning"
+          });
+        } else {
+          if (response.data.length != 0) {
+            this.teams = response.data;
+            this.teams.forEach(el => {
+              el.time = getTime(el.time);
+              el.approvalTime = getTime(el.approvalTime);
+              el.payTime = getTime(el.payTime);
+            });
+            console.log(store.getters.role)
+            if(store.getters.role!=1)
+            {
+                var a = []
+                this.teams.forEach(el =>{
+                    if(el.merchantId==store.getters.uid) {
+                        a.push(el)
+                    }
+                })
+                this.teams = a;
+            }
+          }
+        }
+      });
+    }
+  }
+};
+</script>
 
     <style scoped>
-
-    </style>
+</style>

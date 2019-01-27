@@ -145,14 +145,14 @@ public class ReportBlServiceImpl implements ReportBlService {
                                                 merchantReportResponse.setAgentProfit(merchantReportResponse.getAgentProfit() + platformOrder.getPayMoney() * agent.getAlipay() / 100);    // 代理分润
                                             platformAnalyses = dailyAnalyse(merchantReportResponse.getPlatformAnalyseList(), "支付宝", platformOrder.getPayMoney());
                                             merchantReportResponse.setPlatformAnalyseList(platformAnalyses);    // 每日量分析
-                                            merchantReportResponse.setCompanyProfit((merchant.getAlipay() - agent.getAlipay()) / 100 * platformOrder.getPayMoney() + merchantReportResponse.getCompanyProfit());    // 公司分润
+                                            merchantReportResponse.setCompanyProfit((merchant.getAlipay()) / 100 * platformOrder.getPayMoney() + merchantReportResponse.getCompanyProfit());    // 公司分润
                                             break;
                                         case "wechat":  // 微信
                                             if (agent != null)
                                                 merchantReportResponse.setAgentProfit(merchantReportResponse.getAgentProfit() + platformOrder.getPayMoney() * agent.getWechat() / 100);    // 代理分润
                                             platformAnalyses = dailyAnalyse(merchantReportResponse.getPlatformAnalyseList(), "微信", platformOrder.getPayMoney());
                                             merchantReportResponse.setPlatformAnalyseList(platformAnalyses);
-                                            merchantReportResponse.setCompanyProfit((merchant.getWechat() - agent.getWechat()) / 100 * platformOrder.getPayMoney() + merchantReportResponse.getCompanyProfit());
+                                            merchantReportResponse.setCompanyProfit((merchant.getWechat()) / 100 * platformOrder.getPayMoney() + merchantReportResponse.getCompanyProfit());
                                             break;
                                         case "cloudpay":    // 云闪付
 //                                        platformAnalyses = dailyAnalyse(merchantReportResponse.getPlatformAnalyseList(), "云闪付", platformOrder.getMoney());
@@ -588,7 +588,7 @@ public class ReportBlServiceImpl implements ReportBlService {
         Map<String, Integer> alipayMap = new HashMap<>();
         if (supplierList.size() > 0) {
             for (Supplier supplier : supplierList) {
-                if(supplier.getStatus() == SupplierState.PASS) {
+                if(supplier.getStatus().equals("通过")) {
                     supplierMap.put(supplier.getId(), supplier);
                 }
             }

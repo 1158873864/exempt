@@ -68,8 +68,8 @@ public class MerchantDataServiceImpl implements MerchantDataService {
 
 
     @Override
-    public List<Merchant> getMerchantsByState(MerchantState merchantState) {
-        return merchantDao.findMerchantByStatus(merchantState);
+    public List<Merchant> getMerchantsByState(String status) {
+        return merchantDao.findMerchantByStatus(status);
     }
 
     @Override

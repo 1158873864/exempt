@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DeviceDao extends JpaRepository<Device, Integer> {
     Device findDeviceByImei(String imei);
+    Device findDeviceByAlipayId(int id);
 }

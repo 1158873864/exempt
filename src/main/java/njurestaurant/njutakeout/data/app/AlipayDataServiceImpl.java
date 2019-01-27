@@ -43,4 +43,9 @@ public class AlipayDataServiceImpl implements AlipayDataService {
     public List<Alipay> findAll() {
         return alipayDao.findAll();
     }
+
+    @Override
+    public Alipay findByUserId(String userId) {
+        return alipayDao.findByUserId(userId);
+    }
 }

@@ -8,8 +8,22 @@
         <el-input v-model="form.password" style="width: 30%;" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')"></el-input>
       </el-form-item>
       <el-form-item label="等级">
-        <el-input v-model="form.level" type="number" min="1"  style="width: 30%;"></el-input>
+        <!-- <el-input v-model="form.level" type="number" min="1"  style="width: 30%;"></el-input> -->
+        <el-select v-model="form.level" placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          ></el-option>
+        </el-select>
       </el-form-item>
+        <el-form-item label="状态">
+                    <el-select v-model="form.status" placeholder="启用">
+                    <el-option label="启用" value="启用"></el-option>
+                    <el-option label="停用" value="停用"></el-option>
+                    </el-select>
+            </el-form-item>
       <el-form-item label="微信点位">
         <el-input v-model="form.wechat" style="width: 30%;" type="number"></el-input>
       </el-form-item>
@@ -41,8 +55,30 @@ export default {
         level: 1,
         password: "",
         username: "",
-        wechat: 12
-      }
+        wechat: 12,
+      },
+        options: [
+        {
+          value: "1",
+          label: "1"
+        },
+        {
+          value: "2",
+          label: "2"
+        },
+        {
+          value: "3",
+          label: "3"
+        },
+        {
+          value: "4",
+          label: "4"
+        },
+        {
+          value: "5",
+          label: "5"
+        }
+      ]
     };
   },
 
@@ -75,7 +111,8 @@ export default {
             this.form.level,
             this.form.password,
             this.form.username,
-            this.form.wechat
+            this.form.wechat,
+            this.form.status
           )
             .then(response => {
               // console.log(response.data.infoCode)

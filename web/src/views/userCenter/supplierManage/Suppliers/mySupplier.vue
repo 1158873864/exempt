@@ -4,7 +4,6 @@
     <el-input v-model="searchStr" suffix-icon="el-icon-search" placeholder="请输入搜索内容"></el-input>
     <el-table
       :data="filterData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-      height="450"
       border
       style="width: 100%">
       <el-table-column prop="user.username" label="用户名" align="center"></el-table-column>
@@ -34,7 +33,7 @@
         :page-sizes="[10, 20, 30, 40]"
         :page-size="pagesize"
         layout="sizes, prev, pager, next"
-        :total="1000"
+        :total="total"
       ></el-pagination>
     </div>
     <el-dialog title="修改供码用户信息" :visible.sync="dialogFormVisible">
@@ -70,8 +69,8 @@
 </template>
 
 <script>
-  import {suppliersGet, supplierUpdate} from "@/api/role";
-
+import {suppliersGet, supplierUpdate} from "@/api/role";
+import store from '../../../../store'
   export default {
     data() {
       return {
@@ -108,6 +107,9 @@
           console.log(item.user.username);
           return !this.searchStr || reg.test(item.user.username);
         });
+      },
+      total(){
+          return this.teams.length
       }
     },
     created() {
@@ -164,24 +166,31 @@
         this.getTeams();
       },
       getTeams() {
-        suppliersGet().then(response => {
-          console.log(response, "sdll");
-          if (response.code != 200) {
-            this.$message({
-              message: response.data.description,
-              type: "warning"
-            });
-          } else {
-            this.teams = response.data;
-
-            this.teams.forEach(el => {
-              el.devices.forEach(de => {
-                console.log(de.imei);
-                de.device_team = de.imei + " " + (de.online ? "在线" : "离线");
-              });
-            });
-          }
-        });
+         suppliersGet().then(response=>{
+                    console.log(response,'sdll',store.getters.uid)
+                     if(response.code!=200){
+                        this.$message({
+                            message: response.data.description,
+                            type: 'warning'
+                        });
+                    }else{
+                       var teams = response.data;
+                        var a =[];
+                        teams.forEach(el => {
+                            el.devices.forEach(de=>{
+                                console.log(de.imei)
+                                de.device_team = de.imei +' '+ (de.online?'在线':'离线');
+                            })
+                            console.log(el.id,store.getters.uid)
+                            if(el.applicantId == store.getters.uid){
+                                a.push(el)
+                                console.log(el)
+                            }
+                        })
+                        this.teams = a
+                        console.log(this.teams)
+                    }
+                })
       }
     }
   };

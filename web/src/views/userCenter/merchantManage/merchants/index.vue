@@ -1,5 +1,5 @@
 <template>
-    <div class="app-container">
+  <div class="app-container">
     <div>所有商户</div>
      <el-input v-model="searchStr" suffix-icon="el-icon-search" placeholder="请输入搜索内容"></el-input>
         <el-table
@@ -33,8 +33,8 @@
 
     </el-table>
     <div class="block">
-        <span class="demonstration">调整每页显示条数</span>
-        <el-pagination
+      <span class="demonstration">调整每页显示条数</span>
+      <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
@@ -46,9 +46,9 @@
     </div>
       <el-dialog title="修改商户信息" :visible.sync="dialogFormVisible">
             <el-form :model="newRow">
-                <el-form-item label="用户名">
+                <!-- <el-form-item label="用户名">
                     <el-input v-model="newRow.user.username" placeholder="area"></el-input>
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="密码">
                     <el-input v-model="newRow.user.password" type="password" placeholder="area"></el-input>
                 </el-form-item>
@@ -217,10 +217,9 @@ import {getTime} from '@/utils/index'
                     this.getTeams();
                 }
             }
-        }
-    }
+  }
+};
 </script>
 
 <style scoped>
-
 </style>

@@ -1,6 +1,6 @@
 import { login, logout, getInfo } from '@/api/login'
-import { getToken, setToken, removeToken,getRoles } from '@/utils/auth'
-import { getUid, setUid, setRoles} from '../../utils/auth';
+import { getToken, setToken, removeToken, getRoles, getRole } from '@/utils/auth'
+import { getUid, setUid, setRole} from '../../utils/auth';
 
 const user = {
   state: {
@@ -8,6 +8,7 @@ const user = {
     name: '',
     avatar: '',
     roles: [],
+    role:0,
     uid: getUid()
   },
 
@@ -24,6 +25,9 @@ const user = {
     SET_ROLES: (state, roles) => {
       state.roles = roles
     },
+    SET_ROLE: (state, role) => {
+      state.role = role
+    },
     SET_UID: (state, uid) => {
       state.uid = uid
     }
@@ -32,7 +36,7 @@ const user = {
   actions: {
     // 登录
     Login({ commit }, userInfo) {
-      console.log('ppp')
+      console.log('pppasd')
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         login(username, userInfo.password).then(response => {
@@ -40,6 +44,10 @@ const user = {
           const data = response.data
           setToken(data.token)
           setUid(data.uid)
+
+          setRole(data.role)
+          console.log('role',data.role)
+          commit('SET_ROLE', data.role)
           commit('SET_TOKEN', data.token)
           commit('SET_UID', data.uid)
           resolve()

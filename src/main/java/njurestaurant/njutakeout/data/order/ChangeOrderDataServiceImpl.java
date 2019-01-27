@@ -8,7 +8,6 @@ import njurestaurant.njutakeout.entity.order.CardChangeOrder;
 import njurestaurant.njutakeout.entity.order.QRcodeChangeOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -52,6 +51,11 @@ public class ChangeOrderDataServiceImpl implements ChangeOrderDataService {
     @Override
     public List<CardChangeOrder> findAllCardChangeOrderByDate(Date startDate, Date endDate) {
         return CardChangeOrderDao.findAll(dateBetweenOfCard(startDate, endDate));
+    }
+
+    @Override
+    public List<CardChangeOrder> findAllCardChangeOrder() {
+        return CardChangeOrderDao.findAll();
     }
 
     private Specification<QRcodeChangeOrder> dateBetweenOfQrCode(Date startDate, Date endDate) {

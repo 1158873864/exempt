@@ -1,12 +1,18 @@
 package njurestaurant.njutakeout.bl.order;
 
 import njurestaurant.njutakeout.blservice.order.PlatformOrderBlService;
+import njurestaurant.njutakeout.data.dao.account.UserDao;
+import njurestaurant.njutakeout.data.dao.app.DeviceDao;
 import njurestaurant.njutakeout.dataservice.account.MerchantDataService;
+import njurestaurant.njutakeout.dataservice.account.SupplierDataService;
 import njurestaurant.njutakeout.dataservice.account.UserDataService;
 import njurestaurant.njutakeout.dataservice.app.AlipayDataService;
 import njurestaurant.njutakeout.dataservice.order.PlatformOrderDataService;
+import njurestaurant.njutakeout.entity.account.Merchant;
+import njurestaurant.njutakeout.entity.account.Supplier;
 import njurestaurant.njutakeout.entity.account.User;
 import njurestaurant.njutakeout.entity.app.Alipay;
+import njurestaurant.njutakeout.entity.app.Device;
 import njurestaurant.njutakeout.entity.order.PlatformOrder;
 import njurestaurant.njutakeout.exception.BlankInputException;
 import njurestaurant.njutakeout.exception.WrongIdException;
@@ -28,13 +34,19 @@ public class PlatformOrderBlServiceImpl implements PlatformOrderBlService {
     private final UserDataService userDataService;
     private final MerchantDataService merchantDataService;
     private final AlipayDataService alipayDataService;
+    private final UserDao userDao;
+    private final DeviceDao deviceDao ;
+    private final SupplierDataService supplierDataService;
 
     @Autowired
-    public PlatformOrderBlServiceImpl(PlatformOrderDataService platformOrderDataService, UserDataService userDataService, MerchantDataService merchantDataService, AlipayDataService alipayDataService) {
+    public PlatformOrderBlServiceImpl(PlatformOrderDataService platformOrderDataService, UserDataService userDataService, MerchantDataService merchantDataService, AlipayDataService alipayDataService, UserDao userDao, DeviceDao deviceDao, SupplierDataService supplierDataService) {
         this.platformOrderDataService = platformOrderDataService;
         this.userDataService = userDataService;
         this.merchantDataService = merchantDataService;
         this.alipayDataService = alipayDataService;
+        this.userDao = userDao;
+        this.deviceDao = deviceDao;
+        this.supplierDataService = supplierDataService;
     }
 
     @Override
@@ -68,9 +80,21 @@ public class PlatformOrderBlServiceImpl implements PlatformOrderBlService {
                 if (p.getType().equals("alipay")) {  // 支付宝的收款方式
                     Alipay alipay = alipayDataService.findById(p.getTableId());
                     type = "支付宝";
-                    return new OrderListResponse(p.getId(), p.getNumber(), p.getMoney(), p.getPayMoney(), p.getRechargeId(), p.getPayCode(), p.getState(), p.getTime(), p.getPayTime(), p.getUid(), usernameMap.get(p.getUid()), type, alipay.getId(), alipay.getName());
+                    User user = userDao.findUserById(p.getUid());
+                    Merchant merchant = merchantDataService.findMerchantById(user.getTableId());
+                    Device device = deviceDao.findDeviceByImei(p.getImei());
+                    Supplier supplier = device.getSupplier();
+                    if (userDao.findUserById(merchant.getApplyId()).getRole() == 1)
+                        return new OrderListResponse(p.getId(), p.getNumber(), p.getMoney(), p.getPayMoney(), p.getRechargeId(),
+                                p.getPayCode(), p.getState(), p.getTime(), p.getPayTime(), p.getUid(), supplier.getUser().getId(), 0, usernameMap.get(p.getUid()),
+                                type, alipay.getId(), alipay.getName());
+                    else if (userDao.findUserById(merchant.getApplyId()).getRole() == 2)
+                        return new OrderListResponse(p.getId(), p.getNumber(), p.getMoney(), p.getPayMoney(), p.getRechargeId(),
+                                p.getPayCode(), p.getState(), p.getTime(), p.getPayTime(), p.getUid(),supplier.getUser().getId() , merchant.getApplyId(), usernameMap.get(p.getUid()),
+                                type, alipay.getId(), alipay.getName());
                 } else return null; // 可能有微信的收款方式
             } else return null;
+            return null;
         }).filter(pf -> pf != null).collect(Collectors.toList());
     }
 
@@ -97,22 +121,22 @@ public class PlatformOrderBlServiceImpl implements PlatformOrderBlService {
         }
     }
 
-    @Override
-    public List<OrderListResponse> merchantOrderReportByUid(int uid) {
-        // 找出全部商家的信息
-        User user = userDataService.getUserById(uid);
-        // 如果改用户不是商家无法看到商家的个人订单报表信息
-        if (user.getRole() != 3) return null;
-        List<PlatformOrder> platformOrders = platformOrderDataService.findByUid(uid);
-        return platformOrders.stream().map(p -> {
-            String type = null;
-            if (p.getType().equals("alipay")) {  // 支付宝的收款方式
-                Alipay alipay = alipayDataService.findById(p.getTableId());
-                type = "支付宝";
-                return new OrderListResponse(p.getId(), p.getNumber(), p.getMoney(), p.getPayMoney(), p.getRechargeId(), p.getPayCode(), p.getState(), p.getTime(), p.getPayTime(), p.getUid(), user.getUsername(), type, alipay.getId(), alipay.getName());
-            } else return null; // 可能有微信的收款方式
-        }).filter(pf -> pf != null).collect(Collectors.toList());
-    }
+//    @Override
+//    public List<OrderListResponse> merchantOrderReportByUid(int uid) {
+//        // 找出全部商家的信息
+//        User user = userDataService.getUserById(uid);
+//        // 如果改用户不是商家无法看到商家的个人订单报表信息
+//        if (user.getRole() != 3) return null;
+//        List<PlatformOrder> platformOrders = platformOrderDataService.findByUid(uid);
+//        return platformOrders.stream().map(p -> {
+//            String type = null;
+//            if (p.getType().equals("alipay")) {  // 支付宝的收款方式
+//                Alipay alipay = alipayDataService.findById(p.getTableId());
+//                type = "支付宝";
+//                return new OrderListResponse(p.getId(), p.getNumber(), p.getMoney(), p.getPayMoney(), p.getRechargeId(), p.getPayCode(), p.getState(), p.getTime(), p.getPayTime(), p.getUid(), user.getUsername(), type, alipay.getId(), alipay.getName());
+//            } else return null; // 可能有微信的收款方式
+//        }).filter(pf -> pf != null).collect(Collectors.toList());
+//    }
 
     @Override
     public List<MerchantReportResponse> merchantsOrderReport() {

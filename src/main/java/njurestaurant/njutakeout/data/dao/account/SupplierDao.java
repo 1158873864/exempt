@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface SupplierDao extends JpaRepository<Supplier, Integer> {
     List<Supplier> findSupplierByStatus(String status);
-
+    Supplier findByUserId(int id);
     List<Supplier> findSuppliersByPriority(int priority);
 }

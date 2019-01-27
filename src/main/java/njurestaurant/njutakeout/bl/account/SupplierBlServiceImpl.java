@@ -1,7 +1,8 @@
 package njurestaurant.njutakeout.bl.account;
 
 import njurestaurant.njutakeout.blservice.account.SupplierBlService;
-import njurestaurant.njutakeout.blservice.account.UserBlService;
+import njurestaurant.njutakeout.data.dao.account.SupplierDao;
+import njurestaurant.njutakeout.data.dao.account.UserDao;
 import njurestaurant.njutakeout.dataservice.account.SupplierDataService;
 import njurestaurant.njutakeout.dataservice.account.UserDataService;
 import njurestaurant.njutakeout.entity.account.PersonalCard;
@@ -13,13 +14,11 @@ import njurestaurant.njutakeout.exception.UsernameIsExistentException;
 import njurestaurant.njutakeout.exception.WrongIdException;
 import njurestaurant.njutakeout.parameters.company.SupplierApprovalParameters;
 import njurestaurant.njutakeout.parameters.user.SupplierUpdateParameters;
-import njurestaurant.njutakeout.publicdatas.account.SupplierState;
 import njurestaurant.njutakeout.publicdatas.app.CodeType;
 import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.SuccessResponse;
 import njurestaurant.njutakeout.response.WrongResponse;
 import njurestaurant.njutakeout.response.user.UserAddResponse;
-import njurestaurant.njutakeout.util.RSAUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,11 +33,15 @@ import java.util.stream.Collectors;
 public class SupplierBlServiceImpl implements SupplierBlService {
     private final UserDataService userDataService;
     private final SupplierDataService supplierDataService;
+    private final UserDao userDao;
+    private final SupplierDao supplierDao;
 
     @Autowired
-    public SupplierBlServiceImpl(UserDataService userDataService, SupplierDataService supplierDataService) {
+    public SupplierBlServiceImpl(UserDataService userDataService, SupplierDataService supplierDataService, UserDao userDao, SupplierDao supplierDao) {
         this.userDataService = userDataService;
         this.supplierDataService = supplierDataService;
+        this.userDao = userDao;
+        this.supplierDao = supplierDao;
     }
 
     @Value(value = "${spring.encrypt.publicKey}")
@@ -48,13 +51,12 @@ public class SupplierBlServiceImpl implements SupplierBlService {
     private String privateKey;
 
     /**
-     *
      * @param supplier the info of supplier
      * @return
      */
     @Override
     public UserAddResponse addSupplier(Supplier supplier) throws UsernameIsExistentException {
-        if(userDataService.isUserExistent(supplier.getUser().getUsername())) {
+        if (userDataService.isUserExistent(supplier.getUser().getUsername())) {
             throw new UsernameIsExistentException();
         } else {
             return new UserAddResponse(supplierDataService.saveSupplier(supplier).getId());
@@ -64,7 +66,7 @@ public class SupplierBlServiceImpl implements SupplierBlService {
     @Override
     public Response approvalSupplier(int sid, SupplierApprovalParameters supplierApprovalParameters) {
         Supplier supplier = supplierDataService.findSupplierById(sid);
-        if(supplier == null) {
+        if (supplier == null) {
             return new WrongResponse(10130, "Wrong id.");
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -75,7 +77,7 @@ public class SupplierBlServiceImpl implements SupplierBlService {
             supplier.setPriority(supplierApprovalParameters.getLevel());
             supplier.setApprovalTime(new Date());
             supplier.setApproverId(supplierApprovalParameters.getId());
-            if(supplierApprovalParameters.getState() == 1) {
+            if (supplierApprovalParameters.getState() == 1) {
                 supplier.setStatus("启用");
             } else if (supplierApprovalParameters.getState() == 0) {
                 supplier.setStatus("停用");
@@ -105,8 +107,8 @@ public class SupplierBlServiceImpl implements SupplierBlService {
     }
 
     private List<Supplier> JSONFilter(List<Supplier> suppliers) {
-        if(suppliers.size() != 0) {
-            for(Supplier supplier : suppliers) {
+        if (suppliers.size() != 0) {
+            for (Supplier supplier : suppliers) {
                 List<PersonalCard> cardList = supplier.getUser().getCards();
                 cardList.stream().peek(c -> c.setUser(null)).collect(Collectors.toList());
                 List<Device> devices = supplier.getDevices();
@@ -123,40 +125,54 @@ public class SupplierBlServiceImpl implements SupplierBlService {
 
 
     @Override
-    public Supplier updateSupplier(int id, SupplierUpdateParameters supplierUpdateParameters) throws WrongIdException, BlankInputException {
-        Supplier supplier = supplierDataService.findSupplierById(id);
-        if(supplier == null) {
+    public Supplier updateSupplier(int id, SupplierUpdateParameters supplierUpdateParameters) throws WrongIdException, BlankInputException, UsernameIsExistentException {
+        Supplier supplier = supplierDao.findByUserId(id);
+        if (supplier == null) {
             throw new WrongIdException();
-        } else if(StringUtils.isBlank(supplierUpdateParameters.getPassword()) || StringUtils.isBlank(supplierUpdateParameters.getCodeType()) || supplierUpdateParameters.getLevel() < 0) {
+        } else if (StringUtils.isBlank(supplierUpdateParameters.getPassword()) || StringUtils.isBlank(supplierUpdateParameters.getCodeType()) || supplierUpdateParameters.getLevel() < 0) {
             throw new BlankInputException();
         } else {
-            User user = supplier.getUser();
+
+            if (userDao.findUserByUsername(supplierUpdateParameters.getName()) != null)
+                throw new UsernameIsExistentException();
+
+            else {
+
 //            user.setOriginPassword(RSAUtils.encryptedDataOnJava(supplierUpdateParameters.getPassword(), publicKey));
 //            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 //            if(!supplierUpdateParameters.getPassword().equals(user.getPassword()))
 //                user.setPassword(encoder.encode(supplierUpdateParameters.getPassword()));
 //            supplier.setPriority(supplierUpdateParameters.getLevel());
-            supplier.setUser(user);
-            switch (supplierUpdateParameters.getCodeType()) {
-                case "TSOLID":
-                    supplier.setCodeType(CodeType.TSOLID);
-                    break;
-                case "TPASS":
-                    supplier.setCodeType(CodeType.TPASS);
-                    break;
-                case "RSOLID":
-                    supplier.setCodeType(CodeType.RSOLID);
-                    break;
-                case "RPASSOFF":
-                    supplier.setCodeType(CodeType.RPASSOFF);
-                    break;
-                case "RPASSQR":
-                    supplier.setCodeType(CodeType.RPASSQR);
-                    break;
-                default:
-                    throw new BlankInputException();
+
+                User user = userDao.findUserById(id);
+                user.setUsername(supplierUpdateParameters.getName());
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                user.setPassword(encoder.encode(supplierUpdateParameters.getPassword()));
+                userDataService.saveUser(user);
+                supplier.setUser(user);
+                supplier.setPriority(supplierUpdateParameters.getLevel());
+                supplier.setStatus(supplierUpdateParameters.getStatus());
+                switch (supplierUpdateParameters.getCodeType()) {
+                    case "TSOLID":
+                        supplier.setCodeType(CodeType.TSOLID);
+                        break;
+                    case "TPASS":
+                        supplier.setCodeType(CodeType.TPASS);
+                        break;
+                    case "RSOLID":
+                        supplier.setCodeType(CodeType.RSOLID);
+                        break;
+                    case "RPASSOFF":
+                        supplier.setCodeType(CodeType.RPASSOFF);
+                        break;
+                    case "RPASSQR":
+                        supplier.setCodeType(CodeType.RPASSQR);
+                        break;
+                    default:
+                        throw new BlankInputException();
+                }
+                return supplierDataService.saveSupplier(supplier);
             }
-            return supplierDataService.saveSupplier(supplier);
         }
     }
 }

@@ -21,7 +21,7 @@ public interface PlatformOrderBlService {
 
     PlatformOrder updatePlatformOrder(int id, PlatformUpdateParameters platformUpdateParameters) throws WrongIdException, BlankInputException;
 
-    List<OrderListResponse> merchantOrderReportByUid(int uid);
+   // List<OrderListResponse> merchantOrderReportByUid(int uid);
 
     List<MerchantReportResponse> merchantsOrderReport();
 

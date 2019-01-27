@@ -9,7 +9,7 @@
       style="width: 100%">
       <el-table-column prop="user.username" label="用户名" align="center"></el-table-column>
       <el-table-column prop="priority" label="等级" align="center"></el-table-column>
-      <el-table-column prop="devices_team" label="设备/状态" align="center">
+      <el-table-column prop="devices_team" label="设备" align="center">
         <template slot-scope="scope">
           <el-tag
             :type="device.online?'success':'info'"
@@ -19,7 +19,7 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="status" label="状态" align="center"></el-table-column>
+      <el-table-column prop="status" label="账号状态" align="center"></el-table-column>
       <el-table-column label="操作" fixed="right" align="center">
         <template scope="scope">
           <el-button size="small" @click="openDialog(scope.$index,scope.row)">修改</el-button>
@@ -48,11 +48,20 @@
             <el-option label="收款固码(二开)" value="RSOLID"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="level">
-          <el-input v-model="newRow.level" type="number" min="1" placeholder="level"></el-input>
+        <el-form-item label="等级">
+          <el-input v-model="newRow.level" type="number" min="1" placeholder="请输入等级"></el-input>
         </el-form-item>
-        <el-form-item label="password">
-          <el-input v-model="newRow.user.password" placeholder="password"></el-input>
+        <el-form-item label="用户名">
+          <el-input v-model="newRow.user.username" placeholder="请输入用户名"></el-input>
+        </el-form-item>
+        <el-form-item label="密码">
+          <el-input v-model="newRow.user.password" type="password" placeholder="请输入密码"></el-input>
+        </el-form-item>
+        <el-form-item label="账号状态">
+          <el-select v-model="newRow.status" placeholder="">
+            <el-option label="启用" value="启用"></el-option>
+            <el-option label="停用" value="停用"></el-option>
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -86,13 +95,14 @@
           level: 0,
           password: "",
           user: {},
-          priority: 0
+          priority: 0,
+          status: "启用",
         },
         currentPage: 1,
         pagesize: 10,
         newRowIndex: 1,
         dialogFormVisible: false,
-        searchStr: "" // 新增
+        searchStr: "g" // 新增
       };
     },
     computed: {
@@ -110,10 +120,12 @@
     methods: {
       updateSupplier() {
         supplierUpdate(
-          this.newRow.codeType,
-          this.newRow.level,
-          this.newRow.user.password,
-          this.newRow.id
+            this.newRow.codeType,
+            this.newRow.level,
+            this.newRow.user.username,
+            this.newRow.user.password,
+            this.newRow.status,
+            this.newRow.id
         ).then(response => {
           if (response.code != 200) {
             this.$message({

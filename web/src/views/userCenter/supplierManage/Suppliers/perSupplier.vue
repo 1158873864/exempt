@@ -92,7 +92,7 @@ import store from '../../../../store'
         },
         methods: {
             updateSupplier() {
-                supplierUpdate(this.newRow.codeType,this.newRow.level,this.newRow.user.password,this.newRow.id).then(response=> {
+                supplierUpdate(this.newRow.codeType,this.newRow.level,this.newRow.user,this.newRow.user.password,store.getters.uid).then(response=> {
                     if(response.code!=200){
                         this.$message({
                             message: response.data.description,

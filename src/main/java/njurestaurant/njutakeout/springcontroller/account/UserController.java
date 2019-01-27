@@ -3,6 +3,9 @@ package njurestaurant.njutakeout.springcontroller.account;
 import io.swagger.annotations.*;
 import njurestaurant.njutakeout.blservice.account.*;
 import njurestaurant.njutakeout.blservice.event.LogBlService;
+import njurestaurant.njutakeout.data.dao.account.AgentDao;
+import njurestaurant.njutakeout.data.dao.account.UserDao;
+import njurestaurant.njutakeout.dataservice.account.AgentDataService;
 import njurestaurant.njutakeout.dataservice.account.UserDataService;
 import njurestaurant.njutakeout.entity.account.*;
 import njurestaurant.njutakeout.exception.*;
@@ -14,10 +17,8 @@ import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.SuccessResponse;
 import njurestaurant.njutakeout.response.WrongResponse;
 import njurestaurant.njutakeout.response.user.*;
-import njurestaurant.njutakeout.util.RSAUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -36,9 +37,12 @@ public class UserController {
     private final SupplierBlService supplierBlService;
     private final LogBlService logBlService;
     private final UserDataService userDataService;
+    private final AgentDataService agentDataService;
+    private final AgentDao agentDao;
+    private UserDao userDao;
 
     @Autowired
-    public UserController(UserBlService userBlService, StaffBlService staffBlService, AgentBlService agentBlService, MerchantBlService merchantBlService, SupplierBlService supplierBlService, LogBlService logBlService, UserDataService userDataService) {
+    public UserController(UserBlService userBlService, StaffBlService staffBlService, AgentBlService agentBlService, MerchantBlService merchantBlService, SupplierBlService supplierBlService, LogBlService logBlService, UserDataService userDataService, AgentDataService agentDataService, AgentDao agentDao, UserDao userDao) {
         this.userBlService = userBlService;
         this.staffBlService = staffBlService;
         this.agentBlService = agentBlService;
@@ -46,6 +50,9 @@ public class UserController {
         this.supplierBlService = supplierBlService;
         this.logBlService = logBlService;
         this.userDataService = userDataService;
+        this.agentDataService = agentDataService;
+        this.agentDao = agentDao;
+        this.userDao = userDao;
     }
 
 //<<<<<<< HEAD
@@ -169,8 +176,8 @@ public class UserController {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             User user = new User(agentAddParameters.getUsername(), encoder.encode(agentAddParameters.getPassword()), 2, new ArrayList<>());
             Agent agent = new Agent(agentAddParameters.getUsername(), agentAddParameters.getStatus(), agentAddParameters.getAlipay(), agentAddParameters.getWechat(), 0, 0, user);
-        //    User user = new User(agentAddParameters.getUsername(), encoder.encode(agentAddParameters.getPassword()), RSAUtils.encryptedDataOnJava(agentAddParameters.getPassword(), publicKey), 2, new ArrayList<>());
-        //    Agent agent = new Agent(agentAddParameters.getUsername(), agentAddParameters.getStatus(), agentAddParameters.getAlipay(), agentAddParameters.getWechat(),0, 0,user);
+            //    User user = new User(agentAddParameters.getUsername(), encoder.encode(agentAddParameters.getPassword()), RSAUtils.encryptedDataOnJava(agentAddParameters.getPassword(), publicKey), 2, new ArrayList<>());
+            //    Agent agent = new Agent(agentAddParameters.getUsername(), agentAddParameters.getStatus(), agentAddParameters.getAlipay(), agentAddParameters.getWechat(),0, 0,user);
             AgentAddResponse agentAddResponse = agentBlService.addAgent(agent);
             user.setTableId(agentAddResponse.getAgentId());
             userBlService.updateUser(user);
@@ -232,14 +239,45 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "更改商家用户信息", notes = "商家修改个人用户信息")
-    @RequestMapping(value = "merchant/update/{mid}", method = RequestMethod.PUT)
+    @ApiOperation(value = "更改代理用户信息", notes = "代理修改个人用户信息")
+    @RequestMapping(value = "agent/update/{uid}", method = RequestMethod.PUT)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> updateMerchant(@PathVariable("mid") int id, @RequestBody MerchantUpdateParameters merchantUpdateParameters) {
+    public ResponseEntity<Response> updateAgent(@PathVariable("uid") int id, @RequestBody AgentUpdateParameters agentUpdateParameters) throws UsernameIsExistentException {
+        if (StringUtils.isBlank(agentUpdateParameters.getPassword()) || StringUtils.isBlank(agentUpdateParameters.getName()) || StringUtils.isBlank(String.valueOf(agentUpdateParameters.getAlipay())) || StringUtils.isBlank(String.valueOf(agentUpdateParameters.getWechat())) || StringUtils.isBlank(agentUpdateParameters.getStatus())) {
+            return new ResponseEntity<>(new JSONResponse(10120, new WrongResponse(10120, "输入不能为空.")), HttpStatus.OK);
+        }
+
+        if (userDao.findUserByUsername(agentUpdateParameters.getName()) != null)
+            return new ResponseEntity<>(new JSONResponse(10100, new UsernameIsExistentException()), HttpStatus.OK);
+        else{
+            Agent agent = agentDao.findByUserId(id);
+            agent.setAlipay(agentUpdateParameters.getAlipay());
+            agent.setWechat(agentUpdateParameters.getWechat());
+            agent.setStatus(agentUpdateParameters.getStatus());
+            agent.setAgentName(agentUpdateParameters.getName());
+            User user = userDao.findUserById(id);
+            user.setUsername(agentUpdateParameters.getName());
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            user.setPassword(encoder.encode(agentUpdateParameters.getPassword()));
+            agent.setUser(user);
+            userDataService.saveUser(user);
+            agentDataService.saveAgent(agent);
+            return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("更新成功")), HttpStatus.OK);
+        }
+    }
+
+    @ApiOperation(value = "更改商家用户信息", notes = "商家修改个人用户信息")
+    @RequestMapping(value = "merchant/update/{uid}", method = RequestMethod.PUT)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> updateMerchant(@PathVariable("uid") int id, @RequestBody MerchantUpdateParameters merchantUpdateParameters) {
         if (StringUtils.isBlank(merchantUpdateParameters.getPassword())) {
             return new ResponseEntity<>(new JSONResponse(10120, new WrongResponse(10120, "密码不能为空.")), HttpStatus.OK);
         }
@@ -248,17 +286,19 @@ public class UserController {
             return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("更新成功")), HttpStatus.OK);
         } catch (WrongIdException e) {
             return new ResponseEntity<>(new JSONResponse(10160, e.getResponse()), HttpStatus.OK);
+        } catch (UsernameIsExistentException e) {
+            return new ResponseEntity<>(new JSONResponse(10100, e.getResponse()), HttpStatus.OK);
         }
     }
 
     @ApiOperation(value = "更改供码用户信息", notes = "供码用户修改供码用户信息")
-    @RequestMapping(value = "supplier/update/{sid}", method = RequestMethod.PUT)
+    @RequestMapping(value = "supplier/update/{uid}", method = RequestMethod.PUT)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> updateSupplier(@PathVariable("sid") int id, @RequestBody SupplierUpdateParameters supplierUpdateParameters) {
+    public ResponseEntity<Response> updateSupplier(@PathVariable("uid") int id, @RequestBody SupplierUpdateParameters supplierUpdateParameters) {
         try {
             supplierBlService.updateSupplier(id, supplierUpdateParameters);
             return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("更新成功")), HttpStatus.OK);
@@ -266,6 +306,8 @@ public class UserController {
             return new ResponseEntity<>(new JSONResponse(10160, e.getResponse()), HttpStatus.OK);
         } catch (BlankInputException e) {
             return new ResponseEntity<>(new JSONResponse(10170, new WrongResponse(10170, "输入错误")), HttpStatus.OK);
+        } catch (UsernameIsExistentException e) {
+            return new ResponseEntity<>(new JSONResponse(10100, e.getResponse()), HttpStatus.OK);
         }
     }
 

@@ -1,21 +1,17 @@
 package njurestaurant.njutakeout.parameters.user;
 
-public class MerchantUpdateParameters {
-
-    private String name;
+public class AgentUpdateParameters {
     private String password;
+    private String name;
     private double alipay;
     private double wechat;
     private String status;
-    private int level;
-
-    public MerchantUpdateParameters(String password, String name, double alipay, double wechat, String status, int level) {
+    public AgentUpdateParameters(String name, String password, double alipay, double wechat, String status) {
         this.password = password;
         this.name = name;
         this.alipay = alipay;
         this.wechat = wechat;
         this.status = status;
-        this.level = level;
     }
 
     public String getPassword() {
@@ -56,13 +52,5 @@ public class MerchantUpdateParameters {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
     }
 }

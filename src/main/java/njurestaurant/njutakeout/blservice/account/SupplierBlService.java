@@ -30,5 +30,5 @@ public interface SupplierBlService {
 
     List<Supplier> findSupplierByState(String status);
 
-    Supplier updateSupplier(int id, SupplierUpdateParameters supplierUpdateParameters) throws WrongIdException, BlankInputException;
+    Supplier updateSupplier(int id, SupplierUpdateParameters supplierUpdateParameters) throws WrongIdException, BlankInputException, UsernameIsExistentException;
 }

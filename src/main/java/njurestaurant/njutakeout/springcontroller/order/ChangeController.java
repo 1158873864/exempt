@@ -49,35 +49,42 @@ public class ChangeController {
     }
 
     @ApiOperation(value = "查看内部码账变订单", notes = "查看内部码账变信息")
-    @RequestMapping(value = "internalaccountchange/ShowQRcodeOrder", method = RequestMethod.GET)
+    @RequestMapping(value = "internalaccountchange/qrcode", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> ShowQRcodeChangeOrder(@RequestParam int id) {
-        try {
-            return new ResponseEntity<>(new JSONResponse(200, changeBlService.getQRcodeChangeHistory(id)), HttpStatus.OK);
-        } catch (WrongIdException e) {
-            return new ResponseEntity<>(new JSONResponse(10160, new WrongResponse(10160, "该用户无法查看内部码账变订单。")), HttpStatus.OK);
-        }
+    public ResponseEntity<Response> ShowQRcodeChangeOrder() {
+        return new ResponseEntity<>(new JSONResponse(200, qRcodeChangeOrderDao.findAll()), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "修改内部码账变订单", notes = "修改内部码账变信息")
-    @RequestMapping(value = "internalaccountchange/qrcode/{uid}", method = RequestMethod.PUT)
+    @ApiOperation(value = "查看内部码账变订单", notes = "查看内部码账变信息")
+    @RequestMapping(value = "internalaccountchange/C2Pcard", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> UpdateQRcodeChangeOrder(@PathVariable("uid") int id, double real_money, double card_balance) {
-        QRcodeChangeOrder qRcodeChangeOrder = qRcodeChangeOrderDao.findById(id);
-        qRcodeChangeOrder.setRealMoney(real_money);
-        qRcodeChangeOrder.setCardBalance(card_balance);
-        qRcodeChangeOrder.setState(WithdrewState.SUCCESS);
-        changeOrderDataService.saveQRcodeChangeOrder(qRcodeChangeOrder);
-        return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("更新内部码账变订单成功")), HttpStatus.OK);
+    public ResponseEntity<Response> ShowCardChangeOrder() {
+        return new ResponseEntity<>(new JSONResponse(200, cardChangeOrderDao.findAll()), HttpStatus.OK);
     }
+//    @ApiOperation(value = "显示内部码账变订单", notes = "显示内部码账变信息")
+//    @RequestMapping(value = "internalaccountchange/qrcode", method = RequestMethod.PUT)
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+//            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+//            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+//    @ResponseBody
+//    public ResponseEntity<Response> UpdateQRcodeChangeOrder( double real_money, double card_balance) {
+//
+////        QRcodeChangeOrder qRcodeChangeOrder = qRcodeChangeOrderDao.findById(id);
+////        qRcodeChangeOrder.setRealMoney(real_money);
+////        qRcodeChangeOrder.setCardBalance(card_balance);
+////        qRcodeChangeOrder.setState(WithdrewState.SUCCESS);
+////        changeOrderDataService.saveQRcodeChangeOrder(qRcodeChangeOrder);
+//        return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("更新内部码账变订单成功")), HttpStatus.OK);
+//    }
 
     @ApiOperation(value = "内部卡账变(个人卡转入公司卡)", notes = "发起内部卡转账申请(个人卡转入公司卡)")
     @RequestMapping(value = "internalaccountchange/P2Ccard", method = RequestMethod.POST)
@@ -174,7 +181,7 @@ public class ChangeController {
         changeOrderDataService.saveCardChangeOrder(cardChangeOrder);
         //更新公司银行卡余额
         CompanyCard companyCard = companyCardDao.findCompanyCardByCardNumber(cardChangeOrder.getCardNumber_in());
-        companyCard.setBalance(companyCard.getBalance()+real_money);
+        companyCard.setBalance(companyCard.getBalance() + real_money);
         companyCardDataService.saveCompanyCard(companyCard);
         return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("更新内部卡账变订单以及公司银行卡余额成功")), HttpStatus.OK);
     }

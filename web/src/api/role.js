@@ -138,24 +138,26 @@ export function suppliersGet() {
     method: 'get'
   })
 }
-export function supplierUpdate(codeType, level, password, id) {
+export function supplierUpdate(codeType, level, name,password, status,id) {
   return request({
     url: '/supplier/update/' + id,
     method: 'put',
     data: {
       codeType,
       level,
-      password
+      name,
+      password,
+      status
     }
   })
 }
-export function qrcode(cardNumber, loginId, money, operateId) {
+export function qrcode(id) {
   return request({
-    url: '/internalaccountchange/qrcode',
-    method: 'post',
-    data: {
-      cardNumber, loginId, money, operateId
-    }
+    url: '/internalaccountchange/ShowQRcodeOrder' + id,
+    method: 'get',
+    // data: {
+    //   cardNumber, loginId, money, operateId
+    // }
   })
 }
 export function Pcard(cardNumber_in, cardNumber_out, money, operateId) {

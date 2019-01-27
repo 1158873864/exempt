@@ -16,12 +16,14 @@ public class OrderListResponse {
     private Date time;
     private Date payTime;
     private int merchantId;
+    private int supplierId;
+    private int agentId;
     private String merchantName;
     private String type;
     private int tableId;
     private String nickname;
 
-    public OrderListResponse(int orderId, String orderNumber, double money, double paymoney, String rechargeId, String code, OrderState orderState, Date time, Date payTime, int merchantId, String merchantName) {
+    public OrderListResponse(int orderId, String orderNumber, double money, double paymoney, String rechargeId, String code, OrderState orderState, Date time, Date payTime, int merchantId, int supplierId, int agentId, String merchantName, String type, int tableId, String nickname) {
         this.orderId = orderId;
         this.orderNumber = orderNumber;
         this.money = money;
@@ -32,20 +34,8 @@ public class OrderListResponse {
         this.time = time;
         this.payTime = payTime;
         this.merchantId = merchantId;
-        this.merchantName = merchantName;
-    }
-
-    public OrderListResponse(int orderId, String orderNumber, double money, double paymoney, String rechargeId, String code, OrderState orderState, Date time, Date payTime, int merchantId, String merchantName, String type, int tableId, String nickname) {
-        this.orderId = orderId;
-        this.orderNumber = orderNumber;
-        this.money = money;
-        this.paymoney = paymoney;
-        this.rechargeId = rechargeId;
-        this.code = code;
-        this.orderState = orderState;
-        this.time = time;
-        this.payTime = payTime;
-        this.merchantId = merchantId;
+        this.supplierId = supplierId;
+        this.agentId = agentId;
         this.merchantName = merchantName;
         this.type = type;
         this.tableId = tableId;
@@ -132,11 +122,51 @@ public class OrderListResponse {
         this.merchantId = merchantId;
     }
 
+    public int getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(int supplierId) {
+        this.supplierId = supplierId;
+    }
+
+    public int getAgentId() {
+        return agentId;
+    }
+
+    public void setAgentId(int agentId) {
+        this.agentId = agentId;
+    }
+
     public String getMerchantName() {
         return merchantName;
     }
 
     public void setMerchantName(String merchantName) {
         this.merchantName = merchantName;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public int getTableId() {
+        return tableId;
+    }
+
+    public void setTableId(int tableId) {
+        this.tableId = tableId;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 }

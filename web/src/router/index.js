@@ -363,12 +363,12 @@ export const asyncRouterMap = [
         component: () => import('@/views/change/P2Ccard/index'),
         meta: { title: '个人转公司', role: ['处理单子'] },
       },
-      {
-        path: 'qrcode',
-        name: 'qrcode',
-        component: () => import('@/views/change/qrcode/index'),
-        meta: { title: '内部码账变', role: ['处理单子'] },
-      },
+      // {
+      //   path: 'qrcode',
+      //   name: 'qrcode',
+      //   component: () => import('@/views/change/qrcode/index'),
+      //   meta: { title: '内部码账变', role: ['处理单子'] },
+      // },
       // {
       //   path: 'receiveCodeList',
       //   component: () => import('@/views/financeManage/receiveCodeList/index'),

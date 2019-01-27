@@ -13,9 +13,9 @@
       style="width: 100%"
     >
       <el-table-column prop="cardNumber" label="银行卡号" align="center"></el-table-column>
-      <el-table-column prop="loginId" label="支付宝卡号" align="center"></el-table-column>
-      <el-table-column prop="loginId" label="支付宝提現金額" align="center"></el-table-column>
-      <el-table-column prop="loginId" label="操作人" align="center"></el-table-column>
+      <el-table-column prop="loginId" label="支付宝账号" align="center"></el-table-column>
+      <el-table-column prop="money" label="支付宝提现金额" align="center"></el-table-column>
+      <el-table-column prop="operateId" label="操作人" align="center"></el-table-column>
     </el-table>
     <div class="block">
       <el-pagination
@@ -44,8 +44,8 @@ export default {
       },
       teams: [
         {
-          cardNumber: "string",
-          loginId: "string",
+          cardNumber: "string1",
+          loginId: "string1",
           money: 0,
           operateId: 0
         }

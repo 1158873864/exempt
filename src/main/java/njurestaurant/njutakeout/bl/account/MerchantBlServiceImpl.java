@@ -1,27 +1,26 @@
 package njurestaurant.njutakeout.bl.account;
 
 import njurestaurant.njutakeout.blservice.account.MerchantBlService;
+import njurestaurant.njutakeout.data.dao.account.MerchantDao;
+import njurestaurant.njutakeout.data.dao.account.UserDao;
 import njurestaurant.njutakeout.dataservice.account.MerchantDataService;
 import njurestaurant.njutakeout.dataservice.account.UserDataService;
 import njurestaurant.njutakeout.entity.account.Merchant;
 import njurestaurant.njutakeout.entity.account.PersonalCard;
 import njurestaurant.njutakeout.entity.account.User;
+import njurestaurant.njutakeout.exception.UsernameIsExistentException;
 import njurestaurant.njutakeout.exception.WrongIdException;
 import njurestaurant.njutakeout.parameters.company.MerchantApprovalParameters;
 import njurestaurant.njutakeout.parameters.user.MerchantUpdateParameters;
-import njurestaurant.njutakeout.publicdatas.account.MerchantState;
 import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.SuccessResponse;
 import njurestaurant.njutakeout.response.WrongResponse;
 import njurestaurant.njutakeout.response.user.MerchantAddResponse;
-import njurestaurant.njutakeout.util.RSAUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,11 +28,15 @@ import java.util.stream.Collectors;
 public class MerchantBlServiceImpl implements MerchantBlService {
     private final MerchantDataService merchantDataService;
     private final UserDataService userDataService;
+    private final UserDao userDao;
+    private final MerchantDao merchantDao;
 
     @Autowired
-    public MerchantBlServiceImpl(MerchantDataService merchantDataService, UserDataService userDataService) {
+    public MerchantBlServiceImpl(MerchantDataService merchantDataService, UserDataService userDataService, UserDao userDao, MerchantDao merchantDao) {
         this.merchantDataService = merchantDataService;
         this.userDataService = userDataService;
+        this.userDao = userDao;
+        this.merchantDao = merchantDao;
     }
 
     @Value(value = "${spring.encrypt.publicKey}")
@@ -49,7 +52,7 @@ public class MerchantBlServiceImpl implements MerchantBlService {
      * @return
      */
     @Override
-    public MerchantAddResponse addMerchant(Merchant merchant){
+    public MerchantAddResponse addMerchant(Merchant merchant) {
         return new MerchantAddResponse(merchantDataService.saveMerchant(merchant).getId());
     }
 
@@ -60,24 +63,36 @@ public class MerchantBlServiceImpl implements MerchantBlService {
      * @return
      */
     @Override
-    public MerchantAddResponse updateMerchant(int id, MerchantUpdateParameters merchantUpdateParameters) throws WrongIdException {
-        Merchant merchant = merchantDataService.findMerchantById(id);
-        if(merchant == null) {
+    public MerchantAddResponse updateMerchant(int id, MerchantUpdateParameters merchantUpdateParameters) throws WrongIdException, UsernameIsExistentException {
+        Merchant merchant = merchantDao.findByUserId(id);
+        if (merchant == null) {
             throw new WrongIdException();
         } else {
-            merchant.setName(merchantUpdateParameters.getName());
-            User user = merchant.getUser();
- //           user.setOriginPassword(RSAUtils.encryptedDataOnJava(merchantUpdateParameters.getPassword(), publicKey));
+            if (userDao.findUserByUsername(merchantUpdateParameters.getName()) != null)
+                throw new UsernameIsExistentException();
+            else {
+
+                //           user.setOriginPassword(RSAUtils.encryptedDataOnJava(merchantUpdateParameters.getPassword(), publicKey));
 //            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 //            if(!user.getPassword().equals(merchantUpdateParameters.getPassword()))
 //                user.setPassword(encoder.encode(merchantUpdateParameters.getPassword()));
-            merchant.setUser(user);
-            return new MerchantAddResponse(merchantDataService.saveMerchant(merchant).getId());
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                merchant.setName(merchantUpdateParameters.getName());
+                User user = userDao.findUserById(id);
+                user.setUsername(merchantUpdateParameters.getName());
+                user.setPassword(encoder.encode(merchantUpdateParameters.getPassword()));
+                userDataService.saveUser(user);
+                merchant.setUser(user);
+                merchant.setStatus(merchantUpdateParameters.getStatus());
+                merchant.setPriority(merchantUpdateParameters.getLevel());
+                merchant.setAlipay(merchantUpdateParameters.getAlipay());
+                merchant.setWechat(merchantUpdateParameters.getWechat());
+                return new MerchantAddResponse(merchantDataService.saveMerchant(merchant).getUser().getId());
+            }
         }
     }
 
     /**
-     *
      * @param id the merchant id
      * @return
      */
@@ -89,7 +104,7 @@ public class MerchantBlServiceImpl implements MerchantBlService {
     @Override
     public Response ApprovalMerchant(int id, MerchantApprovalParameters merchantApprovalParameters) {
         Merchant merchant = merchantDataService.findMerchantById(id);
-        if(merchant != null) {
+        if (merchant != null) {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             User user = merchant.getUser();
 //            user.setPassword(encoder.encode(merchantApprovalParameters.getPassword()));
@@ -100,9 +115,9 @@ public class MerchantBlServiceImpl implements MerchantBlService {
 //            merchant.setApproverId(merchantApprovalParameters.getApproverId());
 //            merchant.setPriority(merchantApprovalParameters.getLevel());
 //            merchant.setApprovalTime(new Date());
-            if(merchantApprovalParameters.getStatus() == 1) {
+            if (merchantApprovalParameters.getStatus() == 1) {
                 merchant.setStatus("启用");
-            } else if(merchantApprovalParameters.getStatus() == 0){
+            } else if (merchantApprovalParameters.getStatus() == 0) {
                 merchant.setStatus("停用");
             } else {
                 return new WrongResponse(10140, "Wrong state");
@@ -126,11 +141,10 @@ public class MerchantBlServiceImpl implements MerchantBlService {
     }
 
 
-
     @Override
     public List<Merchant> findMerchantsBySuperior(int id) throws WrongIdException {
         User user = userDataService.getUserById(id);
-        if(user == null || user.getId() == 0) {
+        if (user == null || user.getId() == 0) {
             throw new WrongIdException();
         } else {
             List<Merchant> result = JSONFilter(merchantDataService.getMerchantsByApplyId(id));
@@ -145,8 +159,8 @@ public class MerchantBlServiceImpl implements MerchantBlService {
     }
 
     private List<Merchant> JSONFilter(List<Merchant> merchantList) {
-        if(merchantList.size() != 0) {
-            for(Merchant merchant : merchantList) {
+        if (merchantList.size() != 0) {
+            for (Merchant merchant : merchantList) {
                 List<PersonalCard> cardList = merchant.getUser().getCards();
                 cardList.stream().peek(c -> c.setUser(null)).collect(Collectors.toList());
                 User user = merchant.getUser();

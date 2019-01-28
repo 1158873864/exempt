@@ -25,19 +25,19 @@ public class Agent {
     private double withdrewMoney;
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User userInfo;
+    private User user;
 
     public Agent() {
     }
 
-    public Agent(String agentName, String status, double alipay, double wechat, double balance, double withdrewMoney, User userInfo) {
+    public Agent(String agentName, String status, double alipay, double wechat, double balance, double withdrewMoney, User user) {
         this.agentName = agentName;
         this.status = status;
         this.alipay = alipay;
         this.wechat = wechat;
         this.balance = balance;
         this.withdrewMoney = withdrewMoney;
-        this.userInfo = userInfo;
+        this.user = user;
     }
 
     public double getWithdrewMoney() {
@@ -72,13 +72,6 @@ public class Agent {
         this.balance = balance;
     }
 
-    public User getUser() {
-        return userInfo;
-    }
-
-    public void setUser(User user) {
-        this.userInfo = user;
-    }
 
     public int getId() {
         return id;
@@ -97,13 +90,6 @@ public class Agent {
     }
 
 
-    public User getUserInfo() {
-        return userInfo;
-    }
-
-    public void setUserInfo(User userInfo) {
-        this.userInfo = userInfo;
-    }
 
     public String getStatus() {
         return status;
@@ -113,4 +99,12 @@ public class Agent {
         this.status = status;
     }
 
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

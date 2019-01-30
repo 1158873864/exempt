@@ -32,7 +32,7 @@
         :page-sizes="[10, 20, 30, 40]"
         :page-size="pagesize"
         layout="sizes, prev, pager, next"
-        :total="1000"
+        :total=total
       ></el-pagination>
     </div>
   </div>
@@ -76,6 +76,9 @@ export default {
         console.log(item.alipayLoginId);
         return !this.searchStr || reg.test(item.alipayLoginId) || reg.test(item.payMoney);
       });
+    },
+    total(){
+      return this.teams.length
     }
   },
   created() {

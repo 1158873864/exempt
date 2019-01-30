@@ -13,7 +13,7 @@
      <el-button type="primary" @click="dateSearch">查询</el-button>
      <el-table
             :data="filterData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-            height="500"
+            height="600"
             border
             style="width: 100%">
             <el-table-column prop="number" label="编号"  align="center"></el-table-column>
@@ -52,7 +52,7 @@
             :page-sizes="[10, 20, 30, 40]"
             :page-size="pagesize"
             layout="sizes, prev, pager, next"
-            :total="1000">
+            :total=toatl>
             </el-pagination>
         </div>
   </div>
@@ -95,13 +95,16 @@ export default {
                 endDate:""
           }
       },
-         computed: {
+    computed: {
     filterData() {
       return this.teams.filter(item => {
         var reg = new RegExp(this.searchStr, "i");
         console.log(item.username);
         return !this.searchStr || reg.test(item.username) || reg.test(item.balance);
       });
+    },
+    total(){
+        return this.teams.length;
     }
   },
       created(){

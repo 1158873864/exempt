@@ -17,7 +17,7 @@
             :page-sizes="[10, 2, 30, 40]"
             :page-size="pagesize"
             layout="sizes, prev, pager, next"
-            :total="1000">
+            :total=total>
             </el-pagination>
         </div>
       </div>
@@ -36,6 +36,11 @@
                     ],
                     pagesize:10,
                     currentPage:1
+                }
+            },
+            computed:{
+                total(){
+                    return this.teams.length;
                 }
             },
             created(){

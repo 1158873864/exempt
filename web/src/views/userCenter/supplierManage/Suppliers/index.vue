@@ -34,7 +34,7 @@
         :page-sizes="[10, 20, 30, 40]"
         :page-size="pagesize"
         layout="sizes, prev, pager, next"
-        :total="1000"
+        :total=total
       ></el-pagination>
     </div>
     <el-dialog title="修改供码用户信息" :visible.sync="dialogFormVisible">
@@ -114,6 +114,9 @@
           console.log(item.user.username);
           return !this.searchStr || reg.test(item.user.username);
         });
+      },
+      total(){
+        return this.teams.length
       }
     },
     created() {

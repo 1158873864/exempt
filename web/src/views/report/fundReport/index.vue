@@ -32,7 +32,7 @@
             :page-sizes="[10, 20, 30, 40]"
             :page-size="pagesize"
             layout="sizes, prev, pager, next"
-            :total="1000">
+            :total=total>
             </el-pagination>
         </div>
   </div>
@@ -66,19 +66,22 @@ export default {
                 endDate:""
           }
       },
-       computed: {
-    filterData() {
-      return this.teams.filter(item => {
-        var reg = new RegExp(this.searchStr, "i");
-        console.log(item.supplierToCom);
-        return !this.searchStr || reg.test(item.supplierToCom) || reg.test(item.comToAgent)||reg.test(comToMerchant);
-      });
-    }
-  },
-      created(){
-          this.getData();
-      },
-      methods: {
+    computed: {
+        filterData() {
+        return this.teams.filter(item => {
+            var reg = new RegExp(this.searchStr, "i");
+            console.log(item.supplierToCom);
+            return !this.searchStr || reg.test(item.supplierToCom) || reg.test(item.comToAgent)||reg.test(comToMerchant);
+        });
+        },
+        total(){
+            return this.teams.length;
+        }
+    },
+    created(){
+        this.getData();
+    },
+    methods: {
             startDateChange(val){
             this.startDate = val;
             },

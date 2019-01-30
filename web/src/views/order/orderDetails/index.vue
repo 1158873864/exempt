@@ -39,7 +39,7 @@
             :page-sizes="[10, 20, 30, 40]"
             :page-size="pagesize"
             layout="sizes, prev, pager, next"
-            :total="1000">
+            :total=total>
             </el-pagination>
          </div>
              <el-dialog title="补单" :visible.sync="dialogFormVisible">
@@ -125,6 +125,9 @@ export default {
       else
           return false;
     },
+    total(){
+      return this.teams.length;
+    }
     // editable(index,row){
     //   // if(row.orderState == 'WAITING_FOR_PAYING')
     //   //   return true;

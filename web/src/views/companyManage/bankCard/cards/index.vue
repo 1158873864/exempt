@@ -32,7 +32,7 @@
         :page-sizes="[100, 200, 300, 400]"
         :page-size="100"
         layout="sizes, prev, pager, next"
-        :total="1000">
+        :total=total>
         </el-pagination>
     </div>
   </div>
@@ -57,6 +57,11 @@ import { cardsGet,cardDelete,teamVerifyCodeCheckByTeamName } from '@/api/company
                     }
                 ],
                 currentPage:1
+            }
+        },
+        computed:{
+            total(){
+                return this.cards.length;
             }
         },
         created(){

@@ -49,7 +49,7 @@
             :page-sizes="[10, 20, 30, 40]"
             :page-size="pagesize"
             layout="sizes, prev, pager, next"
-            :total="1000">
+            :total=total>
             </el-pagination>
         </div>
   </div>
@@ -60,9 +60,9 @@ import Chart from '@/components/Charts/lineMarker';
 import {merchantsReport,getPermerchantReport} from '@/api/report';
 import { getTime,getTimeFormat } from "@/utils/index";
 export default {
-  name: 'LineChart',
-  components: { Chart },
-  data() {
+    name: 'LineChart',
+    components: { Chart },
+    data() {
           return {
               activeNames: ['1'],
               labelPosition: 'right',
@@ -89,16 +89,19 @@ export default {
                 startDate:"",
                 endDate:"",
           }
-      },
-      computed: {
-    filterData() {
-      return this.teams.filter(item => {
-        var reg = new RegExp(this.searchStr, "i");
-        console.log(item.merchantName);
-        return !this.searchStr || reg.test(item.merchantName) || reg.test(item.balance);
-      });
-    }
-  },
+    },
+    computed: {
+        filterData() {
+            return this.teams.filter(item => {
+                var reg = new RegExp(this.searchStr, "i");
+                console.log(item.merchantName);
+                return !this.searchStr || reg.test(item.merchantName) || reg.test(item.balance);
+            });
+        },
+        total(){
+            return this.teams.length;
+        }
+    },
       created(){
           this.getData();
       },

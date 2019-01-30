@@ -30,7 +30,7 @@
             :page-sizes="[10, 20, 30, 40]"
             :page-size="pagesize"
             layout="sizes, prev, pager, next"
-            :total="1000">
+            :total=total>
             </el-pagination>
         </div>
   </div>
@@ -71,8 +71,11 @@ export default {
                 console.log(item.supplierName);
                 return !this.searchStr || reg.test(item.supplierName) || reg.test(item.realReceipt);
                 });
-            }
             },
+            total(){
+                return this.teams.length
+            }
+        },
       created(){
           this.getData();
       },

@@ -19,9 +19,15 @@
       </div>
       <div class="text item">{{ '用户名: ' + userInfo.username }}</div>
       <div class="text item">{{ '添加时间: ' + gettime(info.time) }}</div>
-      <div class="text item">{{ '审批时间: ' + gettime(info.approvalTime) }}</div>
+      <!-- <div class="text item">{{ '审批时间: ' + gettime(info.approvalTime) }}</div> -->
       <div class="text item">{{ '状 &#x3000;态: ' + info.status }}</div>
       <div class="text item">{{ '角 &#x3000;色: ' + userInfo.role_ch }}</div>
+      <div class="text item">{{ '等 &#x3000;级: ' + info.priority }}</div>
+      <div class="text item" v-if="info.codeType == 'TPASS' ">码类型: 转账通码</div>
+      <div class="text item" v-if="info.codeType == 'TSOLID' ">码类型: 转账固码</div>
+      <div class="text item" v-if="info.codeType == 'RPASSOFF' ">码类型: 线收款通码</div>
+      <div class="text item" v-if="info.codeType == 'RPASSQR' ">码类型: 在线收款通码</div>
+      <div class="text item" v-if="info.codeType == 'RSOLID' ">码类型:' 收款固码</div>
     </el-card>
     <el-card v-if="userInfo.role==2" class="box-card">
       <div slot="header" class="clearfix">
@@ -31,6 +37,8 @@
       <div class="text item">{{ '用户名: ' + userInfo.username }}</div>
       <div class="text item">{{ '状 &#x3000;态: ' + info.status }}</div>
       <div class="text item">{{ '角 &#x3000;色: ' + userInfo.role_ch }}</div>
+      <div class="text item">{{ '支付宝点位: ' + info.alipay + '%'}}</div>
+      <div class="text item">{{ '微信点位: ' + info.wechat + '%'}}</div>
       <el-form>
         <el-form-item>{{ '余额:' + info.balance }}</el-form-item>
         <el-form-item>
@@ -46,6 +54,9 @@
       <div class="text item">{{ '添加时间: ' + gettime(info.addTime) }}</div>
       <div class="text item">{{ '状 &#x3000;态: ' + info.status }}</div>
       <div class="text item">{{ '角 &#x3000;色: ' + userInfo.role_ch }}</div>
+      <div class="text item">{{ '等&#x3000;级: ' + info.priority }}</div>
+      <div class="text item">{{ '支付宝点位: ' + info.alipay + '%' }}</div>
+      <div class="text item">{{ '微信点位: ' + info.wechat + '%' }}</div>
       <el-form>
         <el-form-item>{{ '余额:' + info.balance }}</el-form-item>
         <el-form-item>
@@ -71,18 +82,18 @@
             </template>
     </el-table-column>-->
     <!-- </el-table> -->
-    <el-dialog title="修改供码用户信息" :visible.sync="dialogFormVisible">
+    <el-dialog title="申请提现" :visible.sync="dialogFormVisible">
       <el-form :model="newRow">
-        <el-form-item label="取款数">
-          <el-input v-model="newRow.money" placeholder="area"></el-input>
+        <el-form-item label="申请金额">
+          <el-input v-model="newRow.money" placeholder="申请金额"></el-input>
         </el-form-item>
-        <el-form-item label="提现到卡号">
-          <el-select v-model="newRow.cardId" placeholder>
+        <el-form-item label="提现卡号">
+          <el-select v-model="newRow.cardId" placeholder="提现卡号">
             <el-option
               v-for="card in list"
               :key="card.id"
-              :label="card.cardNumber"
-              :value="card.cardNumber"
+              :label="card.accountWithBank"
+              :value="card.accountWithBank"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -149,10 +160,9 @@ export default {
           this.userInfo = response.data.info.user;
         }
         this.list = this.userInfo.cards;
-        this.userInfo.role_ch =
-        this.userInfo.role == 1 ? "管理员" : this.userInfo.role == 2 ? "代理" : this.userInfo.role == 3 ? "商户" : "供码用户";
+        this.userInfo.role_ch = this.userInfo.role == 1 ? "管理员" : this.userInfo.role == 2 ? "代理" : this.userInfo.role == 3 ? "商户" : "供码用户";
         this.info = response.data.info;
-        this.info.status = this.info.status == "已通过" || this.info.status == "WORKING" ? "未审批" : "已通过";
+       // this.info.status = this.info.status == "已通过" || this.info.status == "WORKING" ? "未审批" : "已通过";
         // console.log(this.userInfo, "klkll");
       });
     },
@@ -209,7 +219,7 @@ export default {
 
 .box-card {
   width: 680px;
-  height: 300px;
+  height: 350px;
   margin: 80px auto;
 }
 </style>

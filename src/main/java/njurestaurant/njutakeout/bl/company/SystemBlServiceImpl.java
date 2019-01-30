@@ -35,14 +35,15 @@ public class SystemBlServiceImpl implements SystemBlService {
     }
 
     @Override
-    public System updateSystem(System system) throws WrongIdException, IsExistentException {
-        System s = systemDataService.findSystemById(system.getId());
-        if(s == null) {
-            throw new WrongIdException();
-        } else if(systemDataService.findSystemByTitle(system.getTitle()) != null) {
-            throw new IsExistentException();
-        } else
-            return systemDataService.saveSystem(system);
+    public System updateSystem(String title) {
+        System s = systemDataService.findSystemById(1);
+        if (s ==null)
+            systemDataService.saveSystem(new System(title));
+        else {
+            s.setTitle(title);
+            systemDataService.saveSystem(s);
+        }
+        return s;
     }
 
     @Override

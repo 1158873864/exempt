@@ -1,19 +1,21 @@
 <template>
     <div class="app-container">
     <div>公司银行卡管理</div>
+    <div></div>
         <el-table
         :data="cards"
         max-height="700"
+        border
         >
-        <el-table-column prop="attribution" label="归属" ></el-table-column>
-        <el-table-column prop="balance" label="余额" ></el-table-column>
-        <el-table-column prop="bank" label="银行" ></el-table-column>
-        <el-table-column prop="cardNumber" label="银行卡号" ></el-table-column>
-        <el-table-column prop="id" label="序号" ></el-table-column>
-        <el-table-column prop="name" label="用户名" ></el-table-column>
-        <el-table-column prop="relation" label="归属"></el-table-column>
-        <el-table-column prop="status" label="关联" ></el-table-column>
-        <el-table-column label="操作" fixed="right" >
+        <el-table-column prop="id" label="序号" align="center"></el-table-column>
+        <el-table-column prop="name" label="姓名" align="center"></el-table-column>
+         <el-table-column prop="bank" label="银行" align="center"></el-table-column>
+         <el-table-column prop="cardNumber" label="卡号" align="center" min-width="150%"></el-table-column>
+          <el-table-column prop="balance" label="余额" align="center"></el-table-column>
+        <el-table-column prop="attribution" label="归属" align="center" ></el-table-column>
+        <el-table-column prop="relation" label="关联" align="center" min-width="150%"></el-table-column>
+        <el-table-column prop="status" label="状态" align="center"></el-table-column>
+        <el-table-column label="操作" fixed="right" align="center" >
             <template scope="scope">
                 <el-button size="small"
                         @click="operationDel(scope.$index,scope.row)">删除</el-button>
@@ -37,7 +39,7 @@
 </template>
 
 <script>
-import { cardsGet,cardDelete } from '@/api/company'
+import { cardsGet,cardDelete,teamVerifyCodeCheckByTeamName } from '@/api/company'
     export default {
         data() {
             return {
@@ -67,6 +69,7 @@ import { cardsGet,cardDelete } from '@/api/company'
                         confirmButtonText: '确定',
                         cancelButtonText: '取消',
                     }).then(({ value }) => {
+                        console.log("asdadsadAfAfasfafafaf");
                         verifyCode = value;
                         this.operation(index,row,verifyCode);
                     }).catch(() => {
@@ -78,21 +81,35 @@ import { cardsGet,cardDelete } from '@/api/company'
             },
             operation(index, row,verifyCode) {
                 console.log(row);
-                cardDelete(row.id,verifyCode).then(response=> {
+                var flag = false;
+                teamVerifyCodeCheckByTeamName(row.attribution,verifyCode).then(response=> {
                     if(response.code!=200){
                         this.$message({
                             message: response.data.description,
                             type: 'warning'
                         });
                     }else{
-                        this.$message({
-                        message: '删除成功',
-                        type: 'success'
+                        // flag=true;
+                        // this.newRow = JSON.parse(JSON.stringify(row));;
+                        // this.newRowIndex = index;
+                        // this.dialogFormVisible = true;
+                        console.log(row);
+                        cardDelete(row.id).then(response=> {
+                            if(response.code!=200){
+                                this.$message({
+                                    message: response.data.description,
+                                    type: 'warning'
+                                });
+                            }else{
+                                this.$message({
+                                message: '删除成功',
+                                type: 'success'
+                                });
+                                this.cards.splice(index,1);
+                            }
                         });
                     }
-                    });
-                    this.cards.splice(index,1)
-
+                });
             },
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);

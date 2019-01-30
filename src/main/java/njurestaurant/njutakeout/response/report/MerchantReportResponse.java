@@ -15,7 +15,7 @@ import java.util.List;
 * */
 public class MerchantReportResponse extends Response {
     private String number;
-    private Date date;
+    private String date;
     /*商户用户名*/
     private String username;
     private String merchantName;
@@ -30,7 +30,7 @@ public class MerchantReportResponse extends Response {
     private int totalOrders;
     private int successOrders;
 
-    public MerchantReportResponse(String number, Date date, String username, String merchantName, double deposit, double availiableDeposit, double withdrewed, double withdrewing, double balance, double agentProfit, double companyProfit, List<PlatformAnalyse> platformAnalyseList, int totalOrders, int successOrder) {
+    public MerchantReportResponse(String number,String date, String username, String merchantName, double deposit, double availiableDeposit, double withdrewed, double withdrewing, double balance, double agentProfit, double companyProfit, List<PlatformAnalyse> platformAnalyseList, int totalOrders, int successOrder) {
         this.number = number;
         this.date = date;
         this.username = username;
@@ -71,11 +71,11 @@ public class MerchantReportResponse extends Response {
         this.number = number;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

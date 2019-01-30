@@ -68,9 +68,11 @@ public class MerchantBlServiceImpl implements MerchantBlService {
         if (merchant == null) {
             throw new WrongIdException();
         } else {
-            if (userDao.findUserByUsername(merchantUpdateParameters.getName()) != null)
-                throw new UsernameIsExistentException();
-            else {
+            User user = userDao.findUserById(id);
+            if (!user.getUsername().equals( merchantUpdateParameters.getName())) {
+                if (userDao.findUserByUsername(merchantUpdateParameters.getName()) != null)
+                    throw new UsernameIsExistentException();
+                else {
 
                 //           user.setOriginPassword(RSAUtils.encryptedDataOnJava(merchantUpdateParameters.getPassword(), publicKey));
 //            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -78,7 +80,19 @@ public class MerchantBlServiceImpl implements MerchantBlService {
 //                user.setPassword(encoder.encode(merchantUpdateParameters.getPassword()));
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
                 merchant.setName(merchantUpdateParameters.getName());
-                User user = userDao.findUserById(id);
+                user.setUsername(merchantUpdateParameters.getName());
+                user.setPassword(encoder.encode(merchantUpdateParameters.getPassword()));
+                userDataService.saveUser(user);
+                merchant.setUser(user);
+                merchant.setStatus(merchantUpdateParameters.getStatus());
+                merchant.setPriority(merchantUpdateParameters.getLevel());
+                merchant.setAlipay(merchantUpdateParameters.getAlipay());
+                merchant.setWechat(merchantUpdateParameters.getWechat());
+                return new MerchantAddResponse(merchantDataService.saveMerchant(merchant).getUser().getId());
+                }
+            }else {
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                merchant.setName(merchantUpdateParameters.getName());
                 user.setUsername(merchantUpdateParameters.getName());
                 user.setPassword(encoder.encode(merchantUpdateParameters.getPassword()));
                 userDataService.saveUser(user);

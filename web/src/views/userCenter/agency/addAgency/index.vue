@@ -1,20 +1,20 @@
 <template>
         <div class="app-container">
-          <el-form ref="form" :model="form" label-width="80px">
+          <el-form ref="form" :model="form" label-width="10%">
       
             <el-form-item label="用户名">
                     <el-input v-model="form.username" style="width: 30%;" onkeyup="this.value=this.value.replace(/[^a-zA-Z]/g,'')"  placeholder="不能使用中文"></el-input>
             </el-form-item>
             <el-form-item label="密码">
-              <el-input v-model="form.password" style="width: 30%;" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')"></el-input>
+              <el-input v-model="form.password" style="width: 30%;" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" placeholder="密码"></el-input>
             </el-form-item>
             <el-form-item label="支付宝点位">
-              <el-input v-model="form.alipay" style="width: 30%;"></el-input>
+              <el-input v-model="form.alipay" style="width: 30%;" placeholder="支付宝点位"></el-input>
             </el-form-item>
             <el-form-item label="微信点位">
-              <el-input v-model="form.wechat" style="width: 30%;"></el-input>
+              <el-input v-model="form.wechat" style="width: 30%;" placeholder="微信点位"></el-input>
             </el-form-item>
-            <el-form-item label="状态">
+            <el-form-item label="状态" >
                     <el-select v-model="form.status" placeholder="启用">
                     <el-option label="启用" value="PASS"></el-option>
                     <el-option label="停用" value="WAITING"></el-option>
@@ -44,11 +44,11 @@
         data(){
         return {
                   form: {
-                    alipay: 20,
+                    alipay: "",
                     password: "",
-                    status: "启用",
+                    status: "",
                     username: "",
-                    wechat: 20
+                    wechat: ""
                 },
               }
 

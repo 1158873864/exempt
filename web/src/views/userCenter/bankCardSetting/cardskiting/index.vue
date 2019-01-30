@@ -12,11 +12,19 @@
       border
       style="width: 100%"
     >
-      <el-table-column prop="cardId" label="卡号" align="center"></el-table-column>
-      <el-table-column prop="id" label="id" align="center"></el-table-column>
-      <el-table-column prop="money" label="金额" align="center"></el-table-column>
-      <el-table-column prop="type" label="提现类型" align="center"></el-table-column>
-    
+
+    <el-table-column prop="cardId" label="卡号" align="center"></el-table-column>
+    <el-table-column prop="money" label="金额" align="center"></el-table-column>
+    <el-table-column prop="applyTime" label="申请提现时间" align="center"></el-table-column>
+    <el-table-column prop="state" label="提现状态" align="center">
+      <template slot-scope="{row}">
+        <el-button type="primary" size="small" v-if="row.state=='WAITING'">等待处理</el-button>
+        <el-button type="warning" size="small" v-else-if="row.state=='DEALING'">正在处理</el-button>
+        <el-button type="success" size="small" v-else-if="row.state=='SUCCESS'">成功</el-button>
+        <el-button type="danger" size="small" v-else-if="row.state=='SUCCESS'">失败</el-button>
+        <el-tag type="warning" v-if="row.state=='SUCCESS'">{{ row.operateTime }}</el-tag>
+      </template>
+    </el-table-column>
     </el-table>
     <div class="block">
       <el-pagination
@@ -34,23 +42,25 @@
 
 <script>
 // import Chart from '@/components/Charts/lineMarker'
-import { withdrew } from "@/api/role";
+import { withdrewHistory } from "@/api/role";
+import { getTime } from "@/utils/index";
+import store from '../../../../store';
 export default {
-  name: "index",
+  // name: "index",
   //   components: { Chart },
   data() {
     return {
-      activeNames: ["1"],
-      labelPosition: "right",
-      postaddParameters: {
-        post: "post"
-      },
+      // activeNames: ["1"],
+      // labelPosition: "right",
+      // postaddParameters: {
+      //   post: "post"
+      // },
       teams: [
         {
-          cardId: "string",
-          id: "string",
-          money: 0,
-          type: 0
+          // cardId: "string",
+          // id: "string",
+          // money: 0,
+          // type: 0
         }
       ],
       currentPage: 1,
@@ -87,7 +97,7 @@ export default {
       this.getTeams();
     },
    getTeams() {
-      withdrew().then(response => {
+      withdrewHistory().then(response => {
         console.log(response, "sdll");
         if (response.code != 200) {
           this.$message({
@@ -98,11 +108,18 @@ export default {
           if (response.data.length != 0) {
             this.teams = response.data;
             this.teams.forEach(el => {
-              el.time = getTime(el.time);
-              el.approvalTime = getTime(el.approvalTime);
-              el.payTime = getTime(el.payTime);
+              el.applyTime = getTime(el.applyTime);
+              el.operateTime = getTime(el.operateTime);    
             });
-          }
+
+            var a = []
+            this.teams.forEach(el => {
+              if(el.applicantId == store.getters.uid) {
+                  a.push(el)
+              }
+            })
+            this.teams = a;
+        }
         }
       });
     }

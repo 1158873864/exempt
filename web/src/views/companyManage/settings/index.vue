@@ -1,7 +1,7 @@
-<template>
+<template> 
         <div class="app-container documentation-container">
-                <label class="titlestyle">{{ title }}</label>
-                <el-form :label-position="labelPosition" class="demo-form-inline">
+                <label class="titlestyle">{{"主页名：" + title }}</label>
+                <el-form :label-position="labelPosition" class="demo-form-inline" style="margin-top:30px;">
                     <el-form-item label="修改主页名">
                         <el-input v-model="newTitle" style="width: 30%;"></el-input>
                     </el-form-item>
@@ -36,11 +36,12 @@
                     console.log(response,'sdll')
                      if(response.code!=200){
                         this.$message({
-                            message: response.data.description,
+                            message: "获取失败",
                             type: 'warning'
                         });
                     }else{
-                       this.title = response.data[0].title;
+                        if( response.data != null && response.data != '')
+                            this.title = response.data[0].title;
                     }
                 })
             },
@@ -48,11 +49,13 @@
                 titleUpdate(this.newTitle).then(response=>{
                     if(response.code!=200){
                         this.$message({
-                            message: response.data.description,
+                            message: "修改失败",
                             type: 'warning'
                         });
                     }else{
-                       this.title = this.newTitle;
+                        
+                        this.getTitle();
+                    //    this.title = this.newTitle;
                        this.$message({
                             message: '修改成功',
                             type: 'success'

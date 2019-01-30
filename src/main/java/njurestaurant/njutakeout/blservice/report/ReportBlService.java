@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 public interface ReportBlService {
-    List<MerchantReportResponse> getReportOfMerchant(Date date);
+    List<MerchantReportResponse> getReportOfMerchant(Date startDate, Date endDate)throws WrongInputException;;
 
     List<AgentReportResponse> getReportOfAgent(Date startDate, Date endDate) throws WrongInputException;
 

@@ -70,8 +70,8 @@ import {getIds} from '@/utils/treeids'
                 },
                 posts:[{}],
                 teams:[{
-                        "post": "职位",
-                        "permission": "权限",
+                        // "post": "职位",
+                        // "permission": "权限",
                 }]
             }
         },

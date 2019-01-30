@@ -1,29 +1,29 @@
 <template>
   <!-- <div>团队管理</div> -->
     <div class="app-container">
-        <el-form :label-position="labelPosition" :model="cardAddParameters" class="demo-form-inline">
-            <el-form-item label="归属">
-                <el-input v-model="cardAddParameters.attribution" placeholder="归属" style="width: 30%;"></el-input>
-            </el-form-item>
-            <el-form-item label="余额">
-                <el-input type="number" v-model="cardAddParameters.balance" placeholder="0" style="width: 30%;"></el-input>
+        <el-form :label-position="labelPosition" :model="cardAddParameters" class="demo-form-inline" label-width="5%">
+            <el-form-item label="姓名">
+                <el-input v-model="cardAddParameters.name" placeholder="姓名" style="width: 30%;"></el-input>
             </el-form-item>
             <el-form-item label="银行">
                 <el-input v-model="cardAddParameters.bank" placeholder="银行" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="所属人">
-                <el-input v-model="cardAddParameters.name" placeholder="所属人" style="width: 30%;"></el-input>
+             <el-form-item label="余额">
+                <el-input type="number" v-model="cardAddParameters.balance" placeholder="余额" style="width: 30%;"></el-input>
             </el-form-item>
             <el-form-item label="卡号">
-                <el-input v-model="cardAddParameters.number" placeholder="卡号" style="width: 30%;"></el-input>
+                <el-input type="number" v-model="cardAddParameters.number" placeholder="卡号" style="width: 30%;"></el-input>
+            </el-form-item>
+            <el-form-item label="归属">
+                <el-input v-model="cardAddParameters.attribution" placeholder="归属" style="width: 30%;"></el-input>
             </el-form-item>
             <el-form-item label="关联">
                 <el-input v-model="cardAddParameters.relation" placeholder="关联" style="width: 30%;"></el-input>
             </el-form-item>
              <el-form-item label="状态">
                     <el-select v-model="cardAddParameters.status" placeholder="启用">
-                    <el-option label="启用" value="WORKING"></el-option>
-                    <el-option label="停用" value="INVALID"></el-option>
+                    <el-option label="启用" value="启用"></el-option>
+                    <el-option label="停用" value="停用"></el-option>
                     </el-select>
                 </el-form-item>
             <el-form-item>
@@ -42,7 +42,7 @@ import { cardAdd } from '@/api/company'
                 labelPosition: 'right',
                 cardAddParameters: {
                         "attribution": "",
-                        "balance": 0,
+                        "balance": "",
                         "bank": "",
                         "name": "",
                         "number": "",

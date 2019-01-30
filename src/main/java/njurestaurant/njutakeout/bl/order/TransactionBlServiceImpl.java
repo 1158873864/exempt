@@ -68,7 +68,15 @@ public class TransactionBlServiceImpl implements TransactionBlService {
     private long id_time_interval_safe = 5000;//同一id两次访问的安全时间间隔，暂设为5000ms
     private final String TRANSFERSOLIDURL = "alipays://platformapi/startapp?appId=20000123&actionType=scan&biz_data={\"s\": \"money\",\"u\":\"";
     private final String TRANSFERPASSURL = "alipays://platformapi/startapp?appId=09999988&actionType=toAccount&sourceId=contactAmount&chatLoginId=&chatUserId=";
+    public static double time = 2.0;
 
+    public static double getTime() {
+        return time;
+    }
+
+    public static void setTime(double time) {
+        TransactionBlServiceImpl.time = time;
+    }
 
     @Autowired
     public TransactionBlServiceImpl(SupplierDataService supplierDataService, PlatformOrderDataService platformOrderDataService, AlipayDataService alipayDataService, AlipayOrderDataService alipayOrderDataService, UserDataService userDataService, MerchantDataService merchantDataService, DeviceDataService deviceDataService, WithdrewOrderDataService withdrewOrderDataService, AgentDataService agentDataService) {
@@ -308,6 +316,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                     platformOrder.setTableId(chosenDevice.getAlipayId());
                 // else 微信收款码
                 platformOrderDataService.savePlatformOrder(platformOrder);
+
                 return new GetQrCodeResponse("/redirect", "success", orderId);
             }
         }
@@ -337,9 +346,9 @@ public class TransactionBlServiceImpl implements TransactionBlService {
     private boolean checkOrderIsExpired(Date date) {
         Date now = new Date();
         long diff = now.getTime() - date.getTime();
-        int minutes = (int) (diff / (1000 * 60));
+        double minutes = (double) diff / (1000 * 60);
         // 预设失效时间为2分钟
-        if (minutes > 2) {
+        if (minutes > time) {
             return true;
         } else {
             return false;
@@ -457,7 +466,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
             } else if ("agent".equals(withdrewOrder.getType())) {
                 User u = userDataService.getUserById(withdrewOrder.getApplicantId());
                 Agent agent = agentDataService.findAgentById(u.getTableId());
-                agent.setWithdrewMoney(agent.getWithdrewMoney() - withdrewOrder.getMoney());  // 减少商户正在提现的金额
+                agent.setWithdrewMoney(agent.getWithdrewMoney() - withdrewOrder.getMoney());  // 减少代理正在提现的金额
                 agentDataService.saveAgent(agent);
             }
         } else if ("FAILED".equals(withdrewDealParameters.getState())) {
@@ -471,8 +480,8 @@ public class TransactionBlServiceImpl implements TransactionBlService {
             } else if ("agent".equals(withdrewOrder.getType())) {
                 User u = userDataService.getUserById(withdrewOrder.getApplicantId());
                 Agent agent = agentDataService.findAgentById(u.getTableId());
-                agent.setBalance(agent.getBalance() + withdrewOrder.getMoney());  // 增加商户余额
-                agent.setWithdrewMoney(agent.getWithdrewMoney() - withdrewOrder.getMoney());  // 减少商户正在提现的金额
+                agent.setBalance(agent.getBalance() + withdrewOrder.getMoney());  // 增加代理余额
+                agent.setWithdrewMoney(agent.getWithdrewMoney() - withdrewOrder.getMoney());  // 减少代理正在提现的金额
                 agentDataService.saveAgent(agent);
             }
         } else throw new BlankInputException(); // 审批状态错误

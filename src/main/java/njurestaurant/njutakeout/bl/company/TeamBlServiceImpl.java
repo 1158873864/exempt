@@ -93,4 +93,18 @@ public class TeamBlServiceImpl implements TeamBlService {
             }
         }
     }
+
+    @Override
+    public Response verifyTeamCodeByTeamName(String teamName, String verifyCode) throws WrongIdException, TeamVerifyCodeWrongException {
+        Team team = teamDataService.findTamByTeamName(teamName);
+        if(team == null) {
+            throw new WrongIdException();
+        } else {
+            if(team.getVerifyCode().equals(verifyCode)) {
+                return new TeamAddResponse(team.getId());
+            } else {
+                throw new TeamVerifyCodeWrongException();
+            }
+        }
+    }
 }

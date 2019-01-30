@@ -3,19 +3,19 @@
     <div class="app-container">
         <el-form :label-position="labelPosition" :model="teamAddParameters" class="demo-form-inline" label-width="100px">
             <el-form-item label="区域">
-                <el-input v-model="teamAddParameters.area" placeholder="area" style="width: 30%;"></el-input>
+                <el-input v-model="teamAddParameters.area" placeholder="区域" style="width: 30%;"></el-input>
             </el-form-item>
              <el-form-item label="状态">
                     <el-select v-model="teamAddParameters.status" placeholder="启用">
-                    <el-option label="启用" value="WORKING"></el-option>
-                    <el-option label="停用" value="INVALID"></el-option>
+                    <el-option label="启用" value="启用"></el-option>
+                    <el-option label="停用" value="停用"></el-option>
                     </el-select>
                 </el-form-item>
             <el-form-item label="团队名">
-                <el-input v-model="teamAddParameters.teamName" placeholder="teamName" style="width: 30%;"></el-input>
+                <el-input v-model="teamAddParameters.teamName" placeholder="团队名" style="width: 30%;"></el-input>
             </el-form-item>
             <el-form-item label="验证码">
-                <el-input v-model="teamAddParameters.verifyCode" placeholder="verifyCode" style="width: 30%;"></el-input>
+                <el-input v-model="teamAddParameters.verifyCode" placeholder="验证码" style="width: 30%;"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="addteam">添加</el-button>
@@ -33,12 +33,12 @@ import store from '../../../../store'
                 activeNames: ['1'],
                 labelPosition: 'right',
                 teamAddParameters: {
-                        "area": "区域",
-                        "operator": "1",
-                        "status": "WORKING",
-                        "supervisor": "supervisor",
-                        "teamName": "团队名",
-                        "verifyCode": "verifyCode"
+                        "area": "",
+                        "operator": "",
+                        "status": "",
+                        "supervisor": "",
+                        "teamName": "",
+                        "verifyCode": ""
                 },
                 teams:{},
                 currentPage:1

@@ -46,11 +46,11 @@
     </div>
       <el-dialog title="修改商户信息" :visible.sync="dialogFormVisible">
             <el-form :model="newRow">
-                <!-- <el-form-item label="用户名">
-                    <el-input v-model="newRow.user.username" placeholder="area"></el-input>
-                </el-form-item> -->
+                <el-form-item label="用户名">
+                    <el-input v-model="newRow.user.username" placeholder="用户名"></el-input>
+                </el-form-item>
                 <el-form-item label="密码">
-                    <el-input v-model="newRow.user.password" type="password" placeholder="area"></el-input>
+                    <el-input v-model="newRow.user.password" type="password" placeholder="密码"></el-input>
                 </el-form-item>
                 <el-form-item label="状态">
                     <el-select v-model="newRow.user.status" placeholder="启用">
@@ -59,13 +59,13 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="等级">
-                    <el-input v-model="newRow.level" placeholder="area"></el-input>
+                    <el-input v-model="newRow.level" placeholder="等级"></el-input>
                 </el-form-item>
                 <el-form-item label="支付宝点位">
-                    <el-input v-model="newRow.alipay" placeholder="area"></el-input>
+                    <el-input v-model="newRow.alipay" placeholder="支付宝点位"></el-input>
                 </el-form-item>
                 <el-form-item label="微信点位">
-                    <el-input v-model="newRow.wechat" placeholder="password"></el-input>
+                    <el-input v-model="newRow.wechat" placeholder="微信点位"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -147,10 +147,10 @@ import {getTime} from '@/utils/index'
         },
         methods: {
              updateSupplier() {
-                updateMerchant(this.newRow.id,
+                updateMerchant(this.newRow.user.id,
                 this.newRow.alipay,
                 this.newRow.level,
-                this.newRow.user.name,
+                this.newRow.user.username,
                 this.newRow.user.password,
                 this.newRow.user.status,
                 this.newRow.wechat).then(response=> {

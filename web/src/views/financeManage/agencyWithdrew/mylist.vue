@@ -14,31 +14,33 @@
 
             <el-table
             :data="teams.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-            height="450"
+            :height="tableHeight"
             border
             style="width: 100%">
-            <el-table-column prop="id" label="id"></el-table-column>
-            <el-table-column prop="number" label="银行卡号"></el-table-column>
-            <el-table-column prop="applicantId" label="订单id"></el-table-column>
-            <el-table-column prop="type" label="类型"></el-table-column>
-            <el-table-column prop="money" label="提现金额"></el-table-column>
-            <el-table-column prop="balance" label="账变前金额"></el-table-column>
-            <el-table-column prop="state" label="状态">
-                <template scope="scope">
-                    <el-tag v-if="scope.row.state=='SUCCESS'" type="success">{{ scope.row.state }}</el-tag>
-                    <el-tag v-if="scope.row.state=='FAILED'" type="warning">{{ scope.row.state }}</el-tag>
+            <el-table-column prop="id" label="id"  align="center"></el-table-column>
+            <el-table-column prop="number" label="订单编号" align="center"></el-table-column>
+            <el-table-column prop="type" label="类型" align="center">
+                <template slot-scope="{row}">
+                    <el-tag  v-if="row.type=='merchant'" >商户提现订单</el-tag>
+                    <el-tag  v-else-if="row.type=='agent'" >代理提现订单</el-tag>
                 </template>
             </el-table-column>
-            <el-table-column prop="applyTime" label="申请时间"></el-table-column>
-            <el-table-column prop="operateId" label="操作者"></el-table-column>
-            <el-table-column prop="cardId" label="卡号"></el-table-column>
+             <el-table-column prop="cardId" label="银行卡号" align="center"></el-table-column>
+            <el-table-column prop="money" label="提现金额" align="center"></el-table-column>
+            <el-table-column prop="balance" label="账变前金额" align="center"></el-table-column>
+            <el-table-column prop="applicantId" label="申请人id" align="center"></el-table-column>
+             <el-table-column prop="applyTime" label="申请时间" align="center"></el-table-column>
+            <el-table-column prop="state" label="状态" align="center">
+                <template scope="scope">
+                    <el-tag v-if="scope.row.state=='DEALING'" type="warning">等待处理</el-tag>
+                </template>
+            </el-table-column>
             <el-table-column label="操作" align="center">
                 <template scope="scope">
-                    <el-input v-model="scope.row.memo" name="memo" type="text" auto-complete="on" placeholder="评论" />
-                    <el-button size="small"
+                    <el-button size="small" type="success" align="center"
                             @click="getWithdrew(scope.row.id,scope.row.memo,'SUCCESS')">通过
-                    </el-button>
-                    <el-button size="small"
+                    </el-button>    
+                    <el-button size="small" type="danger" align="center"
                             @click="getWithdrew(scope.row.id,scope.row.memo,'FAILED')">拒绝
                     </el-button>
                 </template>
@@ -62,6 +64,7 @@
 <script>
   import Table from "../../../components/table/index"
   import {withdrewDeal,withdrewList} from '@/api/transaction'
+  import {getTime} from '@/utils/index'
   import store from '../../../store'
      export default {
             data() {
@@ -86,8 +89,14 @@
                         }
                     ],
                     currentPage:1,
-                    pagesize:1
+                    pagesize:10
                 }
+            },
+            mounted:function(){
+                this.tableHeight = window.innerHeight -  90;
+                //window.innerHeight:浏览器的可用高度
+                //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
+                //后面的50：根据需求空出的高度，自行调整
             },
             created(){
                 this.getData();
@@ -96,15 +105,15 @@
                 getWithdrew(id,memo,state){
                     withdrewDeal(id,memo,store.getters.uid,state).then(response=>{
                         console.log(response)
-                        if(response.infoCode!=200){
+                        if(response.code!=200){
                         this.$message({
                             message: response.data.description,
                             type: 'warning'
                         });
                         }else{
                             this.$message({
-                            message: '抢单成功',
-                            type: 'warning'
+                            message:  response.data.description,
+                            type: 'success'
                         });
                          this.getData();
                         }
@@ -130,11 +139,15 @@
                                 type: 'warning'
                             });
                         }else{
+                            var a = []
                            this.teams = response.data;
                            this.teams.forEach(el => {
                                el.memo = ''
                                el.applyTime = getTime(el.applyTime)
+                               if(el.state == 'DEALING')
+                                    a.push(el)
                            });
+                           this.teams = a ;
                         }
                     })
                 },

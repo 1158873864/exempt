@@ -47,9 +47,9 @@
                 return {
                     labelPosition: 'right',
                     teams:[{
-                        'id': 0,
-                        'post': 'post',
-                        'permission':'permission'
+                        // 'id': 0,
+                        // 'post': 'post',
+                         'permission':'permission'
                         }
                     ],
                     currentPage:1

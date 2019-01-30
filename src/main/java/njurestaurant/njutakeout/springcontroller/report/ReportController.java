@@ -36,8 +36,13 @@ public class ReportController {
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> merchantReport(@DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
-        return new ResponseEntity<>(new JSONResponse(200, reportBlService.getReportOfMerchant(date)), HttpStatus.OK);
+    public ResponseEntity<Response> merchantReport(@DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate, @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) {
+        try {
+            return new ResponseEntity<>(new JSONResponse(200, reportBlService.getReportOfMerchant(startDate,endDate)), HttpStatus.OK);
+        } catch (WrongInputException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new JSONResponse(10410, new WrongResponse(10410, "输入的日期格式错误。")), HttpStatus.OK);
+        }
     }
 
     @ApiOperation(value = "代理报表", notes = "管理员查看代理商全部报表")

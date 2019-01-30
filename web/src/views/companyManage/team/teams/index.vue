@@ -3,18 +3,19 @@
     <div>团队管理</div>
         <el-table
         :data="teams.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-        max-height="500"
+        height="500"
         ref="table"
+        border
        >
-        <el-table-column prop="teamName" label="团队名" ></el-table-column>
-        <el-table-column prop="addTime" label="创建时间" ></el-table-column>
-        <el-table-column prop="area" label="区域" ></el-table-column>
-        <el-table-column prop="id" label="序号" ></el-table-column>
-        <el-table-column prop="operator" label="操作者" ></el-table-column>
-        <el-table-column prop="status" label="状态" ></el-table-column>
-        <el-table-column prop="supervisor" label="主管" ></el-table-column>
+        <el-table-column prop="id" label="序号" align="center"></el-table-column>
+        <el-table-column prop="teamName" label="团队名" align="center"></el-table-column>
+        <el-table-column prop="area" label="区域" align="center"></el-table-column>
+        <!-- <el-table-column prop="operator" label="操作者" ></el-table-column> -->
+        <el-table-column prop="status" label="状态" align="center"></el-table-column>
+        <el-table-column prop="supervisor" label="主管id" align="center"></el-table-column>
+        <el-table-column prop="addTime" label="创建时间" min-width="150%" align="center"></el-table-column>
         <!-- <el-table-column prop="verifyCode" label="verifyCode" width="180"></el-table-column> -->
-        <el-table-column label="操作" fixed="right" width="280" >
+        <el-table-column label="操作" fixed="right" width="280" align="center">
             <template scope="scope">
                 <el-button size="small"
                         @click="openDialog(scope.$index,scope.row)">修改</el-button>
@@ -38,21 +39,26 @@
     </div>
 
     <el-dialog title="修改团队信息" :visible.sync="dialogFormVisible">
-        <el-form :model="newRow">
-            <el-form-item label="new_area">
-                <el-input v-model="newRow.area" placeholder="area"></el-input>
+        <el-form :model="newRow" label-width="10%">
+            <el-form-item label="团队名">
+                <el-input v-model="newRow.teamName" placeholder="团队名" style="width: 80%;"></el-input>
             </el-form-item>
-            <el-form-item label="new_operator">
-                <el-input v-model="newRow.operator" placeholder="operator"></el-input>
+            <el-form-item label="区域">
+                <el-input v-model="newRow.area" placeholder="区域" style="width: 80%;"></el-input>
             </el-form-item>
-            <el-form-item label="new_status">
-                <el-input v-model="newRow.status" placeholder="status"></el-input>
+            <!-- <el-form-item label="new_operator">
+                <el-input v-model="newRow.operator" placeholder="操作者"></el-input>
+            </el-form-item> -->
+             <!-- <p class="err-msg" v-html="err"></p> -->
+            <el-form-item label="状态">
+                <el-select v-model="newRow.status" placeholder="启用">
+                <el-option label="启用" value="启用"></el-option>
+                <el-option label="停用" value="停用"></el-option>
+                </el-select>
             </el-form-item>
-            <el-form-item label="new_teamName">
-                <el-input v-model="newRow.teamName" placeholder="teamName"></el-input>
-            </el-form-item>
-            <el-form-item label="new_verifyCode">
-                <el-input v-model="newRow.verifyCode" placeholder="verifyCode"></el-input>
+            
+            <el-form-item label="验证码">
+                <el-input v-model="newRow.verifyCode" placeholder="验证码" style="width: 80%;"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -67,6 +73,7 @@
 
 <script>
 import { teamAdd,teamsGet,teamDelete,teamVerifyCodeCheck,teamUpdate, } from '@/api/company'
+import { getTime,getTimeFormat } from "@/utils/index";
     export default {
         data() {
             return {
@@ -82,14 +89,14 @@ import { teamAdd,teamsGet,teamDelete,teamVerifyCodeCheck,teamUpdate, } from '@/a
                         "verifyCode": "verifyCode"
                 },
                 teams:[{
-                    'teamName':'teamName',
-                    'addTime':'addTime',
-                    'area':'area',
-                    'id':'id',
-                    'operator':'operator',
-                    'status':'status',
-                    'supervisor':'supervisor',
-                    'verifyCode':'verifyCode'
+                    // 'teamName':'teamName',
+                    // 'addTime':'addTime',
+                    // 'area':'area',
+                    // 'id':'id',
+                    // 'operator':'operator',
+                    // 'status':'status',
+                    // 'supervisor':'supervisor',
+                    // 'verifyCode':'verifyCode'
                     }
                 ],
                 currentPage:1,
@@ -118,10 +125,6 @@ import { teamAdd,teamsGet,teamDelete,teamVerifyCodeCheck,teamUpdate, } from '@/a
                     cancelButtonText: '取消',
                     
                 }).then(({ value }) => {
-                    // this.$message({
-                    //     type: 'success',
-                    //     message: '你的邮箱是: ' + value
-                    // });
                     verifyCode = value;
                     this.operation(index, row,verifyCode);
                 }).catch(() => {
@@ -209,15 +212,18 @@ import { teamAdd,teamsGet,teamDelete,teamVerifyCodeCheck,teamUpdate, } from '@/a
             getTeams(){
                 teamsGet().then(response=>{
                     console.log(response,'sdll')
-                     if(response.data.infoCod){
+                     if(response.code != 200){
                         this.$message({
                             message: response.data.description,
                             type: 'warning'
                         });
                     }else{
                        this.teams = response.data;
+                       this.teams.forEach(el => {
+                             el.addTime=getTime(el.addTime);
+                       });
                     }
-                })
+                });
             },
             handleChange(val) {
                 console.log(val);

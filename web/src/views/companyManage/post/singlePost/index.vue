@@ -18,16 +18,8 @@
             height="250"
             border
             style="width: 100%">
-             <el-table-column
-                prop="post"
-                label="post"
-                width="180">
-                </el-table-column>
-                <el-table-column
-                prop="permission"
-                label="permission"
-                width="180">
-                </el-table-column>
+                <el-table-column prop="post" label="post" width="180"></el-table-column>
+                    <el-table-column prop="permission" label="permission" width="180"></el-table-column>
             </el-table>
 
         </div>
@@ -62,8 +54,8 @@
                     activeNames: ['1'],
                     labelPosition: 'right',
                     teams: [{
-                        post:'post',
-                        permission:'permission'
+                        // post:'post',
+                        // permission:'permission'
                     }],
                     currentPage:1
                 }

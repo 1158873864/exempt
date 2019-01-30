@@ -250,16 +250,30 @@ public class UserController {
         if (StringUtils.isBlank(agentUpdateParameters.getPassword()) || StringUtils.isBlank(agentUpdateParameters.getName()) || StringUtils.isBlank(String.valueOf(agentUpdateParameters.getAlipay())) || StringUtils.isBlank(String.valueOf(agentUpdateParameters.getWechat())) || StringUtils.isBlank(agentUpdateParameters.getStatus())) {
             return new ResponseEntity<>(new JSONResponse(10120, new WrongResponse(10120, "输入不能为空.")), HttpStatus.OK);
         }
-
-        if (userDao.findUserByUsername(agentUpdateParameters.getName()) != null)
-            return new ResponseEntity<>(new JSONResponse(10100, new UsernameIsExistentException()), HttpStatus.OK);
-        else{
+        User user = userDao.findUserById(id);
+        if (!user.getUsername().equals(agentUpdateParameters.getName())) {
+            if (userDao.findUserByUsername(agentUpdateParameters.getName()) != null)
+                return new ResponseEntity<>(new JSONResponse(10100, new UsernameIsExistentException()), HttpStatus.OK);
+            else {
+                Agent agent = agentDao.findByUserId(id);
+                agent.setAlipay(agentUpdateParameters.getAlipay());
+                agent.setWechat(agentUpdateParameters.getWechat());
+                agent.setStatus(agentUpdateParameters.getStatus());
+                agent.setAgentName(agentUpdateParameters.getName());
+                user.setUsername(agentUpdateParameters.getName());
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                user.setPassword(encoder.encode(agentUpdateParameters.getPassword()));
+                agent.setUser(user);
+                userDataService.saveUser(user);
+                agentDataService.saveAgent(agent);
+                return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("更新成功")), HttpStatus.OK);
+            }
+        } else {
             Agent agent = agentDao.findByUserId(id);
             agent.setAlipay(agentUpdateParameters.getAlipay());
             agent.setWechat(agentUpdateParameters.getWechat());
             agent.setStatus(agentUpdateParameters.getStatus());
             agent.setAgentName(agentUpdateParameters.getName());
-            User user = userDao.findUserById(id);
             user.setUsername(agentUpdateParameters.getName());
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             user.setPassword(encoder.encode(agentUpdateParameters.getPassword()));

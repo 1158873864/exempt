@@ -1,14 +1,18 @@
 <template>
     <div class="app-container">
-        <div>添加岗位</div>
-        <el-form :label-position="labelPosition" :model="postaddParameters" class="demo-form-inline">
-            <el-form-item label="职位">
-                <el-input v-model="postaddParameters.post" placeholder="post" style="width: 30%;"></el-input>
-            </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="postAdd">添加</el-button>
-            </el-form-item>
-        </el-form>
+        <el-card class="box-card">
+            <div slot="header" class="clearfix">
+                <span class="span">添加岗位</span>
+            </div>
+            <el-form :label-position="labelPosition" :model="postaddParameters" label-width="10%">
+                <el-form-item label="岗位" style="width:80%;">
+                    <el-input v-model="postaddParameters.post" placeholder="岗位" style="width: 50%;" ></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" @click="postAdd">添加</el-button>
+                </el-form-item>
+            </el-form>
+        </el-card>
   </div>
 </template>
 
@@ -20,7 +24,7 @@ import { addPost } from '@/api/company'
                 activeNames: ['1'],
                 labelPosition: 'right',
                 postaddParameters: {
-                        "post": "post",
+                      //  "post": "post",
                 }
             }
         },
@@ -66,7 +70,31 @@ import { addPost } from '@/api/company'
         }
     }
 </script>
+<style>
+.text {
+  font-size: 14px;
+}
 
-<style scoped>
+.item {
+  margin-bottom: 18px;
+  color: black;
+  /* border: 1px solid black; */
+  width: 310px;
+  display: inline-block;
+}
 
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+.clearfix:after {
+  clear: both;
+}
+
+.box-card {
+  width: 680px;
+  height: 350px;
+  margin: 80px auto;
+}
 </style>

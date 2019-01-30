@@ -56,4 +56,9 @@ public class TeamDataServiceImpl implements TeamDataService {
         if(optionalTeam.isPresent()) return optionalTeam.get();
         else return null;
     }
+
+    @Override
+    public Team findTamByTeamName(String teamName) {
+        return teamDao.findTeamByTeamName(teamName);
+    }
 }

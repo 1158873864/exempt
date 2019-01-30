@@ -2,13 +2,15 @@
   <div class="chart-container">
     <!-- <div>商户报表</div> -->
     <!-- <chart height="100%" width="100%"/> -->
-    <el-input
+      <el-input
       v-model="searchStr"
-      style="width:30vw;margin:20px 0 20px 0;"
+      style="width:30vw;margin:20px 20px 20px 20px;"
       suffix-icon="el-icon-search"
       placeholder="请输入搜索内容"
     ></el-input>
-
+     <el-date-picker v-model="startDate" type="date"  @change="startDateChange"   placeholder="起始日期" style="margin:20px 20px 20px 20px;"></el-date-picker>
+     <el-date-picker v-model="endDate" type="date"  @change="endDateChange"   placeholder="截止日期" style="margin:20px 20px 20px 20px;"></el-date-picker>
+     <el-button type="primary" @click="dateSearch">查询</el-button>
     <el-table
       :data="filterData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
       height="500"
@@ -39,6 +41,7 @@
 <script>
 import Chart from "@/components/Charts/lineMarker";
 import { receiveCodeReport } from "@/api/report";
+import { getTime,getTimeFormat } from "@/utils/index";
 export default {
   name: "LineChart",
   components: { Chart },
@@ -61,7 +64,9 @@ export default {
       ],
       currentPage: 1,
       pagesize: 10,
-      searchStr: ""
+      searchStr: "",
+      startDate:"",
+      endDate:""
     };
   },
   computed: {
@@ -77,6 +82,30 @@ export default {
     this.getData();
   },
   methods: {
+    startDateChange(val){
+      this.startDate = val;
+    },
+    endDateChange(val){
+      this.endDate = val;
+    },
+    dateSearch(){
+        receiveCodeReport(getTimeFormat(this.startDate),getTimeFormat(this.endDate)).then(response=>{
+          console.log(response,'sdll')
+            if(response.code!=200){
+              this.$message({
+                  message: response.data.description,
+                  type: 'warning'
+              });
+          }else{
+            if(response.data.length!=0)
+              this.teams = response.data;
+              this.teams.forEach(el => {
+                //  el.orderState = (el.orderState=='WAITING_FOR_PAYING')?'等待支付':'PAID'?'已支付':'失效';
+                  // el.date = getTime(el.date);
+              });
+          }
+      })
+    },
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
       this.pagesize = val;
@@ -89,7 +118,7 @@ export default {
       this.getTeams();
     },
     getTeams() {
-      receiveCodeReport().then(response => {
+      receiveCodeReport("2000-01-01",getTimeFormat(new Date())).then(response => {
         console.log(response, "sdll");
         if (response.code != 200) {
           this.$message({
@@ -97,14 +126,15 @@ export default {
             type: "warning"
           });
         } else {
-          if (response.data.length != 0) this.teams = response.data;
+          if (response.data.length != 0) 
+          this.teams = response.data;
           this.teams.forEach(el => {
-            el.orderState =
-              el.orderState == "WAITING_FOR_PAYING"
-                ? "等待支付"
-                : "PAID"
-                ? "已支付"
-                : "失效";
+            // el.orderState =
+            //   el.orderState == "WAITING_FOR_PAYING"
+            //     ? "等待支付"
+            //     : "PAID"
+            //     ? "已支付"
+            //     : "失效";
           });
         }
       });

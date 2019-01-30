@@ -38,46 +38,14 @@
       ></el-pagination>
     </div>
     <el-dialog title="修改供码用户信息" :visible.sync="dialogFormVisible">
-<<<<<<< HEAD
-      <el-form :model="newRow">
-        <el-form-item label="码类型">
-          <el-select v-model="newRow.codeType" placeholder="">
-            <el-option label="转账通码" value="TPASS"></el-option>
-            <el-option label="转账固码" value="TSOLID"></el-option>
-            <el-option label="收款通码离线码" value="RPASSOFF"></el-option>
-            <el-option label="收款通码在线码" value="RPASSQR"></el-option>
-            <el-option label="收款固码(二开)" value="RSOLID"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="等级">
-          <el-input v-model="newRow.level" type="number" min="1" placeholder="请输入等级"></el-input>
-        </el-form-item>
-        <el-form-item label="用户名">
-          <el-input v-model="newRow.user.username" placeholder="请输入用户名"></el-input>
-        </el-form-item>
-        <el-form-item label="密码">
-          <el-input v-model="newRow.user.password" type="password" placeholder="请输入密码"></el-input>
-        </el-form-item>
-        <el-form-item label="账号状态">
-          <el-select v-model="newRow.status" placeholder="">
-            <el-option label="启用" value="启用"></el-option>
-            <el-option label="停用" value="停用"></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="updateSupplier">确 定</el-button>
-      </div>
-=======
             <el-form :model="newRow">
                 <el-form-item label="码类型">
                     <el-select v-model="newRow.codeType" placeholder="">
-                    <el-option label="转账通码" value="TSOLID"></el-option>
-                    <el-option label="转账固码" value="TPASS"></el-option>
-                    <el-option label="收款通码离线码" value="RSOLID"></el-option>
-                    <el-option label="收款通码在线码" value="RPASSOFF"></el-option>
-                    <el-option label="收款固码(二开)" value="RPASSQR"></el-option>
+                    <el-option label="转账通码" value="TPASS"></el-option>
+                    <el-option label="转账固码" value="TSOLID"></el-option>
+                    <el-option label="收款通码离线码" value="RPASSOFF"></el-option>
+                    <el-option label="收款通码在线码" value="RPASSQR"></el-option>
+                    <el-option label="收款固码(二开)" value="RSOLID"></el-option>
                     </el-select>
                 </el-form-item>
                  <el-form-item label="状态">
@@ -86,18 +54,20 @@
                     <el-option label="停用" value="停用"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="level">
-                    <el-input v-model="newRow.level" type="number" min="1" placeholder="level"></el-input>
+                <el-form-item label="等级">
+                    <el-input v-model="newRow.level" type="number" min="1" placeholder="等级"></el-input>
                 </el-form-item>
-                <el-form-item label="password">
-                    <el-input v-model="newRow.user.password" type="password" placeholder="password"></el-input>
+                <el-form-item label="用户名">
+                    <el-input v-model="newRow.user.username" type="text" placeholder="用户名"></el-input>
+                </el-form-item>
+                <el-form-item label="密码">
+                    <el-input v-model="newRow.user.password" type="password" placeholder="密码"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
                 <el-button type="primary" @click="updateSupplier">确 定</el-button>
             </div>
->>>>>>> 1f2a690a3b15e560d8c28879a64f14dcff0f5c7c
     </el-dialog>
   </div>
 </template>
@@ -121,8 +91,10 @@
           }
         ],
         newRow: {
+
           codeType: "RPASSOFF",
           level: 0,
+          username: "",
           password: "",
           user: {},
           priority: 0,
@@ -132,7 +104,7 @@
         pagesize: 10,
         newRowIndex: 1,
         dialogFormVisible: false,
-        searchStr: "g" // 新增
+        searchStr: "" // 新增
       };
     },
     computed: {
@@ -150,20 +122,12 @@
     methods: {
       updateSupplier() {
         supplierUpdate(
-<<<<<<< HEAD
-            this.newRow.codeType,
-            this.newRow.level,
-            this.newRow.user.username,
-            this.newRow.user.password,
-            this.newRow.status,
-            this.newRow.id
-=======
           this.newRow.codeType,
           this.newRow.level,
+          this.newRow.user.username,
           this.newRow.user.password,
           this.newRow.status,
-          this.newRow.id
->>>>>>> 1f2a690a3b15e560d8c28879a64f14dcff0f5c7c
+          this.newRow.user.id
         ).then(response => {
           if (response.code != 200) {
             this.$message({
@@ -194,6 +158,8 @@
         //this.newRow = JSON.parse(JSON.stringify(row));
         this.newRowIndex = index;
         console.log(this.newRow);
+        console.log(this.newRowIndex);
+        console.log("111111111111111111");
       },
       handleSizeChange(val) {
         console.log(`每页 ${val} 条`);

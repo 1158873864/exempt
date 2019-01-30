@@ -1,30 +1,30 @@
 <template>
         <div class="app-container">
-          <el-form ref="form" :model="form" label-width="80px">
-            <el-form-item label="银行卡号">
-              <el-input v-model="form.accountOfBank"></el-input>
-            </el-form-item>
-            <el-form-item label="银行">
-              <el-input v-model="form.bank"></el-input>
-            </el-form-item>
+          <el-form ref="form" :model="form" label-width="100px" >
             <el-form-item label="编号">
+              <el-input v-model="form.number" type="number"></el-input>
+            </el-form-item>
+            <el-form-item label="银行卡号">
+              <el-input v-model="form.accountOfBank" type="number"></el-input>
+            </el-form-item>
+            <el-form-item label="归属银行">
+              <el-input v-model="form.bank" ></el-input>
+            </el-form-item>
+            <el-form-item label="开户行编号" type="number">
               <el-input v-model="form.bin"></el-input>
             </el-form-item>
             <!-- <el-form-item label="id">
               <el-input v-model="form.id"></el-input>
             </el-form-item > -->
-            <el-form-item label="名字">
+            <el-form-item label="姓名">
               <el-input v-model="form.name"></el-input>
             </el-form-item>
-            <el-form-item label="数字">
-                    <el-input v-model="form.number"></el-input>
-            </el-form-item>
             <el-form-item label="状态">
-                    <el-select v-model="form.status" placeholder="启用">
-                    <el-option label="启用" value="启用"></el-option>
-                    <el-option label="停用" value="停用"></el-option>
-                    </el-select>
-              </el-form-item>
+              <el-select v-model="form.status" placeholder="启用">
+              <el-option label="启用" value="启用"></el-option>
+              <el-option label="停用" value="停用"></el-option>
+              </el-select>
+            </el-form-item>
 
             <el-form-item>
                 <el-button type="primary" @click="onSubmit('form')">添加</el-button>

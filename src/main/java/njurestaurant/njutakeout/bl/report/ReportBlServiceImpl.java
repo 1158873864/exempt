@@ -68,25 +68,38 @@ public class ReportBlServiceImpl implements ReportBlService {
      * @return
      */
     @Override
-    public List<MerchantReportResponse> getReportOfMerchant(Date date) {
-        if (date == null) date = new Date();
-        // 获取date当天的订单信息
-        Calendar c1 = Calendar.getInstance();
-        c1.setTime(date);
-        c1.set(Calendar.HOUR_OF_DAY, 0);
-        c1.set(Calendar.MINUTE, 0);
-        c1.set(Calendar.SECOND, 0);
-        c1.set(Calendar.MILLISECOND, 0);
-        Calendar c2 = Calendar.getInstance();
-        c2.setTime(date);
-        c1.set(Calendar.HOUR_OF_DAY, 23);
-        c1.set(Calendar.MINUTE, 59);
-        c1.set(Calendar.SECOND, 59);
-        c1.set(Calendar.MILLISECOND, 999);
+    public List<MerchantReportResponse> getReportOfMerchant(Date startDate, Date endDate) throws WrongInputException {
+        if (startDate == null) startDate = new Date();
+        if (endDate == null) endDate = new Date();
+        String date;
+        if (FormatDateTime.isDayBeforeOrEqualThan(startDate, endDate)) {
+            Calendar c1 = Calendar.getInstance();
+            c1.setTime(startDate);
+            c1.set(Calendar.HOUR, 0);
+            c1.set(Calendar.MINUTE, 0);
+            c1.set(Calendar.SECOND, 0);
+            c1.set(Calendar.MILLISECOND, 0);
+            startDate = c1.getTime();
+            Calendar c2 = Calendar.getInstance();
+            c2.setTime(endDate);
+            c2.set(Calendar.HOUR, 23);
+            c2.set(Calendar.MINUTE, 59);
+            c2.set(Calendar.SECOND, 59);
+            c2.set(Calendar.MILLISECOND, 999);
+            endDate = c2.getTime();
+            if (DateUtils.isSameDay(startDate, endDate)) date = FormatDateTime.dateToString(startDate, "yyyy-MM-dd");
+            else
+                date = FormatDateTime.dateToString(startDate, "yyyy-MM-dd") + "~" + FormatDateTime.dateToString(endDate, "yyyy-MM-dd");
+        } else {
+            throw new WrongInputException();
+        }
 //        List<PlatformOrder> platformOrders = platformOrderDataService.findPlatformByDate(c1.getTime(), c2.getTime());
         // 全部的成功的订单记录和提现记录
-        List<PlatformOrder> allPlatformOrders = platformOrderDataService.findAll();
-        List<WithdrewOrder> successWithdrewOrders = withdrewOrderDataService.findByState(WithdrewState.SUCCESS);
+
+        List<PlatformOrder> platformOrders = platformOrderDataService.findPlatformByDate(startDate, endDate);
+        List<WithdrewOrder> withdrewOrders = withdrewOrderDataService.findByDateRange(startDate, endDate);
+//        List<PlatformOrder> allPlatformOrders = platformOrderDataService.findAll();
+//        List<WithdrewOrder> successWithdrewOrders = withdrewOrderDataService.findByState(WithdrewState.SUCCESS);
         List<Merchant> merchantList = merchantDataService.getAllMerchants();
         List<Agent> agentList = agentDataService.getAllAgent();
         List<User> userList = userDataService.getAll();
@@ -117,8 +130,8 @@ public class ReportBlServiceImpl implements ReportBlService {
                 }
             }
 
-            if (allPlatformOrders.size() > 0) {
-                for (PlatformOrder platformOrder : allPlatformOrders) {
+            if (platformOrders.size() > 0) {
+                for (PlatformOrder platformOrder : platformOrders) {
                     if (merchantReportResponseMap.containsKey(platformOrder.getUid())) {
                         MerchantReportResponse merchantReportResponse = merchantReportResponseMap.get(platformOrder.getUid());
                         merchantReportResponse.setTotalOrders(merchantReportResponse.getTotalOrders() + 1);
@@ -134,7 +147,7 @@ public class ReportBlServiceImpl implements ReportBlService {
                                     merchantReportResponse.setAvailiableDeposit(merchantReportResponse.getAvailiableDeposit() + platformOrder.getPayMoney() * (1 - merchant.getWechat() / 100));
                                     break;
                             }
-                            if (platformOrder.getTime() != null && DateUtils.isSameDay(date, platformOrder.getTime())) { // 和查询日期同一天
+                        //    if (platformOrder.getTime() != null && DateUtils.isSameDay(date, platformOrder.getTime())) { // 和查询日期同一天
                                 if (agentMap.containsKey(merchant.getApplyId())) {
                                     Agent agent = agentMap.get(merchant.getApplyId());
                                     List<PlatformAnalyse> platformAnalyses = null;
@@ -161,7 +174,7 @@ public class ReportBlServiceImpl implements ReportBlService {
                                         default:
                                             break;
                                     }
-                                }
+                               // }
                             }
 
                         }
@@ -170,8 +183,9 @@ public class ReportBlServiceImpl implements ReportBlService {
                 }
             }
 
-            if (successWithdrewOrders.size() > 0) {
-                for (WithdrewOrder withdrewOrder : successWithdrewOrders) {
+            if (withdrewOrders.size() > 0) {
+                for (WithdrewOrder withdrewOrder : withdrewOrders) {
+                    if (withdrewOrder.getState() != WithdrewState.SUCCESS) continue;
                     if (merchantReportResponseMap.containsKey(withdrewOrder.getApplicantId())) {
                         MerchantReportResponse merchantReportResponse = merchantReportResponseMap.get(withdrewOrder.getApplicantId());
                         merchantReportResponse.setWithdrewed(withdrewOrder.getMoney() + merchantReportResponse.getWithdrewed());//提款
@@ -588,9 +602,9 @@ public class ReportBlServiceImpl implements ReportBlService {
         Map<String, Integer> alipayMap = new HashMap<>();
         if (supplierList.size() > 0) {
             for (Supplier supplier : supplierList) {
-                if(supplier.getStatus().equals("通过")) {
+               // if(supplier.getStatus().equals("启用")) {
                     supplierMap.put(supplier.getId(), supplier);
-                }
+               // }
             }
         }
         if (deviceList.size() > 0) {

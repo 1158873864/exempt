@@ -132,6 +132,10 @@ export default {
             console.log(asdASASD)
           }).catch(() => {
             this.loading = false
+            this.$message({
+                    message: response.data.description,
+                    type: 'warning'
+                });
           })
         } else {
           console.log('error submit!!')

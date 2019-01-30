@@ -83,3 +83,10 @@ export function getTime(date1){
   var second = date.getSeconds();
   return (year + "年" + month + "月" + date1 + "日" + hour + "时" + minutes + "分" + second + "秒");
 }
+export function getTimeFormat(date1){
+  var date = new Date(date1);
+  var year = date.getFullYear();
+  var month = date.getMonth() + 1;    //js从0开始取 
+  var date1 = date.getDate();
+  return (year + "-" + month + "-" + date1);
+}

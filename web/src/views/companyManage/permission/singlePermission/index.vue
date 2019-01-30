@@ -67,8 +67,8 @@
                     activeNames: ['1'],
                     labelPosition: 'right',
                     teams: [{
-                        post:'post',
-                        permission:'permission'
+                        // post:'post',
+                        // permission:'permission'
                     }],
                     currentPage:1,
                     posts:[{}]

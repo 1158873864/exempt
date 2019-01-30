@@ -33,4 +33,6 @@ public interface TeamBlService {
     TeamAddResponse updateTeam(TeamAddParameters teamAddParameters, int id) throws WrongIdException, IsExistentException;
 
     Response verifyTeamCode(int id, String verifyCode) throws WrongIdException, TeamVerifyCodeWrongException;
+
+    Response verifyTeamCodeByTeamName(String teamName, String verifyCode) throws WrongIdException, TeamVerifyCodeWrongException;
 }

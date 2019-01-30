@@ -91,14 +91,14 @@ export function deleteMerchant(aid) {
     }
   })
 }
-export function updateMerchant(mid, alipay,
+export function updateMerchant(uid, alipay,
   level,
   name,
   password,
   status,
   wechat) {
   return request({
-    url: '/merchant/update/' + mid,
+    url: '/merchant/update/' + uid,
     method: 'put',
     data: {
       alipay,
@@ -110,13 +110,13 @@ export function updateMerchant(mid, alipay,
     }
   })
 }
-export function updateAgent(aid, alipay,
+export function updateAgent(uid, alipay,
   name,
   password,
   status,
   wechat) {
   return request({
-    url: '/agent/update/' + aid,
+    url: '/agent/update/' + uid,
     method: 'put',
     data: {
       alipay,
@@ -164,21 +164,14 @@ export function suppliersGet() {
     method: 'get'
   })
 }
-<<<<<<< HEAD
-export function supplierUpdate(codeType, level, name,password, status,id) {
-=======
-export function supplierUpdate(codeType, level, password,status, id) {
->>>>>>> 1f2a690a3b15e560d8c28879a64f14dcff0f5c7c
+export function supplierUpdate(codeType, level,name, password,status, uid) {
   return request({
-    url: '/supplier/update/' + id,
+    url: '/supplier/update/' + uid,
     method: 'put',
     data: {
       codeType,
       level,
-<<<<<<< HEAD
       name,
-=======
->>>>>>> 1f2a690a3b15e560d8c28879a64f14dcff0f5c7c
       password,
       status
     }
@@ -221,5 +214,17 @@ export function withdrew(cardId,id,money,type) {
       money,
       type
     }
+  })
+}
+export function withdrewHistory() {
+  return request({
+    url: '/withdrew/history',
+    method: 'get'
+    // data: {
+    //   cardId,
+    //   id,
+    //   money,
+    //   type
+    // }
   })
 }

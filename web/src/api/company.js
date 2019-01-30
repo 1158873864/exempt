@@ -1,5 +1,20 @@
 import request from '@/utils/request'
 
+export function GetAnnouncement(){
+  return request({
+    url: '/company/announcement/get',
+    method: 'get',
+  })
+}
+export function SetAnnouncement(announcement){
+  return request({
+    url: '/company/announcement/set',
+    method: 'get',
+    params: {
+      announcement
+    }
+  })
+}
 export function codeAdd(duration,info,number,priority,team,type) {
   return request({
       url: '/company/code/add',
@@ -141,12 +156,21 @@ export function cardsGet() {
         method: 'get',
   })
 }
-export function cardDelete(id,verifyCode) {
+export function cardDelete(id) {
   console.log(id)
   return request({
       url: '/company/card/delete/'+id,
       method: 'get',
-      params:{ verifyCode }
+  })
+}
+export function teamVerifyCodeCheckByTeamName(teamName,verifyCode) {
+  return request({
+    url: '/company/team/verifybyteamname',
+    method: 'get',
+    params:{
+      teamName,
+      verifyCode
+    }
   })
 }
 /**
@@ -256,5 +280,20 @@ export function titleList(){
   return request({
     url: '/company/sys/list',
     method: 'get',
+  })
+}
+export function GetRiskcontrol(){
+  return request({
+    url: '/company/riskcontrol/get',
+    method: 'get',
+  })
+}
+export function SetRiskcontrol(newtime){
+  return request({
+    url: '/company/riskcontrol/set',
+    method: 'get',
+    params: {
+      newtime
+    }
   })
 }

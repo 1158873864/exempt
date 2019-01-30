@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div>所有供码用户</div>
+    <div>供码用户信息修改</div>
     <el-input v-model="searchStr" suffix-icon="el-icon-search" placeholder="请输入搜索内容"></el-input>
     <el-table
       :data="filterData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
@@ -40,14 +40,14 @@
             <el-form :model="newRow">
                 <el-form-item label="码类型">
                     <el-select v-model="newRow.codeType" placeholder="">
-                    <el-option label="转账通码" value="TSOLID"></el-option>
-                    <el-option label="转账固码" value="TPASS"></el-option>
-                    <el-option label="收款通码离线码" value="RSOLID"></el-option>
-                    <el-option label="收款通码在线码" value="RPASSOFF"></el-option>
-                    <el-option label="收款固码(二开)" value="RPASSQR"></el-option>
+                    <el-option label="转账通码" value="TPASS"></el-option>
+                    <el-option label="转账固码" value="TSOLID"></el-option>
+                    <el-option label="收款通码离线码" value="RPASSOFF"></el-option>
+                    <el-option label="收款通码在线码" value="RPASSQR"></el-option>
+                    <el-option label="收款固码(二开)" value="RSOLID"></el-option>
                     </el-select>
                 </el-form-item>
-                 <el-form-item label="状态">
+                 <!-- <el-form-item label="状态">
                     <el-select v-model="newRow.status" placeholder="启用">
                     <el-option label="启用" value="启用"></el-option>
                     <el-option label="停用" value="停用"></el-option>
@@ -55,9 +55,12 @@
                 </el-form-item>
                 <el-form-item label="level">
                     <el-input v-model="newRow.level" type="number" min="1" placeholder="level"></el-input>
+                </el-form-item> -->
+                <el-form-item label="用户名">
+                    <el-input v-model="newRow.user.username" type="text" placeholder="用户名"></el-input>
                 </el-form-item>
-                <el-form-item label="password">
-                    <el-input v-model="newRow.user.password" type="password" placeholder="password"></el-input>
+                <el-form-item label="密码">
+                    <el-input v-model="newRow.user.password" type="password" placeholder="密码"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -71,68 +74,6 @@
 <script>
 import {suppliersGet, supplierUpdate} from "@/api/role";
 import store from '../../../../store'
-<<<<<<< HEAD
-    export default {
-        data() {
-            return {
-                teams:[{
-                    "priority": 0,
-                    "devices": [],
-                    "status": "",
-                    "user": {},
-                    "devices_team":" ",
-                    }
-                ],
-                newRow: {
-                    "codeType": "RPASSOFF",
-                    "level": 0,
-                    "password": "",
-                    "user": {},
-                     "priority": 0,
-                    },
-                currentPage:1,
-                pagesize:10,
-                newRowIndex:1,
-                dialogFormVisible: false
-            }
-        },
-        created(){
-            this.getData();
-        },
-        methods: {
-            updateSupplier() {
-                supplierUpdate(this.newRow.codeType,this.newRow.level,this.newRow.user,this.newRow.user.password,store.getters.uid).then(response=> {
-                    if(response.code!=200){
-                        this.$message({
-                            message: response.data.description,
-                            type: 'warning'
-                        });
-                    }else{
-                        this.teams[this.newRowIndex].priority = this.newRow.level;
-                        this.dialogFormVisible = false;
-                         this.$message({
-                            message: '修改成功',
-                            type: 'success'
-                        });
-                    }
-                }); 
-            },
-            openDialog(index,row) {
-                this.dialogFormVisible=true;
-                // console.log(row)
-                this.newRow = row;
-                // if(row.codeType==None){
-                //     this.newRow.codeType = 'TSOLID'
-                // }else{
-                //      this.newRow.codeType = row.codeType;
-                // }
-                this.newRow.level = row.priority;
-                // this.newRow.password = row.user.password;
-                //this.newRow = JSON.parse(JSON.stringify(row));
-                this.newRowIndex = index;
-                console.log(this.newRow);
-
-=======
   export default {
     data() {
       return {
@@ -140,10 +81,9 @@ import store from '../../../../store'
           {
             priority: 0,
             devices: [],
-            status: "启用",
+            status: '',
             user: {
               username: ''
->>>>>>> 1f2a690a3b15e560d8c28879a64f14dcff0f5c7c
             },
             devices_team: " ",
             username: ''
@@ -183,6 +123,7 @@ import store from '../../../../store'
         supplierUpdate(
           this.newRow.codeType,
           this.newRow.level,
+          this.newRow.user.username,
           this.newRow.user.password,
           this.newRow.status,
           this.newRow.id
@@ -229,7 +170,7 @@ import store from '../../../../store'
         this.getTeams();
       },
       getTeams() {
-         suppliersGet().then(response=>{
+         suppliersGet().then(response=>{  
                     console.log(response,'sdll',store.getters.uid)
                      if(response.code!=200){
                         this.$message({
@@ -244,8 +185,8 @@ import store from '../../../../store'
                                 console.log(de.imei)
                                 de.device_team = de.imei +' '+ (de.online?'在线':'离线');
                             })
-                            console.log(el.id,store.getters.uid)
-                            if(el.id == store.getters.uid){
+                            console.log(el.user.id,store.getters.uid)
+                            if(el.user.id == store.getters.uid){
                                 a = el
                             }
                         })

@@ -31,4 +31,6 @@ public interface TeamDataService {
     void deleteTeamById(int id);
 
     Team findTeamById(int id);
+
+    Team findTamByTeamName(String teamName);
 }

@@ -1,6 +1,8 @@
 import { login, logout, getInfo } from '@/api/login'
 import { getToken, setToken, removeToken, getRoles, getRole } from '@/utils/auth'
 import { getUid, setUid, setRole} from '../../utils/auth';
+import { get } from 'https';
+import { Store } from 'vuex';
 
 const user = {
   state: {
@@ -8,7 +10,7 @@ const user = {
     name: '',
     avatar: '',
     roles: [],
-    role:0,
+    role:getRole(),
     uid: getUid()
   },
 
@@ -46,10 +48,19 @@ const user = {
           setUid(data.uid)
 
           setRole(data.role)
+        
           console.log('role',data.role)
           commit('SET_ROLE', data.role)
           commit('SET_TOKEN', data.token)
           commit('SET_UID', data.uid)
+          // console.log('role',"3333333333333333")
+          // console.log('role',store.getters.)
+          // console.log('role',Store.getRole())
+          // console.log('role',getUid())
+          // console.log('role',state.getUid())
+          // console.log('role',user.state.getUid())
+          // console.log('role',state.uid)
+          // console.log('role',user.state.uid)
           resolve()
         }).catch(error => {
           reject(error)

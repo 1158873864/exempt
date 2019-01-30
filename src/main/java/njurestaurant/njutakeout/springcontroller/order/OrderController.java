@@ -6,7 +6,9 @@ import io.swagger.annotations.ApiResponses;
 import njurestaurant.njutakeout.blservice.order.PlatformOrderBlService;
 import njurestaurant.njutakeout.entity.order.PlatformOrder;
 import njurestaurant.njutakeout.exception.BlankInputException;
+import njurestaurant.njutakeout.exception.OrderWrongInputException;
 import njurestaurant.njutakeout.exception.WrongIdException;
+import njurestaurant.njutakeout.exception.WrongInputException;
 import njurestaurant.njutakeout.parameters.app.GetQrCodeParameters;
 import njurestaurant.njutakeout.parameters.order.PlatformUpdateParameters;
 import njurestaurant.njutakeout.response.JSONResponse;
@@ -50,10 +52,12 @@ public class OrderController {
     public ResponseEntity<Response> getOrder(@PathVariable("id")int id, @RequestBody PlatformUpdateParameters platformUpdateParameters) {
         try {
             return new ResponseEntity<>(new JSONResponse(200,  platformOrderBlService.updatePlatformOrder(id, platformUpdateParameters)), HttpStatus.OK);
-        } catch (WrongIdException e) {
-            return new ResponseEntity<>(new JSONResponse(10160,  e.getResponse()), HttpStatus.OK);
+        } catch (OrderWrongInputException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(new JSONResponse(e.getResponse().getInfoCode(),e.getResponse().getDescription()),HttpStatus.OK);
         } catch (BlankInputException e) {
-            return new ResponseEntity<>(new JSONResponse(10170,  new WrongResponse(10170, "输入格式错误")), HttpStatus.OK);
+            e.printStackTrace();
+            return new ResponseEntity<>(new JSONResponse(e.getResponse().getInfoCode(),e.getResponse().getDescription()),HttpStatus.OK);
         }
     }
 }

@@ -5,3 +5,16 @@ export function ordersGet() {
     method: 'get'
   })
 }
+export function ordersUpdate(id,state,money,realPay,orderId,payTime) {
+  return request({
+    url: '/order/list/update/'+id,
+    method: 'post',
+    data:{
+      state,
+      money,
+      realPay,
+      orderId,
+      payTime
+    }
+  })
+}

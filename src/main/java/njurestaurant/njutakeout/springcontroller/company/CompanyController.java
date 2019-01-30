@@ -1,6 +1,7 @@
 package njurestaurant.njutakeout.springcontroller.company;
 
 import io.swagger.annotations.*;
+import njurestaurant.njutakeout.bl.order.TransactionBlServiceImpl;
 import njurestaurant.njutakeout.blservice.account.MerchantBlService;
 import njurestaurant.njutakeout.blservice.account.SupplierBlService;
 import njurestaurant.njutakeout.blservice.account.UserBlService;
@@ -40,6 +41,7 @@ public class CompanyController {
     private final PermissionBlService permissionBlService;
     private final SystemBlService systemBlService;
     private final UserBlService userBlService;
+    private static String announcement;
 
     @Autowired
     public CompanyController(TeamBlService teamBlService, ReceiptCodeBlService receiptCodeBlService, CompanyCardBlService companyCardBlService, PostAndPermissionBlService postAndPermissionBlService, AllocationRecordBlService allocationRecordBlService, MerchantBlService merchantBlService, SupplierBlService supplierBlService, PostBlService postBlService, PermissionBlService permissionBlService, SystemBlService systemBlService, UserBlService userBlService) {
@@ -54,6 +56,29 @@ public class CompanyController {
         this.permissionBlService = permissionBlService;
         this.systemBlService = systemBlService;
         this.userBlService = userBlService;
+    }
+
+    @ApiOperation(value = "公告管理", notes = "获取公告")
+    @RequestMapping(value = "company/announcement/get", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = System.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> GetAnnouncement() {
+        return new ResponseEntity<>(new JSONResponse(200, CompanyController.announcement), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "公告管理", notes = "设置公告")
+    @RequestMapping(value = "company/announcement/set", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = System.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> SetAnnouncement(@RequestParam String announcement) {
+        CompanyController.announcement = announcement;
+        return new ResponseEntity<>(new JSONResponse(200, CompanyController.announcement), HttpStatus.OK);
     }
 
     @ApiOperation(value = "新增团队", notes = "公司管理员新增团队")
@@ -94,7 +119,7 @@ public class CompanyController {
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
     public ResponseEntity<Response> addCompanyCard(@RequestBody CompanyCardAddParameters companyCardAddParameters) {
-        if(StringUtils.isBlank(companyCardAddParameters.getNumber())) {
+        if (StringUtils.isBlank(companyCardAddParameters.getNumber())) {
             return new ResponseEntity<>(new JSONResponse(10110, new WrongResponse(10110, "the card number is null.")), HttpStatus.OK);
         }
         CompanyCard companyCard = new CompanyCard(companyCardAddParameters.getName(), companyCardAddParameters.getBank(), companyCardAddParameters.getNumber(), companyCardAddParameters.getBalance(), companyCardAddParameters.getAttribution(), companyCardAddParameters.getRelation(), companyCardAddParameters.getStatus());
@@ -125,7 +150,7 @@ public class CompanyController {
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
     public ResponseEntity<Response> showPermissionOfPost(@RequestParam("post") String post) {
-        if(StringUtils.isBlank(post)) {
+        if (StringUtils.isBlank(post)) {
             return new ResponseEntity<>(new JSONResponse(10160, new WrongResponse(10160, "post is null.")), HttpStatus.OK);
         }
         return new ResponseEntity<>(new JSONResponse(200, postAndPermissionBlService.getPostAndPermissionsByPost(post)), HttpStatus.OK);
@@ -173,7 +198,7 @@ public class CompanyController {
     @ResponseBody
     public ResponseEntity<Response> showTeamsNumber() {
 //        List<Integer> teamsNumber = teamBlService.loadAllTeam().stream().map(x -> x.getId()).collect(Collectors.toList());
-        return new ResponseEntity<>(new JSONResponse(200,  teamBlService.loadAllTeam()), HttpStatus.OK);
+        return new ResponseEntity<>(new JSONResponse(200, teamBlService.loadAllTeam()), HttpStatus.OK);
     }
 
     @ApiOperation(value = "删除团队", notes = "删除某个团队列表")
@@ -185,11 +210,11 @@ public class CompanyController {
     @ResponseBody
     public ResponseEntity<Response> deleteTeam(@PathVariable("id") int id, @RequestParam("verifyCode") String verifyCode) {
         try {
-            return new ResponseEntity<>(new JSONResponse(200,  teamBlService.delTeamById(id, verifyCode)), HttpStatus.OK);
+            return new ResponseEntity<>(new JSONResponse(200, teamBlService.delTeamById(id, verifyCode)), HttpStatus.OK);
         } catch (WrongIdException e) {
-            return new ResponseEntity<>(new JSONResponse(10160,  e.getResponse()), HttpStatus.OK);
+            return new ResponseEntity<>(new JSONResponse(10160, e.getResponse()), HttpStatus.OK);
         } catch (TeamVerifyCodeWrongException e) {
-            return new ResponseEntity<>(new JSONResponse(10200,  e.getResponse()), HttpStatus.OK);
+            return new ResponseEntity<>(new JSONResponse(10200, e.getResponse()), HttpStatus.OK);
         }
     }
 
@@ -202,14 +227,14 @@ public class CompanyController {
     @ResponseBody
     public ResponseEntity<Response> modifyTeam(@PathVariable("id") int id, @RequestBody TeamAddParameters teamAddParameters) {
         try {
-            if(StringUtils.isBlank(teamAddParameters.getTeamName())) {
-                return new ResponseEntity<>(new JSONResponse(200,  new WrongResponse(10120, "团队名不能为空")), HttpStatus.OK);
+            if (StringUtils.isBlank(teamAddParameters.getTeamName())) {
+                return new ResponseEntity<>(new JSONResponse(200, new WrongResponse(10120, "团队名不能为空")), HttpStatus.OK);
             }
             return new ResponseEntity<>(new JSONResponse(200, teamBlService.updateTeam(teamAddParameters, id)), HttpStatus.OK);
         } catch (WrongIdException e) {
-            return new ResponseEntity<>(new JSONResponse(10160,  e.getResponse()), HttpStatus.OK);
+            return new ResponseEntity<>(new JSONResponse(10160, e.getResponse()), HttpStatus.OK);
         } catch (IsExistentException e) {
-            return new ResponseEntity<>(new JSONResponse(10110,  e.getResponse()), HttpStatus.OK);
+            return new ResponseEntity<>(new JSONResponse(10110, e.getResponse()), HttpStatus.OK);
         }
     }
 
@@ -224,9 +249,26 @@ public class CompanyController {
         try {
             return new ResponseEntity<>(new JSONResponse(200, teamBlService.verifyTeamCode(id, verifyCode)), HttpStatus.OK);
         } catch (WrongIdException e) {
-            return new ResponseEntity<>(new JSONResponse(10160,  e.getResponse()), HttpStatus.OK);
+            return new ResponseEntity<>(new JSONResponse(10160, e.getResponse()), HttpStatus.OK);
         } catch (TeamVerifyCodeWrongException e) {
-            return new ResponseEntity<>(new JSONResponse(10200,  e.getResponse()), HttpStatus.OK);
+            return new ResponseEntity<>(new JSONResponse(10200, e.getResponse()), HttpStatus.OK);
+        }
+    }
+
+    @ApiOperation(value = "根据团队名验证团队操作", notes = "管理员删除银行卡时需要验证验证码")
+    @RequestMapping(value = "company/team/verifybyteamname", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = TeamAddResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> verifyTeamPasswdByTeamName(@RequestParam("teamName") String teamName, @RequestParam("verifyCode") String verifyCode) {
+        try {
+            return new ResponseEntity<>(new JSONResponse(200, teamBlService.verifyTeamCodeByTeamName(teamName, verifyCode)), HttpStatus.OK);
+        } catch (WrongIdException e) {
+            return new ResponseEntity<>(new JSONResponse(10160, "团队名不存在"), HttpStatus.OK);
+        } catch (TeamVerifyCodeWrongException e) {
+            return new ResponseEntity<>(new JSONResponse(10200, e.getResponse()), HttpStatus.OK);
         }
     }
 
@@ -237,7 +279,7 @@ public class CompanyController {
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> merchantApproval(@PathVariable("mid")int mid, @RequestBody MerchantApprovalParameters merchantApprovalParameters) {
+    public ResponseEntity<Response> merchantApproval(@PathVariable("mid") int mid, @RequestBody MerchantApprovalParameters merchantApprovalParameters) {
         return new ResponseEntity<>(new JSONResponse(200, merchantBlService.ApprovalMerchant(mid, merchantApprovalParameters)), HttpStatus.OK);
     }
 
@@ -333,7 +375,7 @@ public class CompanyController {
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> deletePost(@PathVariable("id")int id) {
+    public ResponseEntity<Response> deletePost(@PathVariable("id") int id) {
         postBlService.delPostById(id);
         return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("delete success.")), HttpStatus.OK);
     }
@@ -345,7 +387,7 @@ public class CompanyController {
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> deletePost(@RequestParam("post")String post) {
+    public ResponseEntity<Response> deletePost(@RequestParam("post") String post) {
         try {
             Post p = postBlService.addPost(post);
             return new ResponseEntity<>(new JSONResponse(200, p), HttpStatus.OK);
@@ -372,7 +414,7 @@ public class CompanyController {
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> deletePermission(@PathVariable("id")int id) {
+    public ResponseEntity<Response> deletePermission(@PathVariable("id") int id) {
         permissionBlService.delPermissionById(id);
         return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("delete success.")), HttpStatus.OK);
     }
@@ -384,7 +426,7 @@ public class CompanyController {
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> deletePermission(@RequestParam("permission")String permission) {
+    public ResponseEntity<Response> deletePermission(@RequestParam("permission") String permission) {
         try {
             Permission p = permissionBlService.addPermission(permission);
             return new ResponseEntity<>(new JSONResponse(200, p), HttpStatus.OK);
@@ -431,18 +473,11 @@ public class CompanyController {
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
     public ResponseEntity<Response> updatePermission(@RequestBody SystemAddParameters systemAddParameters) {
-        try {
-            if(StringUtils.isBlank(systemAddParameters.getTitle())) {
-                return new ResponseEntity<>(new JSONResponse(10120, new BlankInputException().getResponse()), HttpStatus.OK);
-            }
-            System system = new System(systemAddParameters.getTitle());
-            system.setId(1);
-            return new ResponseEntity<>(new JSONResponse(200, systemBlService.updateSystem(system).getId()), HttpStatus.OK);
-        } catch (IsExistentException e) {
-            return new ResponseEntity<>(new JSONResponse(10110, e.getResponse()), HttpStatus.OK);
-        } catch (WrongIdException e) {
-            return new ResponseEntity<>(new JSONResponse(10160, e.getResponse()), HttpStatus.OK);
+        if (StringUtils.isBlank(systemAddParameters.getTitle())) {
+            return new ResponseEntity<>(new JSONResponse(10120, new BlankInputException().getResponse()), HttpStatus.OK);
         }
+        systemBlService.updateSystem(systemAddParameters.getTitle());
+        return new ResponseEntity<>(new JSONResponse(200, "更新成功"), HttpStatus.OK);
     }
 
     @ApiOperation(value = "系统列表", notes = "管理员查看全部系统管理内容")
@@ -456,6 +491,28 @@ public class CompanyController {
         return new ResponseEntity<>(new JSONResponse(200, systemBlService.findAllSystem()), HttpStatus.OK);
     }
 
+    @ApiOperation(value = "风控管理", notes = "管理员查看二维码失效时间")
+    @RequestMapping(value = "company/riskcontrol/get", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = System.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> GetRiskcontrol() {
+        return new ResponseEntity<>(new JSONResponse(200, TransactionBlServiceImpl.getTime()), HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "风控管理", notes = "管理员设置二维码失效时间")
+    @RequestMapping(value = "company/riskcontrol/set", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = System.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> SetRiskcontrol(@RequestParam double newtime) {
+        TransactionBlServiceImpl.setTime(newtime);
+        return new ResponseEntity<>(new JSONResponse(200, TransactionBlServiceImpl.getTime()), HttpStatus.OK);
+    }
 //    @ApiOperation(value = "查看某个系统", notes = "管理员查看某个系统管理内容")
 //    @RequestMapping(value = "company/sys/{id}", method = RequestMethod.GET)
 //    @ApiResponses(value = {

@@ -12,7 +12,7 @@ public interface SystemBlService {
 
     void delSystemById(int id);
 
-    System updateSystem(System system) throws WrongIdException, IsExistentException;
+    System updateSystem(String title) ;
 
     System findSystemById(int id) throws WrongIdException;
 

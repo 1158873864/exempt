@@ -63,12 +63,16 @@ service.interceptors.response.use(
   },
   error => {
     console.log('err' + error) // for debug
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-      
-    })
+    if(error.response.data.code!=200){
+      Message({
+        message: error.response.data.data.description,
+        type: 'error',
+        duration: 5 * 1000
+        
+      })
+
+    }
+    return error.response.data
     return Promise.reject(error)
   }
 )

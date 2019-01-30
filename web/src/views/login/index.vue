@@ -1,17 +1,18 @@
-<template>
-  <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
      <!-- <vue-recaptcha sitekey="6LdRB4sUAAAAAHGqNXwexwX7PpXiof_Lz0YHwQLS">
     <button>Click me</button>
   </vue-recaptcha> -->
+
+<template>
+  <div class="login-container">
+    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
       <h3 class="title">{{ title }}</h3>
-      <el-form-item prop="用户名">
+      <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input v-model="loginForm.username" name="username" type="text" auto-complete="on" placeholder="用户名" />
+        <el-input v-model="loginForm.username" name="username" type="text" auto-complete="on" placeholder="username" />
       </el-form-item>
-      <el-form-item prop="密码">
+      <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
@@ -20,7 +21,7 @@
           v-model="loginForm.password"
           name="password"
           auto-complete="on"
-          placeholder="密码"
+          placeholder="password"
           @keyup.enter.native="handleLogin" />
         <span class="show-pwd" @click="showPwd">
           <svg-icon icon-class="eye" />
@@ -34,7 +35,9 @@
       <div class="tips">
         <span style="margin-right:20px;">请输入账号密码</span>
       </div>
-          <div>
+    </el-form>
+  </div>
+</template>
         <!-- <vue-recaptcha
           ref="recaptcha"
           @verify="onVerify"
@@ -42,10 +45,6 @@
           :sitekey="sitekey">
         </vue-recaptcha> -->
         <!-- <button @click="resetRecaptcha"> Reset ReCAPTCHA </button> -->
-      </div>
-    </el-form>
-  </div>
-</template>
 <script>
   grecaptcha.ready(function() {
       grecaptcha.execute('6LdRB4sUAAAAAHGqNXwexwX7PpXiof_Lz0YHwQLS', {action: 'homepage'});
@@ -123,19 +122,21 @@ export default {
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
-        this.$router.push({ path: this.redirect || '/' })
+        // this.$router.push({ path: this.redirect || '/' })
+        console.log(valid)
         if (valid) {
           this.loading = true
           this.$store.dispatch('Login', this.loginForm).then(() => {
             this.loading = false
-            this.$router.push({ path:  this.redirect ||'/' })
-            console.log(asdASASD)
+            // this.$router.push({ path:  this.redirect ||'/' })
+            // console.log(asdASASD)
           }).catch(() => {
             this.loading = false
             this.$message({
                     message: response.data.description,
                     type: 'warning'
                 });
+          console.log('error submit!!')
           })
         } else {
           console.log('error submit!!')

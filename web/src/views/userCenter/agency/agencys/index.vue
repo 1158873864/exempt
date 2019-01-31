@@ -7,9 +7,12 @@
         height="450"
         border
         style="width: 100%">
-        <el-table-column prop="userInfo.username" label="用户名" align="center"></el-table-column>
+        <!-- <el-table-column prop="userInfo.username" label="用户名" align="center"></el-table-column> -->
+
         <el-table-column prop="name" label="代理名"  align="center"></el-table-column>
-        <el-table-column prop="dailyFlow" label="流量"  align="center"></el-table-column>
+        <el-table-column prop="alipayp" label="支付宝点位"  align="center"></el-table-column>
+        <el-table-column prop="wechatp" label="微信点位"  align="center"></el-table-column>
+        <el-table-column prop="dailyFlow" label="当日流量"  align="center"></el-table-column>
         <el-table-column prop="dailyCommission" label="当日佣金"  align="center"></el-table-column>
         <el-table-column prop="status" label="状态"  align="center"></el-table-column>
         <el-table-column label="操作" fixed="right" align="center" >
@@ -153,6 +156,11 @@ import { agentsGet,updateAgent } from '@/api/role'
                         });
                     }else{
                        this.teams = response.data;
+                       this.teams.forEach(el => {
+                            el.alipayp = el.alipay+'%';
+                            el.wechatp = el.wechat+'%';
+                       });
+                       
                     }
                 })
             },

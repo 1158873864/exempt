@@ -6,14 +6,14 @@
             height="450"
             border
             style="width: 100%">
-            <el-table-column prop="alipay" label="支付宝点位"  align="center"></el-table-column>
-            <el-table-column prop="approverId" label="审核人id"  align="center"></el-table-column>
-            <el-table-column prop="priority" label="等级"  align="center"></el-table-column>
-            <el-table-column prop="user.password" label="密码"  align="center"></el-table-column>
-            <el-table-column prop="status" label="状态"  align="center"></el-table-column>
-            <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column>
-            <el-table-column prop="wechat" label="微信点位"  align="center"></el-table-column>
             <el-table-column prop="mid" label="商户id"  align="center"></el-table-column>
+            <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column>
+            <el-table-column prop="alipay" label="支付宝点位"  align="center"></el-table-column>
+            <el-table-column prop="wechat" label="微信点位"  align="center"></el-table-column>
+            <!-- <el-table-column prop="approverId" label="审核人id"  align="center"></el-table-column> -->
+            <el-table-column prop="priority" label="等级"  align="center"></el-table-column>
+            <!-- <el-table-column prop="user.password" label="密码"  align="center"></el-table-column> -->
+            <el-table-column prop="status" label="状态"  align="center"></el-table-column>
             <el-table-column label="操作" width="280" align="center">
                     <template scope="scope">
                         <el-button size="small"
@@ -77,15 +77,21 @@
                             row.user.username,
                             row.wechat,
                             row.mid).then(response=> {
-                        if(response.data.infoCode){
-                            this.$message({
-                                message: response.data.description,
-                                type: 'warning'
-                            });
+                        if(response.data.infoCode == 200){
+                            if(status == 1)
+                                this.$message({
+                                    message: "审批通过",
+                                    type: 'success'
+                                });
+                           if(status == 0)
+                                this.$message({
+                                    message: "审批不通过",
+                                    type: 'warning'
+                                });
                         }else{
                           this.$message({
-                           message: '审批成功',
-                          type: 'success'
+                           message: '审批失败',
+                          type: 'error'
                           });
                         }
                        });
@@ -105,10 +111,10 @@
                 getTeams(){
                     waitApprovalMer().then(response=>{
                         console.log(response,'sdll')
-                         if(response.data.infoCod){
+                         if(response.code!=200){
                             this.$message({
-                                message: response.data.description,
-                                type: 'warning'
+                                message: "获取待审批商户失败",
+                                type: 'error'
                             });
                         }else{
                            this.teams = response.data;

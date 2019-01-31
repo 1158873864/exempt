@@ -30,9 +30,18 @@ service.interceptors.response.use(
     /**
      * code为非20000是抛错 可结合自己业务进行修改
      */
-    const res = response.data
-    console.log('response',res)
-    if (res.code !== 200) {
+    // const res = response.data
+    console.log('response1',response)
+    if (response.data.code !== 200) {
+      if(response.data.code == 1011){
+        Message({
+          message: response.data.data.description,
+          type: 'error',
+          duration: 3 * 1000
+        })
+        console.log("123asdad")
+      }
+
       // Message({
       //   message: res.message,
       //   type: 'error',
@@ -63,12 +72,13 @@ service.interceptors.response.use(
   },
   error => {
     console.log('err' + error) // for debug
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-      
-    })
+    if(error == 'Error: Request failed with status code 401'){
+      Message({
+        message: "用户名或密码错误",
+        type: 'error',
+        duration: 3 * 1000
+      })
+    }
     return Promise.reject(error)
   }
 )

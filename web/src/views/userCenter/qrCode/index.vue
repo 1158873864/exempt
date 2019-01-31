@@ -1,17 +1,17 @@
 <template>
 <div>
   <!-- <div>获取QrCode</div> -->
-        <el-form ref="form" :model="formparameters" label-width="100px">      
+        <el-form ref="form" :model="formparameters" label-width="100px" style="margin-top:20px">      
             <el-form-item label="金额">
                 <el-input v-model="formparameters.money" style="width: 30%;"></el-input>
             </el-form-item>
             <el-form-item label="备注">
               <el-input v-model="formparameters.memo" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="ip">
+            <el-form-item label="ip地址">
               <el-input v-model="formparameters.ip" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="type">
+            <el-form-item label="类型">
               <el-input v-model="formparameters.type" style="width: 30%;"></el-input>
             </el-form-item>
             <el-form-item label="商戶id">
@@ -22,7 +22,7 @@
                 <!-- <el-button>取消</el-button> -->
             </el-form-item>
                 <el-form-item>
-                    <img :src="img_src" />
+                    <img :src="img_src" height="200" width="200"/>
                 </el-form-item>
       </el-form>
     <el-form>
@@ -41,14 +41,14 @@ import config from '../../../../config'
                 return {
                    qrCode:'',
                    formparameters:{
-                    id:'123',
-                    ip:'192.168.1.1',
-                    memo:'1234123',
-                    merchantId:'9',
-                    money: '0.01',
-                    sign:'1234132',
-                    time:'123123',
-                    type:'alipay',
+                    // id:'123',
+                    // ip:'192.168.1.1',
+                    // memo:'1234123',
+                    // merchantId:'9',
+                    // money: '0.01',
+                    // sign:'1234132',
+                    // time:'123123',
+                    // type:'alipay',
                    },
                    urlBase:"http://qr.liantu.com/api.php?text=",
                    showqrcodeurl:'alipays://platformapi/startapp?appId=20000123%26actionType=scan%26biz_data={"s": "money","u":"2088022126490523","a":"0.1","m":"11547555613680009"}',

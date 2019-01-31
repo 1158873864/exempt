@@ -8,7 +8,7 @@
       style="width: 100%">
       <el-table-column prop="user.username" label="用户名" align="center"></el-table-column>
       <el-table-column prop="priority" label="等级" align="center"></el-table-column>
-      <el-table-column prop="devices_team" label="设备/状态" align="center">
+      <el-table-column prop="devices_team" label="设备状态" align="center">
         <template slot-scope="scope">
           <el-tag
             :type="device.online?'success':'info'"
@@ -18,10 +18,10 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="status" label="状态" align="center"></el-table-column>
+      <el-table-column prop="status" label="账户状态" align="center"></el-table-column>
       <el-table-column label="操作" fixed="right" align="center">
         <template scope="scope">
-          <el-button size="small" @click="openDialog(scope.$index,scope.row)">修改</el-button>
+          <el-button size="small" @click="openDialog(scope.$index,scope.row)" v-if="seen(scope.$index,scope.row)">修改</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -79,7 +79,7 @@ import store from '../../../../store'
       return {
         teams: [
           {
-            priority: 0,
+            priority: "",
             devices: [],
             status: '',
             user: {
@@ -119,6 +119,12 @@ import store from '../../../../store'
       this.getData();
     },
     methods: {
+      seen(index,row){
+        if(this.teams.username == null)
+          return false;
+        else
+          return true;
+      },
       updateSupplier() {
         supplierUpdate(
           this.newRow.codeType,

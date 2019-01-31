@@ -2,10 +2,10 @@
   <div class="app-container">
     <el-form ref="form" :model="form" label-width="100px">
       <el-form-item label="用户名">
-        <el-input v-model="form.username" style="width: 30%;" type="text" onkeyup="this.value=this.value.replace(/[^a-zA-Z]/g,'')" placeholder="不能使用中文"></el-input>
+        <el-input v-model="form.username" style="width: 30%;" type="text" onkeyup="this.value=this.value.replace(/[^a-zA-Z]/g,'')" placeholder="只能输入英文字母"></el-input>
       </el-form-item>
       <el-form-item label="密码">
-        <el-input v-model="form.password" style="width: 30%;" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')"></el-input>
+        <el-input v-model="form.password" style="width: 30%;" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" placeholder="密码"></el-input>
       </el-form-item>
       <el-form-item label="等级">
         <!-- <el-input v-model="form.level" type="number" min="1"  style="width: 30%;"></el-input> -->
@@ -25,10 +25,10 @@
                     </el-select>
             </el-form-item>
       <el-form-item label="微信点位">
-        <el-input v-model="form.wechat" style="width: 30%;" type="number"></el-input>
+        <el-input v-model="form.wechat" style="width: 30%;" type="number" placeholder="微信点位"></el-input>
       </el-form-item>
       <el-form-item label="支付宝点位">
-        <el-input v-model="form.alipay" style="width: 30%;" type="number"></el-input>
+        <el-input v-model="form.alipay" style="width: 30%;" type="number" placeholder="支付宝点位"></el-input>
       </el-form-item>
       <!-- <el-form-item label="申请人id">
               <el-input v-model="form.applyId" style="width: 30%;"></el-input>
@@ -50,12 +50,12 @@ export default {
   data() {
     return {
       form: {
-        alipay: 12,
-        applyId: 1,
-        level: 1,
+        alipay: "",
+        applyId: "",
+        level: "",
         password: "",
         username: "",
-        wechat: 12,
+        wechat: "",
       },
         options: [
         {

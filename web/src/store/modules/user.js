@@ -46,7 +46,6 @@ const user = {
           const data = response.data
           setToken(data.token)
           setUid(data.uid)
-
           setRole(data.role)
         
           console.log('role',data.role)
@@ -79,7 +78,7 @@ const user = {
             roles = roles.concat(data.permissions)
             commit('SET_ROLES', roles)
           } else {
-            reject('getInfo: roles must be a non-null array !')
+            reject('未获取到角色')
           }
           resolve(response)
         }).catch(error => {

@@ -1,9 +1,9 @@
 <template>
   <!-- <div>团队管理</div> -->
     <div class="app-container">
-        <el-form :label-position="labelPosition" :model="formaddParameters" class="demo-form-inline">
-            <el-form-item label="公司卡号">
-             <el-select  style="width: 200px" v-model="formaddParameters.cardNumber_in">
+        <el-form :label-position="labelPosition" :model="formaddParameters" class="demo-form-inline" style="margin-top:30px">
+            <el-form-item label="公司卡号" label-width="10%">
+             <el-select  style="width: 200px" v-model="formaddParameters.cardNumber_in" placeholder="公司卡号">
                  <el-option
                     v-for="item in cardNumber_ins"
                     :key="item.id"
@@ -12,8 +12,8 @@
                     </el-option>
             </el-select >
             </el-form-item>
-            <el-form-item label="个人卡号">
-             <el-select  style="width: 200px" v-model="formaddParameters.cardNumber_out">
+            <el-form-item label="个人卡号" label-width="10%">
+             <el-select  style="width: 200px" v-model="formaddParameters.cardNumber_out" placeholder="个人卡号">
                  <el-option
                     v-for="item in cardNumber_outs"
                     :key="item.id"
@@ -22,11 +22,11 @@
                     </el-option>
             </el-select >
             </el-form-item>
-             <el-form-item label="金额">
-                <el-input v-model="formaddParameters.money" placeholder="1.00" type="number" style="width: 30%;"></el-input>
+             <el-form-item label="金额" label-width="10%">
+                <el-input v-model="formaddParameters.money" placeholder="金额" type="number" style="width: 200px"></el-input>
             </el-form-item>
-            <el-form-item>
-                <el-button type="primary" @click="change">添加</el-button>
+            <el-form-item label-width="10%">
+                <el-button type="primary" @click="change">转账</el-button>
             </el-form-item>
         </el-form>
         
@@ -48,10 +48,10 @@ import { C2Pcard } from '@/api/change'
                 activeNames: ['1'],
                 labelPosition: 'right',
                 formaddParameters: {
-                        cardNumber_in: "string",
-                        cardNumber_out: "string",
-                        money: 0,
-                        operateId: 0
+                        // cardNumber_in: "string",
+                        // cardNumber_out: "string",
+                        // money: 0,
+                        // operateId: 0
                 },
                 currentPage:1,
                 treepermissions:[],

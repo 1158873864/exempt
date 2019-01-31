@@ -6,11 +6,11 @@
           v-model="form.username"
           style="width: 30%;"
           onkeyup="this.value=this.value.replace(/[^a-zA-Z]/g,'')"
-          placeholder="不能使用中文"
+          placeholder="只可输入英文字母"
         ></el-input>
       </el-form-item>
       <el-form-item label="密码">
-        <el-input  v-model="form.password"    style="width: 30%;"  onkeyup="value=value.replace(/[^\w\.\/]/ig,'')"></el-input>
+        <el-input  v-model="form.password"  type="password"  style="width: 30%;" placeholder="密码" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')"></el-input>
       </el-form-item>
       <el-form-item label="等级">
         <el-select v-model="form.level" placeholder="请选择">
@@ -46,10 +46,10 @@ export default {
   data() {
     return {
       form: {
-        id: "1",
-        level: 1,
-        password: "1",
-        username: "1"
+        id: "",
+        level: "",
+        password: "",
+        username: ""
       },
       options: [
         {

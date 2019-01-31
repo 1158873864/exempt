@@ -18,7 +18,7 @@
             <!-- <el-table-column prop="applicantId" label="登录ID"  align="center"></el-table-column> -->
             <el-table-column prop="status" label="状态"  align="center"></el-table-column>
             <el-table-column prop="time" label="时间"  align="center"></el-table-column>
-            <el-table-column label="user">
+            <el-table-column label="用户信息" align="center">
                 <!-- <el-table-column prop="user.avatarUrl" label="avatarUrl"  align="center"></el-table-column> -->
                 <!-- <el-table-column prop="user.id" label="id"  align="center"></el-table-column> -->
                 <!-- <el-table-column prop="user.password" label="密码"  align="center"></el-table-column> -->

@@ -14,20 +14,30 @@ function hasPermission(roles, permissionRoles) {
   return roles.some(role => permissionRoles.indexOf(role) >= 0)
 }
 router.beforeEach((to, from, next) => {
+  console.log('sdsdwewer1')
+  console.log(to)
+  console.log(from)
+  console.log(next)
   NProgress.start()
+  console.log('sdsdwewer2')
   if (getToken()) {
+    console.log('sdsdwewer3')
     if (to.path === '/login') {
+      console.log('sdsdwewer4')
       next({ path: '/' })
+      console.log('sdsdwewer5')
       NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
+      console.log('sdsdwewer6')
     } else {
-      // console.log(to, 'retyrty', store.getters.roles)
+      console.log('sdsdwewer7')
+       console.log(to, 'retyrty', store.getters.roles)
       if (store.getters.roles.length === 0) {
-        // console.log('werwerwer')
-        // console.log(store.getters.roles)
+         console.log('werwerwer')
+         console.log(store.getters.roles)
         store.dispatch('GetInfo').then(res => { // 拉取用户信息
-          // console.log('werwerwersxcv')
+           console.log('werwerwersxcv')
           const roles = store.getters.roles;
-          // console.log(store.getters.roles)
+           console.log(store.getters.roles)
           store.dispatch('GenerateRoutes', { roles }).then(() => { // 生成可访问的路由表
             router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
             router.options.routes = store.getters.addRouters // 动态添加可访问路由表
@@ -65,12 +75,19 @@ router.beforeEach((to, from, next) => {
       }
     }
   } else {
+    console.log('sdsdwewer17')
     if (whiteList.indexOf(to.path) !== -1) {
+      console.log('sdsdwewer16')
       next()
+      console.log('sdsdwewer15')
     } else {
+      console.log('sdsdwewer14')
       next(`/login?redirect=${to.path}`) // 否则全部重定向到登录页
+      console.log('sdsdwewer13')
       NProgress.done()
+      console.log('sdsdwewer12')
     }
+    console.log('sdsdwewer11')
   }
 })
 

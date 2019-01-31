@@ -122,20 +122,30 @@ export default {
       }
     },
     handleLogin() {
+    //  console.log("dfdfsffd1")
       this.$refs.loginForm.validate(valid => {
-        this.$router.push({ path: this.redirect || '/' })
+        //console.log("dfdfsffd2")
+       // this.$router.push({ path: this.redirect || '/' })
+      //  console.log("dfdfsffd3")
         if (valid) {
-          this.loading = true
-          this.$store.dispatch('Login', this.loginForm).then(() => {
+         // console.log("dfdfsffd4")
+          this.loading = true ;
+         // console.log("dfdfsffd5")
+          this.$store.dispatch('Login', this.loginForm).then(() =>{
+         //   console.log("dfdfsffd6")
             this.loading = false
+          //  console.log("dfdfsffd7")
+          //  if(response.code == 200){
+         //   console.log("dfdfsffd8")
             this.$router.push({ path:  this.redirect ||'/' })
-            console.log(asdASASD)
+        //    console.log("asdASASD9")
+        //    }
           }).catch(() => {
             this.loading = false
-            this.$message({
-                    message: response.data.description,
-                    type: 'warning'
-                });
+            // this.$message({
+            //         message: "123",
+            //         type: 'warning'
+            //     });
           })
         } else {
           console.log('error submit!!')

@@ -12,6 +12,8 @@ public interface ChangeOrderDataService {
 
     CardChangeOrder saveCardChangeOrder(CardChangeOrder CardChangeOrder);
 
+    QRcodeChangeOrder findByLoginId(String loginId);
+
     List<QRcodeChangeOrder> findAllQrCodeChangeOrder();
 
     List<QRcodeChangeOrder> findAllQrCodeChangeOrderByDate(Date startDate, Date endDate);

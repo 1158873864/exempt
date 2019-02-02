@@ -308,7 +308,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                 }
 
 
-                PlatformOrder platformOrder = new PlatformOrder(orderId, OrderState.WAITING_FOR_PAYING, date, qrCode, getQrCodeParameters.getIp(), getQrCodeParameters.getId(), money, user.getId(), chosenDevice.getImei(), codeType);
+                PlatformOrder platformOrder = new PlatformOrder(orderId, OrderState.WAITING_FOR_PAYING, date, qrCode, getQrCodeParameters.getIp(), getQrCodeParameters.getId(), money, user.getId(), chosenSupplier.getUser().getId(), chosenDevice.getImei(), codeType);
                 // 该订单是支付宝订单还是微信的订单
                 platformOrder.setType(getQrCodeParameters.getType());
                 // 需要支付宝的收款码

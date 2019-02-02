@@ -25,10 +25,10 @@
                     </el-select>
             </el-form-item>
       <el-form-item label="微信点位">
-        <el-input v-model="form.wechat" style="width: 30%;" type="number" placeholder="微信点位"></el-input>
+        <el-input v-model="form.wechat" style="width: 10%;"  placeholder="微信点位"></el-input>%
       </el-form-item>
       <el-form-item label="支付宝点位">
-        <el-input v-model="form.alipay" style="width: 30%;" type="number" placeholder="支付宝点位"></el-input>
+        <el-input v-model="form.alipay" style="width: 10%;"  placeholder="支付宝点位"></el-input>%
       </el-form-item>
       <!-- <el-form-item label="申请人id">
               <el-input v-model="form.applyId" style="width: 30%;"></el-input>

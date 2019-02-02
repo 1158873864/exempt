@@ -59,7 +59,7 @@ public class ChangeController {
         return new ResponseEntity<>(new JSONResponse(200, qRcodeChangeOrderDao.findAll()), HttpStatus.OK);
     }
 
-    @ApiOperation(value = "查看内部码账变订单", notes = "查看内部码账变信息")
+    @ApiOperation(value = "查看内部卡账变订单", notes = "查看内部卡账变信息")
     @RequestMapping(value = "internalaccountchange/C2Pcard", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
@@ -107,6 +107,8 @@ public class ChangeController {
             return new ResponseEntity<>(new JSONResponse(10412, new WrongResponse(10412, "公司银行卡不存在。")), HttpStatus.OK);
         }
     }
+
+
 
 //    @ApiOperation(value = "内部卡账变(公司卡转入个人卡)", notes = "发起内部卡转账申请(公司卡转入个人卡)")
 //    @RequestMapping(value = "internalaccountchange/C2Pcard", method = RequestMethod.POST)

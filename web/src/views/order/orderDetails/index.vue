@@ -116,7 +116,8 @@ export default {
         var reg = new RegExp(this.searchStr, "i");
         console.log(item.money);
         console.log("1212dasdasd");
-        return !this.searchStr || reg.test(item.money) || reg.test(item.merchantName) || reg.test(item.orderState)
+        console.log(item.orderState);
+        return !this.searchStr || reg.test(item.money) || reg.test(item.merchantName) 
       });
     },
     judge(){
@@ -125,6 +126,7 @@ export default {
       else
           return false;
     },
+
     total(){
       return this.teams.length;
     }
@@ -142,6 +144,7 @@ export default {
     console.log(store.getters.role)
   },
   methods: {
+    
     editable(index,row){ 
        if(row.orderState == '等待付款')
           return true;
@@ -244,6 +247,9 @@ export default {
             {
               var a = []
                 this.teams.forEach(el =>{
+
+                    // console.log(el.supplierId)
+                    // console.log(store.getters.uid)
                     if(el.supplierId==store.getters.uid) {
                         a.push(el)
                     }

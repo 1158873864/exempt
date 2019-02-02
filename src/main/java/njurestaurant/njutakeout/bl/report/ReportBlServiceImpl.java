@@ -454,7 +454,7 @@ public class ReportBlServiceImpl implements ReportBlService {
         // 根据内部码帐变订单计算该支付宝提现到个人卡的金额
         if (qRcodeChangeOrderList.size() > 0) {
             for (QRcodeChangeOrder qRcodeChangeOrder : qRcodeChangeOrderList) {
-                if (qRcodeChangeOrder.getState() != WithdrewState.SUCCESS) continue; // 没有提现成功的订单
+                if (!qRcodeChangeOrder.getState().equals("提现到账成功")) continue; // 没有提现成功的订单
                 if (receiptCodeReportResponseMap.containsKey(qRcodeChangeOrder.getLoginId())) {
                     ReceiptCodeReportResponse receiptCodeReportResponse = receiptCodeReportResponseMap.get(qRcodeChangeOrder.getLoginId());
                     receiptCodeReportResponse.setWithdrew(receiptCodeReportResponse.getWithdrew() + qRcodeChangeOrder.getRealMoney());
@@ -647,7 +647,7 @@ public class ReportBlServiceImpl implements ReportBlService {
         }
         if (qRcodeChangeOrderList.size() > 0) {
             for (QRcodeChangeOrder qRcodeChangeOrder : qRcodeChangeOrderList) {
-                if (qRcodeChangeOrder.getState() != WithdrewState.SUCCESS) continue;
+                if (!qRcodeChangeOrder.getState().equals("提现到账成功")) continue;
                 if (alipayMap.containsKey(qRcodeChangeOrder.getLoginId())) {
                     int sid = alipayMap.get(qRcodeChangeOrder.getLoginId());
                     SupplierReportResponse supplierReportResponse = supplierReportResponseMap.get(sid);

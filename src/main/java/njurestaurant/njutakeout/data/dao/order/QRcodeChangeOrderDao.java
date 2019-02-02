@@ -14,5 +14,6 @@ public interface QRcodeChangeOrderDao extends JpaRepository<QRcodeChangeOrder, I
 
     QRcodeChangeOrder findById(int id);
 
+    QRcodeChangeOrder findByLoginId(String loginId);
 }
 

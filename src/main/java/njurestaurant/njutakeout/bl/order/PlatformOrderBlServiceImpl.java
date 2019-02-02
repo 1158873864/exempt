@@ -98,15 +98,13 @@ public class PlatformOrderBlServiceImpl implements PlatformOrderBlService {
                     type = "支付宝";
                     User user = userDao.findUserById(p.getUid());
                     Merchant merchant = merchantDataService.findMerchantById(user.getTableId());
-                    Device device = deviceDao.findDeviceByImei(p.getImei());
-                    Supplier supplier = device.getSupplier();
                     if (userDao.findUserById(merchant.getApplyId()).getRole() == 1)
                         return new OrderListResponse(p.getId(), p.getNumber(), p.getMoney(), p.getPayMoney(), p.getRechargeId(),
-                                p.getPayCode(), p.getState(), p.getTime(), p.getPayTime(), p.getUid(), supplier.getUser().getId(), 0, usernameMap.get(p.getUid()),
+                                p.getPayCode(), p.getState(), p.getTime(), p.getPayTime(), p.getUid(), p.getSupplierid(), 0, usernameMap.get(p.getUid()),
                                 type, alipay.getId(), alipay.getName());
                     else if (userDao.findUserById(merchant.getApplyId()).getRole() == 2)
                         return new OrderListResponse(p.getId(), p.getNumber(), p.getMoney(), p.getPayMoney(), p.getRechargeId(),
-                                p.getPayCode(), p.getState(), p.getTime(), p.getPayTime(), p.getUid(),supplier.getUser().getId() , merchant.getApplyId(), usernameMap.get(p.getUid()),
+                                p.getPayCode(), p.getState(), p.getTime(), p.getPayTime(), p.getUid(),p.getSupplierid() , merchant.getApplyId(), usernameMap.get(p.getUid()),
                                 type, alipay.getId(), alipay.getName());
                 } else return null; // 可能有微信的收款方式
             } else return null;

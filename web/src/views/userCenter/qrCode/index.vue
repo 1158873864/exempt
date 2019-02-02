@@ -11,8 +11,11 @@
             <el-form-item label="ip地址">
               <el-input v-model="formparameters.ip" style="width: 30%;"></el-input>
             </el-form-item>
+            <el-form-item label="充值方编号">
+              <el-input v-model="formparameters.id" style="width: 30%;"></el-input>
+            </el-form-item>
             <el-form-item label="类型">
-              <el-input v-model="formparameters.type" style="width: 30%;"></el-input>
+              <el-input v-model="formparameters.type" style="width: 30%;" placeholder="alipay"></el-input>
             </el-form-item>
             <el-form-item label="商户名">
               <el-input v-model="formparameters.merchantName" style="width: 30%;"></el-input>

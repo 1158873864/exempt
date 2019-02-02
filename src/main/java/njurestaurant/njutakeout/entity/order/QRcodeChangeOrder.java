@@ -1,8 +1,6 @@
 package njurestaurant.njutakeout.entity.order;
 
 
-import njurestaurant.njutakeout.publicdatas.order.WithdrewState;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -32,7 +30,7 @@ public class QRcodeChangeOrder {
     private double cardBalance;
     //状态
     @Column(name = "state")
-    private WithdrewState state;
+    private String state;
     //操作时间
     @Column(name = "operateTime")
     private Date operateTime;
@@ -43,7 +41,7 @@ public class QRcodeChangeOrder {
     public QRcodeChangeOrder() {
     }
 
-    public QRcodeChangeOrder(String loginId, double money, double realMoney, double balance, String cardNumber, double cardBalance, WithdrewState state, Date operateTime, String operateUsername) {
+    public QRcodeChangeOrder(String loginId, double money, double realMoney, double balance, String cardNumber, double cardBalance, String state, Date operateTime, String operateUsername) {
         this.loginId = loginId;
         this.money = money;
         this.realMoney = realMoney;
@@ -111,11 +109,11 @@ public class QRcodeChangeOrder {
         this.cardBalance = cardBalance;
     }
 
-    public WithdrewState getState() {
+    public String getState() {
         return state;
     }
 
-    public void setState(WithdrewState state) {
+    public void setState(String state) {
         this.state = state;
     }
 

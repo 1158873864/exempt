@@ -9,10 +9,10 @@
               <el-input v-model="form.password" style="width: 30%;"  placeholder="密码"></el-input>
             </el-form-item>
             <el-form-item label="支付宝点位">
-              <el-input v-model="form.alipay" style="width: 30%;" placeholder="支付宝点位"></el-input>
+              <el-input v-model="form.alipay" style="width: 10%;" placeholder="支付宝点位"></el-input>%
             </el-form-item>
             <el-form-item label="微信点位">
-              <el-input v-model="form.wechat" style="width: 30%;" placeholder="微信点位"></el-input>
+              <el-input v-model="form.wechat" style="width: 10%;" placeholder="微信点位"></el-input>%
             </el-form-item>
             <el-form-item label="状态" >
                     <el-select v-model="form.status" placeholder="启用">

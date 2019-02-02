@@ -39,6 +39,11 @@ public class ChangeOrderDataServiceImpl implements ChangeOrderDataService {
     }
 
     @Override
+    public QRcodeChangeOrder findByLoginId(String loginId) {
+        return QRcodeChangeOrderDao.findByLoginId(loginId);
+    }
+
+    @Override
     public List<QRcodeChangeOrder> findAllQrCodeChangeOrder() {
         return QRcodeChangeOrderDao.findAll();
     }

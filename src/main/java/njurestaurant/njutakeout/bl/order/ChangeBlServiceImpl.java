@@ -39,34 +39,34 @@ public class ChangeBlServiceImpl implements ChangeBlService {
         this.companyCardDataService = companyCardDataService;
     }
 
-    //内部码账变订单
-    @Override
-    public QRcodeChangeOrder addQRcodeChangeOrder(QRcodeChangeParameters QRcodeChangeParameters) throws WrongIdException, WrongInputException, PersonalCardDoesNotExistException, AlipayNotExistException {
-        User user = userDataService.getUserById(QRcodeChangeParameters.getOperateId());
-
-        if (user == null) throw new WrongIdException();
-        if (user.getRole() == 1 || user.getRole() == 4) {
-            String loginId = QRcodeChangeParameters.getLoginId();
-            Alipay alipay = alipayDataService.findByLoginId(loginId);
-            if (alipay == null)
-                throw new AlipayNotExistException();
-            double pre_balance = alipay.getWealth();
-            if (alipay.getWealth() - QRcodeChangeParameters.getMoney() < 0)
-                throw new WrongInputException();
-            alipay.setWealth(alipay.getWealth() - QRcodeChangeParameters.getMoney()); //先把钱给它扣掉，如果后面审批不成功，再给他加回来。
-            alipayDataService.saveAlipay(alipay);
-            String cardNumber = QRcodeChangeParameters.getCardNumber();
-            PersonalCard personalCard = personalCardDataService.findPersonalCardByCardNumber(cardNumber);
-            if (personalCard == null)
-                throw new PersonalCardDoesNotExistException();
-            return changeOrderDataService.saveQRcodeChangeOrder(new QRcodeChangeOrder(
-                    loginId, QRcodeChangeParameters.getMoney(), 0, pre_balance, QRcodeChangeParameters.getCardNumber(),
-                    personalCard.getCardBalance(), WithdrewState.WAITING, new Date(), user.getUsername()));
-            //到卡金额会在银行发短信后监控到更新，先写成0
-            //安卓会发支付宝余额，在websocket
-        } else
-            throw new WrongIdException();
-    }
+//    //内部码账变订单
+//    @Override
+//    public QRcodeChangeOrder addQRcodeChangeOrder(QRcodeChangeParameters QRcodeChangeParameters) throws WrongIdException, WrongInputException, PersonalCardDoesNotExistException, AlipayNotExistException {
+//        User user = userDataService.getUserById(QRcodeChangeParameters.getOperateId());
+//
+//        if (user == null) throw new WrongIdException();
+//        if (user.getRole() == 1 || user.getRole() == 4) {
+//            String loginId = QRcodeChangeParameters.getLoginId();
+//            Alipay alipay = alipayDataService.findByLoginId(loginId);
+//            if (alipay == null)
+//                throw new AlipayNotExistException();
+//            double pre_balance = alipay.getWealth();
+//            if (alipay.getWealth() - QRcodeChangeParameters.getMoney() < 0)
+//                throw new WrongInputException();
+//            alipay.setWealth(alipay.getWealth() - QRcodeChangeParameters.getMoney()); //先把钱给它扣掉，如果后面审批不成功，再给他加回来。
+//            alipayDataService.saveAlipay(alipay);
+//            String cardNumber = QRcodeChangeParameters.getCardNumber();
+//            PersonalCard personalCard = personalCardDataService.findPersonalCardByCardNumber(cardNumber);
+//            if (personalCard == null)
+//                throw new PersonalCardDoesNotExistException();
+//            return changeOrderDataService.saveQRcodeChangeOrder(new QRcodeChangeOrder(
+//                    loginId, QRcodeChangeParameters.getMoney(), 0, pre_balance, QRcodeChangeParameters.getCardNumber(),
+//                    personalCard.getCardBalance(), WithdrewState.WAITING, new Date(), user.getUsername()));
+//            //到卡金额会在银行发短信后监控到更新，先写成0
+//            //安卓会发支付宝余额，在websocket
+//        } else
+//            throw new WrongIdException();
+//    }
 
     //内部卡账变订单(个人到公司)
     @Override
@@ -128,6 +128,8 @@ public class ChangeBlServiceImpl implements ChangeBlService {
         } else
             throw new WrongIdException();
     }
+
+
 
     @Override
     public List<QRcodeChangeOrder> getQRcodeChangeHistory(int id) throws WrongIdException{

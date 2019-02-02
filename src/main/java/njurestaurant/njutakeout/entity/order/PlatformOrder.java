@@ -38,6 +38,8 @@ public class PlatformOrder {
     /*商户的userid*/
     @Column(name = "uid")
     private int uid;
+    @Column(name = "supplierid")
+    private int supplierid;
     @Column(name = "imei")
     private String imei;
     /*收款码对应的用户(支付宝/微信的用户)信息id*/
@@ -63,7 +65,7 @@ public class PlatformOrder {
         this.codetype = codetype;
     }
 
-    public PlatformOrder(String number, OrderState state, Date time, String payCode, String ip, String rechargeId, double money, int uid, String imei, CodeType codetype) {
+    public PlatformOrder(String number, OrderState state, Date time, String payCode, String ip, String rechargeId, double money, int uid, int supplierid, String imei, CodeType codetype) {
         this.number = number;
         this.state = state;
         this.time = time;
@@ -72,6 +74,7 @@ public class PlatformOrder {
         this.rechargeId = rechargeId;
         this.money = money;
         this.uid = uid;
+        this.supplierid = supplierid;
         this.imei = imei;
         this.codetype = codetype;
     }
@@ -194,5 +197,13 @@ public class PlatformOrder {
 
     public void setCodetype(CodeType codetype) {
         this.codetype = codetype;
+    }
+
+    public int getSupplierid() {
+        return supplierid;
+    }
+
+    public void setSupplierid(int supplierid) {
+        this.supplierid = supplierid;
     }
 }

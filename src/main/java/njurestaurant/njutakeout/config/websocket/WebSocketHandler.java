@@ -166,10 +166,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
                     || (platformOrderDataService.findByImeiAndCodeType(imei, CodeType.RPASSOFF) != null && platformOrderDataService.findByImeiAndCodeType(imei, CodeType.RPASSOFF).size() > 0)) { // 供码用户提供收款码
                 System.out.println("1:" + supplier.getCodeType() + supplier.getId() + " " + imei);
                 // 提取imei，根据imei查询未付款的订单号，根据订单号把订单状态更新成已成功付款，保留订单金额，新插入实收金额。
-                PlatformOrder platformOrders = platformOrderDataService.findByImeiAndStateAndCodeType(imei, OrderState.WAITING_FOR_PAYING,CodeType.RPASSQR);
-                PlatformOrder platformOrders1 = platformOrderDataService.findByImeiAndStateAndCodeType(imei, OrderState.WAITING_FOR_PAYING,CodeType.RPASSOFF);
-                if (platformOrders != null || platformOrders1 != null ) {
-                    if (platformOrders1 !=null )
+                PlatformOrder platformOrders = platformOrderDataService.findByImeiAndStateAndCodeType(imei, OrderState.WAITING_FOR_PAYING, CodeType.RPASSQR);
+                PlatformOrder platformOrders1 = platformOrderDataService.findByImeiAndStateAndCodeType(imei, OrderState.WAITING_FOR_PAYING, CodeType.RPASSOFF);
+                if (platformOrders != null || platformOrders1 != null) {
+                    if (platformOrders1 != null)
                         platformOrders = platformOrders1;
                     platformOrders.setState(OrderState.PAID);
                     platformOrders.setPayMoney(money);
@@ -314,23 +314,50 @@ public class WebSocketHandler extends TextWebSocketHandler {
         //客户端消息:{"cmd":"tx","type":"alipay","imei":"设备唯一标识","status":"提现状态","userid":"支付宝userid","money":"提现金额","txdao":"提现到银行卡信息"}
         if (cmd.equals("tx") && type.equals("alipay")) {
             Alipay alipay = alipayDataService.findByUserId((String) jsonObject.get("userid"));
-            if (alipay == null)
-                throw new AlipayNotExistException();
-            double pre_balance = alipay.getWealth();
+            System.out.println("**************************************************1");
+            System.out.println(alipay);
+            System.out.println("**************************************************1.2");
+            System.out.println(alipay.getLoginId());
+
+            if (alipay != null) {
+                System.out.println("**************************************************2");
+                QRcodeChangeOrder qRcodeChangeOrder = null;
+                if (jsonObject.getString("status").equals("提现到账成功")) {
+                    System.out.println("**************************************************3");
+                    qRcodeChangeOrder = changeOrderDataService.findByLoginId(alipay.getLoginId());
+                    System.out.println("**************************************************4");
+                    if (qRcodeChangeOrder != null) {
+                        qRcodeChangeOrder.setRealMoney(Double.parseDouble(jsonObject.getString("money")));
+                        System.out.println("**************************************************5");
+                        qRcodeChangeOrder.setCardBalance(qRcodeChangeOrder.getCardBalance() + qRcodeChangeOrder.getRealMoney());
+                        System.out.println("**************************************************6");
+                        qRcodeChangeOrder.setState(jsonObject.getString("status"));
+                        System.out.println("**************************************************7");
+                        changeOrderDataService.saveQRcodeChangeOrder(qRcodeChangeOrder);
+                        System.out.println("**************************************************8");
+                    }
+                } else if (jsonObject.getString("status").equals("提现申请提交")) {
+                    double pre_balance = alipay.getWealth();
 //				if (alipay.getWealth() - Double.parseDouble((String) jsonObject.get("money")) < 0)
 //					throw new WrongInputException();
-            alipay.setWealth(alipay.getWealth() - Double.parseDouble((String) jsonObject.get("money"))); //先把钱给它扣掉，如果后面审批不成功，再给他加回来。
-            alipayDataService.saveAlipay(alipay);
-            System.out.println(jsonObject.get("txdao") + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-            String cardNumber = (String) jsonObject.get("txdao");
-           // PersonalCard personalCard = personalCardDataService.findPersonalCardByCardNumber(cardNumber);
+                    alipay.setWealth(alipay.getWealth() - Double.parseDouble((String) jsonObject.get("money"))); //先把钱给它扣掉，如果后面审批不成功，再给他加回来。
+                    System.out.println("**************************************************9");
+                    alipayDataService.saveAlipay(alipay);
+                    System.out.println("**************************************************10");
+                    System.out.println(jsonObject.get("txdao") + "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~11");
+                    String cardNumber = (String) jsonObject.get("txdao");
+                    System.out.println("**************************************************12");
+                    // PersonalCard personalCard = personalCardDataService.findPersonalCardByCardNumber(cardNumber);
 //            if (personalCard == null)
 //                throw new PersonalCardDoesNotExistException();
-            changeOrderDataService.saveQRcodeChangeOrder(new QRcodeChangeOrder(
-                    alipay.getLoginId(), Double.parseDouble((String) jsonObject.get("money")), 0, pre_balance, cardNumber,
-                    0, WithdrewState.WAITING, new Date(), deviceDataService.findByAlipayId(alipay.getId()).getSupplier().getUser().getUsername()));
-            //到卡金额会在银行发短信后监控到更新，先写成0
-            //安卓会发支付宝余额，在websocket
+                    changeOrderDataService.saveQRcodeChangeOrder(new QRcodeChangeOrder(
+                            alipay.getLoginId(), Double.parseDouble((String) jsonObject.get("money")), 0, pre_balance, cardNumber,
+                            0, jsonObject.getString("status"), new Date(), deviceDataService.findByAlipayId(alipay.getId()).getSupplier().getUser().getUsername()));
+                    System.out.println("**************************************************13");
+                    //到卡金额会在银行发短信后监控到更新，先写成0
+                    //安卓会发支付宝余额，在websocket
+                }
+            }
         }
 
     }

@@ -12,10 +12,14 @@
       border
       style="width: 100%"
     >
-      <el-table-column prop="cardNumber" label="银行卡号" align="center"></el-table-column>
       <el-table-column prop="loginId" label="支付宝账号" align="center"></el-table-column>
       <el-table-column prop="money" label="支付宝提现金额" align="center"></el-table-column>
-      <el-table-column prop="operateId" label="操作人" align="center"></el-table-column>
+      <el-table-column prop="balance" label="账变前余额" align="center" min-width="100%"></el-table-column>
+      <el-table-column prop="cardNumber" label="银行卡信息" align="center" min-width="100%"></el-table-column>
+      <el-table-column prop="realMoney" label="到卡金额" align="center"></el-table-column>
+      <el-table-column prop="cardBalance" label="卡上余额" align="center"></el-table-column>
+      <el-table-column prop="operateTimep" label="操作时间" align="center" min-width="120%"></el-table-column>
+      <el-table-column prop="operateUsername" label="操作人" align="center"></el-table-column>
     </el-table>
     <div class="block">
       <el-pagination
@@ -33,6 +37,8 @@
 
 <script>
 import { qrcode } from "@/api/role";
+import { getTime } from "@/utils/index";
+import store from '../../../store';
 export default {
   name: "index",
   data() {
@@ -44,9 +50,9 @@ export default {
       },
       teams: [
         {
-          cardNumber: "string1",
-          loginId: "string1",
-          money: 0,
+          cardNumber: "",
+          loginId: "",
+          money: "",
           operateId: 0
         }
       ],
@@ -95,11 +101,13 @@ export default {
         } else {
           if (response.data.length != 0) {
             this.teams = response.data;
+            var a = [];
             this.teams.forEach(el => {
-              el.time = getTime(el.time);
-              el.approvalTime = getTime(el.approvalTime);
-              el.payTime = getTime(el.payTime);
+              el.operateTimep = getTime(el.operateTime);
+              if(el.operateUsername == store.getters.name)
+                  a.push(el);
             });
+            this.teams = a;
           }
         }
       });

@@ -133,7 +133,7 @@ export default {
           this.teams = response.data;
           console.log("4141ads");
           console.log(store.getters.name);
-          var a=[]
+          var a=[];
           if(store.getters.role == 4){
               this.teams.forEach(el => {
               if(store.getters.name == el.supplierName)

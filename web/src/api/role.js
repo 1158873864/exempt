@@ -206,10 +206,10 @@ export function deviceUpdate(id,imei,status) {
     }
   })
 }
-export function qrcode(id) {
+export function qrcode() {
   return request({
-    url: '/internalaccountchange/ShowQRcodeOrder' + id,
-    method: 'get',
+    url: '/internalaccountchange/qrcode',
+    method: 'post'
     // data: {
     //   cardNumber, loginId, money, operateId
     // }

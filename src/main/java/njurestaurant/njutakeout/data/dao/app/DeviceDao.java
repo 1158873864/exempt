@@ -8,5 +8,8 @@ import java.util.List;
 public interface DeviceDao extends JpaRepository<Device, Integer> {
     Device findDeviceByImei(String imei);
     Device findDeviceByAlipayId(int id);
+    Device findDeviceBySupplierIdAndImei(int id ,String imei);
     List<Device> findDevicesBySupplierId(int id);
+    List<Device> findDevicesByImei(String imei);
+
 }

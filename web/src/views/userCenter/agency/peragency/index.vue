@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div>所有代理商</div>
+    <div>我是代理</div>
      <el-input v-model="searchStr" suffix-icon="el-icon-search" placeholder="请输入搜索内容"></el-input>
         <el-table
         :data="filterData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
@@ -42,7 +42,7 @@
                 <el-form-item label="密码" prop="password">
                     <el-input v-model="newRow.user.password" type="password" placeholder="请输入密码" style="width:90%;"></el-input>
                 </el-form-item>
-                <el-form-item label="状态">
+                <!-- <el-form-item label="状态">
                     <el-select v-model="newRow.status" placeholder="请输入状态" style="width:20%;">
                     <el-option label="启用" value="启用"></el-option>
                     <el-option label="停用" value="停用"></el-option>
@@ -53,7 +53,7 @@
                 </el-form-item>
                 <el-form-item label="微信点位">
                     <el-input v-model="newRow.wechat" placeholder="请输入微信点位" style="width:10%;"></el-input>%
-                </el-form-item>
+                </el-form-item> -->
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -66,6 +66,7 @@
 <script>
 import { agentsGet,updateAgent } from '@/api/role'
 import { isvalidUsername,isvalidPassword } from '@/utils/validate'  
+import store from '../../../../store';
     export default {
         data() {
             const validateUsername = (rule, value, callback) => {
@@ -190,11 +191,17 @@ import { isvalidUsername,isvalidPassword } from '@/utils/validate'
                         });
                     }else{
                        this.teams = response.data;
-                       this.teams.forEach(el => {
-                            el.alipayp = el.alipay+'%';
-                            el.wechatp = el.wechat+'%';
-                       });
-                       
+                       var a = [];
+                       if(store.getters.role == 2){
+                            this.teams.forEach(el => {
+                                if(store.getters.uid == el.uid){
+                                    el.alipayp = el.alipay+'%';
+                                    el.wechatp = el.wechat+'%';
+                                    a.push(el);
+                                }
+                            });
+                        this.teams = a ;
+                        }
                     }
                 })
             },

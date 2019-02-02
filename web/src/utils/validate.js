@@ -3,8 +3,18 @@
  */
 
 export function isvalidUsername(str) {
-  const valid_map = ['admin', 'editor']
-  return valid_map.indexOf(str.trim()) >= 0
+  console.log("123")
+  console.log(str)
+  const reg = /^[a-zA-Z]+$/
+  return reg.test(str)
+  // const valid_map = ['admin', 'editor']
+  // return valid_map.indexOf(str.trim()) >= 0
+  
+}
+export function isvalidPassword(str) {
+  const reg = /^(?=.*?[A-Za-z]+)(?=.*?[0-9]+)(.*)$/   // 必须包含字母和数字
+  const len = str.length >= 8 //且超过8位
+  return reg.test(str) && len
 }
 
 /* 合法uri*/

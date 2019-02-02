@@ -46,6 +46,16 @@ public class DeviceDataServiceImpl implements DeviceDataService {
     }
 
     @Override
+    public Device findBySupplierIdAndImei(int id, String imei) {
+        return deviceDao.findDeviceBySupplierIdAndImei(id,imei);
+    }
+
+    @Override
+    public List<Device> findDevicesByImei(String imei) {
+        return deviceDao.findDevicesByImei(imei);
+    }
+
+    @Override
     public Device findByAlipayId(int id) {
         return deviceDao.findDeviceByAlipayId(id);
     }

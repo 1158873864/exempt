@@ -1,10 +1,7 @@
 package njurestaurant.njutakeout.response.report;
 
-import njurestaurant.njutakeout.publicdatas.app.CodeType;
-import njurestaurant.njutakeout.publicdatas.order.OrderState;
 import njurestaurant.njutakeout.response.Response;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,8 +26,9 @@ public class MerchantReportResponse extends Response {
     private List<PlatformAnalyse> platformAnalyseList;
     private int totalOrders;
     private int successOrders;
+    private int agentId;
 
-    public MerchantReportResponse(String number,String date, String username, String merchantName, double deposit, double availiableDeposit, double withdrewed, double withdrewing, double balance, double agentProfit, double companyProfit, List<PlatformAnalyse> platformAnalyseList, int totalOrders, int successOrder) {
+    public MerchantReportResponse(String number, String date, String username, String merchantName, double deposit, double availiableDeposit, double withdrewed, double withdrewing, double balance, double agentProfit, double companyProfit, List<PlatformAnalyse> platformAnalyseList, int totalOrders, int successOrder, int agentId) {
         this.number = number;
         this.date = date;
         this.username = username;
@@ -45,6 +43,7 @@ public class MerchantReportResponse extends Response {
         this.platformAnalyseList = platformAnalyseList;
         this.totalOrders = totalOrders;
         this.successOrders = successOrder;
+        this.agentId = agentId;
     }
 
     public int getTotalOrders() {
@@ -159,4 +158,11 @@ public class MerchantReportResponse extends Response {
         this.platformAnalyseList = platformAnalyseList;
     }
 
+    public int getAgentId() {
+        return agentId;
+    }
+
+    public void setAgentId(int agentId) {
+        this.agentId = agentId;
+    }
 }

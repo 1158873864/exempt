@@ -16,6 +16,10 @@ public interface DeviceDataService {
 
     Device findByImei(String imei);
 
+    Device findBySupplierIdAndImei(int id ,String imei);
+
+    List<Device> findDevicesByImei(String imei);
+
     Device findByAlipayId(int id);
 
     List<Device> findDevicesBySupplierId(int id);

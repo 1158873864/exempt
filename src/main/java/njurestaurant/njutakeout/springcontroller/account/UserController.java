@@ -4,8 +4,10 @@ import io.swagger.annotations.*;
 import njurestaurant.njutakeout.blservice.account.*;
 import njurestaurant.njutakeout.blservice.event.LogBlService;
 import njurestaurant.njutakeout.data.dao.account.AgentDao;
+import njurestaurant.njutakeout.data.dao.account.StaffDao;
 import njurestaurant.njutakeout.data.dao.account.UserDao;
 import njurestaurant.njutakeout.dataservice.account.AgentDataService;
+import njurestaurant.njutakeout.dataservice.account.StaffDataService;
 import njurestaurant.njutakeout.dataservice.account.UserDataService;
 import njurestaurant.njutakeout.entity.account.*;
 import njurestaurant.njutakeout.exception.*;
@@ -38,11 +40,14 @@ public class UserController {
     private final LogBlService logBlService;
     private final UserDataService userDataService;
     private final AgentDataService agentDataService;
+    private final StaffDataService staffDataService;
     private final AgentDao agentDao;
-    private UserDao userDao;
+    private final StaffDao staffDao;
+    private final UserDao userDao;
+
 
     @Autowired
-    public UserController(UserBlService userBlService, StaffBlService staffBlService, AgentBlService agentBlService, MerchantBlService merchantBlService, SupplierBlService supplierBlService, LogBlService logBlService, UserDataService userDataService, AgentDataService agentDataService, AgentDao agentDao, UserDao userDao) {
+    public UserController(UserBlService userBlService, StaffBlService staffBlService, AgentBlService agentBlService, MerchantBlService merchantBlService, SupplierBlService supplierBlService, LogBlService logBlService, UserDataService userDataService, AgentDataService agentDataService, StaffDataService staffDataService, AgentDao agentDao, StaffDao staffDao, UserDao userDao) {
         this.userBlService = userBlService;
         this.staffBlService = staffBlService;
         this.agentBlService = agentBlService;
@@ -51,7 +56,9 @@ public class UserController {
         this.logBlService = logBlService;
         this.userDataService = userDataService;
         this.agentDataService = agentDataService;
+        this.staffDataService = staffDataService;
         this.agentDao = agentDao;
+        this.staffDao = staffDao;
         this.userDao = userDao;
     }
 
@@ -238,7 +245,50 @@ public class UserController {
             }
         }
     }
-
+    @ApiOperation(value = "更改管理员信息", notes = "更改管理员信息")
+    @RequestMapping(value = "staff/update/{uid}", method = RequestMethod.PUT)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> updateStaff(@PathVariable("uid") int id, @RequestBody AdminUpdateParameters adminUpdateParameters) {
+        if (StringUtils.isBlank(adminUpdateParameters.getPassword()) || StringUtils.isBlank(adminUpdateParameters.getName())   || StringUtils.isBlank(adminUpdateParameters.getStatus())) {
+            return new ResponseEntity<>(new JSONResponse(10120, new WrongResponse(10120, "输入不能为空.")), HttpStatus.OK);
+        }
+        User user = userDao.findUserById(id);
+        if (!user.getUsername().equals(adminUpdateParameters.getName())) {
+            if (userDao.findUserByUsername(adminUpdateParameters.getName()) != null)
+                return new ResponseEntity<>(new JSONResponse(10100, new UsernameIsExistentException()), HttpStatus.OK);
+            else {
+                Staff staff = staffDao.findByUserId(id);
+                staff.setTeam(adminUpdateParameters.getTeam());
+                staff.setPost(adminUpdateParameters.getPost());
+                staff.setStatus(adminUpdateParameters.getStatus());
+                staff.setStaffName(adminUpdateParameters.getName());
+                user.setUsername(adminUpdateParameters.getName());
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                user.setPassword(encoder.encode(adminUpdateParameters.getPassword()));
+                staff.setUser(user);
+                userDataService.saveUser(user);
+                staffDataService.saveStaff(staff);
+                return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("更新成功")), HttpStatus.OK);
+            }
+        } else {
+            Staff staff = staffDao.findByUserId(id);
+            staff.setTeam(adminUpdateParameters.getTeam());
+            staff.setPost(adminUpdateParameters.getPost());
+            staff.setStatus(adminUpdateParameters.getStatus());
+            staff.setStaffName(adminUpdateParameters.getName());
+            user.setUsername(adminUpdateParameters.getName());
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            user.setPassword(encoder.encode(adminUpdateParameters.getPassword()));
+            staff.setUser(user);
+            userDataService.saveUser(user);
+            staffDataService.saveStaff(staff);
+            return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("更新成功")), HttpStatus.OK);
+        }
+    }
     @ApiOperation(value = "更改代理用户信息", notes = "代理修改个人用户信息")
     @RequestMapping(value = "agent/update/{uid}", method = RequestMethod.PUT)
     @ApiResponses(value = {

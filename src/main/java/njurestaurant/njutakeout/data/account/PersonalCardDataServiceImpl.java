@@ -36,6 +36,11 @@ public class PersonalCardDataServiceImpl implements PersonalCardDataService {
     }
 
     @Override
+    public PersonalCard findPersonalCardByAccountWithBank(String accountWithBank) {
+        return personalCardDao.findByAccountWithBank(accountWithBank);
+    }
+
+    @Override
     public void deleteById(int id) {
         personalCardDao.deleteById(id);
     }

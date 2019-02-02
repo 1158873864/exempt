@@ -1,21 +1,24 @@
 <template>
   <div class="app-container">
-    <div>供码用户信息修改</div>
+    <div>我是供码用户</div>
     <el-input v-model="searchStr" suffix-icon="el-icon-search" placeholder="请输入搜索内容"></el-input>
     <el-table
       :data="filterData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-      border
-      style="width: 100%">
+      border>
       <el-table-column prop="user.username" label="用户名" align="center"></el-table-column>
       <el-table-column prop="priority" label="等级" align="center"></el-table-column>
-      <el-table-column prop="devices_team" label="设备状态" align="center">
+      <el-table-column prop="devices_team" label="设备状态" align="center" min-width="150%" >
         <template slot-scope="scope">
           <el-tag
             :type="device.online?'success':'info'"
             v-for="device in scope.row.devices"
             :key="device.device_team"
-          >{{ device.device_team }}
+          >{{ device.device_team +"&#12288;&#12288;"}}
+          <el-button type="success" size="mini" @click="turnOn(scope.row,device)">启用</el-button>
+          <el-button type="warning" size="mini" @click="turnDown(scope.row,device)">停用</el-button>
+          <div v-html="text"></div>
           </el-tag>
+          
         </template>
       </el-table-column>
       <el-table-column prop="status" label="账户状态" align="center"></el-table-column>
@@ -37,9 +40,15 @@
       ></el-pagination>
     </div>
     <el-dialog title="修改供码用户信息" :visible.sync="dialogFormVisible">
-            <el-form :model="newRow">
+            <el-form ref="form" :model="newRow.user" :rules="addRules" label-width="13%">
+                <el-form-item label="用户名" prop="username">
+                    <el-input v-model="newRow.user.username" type="text" placeholder="用户名" style="width:90%;"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" prop="password">
+                    <el-input v-model="newRow.user.password" type="password" placeholder="密码" style="width:90%;"></el-input>
+                </el-form-item>
                 <el-form-item label="码类型">
-                    <el-select v-model="newRow.codeType" placeholder="">
+                    <el-select v-model="newRow.codeType" placeholder=""  style="width:30%;">
                     <el-option label="转账通码" value="TPASS"></el-option>
                     <el-option label="转账固码" value="TSOLID"></el-option>
                     <el-option label="收款通码离线码" value="RPASSOFF"></el-option>
@@ -56,12 +65,7 @@
                 <el-form-item label="level">
                     <el-input v-model="newRow.level" type="number" min="1" placeholder="level"></el-input>
                 </el-form-item> -->
-                <el-form-item label="用户名">
-                    <el-input v-model="newRow.user.username" type="text" placeholder="用户名"></el-input>
-                </el-form-item>
-                <el-form-item label="密码">
-                    <el-input v-model="newRow.user.password" type="password" placeholder="密码"></el-input>
-                </el-form-item>
+                
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -72,15 +76,38 @@
 </template>
 
 <script>
-import {suppliersGet, supplierUpdate} from "@/api/role";
+import {suppliersGet, supplierUpdate , deviceUpdate} from "@/api/role";
+import { isvalidUsername,isvalidPassword } from '@/utils/validate' 
 import store from '../../../../store'
   export default {
     data() {
+      const validateUsername = (rule, value, callback) => {
+                console.log(rule)
+                console.log(value)
+                console.log(callback)
+            if (!isvalidUsername(value)) {
+                callback(new Error('请输入正确的用户名（只能由英文字母组成）'))
+            } else {
+                callback()
+            }
+            }
+            const validatePass = (rule, value, callback) => {
+            if (!isvalidPassword(value)) {
+                callback(new Error('必须包含字母和数字且超过8位'))
+            } else {
+                callback()
+            }
+            }
       return {
         teams: [
           {
             priority: "",
-            devices: [],
+            devices: [
+              {
+                imei:"123",
+                online:""
+              }
+            ],
             status: '',
             user: {
               username: ''
@@ -100,7 +127,13 @@ import store from '../../../../store'
         pagesize: 10,
         newRowIndex: 1,
         dialogFormVisible: false,
-        searchStr: "" // 新增
+        searchStr: "", // 新增
+        addRules: {
+          username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+          password: [{ required: true, trigger: 'blur', validator: validatePass }]
+          // post: [{ required: true, trigger: 'blur', validator: validateEmpty }]
+        },
+        text:"<br/>"
       };
     },
     computed: {
@@ -119,13 +152,53 @@ import store from '../../../../store'
       this.getData();
     },
     methods: {
+      turnOn(row,device){
+        console.log(row.user.username)
+        console.log(device.imei)
+        deviceUpdate(row.id,device.imei,"启用").then(response => {
+          if (response.code != 200) {
+            this.$message({
+              message: response.data.description,
+              type: "warning"
+            });
+          } else {
+            // this.teams[this.newRowIndex].priority = this.newRow.level;
+            // this.dialogFormVisible = false;
+            this.$message({
+              message: "设备启用成功",
+              type: "success"
+            });
+          }
+        });
+      },
+      turnDown(row,device){
+        console.log(row.user.username)
+        console.log(device.imei)
+        deviceUpdate(row.id,device.imei,"停用").then(response => {
+          if (response.code != 200) {
+            this.$message({
+              message: response.data.description,
+              type: "warning"
+            });
+          } else {
+            // this.teams[this.newRowIndex].priority = this.newRow.level;
+            // this.dialogFormVisible = false;
+            this.$message({
+              message: "设备停用成功",
+              type: "success"
+            });
+          }
+        });
+      },
       seen(index,row){
-        if(this.teams.username == null)
+        if(row.user.username == null || row.user.username == '')
           return false;
         else
           return true;
       },
-      updateSupplier() {
+      updateSupplier(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
         supplierUpdate(
           this.newRow.codeType,
           this.newRow.level,
@@ -148,6 +221,11 @@ import store from '../../../../store'
             });
           }
         });
+        } else {
+              console.log('error submit!!');
+              return false;
+            }
+          });
       },
       openDialog(index, row) {
         this.dialogFormVisible = true;
@@ -187,6 +265,7 @@ import store from '../../../../store'
                        var teams = response.data;
                         var a =[];
                         teams.forEach(el => {
+                            //el.devices = [{imei:"123",online:1},{imei:"456",online:0}]
                             el.devices.forEach(de=>{
                                 console.log(de.imei)
                                 de.device_team = de.imei +' '+ (de.online?'在线':'离线');

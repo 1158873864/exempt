@@ -8,11 +8,12 @@
             style="width: 100%">
             <el-table-column prop="mid" label="商户id"  align="center"></el-table-column>
             <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column>
-            <el-table-column prop="alipay" label="支付宝点位"  align="center"></el-table-column>
-            <el-table-column prop="wechat" label="微信点位"  align="center"></el-table-column>
+            <el-table-column prop="alipayp" label="支付宝点位"  align="center"></el-table-column>
+            <el-table-column prop="wechatp" label="微信点位"  align="center"></el-table-column>
             <!-- <el-table-column prop="approverId" label="审核人id"  align="center"></el-table-column> -->
             <el-table-column prop="priority" label="等级"  align="center"></el-table-column>
             <!-- <el-table-column prop="user.password" label="密码"  align="center"></el-table-column> -->
+            <el-table-column prop="applyId" label="代理商id"  align="center"></el-table-column>
             <el-table-column prop="status" label="状态"  align="center"></el-table-column>
             <el-table-column label="操作" width="280" align="center">
                     <template scope="scope">
@@ -32,7 +33,7 @@
             :page-sizes="[10, 20, 30, 40]"
             :page-size="10"
             layout="sizes, prev, pager, next"
-            :total="1000">
+            :total=total>
             </el-pagination>
         </div>
       </div>
@@ -61,6 +62,11 @@
                     currentPage:1
                 }
             },
+            computed:{
+                total(){
+                    return this.teams.length;
+                }
+            },
             created(){
                 this.getData();
                 // this.
@@ -70,7 +76,7 @@
                     // console.log(row);
                     ApprovalMer(
                             row.alipay,
-                            row.approverId,
+                            store.getters.uid,
                             row.priority,
                             row.user.password,
                             status,
@@ -121,6 +127,8 @@
                            this.teams.forEach(el => {
                                el.approverId = store.getters.uid;
                                el.mid = el.id;
+                               el.alipayp = el.alipay+'%';
+                               el.wechatp = el.wechat+'%';
                            });
                         }
                     })

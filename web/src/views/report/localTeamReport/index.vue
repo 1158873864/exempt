@@ -16,11 +16,11 @@
             height="500"
             border
             style="width: 100%">
-            <el-table-column prop="date" label="日期"  align="center"></el-table-column>
             <el-table-column prop="number" label="编号"  align="center"></el-table-column>
+            <el-table-column prop="supplierName" label="供码用户名"  align="center"></el-table-column>  
             <el-table-column prop="realReceipt" label="转账金额"  align="center"></el-table-column>
-            <el-table-column prop="supplierName" label="供码用户名"  align="center"></el-table-column>
             <el-table-column prop="withdrew" label="提现金额"  align="center"></el-table-column>
+            <el-table-column prop="date" label="日期"  align="center"></el-table-column>
         </el-table>
            <div class="block">
             <el-pagination
@@ -30,7 +30,7 @@
             :page-sizes="[10, 20, 30, 40]"
             :page-size="pagesize"
             layout="sizes, prev, pager, next"
-            :total="1000">
+            :total=total>
             </el-pagination>
         </div>
   </div>
@@ -40,6 +40,7 @@
 import Chart from '@/components/Charts/lineMarker'
 import { supplierReport} from '@/api/report'
 import { getTime,getTimeFormat } from "@/utils/index";
+import store from '../../../store';
 export default {
   name: 'LineChart',
   components: { Chart },
@@ -71,8 +72,11 @@ export default {
                 console.log(item.supplierName);
                 return !this.searchStr || reg.test(item.supplierName) || reg.test(item.realReceipt);
                 });
-            }
             },
+            total(){
+                return this.teams.length
+            }
+        },
       created(){
           this.getData();
       },
@@ -123,9 +127,21 @@ export default {
                 }else{
                   if(response.data.length!=0)
                     this.teams = response.data;
-                    this.teams.forEach(el => {
-                        el.orderState = (el.orderState=='WAITING_FOR_PAYING')?'等待支付':'PAID'?'已支付':'失效';
-                    });
+                    // this.teams.forEach(el => {
+                    //     el.orderState = (el.orderState=='WAITING_FOR_PAYING')?'等待支付':'PAID'?'已支付':'失效';  
+                    // });
+                    var a=[];
+                    if(store.getters.role == 4){
+                        console.log("1213")
+                        console.log(store.getters.name)
+                        console.log(store.getters.uid)
+                         console.log("1212")
+                        this.teams.forEach(el => {
+                            if(store.getters.name == el.supplierName)
+                                a.push(el);
+                            });
+                        this.teams = a ;
+                    }
                 }
             })
           },

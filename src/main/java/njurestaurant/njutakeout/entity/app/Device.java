@@ -22,6 +22,8 @@ public class Device {
     /*支付宝表id*/
     @Column(name = "alipayId")
     private int alipayId;
+    @Column(name = "status")
+    private String status;
 
     public Device() {
     }
@@ -30,9 +32,10 @@ public class Device {
         this.imei = imei;
     }
 
-    public Device(String imei, Supplier supplier) {
+    public Device(String imei, Supplier supplier, String status) {
         this.imei = imei;
         this.supplier = supplier;
+        this.status = status;
     }
 
     public Device(Supplier supplier) {
@@ -77,5 +80,13 @@ public class Device {
 
     public void setAlipayId(int alipayId) {
         this.alipayId = alipayId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

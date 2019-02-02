@@ -15,14 +15,13 @@
       :data="filterData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
       height="500"
       border
-      style="width: 100%"
-    >
-      <el-table-column prop="alipayLoginId" label="支付宝账号" align="center"></el-table-column>
-      <el-table-column prop="date" label="时间" align="center"></el-table-column>
+      style="width: 100%">
       <el-table-column prop="number" label="编号" align="center"></el-table-column>
-      <el-table-column prop="payMoney" label="实付帐款" align="center"></el-table-column>
-      <el-table-column prop="supplierName" label="供码用戶名" align="center"></el-table-column>
-      <el-table-column prop="withdrew" label="提现金額" align="center"></el-table-column>
+      <el-table-column prop="supplierName" label="供码用户名" align="center"></el-table-column>
+      <el-table-column prop="alipayLoginId" label="支付宝账号" align="center"></el-table-column>
+      <el-table-column prop="payMoney" label="实收帐款" align="center"></el-table-column>
+      <el-table-column prop="withdrew" label="提现金额" align="center"></el-table-column>
+      <el-table-column prop="date" label="查询时间" align="center"></el-table-column>
     </el-table>
     <div class="block">
       <el-pagination
@@ -32,7 +31,7 @@
         :page-sizes="[10, 20, 30, 40]"
         :page-size="pagesize"
         layout="sizes, prev, pager, next"
-        :total="1000"
+        :total=total
       ></el-pagination>
     </div>
   </div>
@@ -42,6 +41,7 @@
 import Chart from "@/components/Charts/lineMarker";
 import { receiveCodeReport } from "@/api/report";
 import { getTime,getTimeFormat } from "@/utils/index";
+import store from '../../../store';
 export default {
   name: "LineChart",
   components: { Chart },
@@ -76,6 +76,9 @@ export default {
         console.log(item.alipayLoginId);
         return !this.searchStr || reg.test(item.alipayLoginId) || reg.test(item.payMoney);
       });
+    },
+    total(){
+      return this.teams.length
     }
   },
   created() {
@@ -128,14 +131,16 @@ export default {
         } else {
           if (response.data.length != 0) 
           this.teams = response.data;
-          this.teams.forEach(el => {
-            // el.orderState =
-            //   el.orderState == "WAITING_FOR_PAYING"
-            //     ? "等待支付"
-            //     : "PAID"
-            //     ? "已支付"
-            //     : "失效";
-          });
+          console.log("4141ads");
+          console.log(store.getters.name);
+          var a=[]
+          if(store.getters.role == 4){
+              this.teams.forEach(el => {
+              if(store.getters.name == el.supplierName)
+                  a.push(el);
+              });
+              this.teams = a ;
+          }
         }
       });
     }

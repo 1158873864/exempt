@@ -1,6 +1,7 @@
 package njurestaurant.njutakeout.blservice.account;
 
 import njurestaurant.njutakeout.entity.account.User;
+import njurestaurant.njutakeout.entity.app.Device;
 import njurestaurant.njutakeout.exception.*;
 import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.SuccessResponse;
@@ -70,6 +71,7 @@ public interface UserBlService {
 
     Response deleteUserById(int id);
 
-    SuccessResponse appLogin(String username, String password, String imei) throws WrongUsernameOrPasswordException, CannotRegisterException, RoleIdentityNotConformException;
+    SuccessResponse appLogin(String username, String password, String imei) throws WrongUsernameOrPasswordException, CannotRegisterException, RoleIdentityNotConformException, WaitingforAuthorizeException;
 
+    SuccessResponse appDevice(int id, String imei ,String status);
 }

@@ -14,8 +14,8 @@
             <el-form-item label="类型">
               <el-input v-model="formparameters.type" style="width: 30%;"></el-input>
             </el-form-item>
-            <el-form-item label="商戶id">
-              <el-input v-model="formparameters.merchantId" style="width: 30%;"></el-input>
+            <el-form-item label="商户名">
+              <el-input v-model="formparameters.merchantName" style="width: 30%;"></el-input>
             </el-form-item>
             <el-form-item>
                 <el-button type="primary" @click="getCode">获取二维码</el-button>
@@ -66,7 +66,7 @@ import config from '../../../../config'
             methods:{
                 getCode(){
                      this.formparameters.time = Date.parse(new Date())/1000;
-                    qrCodeGet(this.formparameters.id, this.formparameters.ip, this.formparameters.memo, this.formparameters.merchantId, this.formparameters.money, this.formparameters.sign, this.formparameters.time,this.formparameters.type ).then(res=>{
+                    qrCodeGet(this.formparameters.id, this.formparameters.ip, this.formparameters.memo, this.formparameters.merchantName, this.formparameters.money, this.formparameters.sign, this.formparameters.time,this.formparameters.type ).then(res=>{
                         // console.log(res)
                          if(res.code!=200){
                             this.$message({

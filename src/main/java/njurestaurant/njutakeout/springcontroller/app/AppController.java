@@ -3,10 +3,7 @@ package njurestaurant.njutakeout.springcontroller.app;
 import io.swagger.annotations.ApiOperation;
 import net.sf.json.JSONObject;
 import njurestaurant.njutakeout.blservice.account.UserBlService;
-import njurestaurant.njutakeout.exception.CannotRegisterException;
-import njurestaurant.njutakeout.exception.SystemException;
-import njurestaurant.njutakeout.exception.RoleIdentityNotConformException;
-import njurestaurant.njutakeout.exception.WrongUsernameOrPasswordException;
+import njurestaurant.njutakeout.exception.*;
 import njurestaurant.njutakeout.response.JSONResponse;
 import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.WrongResponse;
@@ -52,7 +49,17 @@ public class AppController {
             return new ResponseEntity<>(new JSONResponse(10006, e.getResponse()), HttpStatus.OK);
         } catch (RoleIdentityNotConformException e){
             return new ResponseEntity<>(new JSONResponse(10009,e.getResponse()), HttpStatus.OK);
+        } catch (WaitingforAuthorizeException e) {
+            return new ResponseEntity<>(new JSONResponse(10014,e.getResponse()), HttpStatus.OK);
         }
+    }
+
+    @ApiOperation(value = "修改设备状态", notes = "修改设备状态")
+    @RequestMapping(value = "app/device", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Response> appDevice(@RequestParam("id")int id,@RequestParam("imei")String imei,@RequestParam("status")String status) {
+
+        return new ResponseEntity<>(new JSONResponse(200, userBlService.appDevice(id,imei,status)), HttpStatus.OK);
     }
 
     @ApiOperation(value = "googleApi", notes = "谷歌api验证")

@@ -7,10 +7,8 @@ import njurestaurant.njutakeout.dataservice.account.*;
 import njurestaurant.njutakeout.dataservice.app.DeviceDataService;
 import njurestaurant.njutakeout.entity.account.*;
 import njurestaurant.njutakeout.entity.app.Device;
-import njurestaurant.njutakeout.entity.company.Post;
 import njurestaurant.njutakeout.exception.*;
 import njurestaurant.njutakeout.publicdatas.account.AgentDailyFlow;
-import njurestaurant.njutakeout.publicdatas.account.Role;
 import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.SuccessResponse;
 import njurestaurant.njutakeout.response.WrongResponse;
@@ -19,9 +17,6 @@ import njurestaurant.njutakeout.security.jwt.JwtService;
 import njurestaurant.njutakeout.security.jwt.JwtUser;
 import njurestaurant.njutakeout.security.jwt.JwtUserDetailsService;
 import njurestaurant.njutakeout.util.AESDecodeUtils;
-import njurestaurant.njutakeout.util.RSAUtils;
-import org.apache.commons.collections.ListUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -147,7 +142,7 @@ public class UserBlServiceImpl implements UserBlService {
     }
 
     @Override
-    public SuccessResponse appLogin(String username, String password, String imei) throws WrongUsernameOrPasswordException, CannotRegisterException, RoleIdentityNotConformException {
+    public SuccessResponse appLogin(String username, String password, String imei) throws WrongUsernameOrPasswordException, CannotRegisterException, RoleIdentityNotConformException, WaitingforAuthorizeException{
         if (username.length() == 0) {
             throw new CannotRegisterException();
         }
@@ -158,12 +153,24 @@ public class UserBlServiceImpl implements UserBlService {
                 String token = jwtService.generateToken(jwtUser, EXPIRATION);
                 Supplier supplier = supplierDataService.findSupplierById(user.getTableId());
 
-                Device device = deviceDataService.findByImei(imei);
-                if (device == null || device.getSupplier().getId() != supplier.getId()) {
-                    device = new Device(imei, supplier);
+                List<Device> devices = deviceDataService.findDevicesByImei(imei);
+                Device device1 = deviceDataService.findBySupplierIdAndImei(supplier.getId(),imei);
+                if (devices == null || devices.size() == 0 || device1 == null) {
+                    Device device = new Device(imei, supplier, "停用");
                     device.setOnline(0);
                     deviceDataService.saveDevice(device);
+                    throw new WaitingforAuthorizeException();
                 }
+                if ( device1.getStatus().equals("停用"))
+                    throw new WaitingforAuthorizeException();
+
+//                if (device == null || device.getSupplier().getId() != supplier.getId()) {
+//                    device = new Device(imei, supplier, "停用");
+//                    device.setOnline(0);
+//                    deviceDataService.saveDevice(device);
+//                    throw new WaitingforAuthorizeException();
+//                }
+
                 List<Device> list = deviceDataService.findDevicesBySupplierId(supplier.getId());
                 List<Device> list1 = deviceDataService.findAll();
                 if (list != null && list.size() >= 1)
@@ -173,7 +180,7 @@ public class UserBlServiceImpl implements UserBlService {
                         for (Device b : list1)
                             if (a.getImei().equals(b.getImei()))
                                 deviceDataService.deleteById(b.getId()); //去除与当前登录的供码用户有相同设备号的记录，保证设备号的唯一性
-                return new SuccessResponse("login success");
+                return new SuccessResponse("登陆成功");
             } else {
                 throw new RoleIdentityNotConformException();
             }
@@ -181,6 +188,14 @@ public class UserBlServiceImpl implements UserBlService {
         } else {
             throw new WrongUsernameOrPasswordException();
         }
+    }
+
+    @Override
+    public SuccessResponse appDevice(int id, String imei ,String status) {
+        Device device = deviceDataService.findBySupplierIdAndImei(id,imei);
+        device.setStatus(status);
+        deviceDataService.saveDevice(device);
+        return  new SuccessResponse("修改成功");
     }
 
     /**

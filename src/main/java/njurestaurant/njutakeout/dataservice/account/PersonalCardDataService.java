@@ -15,6 +15,8 @@ public interface PersonalCardDataService {
 
     PersonalCard findPersonalCardById(int id);
 
+    PersonalCard findPersonalCardByAccountWithBank(String accountWithBank);
+
     void deleteById(int id);
 
     List<PersonalCard> findPersonalCarsByUid(int uid);

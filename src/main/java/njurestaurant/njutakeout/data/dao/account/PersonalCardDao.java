@@ -9,4 +9,6 @@ public interface PersonalCardDao extends JpaRepository<PersonalCard, Integer> {
     List<PersonalCard> findPersonalCardByUserId(int id);
 
     PersonalCard findPersonalCardByCardNumber(String cardNumber);
+
+    PersonalCard findByAccountWithBank(String accountWithBank);
 }

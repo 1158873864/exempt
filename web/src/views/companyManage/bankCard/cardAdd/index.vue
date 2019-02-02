@@ -8,14 +8,21 @@
             <el-form-item label="银行">
                 <el-input v-model="cardAddParameters.bank" placeholder="银行" style="width: 30%;"></el-input>
             </el-form-item>
-             <el-form-item label="余额">
-                <el-input type="number" v-model="cardAddParameters.balance" placeholder="余额" style="width: 30%;"></el-input>
-            </el-form-item>
             <el-form-item label="卡号">
                 <el-input type="number" v-model="cardAddParameters.number" placeholder="卡号" style="width: 30%;"></el-input>
+            </el-form-item>   
+            <el-form-item label="余额">
+                <el-input type="number" v-model="cardAddParameters.balance" placeholder="余额" style="width: 30%;"></el-input>
             </el-form-item>
             <el-form-item label="归属">
-                <el-input v-model="cardAddParameters.attribution" placeholder="归属" style="width: 30%;"></el-input>
+                 <el-dropdown size="medium" split-button type="primary" @command="handleCommandTeam">
+                    {{ cardAddParameters.teamName }}
+                    <el-dropdown-menu slot="dropdown">
+                    <div v-for="item in teams" :key="item.id">
+                        <el-dropdown-item :command='{id:item.id,teamName:item.teamName}' >{{item.teamName}}</el-dropdown-item>
+                    </div>
+                    </el-dropdown-menu>
+                </el-dropdown>
             </el-form-item>
             <el-form-item label="关联">
                 <el-input v-model="cardAddParameters.relation" placeholder="关联" style="width: 30%;"></el-input>
@@ -35,6 +42,7 @@
 
 <script>
 import { cardAdd } from '@/api/company'
+import {teamsGet} from '@/api/company'
     export default {
         data() {
             return {
@@ -48,12 +56,36 @@ import { cardAdd } from '@/api/company'
                         "number": "",
                         "relation": "",
                         "status": "",
+                        teamName:"选择团队"
                 },
                 cards:{},
-                currentPage:1
+                currentPage:1,
+                teams:[{}]
             }
         },
+        created(){
+        this.getTeams();
+      },
         methods: {
+             handleCommandTeam(command) {
+              // this.$message('click on item ' + command.id);
+             
+              this.cardAddParameters.teamName = command.teamName;
+              // console.log('click on item ' + command.teamName);
+          },
+          getTeams(){
+                teamsGet().then(response=>{
+                    console.log(response,'11111111111111')
+                     if(response.code !=200){
+                        this.$message({
+                            message: response.data.description,
+                            type: 'warning'
+                        });
+                    }else{
+                       this.teams = response.data;
+                    }
+                })
+            },
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);
             },
@@ -65,7 +97,7 @@ import { cardAdd } from '@/api/company'
             },
             addcard() {
                 cardAdd(
-                this.cardAddParameters.attribution,
+                this.cardAddParameters.teamName,
                 this.cardAddParameters.balance,
                 this.cardAddParameters.bank,
                 this.cardAddParameters.name,

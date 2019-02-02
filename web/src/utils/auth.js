@@ -51,3 +51,15 @@ export function setUid(token) {
 export function removeUid() {
   return Cookies.remove(Uid)
 }
+
+// export function getName() {
+//   return Cookies.get(Name)
+// }
+
+// export function setName(Name) {
+//   return Cookies.set(Name, token)
+// }
+
+// export function removeName() {
+//   return Cookies.remove(Name)
+// }

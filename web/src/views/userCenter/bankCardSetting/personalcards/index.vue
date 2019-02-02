@@ -6,7 +6,7 @@
             height="250"
             border
             style="width: 100%">
-            <el-table-column prop="id" label="编号" ></el-table-column>
+            <el-table-column prop="cardNumber" label="编号" ></el-table-column>
             <el-table-column prop="accountWithBank" label="银行卡号" ></el-table-column>
             <el-table-column prop="bank" label="归属银行" ></el-table-column>
             <el-table-column prop="bin" label="开户行编号" ></el-table-column>
@@ -23,7 +23,7 @@
             :page-sizes="[100, 200, 300, 400]"
             :page-size="100"
             layout="sizes, prev, pager, next"
-            :total="1000">
+            :total=total>
             </el-pagination>
         </div>
       </div>
@@ -38,16 +38,21 @@
                     activeNames: ['1'],
                     labelPosition: 'right',
                     teams:[{
-                        "accountWithBank": "string",
-                        "bank": "string",
-                        "bin": "string",
-                        "cardNumber": "string",
-                        "id": 0,
-                        "name": "string",
-                        "status": "string"
+                        // "accountWithBank": "string",
+                        // "bank": "string",
+                        // "bin": "string",
+                        // "cardNumber": "string",
+                        // "id": 0,
+                        // "name": "string",
+                        // "status": "string"
                         }
                     ],
                     currentPage:1
+                }
+            },
+            computed:{
+                total(){
+                    return this.teams.length;
                 }
             },
             created(){

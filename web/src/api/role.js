@@ -127,6 +127,24 @@ export function updateAgent(uid, alipay,
     }
   })
 }
+export function updateStaff(uid,
+  name,
+  password,
+  status,
+  team,
+  post) {
+  return request({
+    url: '/staff/update/' + uid,
+    method: 'put',
+    data: {
+      name,
+      password,
+      status,
+      team,
+      post
+    }
+  })
+}
 export function deleteSupplier(sid) {
   return request({
     url: '/supplier/delete',
@@ -173,6 +191,17 @@ export function supplierUpdate(codeType, level,name, password,status, uid) {
       level,
       name,
       password,
+      status
+    }
+  })
+}
+export function deviceUpdate(id,imei,status) {
+  return request({
+    url: '/app/device',
+    method: 'get',
+    params: {
+      id,
+      imei,
       status
     }
   })

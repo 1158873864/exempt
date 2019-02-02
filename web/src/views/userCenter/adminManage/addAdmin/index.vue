@@ -1,18 +1,18 @@
 <template>
         <div class="app-container">
-          <el-form ref="form" :model="form" label-width="80px">
-            <el-form-item label="用户名">
-                    <el-input v-model="form.username" style="width: 30%;" placeholder="用户名"></el-input>
+          <el-form ref="form" :model="form" label-width="80px" :rules="addRules">
+            <el-form-item label="用户名" prop="username">
+              <el-input v-model="form.username" style="width: 30%;" placeholder="用户名" ></el-input>
             </el-form-item>
-            <el-form-item label="密码">
-              <el-input v-model="form.password" style="width: 30%;" placeholder="密码"></el-input>
+            <el-form-item label="密码" prop="password">
+              <el-input v-model="form.password" style="width: 30%;" placeholder="密码" ></el-input>
             </el-form-item>
-            <el-form-item label="岗位">
+            <el-form-item label="岗位" prop="post">
                 <el-dropdown size="medium" split-button type="primary" @command="handleCommandPost" >
                     {{ form.post }}
                     <el-dropdown-menu slot="dropdown">
                     <div v-for="item in posts" :key="item.id">
-                            <el-dropdown-item :command='{id:item.id,post:item.post}' >{{item.post}}</el-dropdown-item>
+                        <el-dropdown-item :command='{id:item.id,post:item.post}' >{{item.post}}</el-dropdown-item>
                     </div>
                     </el-dropdown-menu>
                 </el-dropdown>
@@ -28,7 +28,7 @@
                     {{ form.teamName }}
                     <el-dropdown-menu slot="dropdown">
                     <div v-for="item in teams" :key="item.id">
-                            <el-dropdown-item :command='{id:item.id,teamName:item.teamName}' >{{item.teamName}}</el-dropdown-item>
+                        <el-dropdown-item :command='{id:item.id,teamName:item.teamName}' >{{item.teamName}}</el-dropdown-item>
                     </div>
                     </el-dropdown-menu>
                 </el-dropdown>
@@ -41,6 +41,7 @@
       </template>
 
 <script>
+    import { isvalidUsername,isvalidPassword } from '@/utils/validate'  
     import {addAdmin} from '@/api/role'
     import Form from "../../../../components/form/index";
     import {teamsGet,postGet} from '@/api/company'
@@ -48,16 +49,37 @@
     export default {
         name: "index",
         data(){
+          const validateUsername = (rule, value, callback) => {
+          if (!isvalidUsername(value)) {
+            callback(new Error('请输入正确的用户名（只能由英文字母组成）'))
+          } else {
+            callback()
+          }
+        }
+        const validatePass = (rule, value, callback) => {
+          if (!isvalidPassword(value)) {
+            callback(new Error('必须包含字母和数字且超过8位'))
+          } else {
+            callback()
+          }
+        }
+        // const validateEmpty = (rule, value, callback) => {
+        //   if (value == null || value == '') {
+        //     callback(new Error('不能为空'))
+        //   } else {
+        //     callback()
+        //   }
+        // }
         return {
                   form: {
                     // code: '1',
                     // operator: '1',
-                    // password: '填写密码',
+                     password: '',
                      post: '选择岗位',
                     // status: '启用',
                     // team:'队伍',
-                    // username: '1',
-                     teamName:'选择队伍',
+                     username: '',
+                     teamName:'选择团队',
                 },
                 posts:[{
                       'id': 0,
@@ -74,7 +96,12 @@
                     // 'status':'status',
                     // 'supervisor':'supervisor',
                     // 'verifyCode':'verifyCode'
-                    }]
+                    }],
+                addRules: {
+                  username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+                  password: [{ required: true, trigger: 'blur', validator: validatePass }]
+                  // post: [{ required: true, trigger: 'blur', validator: validateEmpty }]
+                }
               }
 
         },

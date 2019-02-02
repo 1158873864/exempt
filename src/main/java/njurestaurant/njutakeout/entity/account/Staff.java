@@ -25,7 +25,7 @@ public class Staff {
     private String post;
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User userInfo;
+    private User user;
 
     public Staff() {
     }
@@ -38,7 +38,7 @@ public class Staff {
         this.operator = operator;
         this.status = status;
         this.post = post;
-        this.userInfo = user;
+        this.user = user;
     }
 
     public Staff(String staffName, String team, Date addTime, String verifyCode, String operator, String status, String post) {
@@ -116,10 +116,10 @@ public class Staff {
     }
 
     public User getUser() {
-        return userInfo;
+        return user;
     }
 
     public void setUser(User user) {
-        this.userInfo = user;
+        this.user = user;
     }
 }

@@ -61,12 +61,12 @@ export const asyncRouterMap = [
         component: () => import('@/views/companyManage/announcement/index'),
         meta: { title: '公告管理',role:['公告管理'] }
       },
-      {
-        path: 'moneyReceiveCode',
-        name: 'moneyReceiveCode',
-        component: () => import('@/views/companyManage/moneyReceiveCode/index'),
-        meta: { title: '收款码新增',role:['收款码新增'] }
-      },
+      // {
+      //   path: 'moneyReceiveCode',
+      //   name: 'moneyReceiveCode',
+      //   component: () => import('@/views/companyManage/moneyReceiveCode/index'),
+      //   meta: { title: '收款码新增',role:['收款码新增'] }
+      // },
       {
         path: 'team',
         name: 'team',
@@ -227,6 +227,12 @@ export const asyncRouterMap = [
             component: () => import('@/views/userCenter/agency/agencys/index'),
             meta: { title: '所有代理',role:['所有代理'] }
           },
+          {
+            path: 'peragency',
+            name: 'peragency',
+            component: () => import('@/views/userCenter/agency/peragency/index'),
+            meta: { title: '我是代理',role:['我是代理'] }
+          }
         ]
       },
       {
@@ -241,12 +247,12 @@ export const asyncRouterMap = [
             component: () => import('@/views/userCenter/supplierManage/addSupplier/index'),
             meta: { title: '添加供码用户',role:['添加供码用户'] }
           },
-          {
-            path: 'waitApprovalSup',
-            name: 'waitApprovalSup',  
-            component: () => import('@/views/userCenter/supplierManage/waitApprovalSup/index'),
-            meta: { title: '审批供码用户',role:['审批供码用户'] }
-          },
+          // {
+          //   path: 'waitApprovalSup',
+          //   name: 'waitApprovalSup',  
+          //   component: () => import('@/views/userCenter/supplierManage/waitApprovalSup/index'),
+          //   meta: { title: '审批供码用户',role:['审批供码用户'] }
+          // },
           {
             path: 'suppliers',
             name: 'suppliers',
@@ -263,7 +269,7 @@ export const asyncRouterMap = [
             path: 'persupplier',
             name: 'persupplier',
             component: () => import('@/views/userCenter/supplierManage/Suppliers/perSupplier'),
-            meta: { title: '供码用户', role: ['供码用户'] }
+            meta: { title: '我是供码用户', role: ['我是供码用户'] }
           }    
         ]
       },
@@ -296,7 +302,13 @@ export const asyncRouterMap = [
             name: 'mymerchants',
             component: () => import('@/views/userCenter/merchantManage/myMerchants/index'),
             meta: { title: '我的商户',role:['我的商户'] }
-          }    
+          },
+          {
+            path: 'permerchant',
+            name: 'permerchant',
+            component: () => import('@/views/userCenter/merchantManage/permerchant/index'),
+            meta: { title: '我是商户',role:['我是商户'] }
+          } 
         ]
       },
       {

@@ -33,10 +33,12 @@ public class PersonalCardBlServiceImpl implements PersonalCardBlService {
         if(user == null || user.getId() == 0) {
             throw new WrongIdException();
         }
-        if(personalCardDataService.findPersonalCardByCardNumber(personalCardAddParameters.getNumber()) != null) {
+        if(personalCardDataService.findPersonalCardByAccountWithBank(personalCardAddParameters.getAccountOfBank()) != null) {
             throw new IsExistentException();
         }
-        PersonalCard tmp = personalCardDataService.savePersonalCard(new PersonalCard(personalCardAddParameters.getNumber(), personalCardAddParameters.getName(), personalCardAddParameters.getBank(),personalCardAddParameters.getAccountOfBank(), personalCardAddParameters.getBin(), 0.0, personalCardAddParameters.getStatus(), user));
+        PersonalCard tmp = personalCardDataService.savePersonalCard(new PersonalCard(personalCardAddParameters.getNumber(),
+                personalCardAddParameters.getName(), personalCardAddParameters.getBank(),personalCardAddParameters.getAccountOfBank(),
+                personalCardAddParameters.getBin(), 0.0, personalCardAddParameters.getStatus(), user));
         return new PersonalCardAddResponse(tmp.getId());
     }
 

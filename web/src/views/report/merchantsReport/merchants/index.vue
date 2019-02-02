@@ -49,7 +49,7 @@
             :page-sizes="[10, 20, 30, 40]"
             :page-size="pagesize"
             layout="sizes, prev, pager, next"
-            :total="1000">
+            :total=total>
             </el-pagination>
         </div>
   </div>
@@ -59,10 +59,11 @@
 import Chart from '@/components/Charts/lineMarker';
 import {merchantsReport,getPermerchantReport} from '@/api/report';
 import { getTime,getTimeFormat } from "@/utils/index";
+import store from '../../../../store';
 export default {
-  name: 'LineChart',
-  components: { Chart },
-  data() {
+    name: 'LineChart',
+    components: { Chart },
+    data() {
           return {
               activeNames: ['1'],
               labelPosition: 'right',
@@ -89,16 +90,19 @@ export default {
                 startDate:"",
                 endDate:"",
           }
-      },
-      computed: {
-    filterData() {
-      return this.teams.filter(item => {
-        var reg = new RegExp(this.searchStr, "i");
-        console.log(item.merchantName);
-        return !this.searchStr || reg.test(item.merchantName) || reg.test(item.balance);
-      });
-    }
-  },
+    },
+    computed: {
+        filterData() {
+            return this.teams.filter(item => {
+                var reg = new RegExp(this.searchStr, "i");
+                console.log(item.merchantName);
+                return !this.searchStr || reg.test(item.merchantName) || reg.test(item.balance);
+            });
+        },
+        total(){
+            return this.teams.length;
+        }
+    },
       created(){
           this.getData();
       },
@@ -148,11 +152,22 @@ export default {
                     });
                 }else{
                   if(response.data.length!=0)
-                        this.teams = response.data;
-                    this.teams.forEach(el => {
-                      //  el.orderState = (el.orderState=='WAITING_FOR_PAYING')?'等待支付':'PAID'?'已支付':'失效';
-                       // el.date = getTime(el.date);
-                    });
+                    this.teams = response.data;
+                    var a=[];
+                    if(store.getters.role == 3){
+                        this.teams.forEach(el => {
+                            if(store.getters.name == el.merchantName)
+                                a.push(el);
+                            });
+                        this.teams = a ;
+                    }
+                    if(store.getters.role == 2){
+                        this.teams.forEach(el => {
+                            if(store.getters.uid == el.agentId)
+                                a.push(el);
+                            });
+                        this.teams = a ;
+                    }
                 }
             })
           }

@@ -53,7 +53,7 @@ public class TransactionController {
                 return new ResponseEntity<>(new JSONResponse(200, getQrCodeResponse), HttpStatus.OK);
             }
         } catch (WrongIdException e) {
-            return new ResponseEntity<>(new JSONResponse(10300, new FailedToLoadCodeResponse("failed", "用户id出错。")), HttpStatus.OK);
+            return new ResponseEntity<>(new JSONResponse(10300, new FailedToLoadCodeResponse("failed", "商户名不存在。")), HttpStatus.OK);
         } catch (BlankInputException e) {
             return new ResponseEntity<>(new JSONResponse(10300, new FailedToLoadCodeResponse("failed", "参数错误。")), HttpStatus.OK);
         } catch (IPRiskControlException e){

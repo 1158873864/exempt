@@ -1,12 +1,11 @@
 package njurestaurant.njutakeout.bl.report;
 
-import javafx.application.Platform;
 import njurestaurant.njutakeout.blservice.report.ReportBlService;
+import njurestaurant.njutakeout.data.dao.account.UserDao;
 import njurestaurant.njutakeout.dataservice.account.*;
 import njurestaurant.njutakeout.dataservice.app.AlipayDataService;
 import njurestaurant.njutakeout.dataservice.app.DeviceDataService;
 import njurestaurant.njutakeout.dataservice.company.CompanyCardDataService;
-import njurestaurant.njutakeout.dataservice.company.TeamDataService;
 import njurestaurant.njutakeout.dataservice.order.ChangeOrderDataService;
 import njurestaurant.njutakeout.dataservice.order.PlatformOrderDataService;
 import njurestaurant.njutakeout.dataservice.order.WithdrewOrderDataService;
@@ -16,17 +15,14 @@ import njurestaurant.njutakeout.entity.app.Device;
 import njurestaurant.njutakeout.entity.company.CompanyCard;
 import njurestaurant.njutakeout.entity.order.*;
 import njurestaurant.njutakeout.exception.WrongInputException;
-import njurestaurant.njutakeout.publicdatas.account.SupplierState;
 import njurestaurant.njutakeout.publicdatas.order.OrderState;
 import njurestaurant.njutakeout.publicdatas.order.WithdrewState;
 import njurestaurant.njutakeout.response.report.*;
 import njurestaurant.njutakeout.util.FormatDateTime;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.*;
 
 @Service
@@ -42,9 +38,9 @@ public class ReportBlServiceImpl implements ReportBlService {
     private final DeviceDataService deviceDataService;
     private final PersonalCardDataService personalCardDataService;
     private final CompanyCardDataService companyCardDataService;
-
+    private final UserDao userDao ;
     @Autowired
-    public ReportBlServiceImpl(PlatformOrderDataService platformOrderDataService, WithdrewOrderDataService withdrewOrderDataService, UserDataService userDataService, SupplierDataService supplierDataService, MerchantDataService merchantDataService, AgentDataService agentDataService, DeviceDataService deviceDataService, AlipayDataService alipayDataService, ChangeOrderDataService changeOrderDataService, PersonalCardDataService personalCardDataService, CompanyCardDataService companyCardDataService) {
+    public ReportBlServiceImpl(PlatformOrderDataService platformOrderDataService, WithdrewOrderDataService withdrewOrderDataService, UserDataService userDataService, SupplierDataService supplierDataService, MerchantDataService merchantDataService, AgentDataService agentDataService, DeviceDataService deviceDataService, AlipayDataService alipayDataService, ChangeOrderDataService changeOrderDataService, PersonalCardDataService personalCardDataService, CompanyCardDataService companyCardDataService, UserDao userDao) {
         this.platformOrderDataService = platformOrderDataService;
         this.withdrewOrderDataService = withdrewOrderDataService;
         this.userDataService = userDataService;
@@ -56,6 +52,7 @@ public class ReportBlServiceImpl implements ReportBlService {
         this.changeOrderDataService = changeOrderDataService;
         this.companyCardDataService = companyCardDataService;
         this.personalCardDataService = personalCardDataService;
+        this.userDao = userDao;
     }
 
     /**
@@ -120,7 +117,15 @@ public class ReportBlServiceImpl implements ReportBlService {
                 list.add(new PlatformAnalyse("支付宝", 0));
                 list.add(new PlatformAnalyse("微信", 0));
                 list.add(new PlatformAnalyse("云闪付", 0));
-                MerchantReportResponse merchantReportResponse = new MerchantReportResponse(number, date, merchant.getUser().getUsername(), merchant.getName(), 0.0, 0.0, 0.0, merchant.getWithdrewMoney(), merchant.getBalance(), 0.0, 0.0, list, 0, 0);
+                MerchantReportResponse merchantReportResponse = null;
+                if (userDao.findUserById(merchant.getApplyId()).getRole() == 1)
+                merchantReportResponse = new MerchantReportResponse(number, date, merchant.getUser().getUsername(),
+                        merchant.getName(), 0.0, 0.0, 0.0, merchant.getWithdrewMoney(),
+                        merchant.getBalance(), 0.0, 0.0, list, 0, 0, 0);
+                if (userDao.findUserById(merchant.getApplyId()).getRole() == 2)
+                merchantReportResponse = new MerchantReportResponse(number, date, merchant.getUser().getUsername(),
+                        merchant.getName(), 0.0, 0.0, 0.0, merchant.getWithdrewMoney(),
+                        merchant.getBalance(), 0.0, 0.0, list, 0, 0, merchant.getApplyId());
                 merchantReportResponseMap.put(merchant.getUser().getId(), merchantReportResponse);
                 merchantMap.put(merchant.getUser().getId(), merchant);
             }

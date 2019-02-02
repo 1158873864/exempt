@@ -5,7 +5,7 @@
             :data="filterData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             border
             style="width: 100%">
-            <el-table-column prop="orderNumber" label="订单编号"  align="center"></el-table-column>
+            <el-table-column prop="orderNumber" label="订单编号"  align="center" min-width="100%"></el-table-column>
             <el-table-column prop="money" label="订单金额"  align="center"></el-table-column>
             <el-table-column prop="paymoney" label="成交金额"  align="center"></el-table-column>
             <el-table-column prop="rechargeId" label="充值方编号"  align="center"></el-table-column>
@@ -39,7 +39,7 @@
             :page-sizes="[10, 20, 30, 40]"
             :page-size="pagesize"
             layout="sizes, prev, pager, next"
-            :total="1000">
+            :total=total>
             </el-pagination>
          </div>
              <el-dialog title="补单" :visible.sync="dialogFormVisible">
@@ -125,6 +125,9 @@ export default {
       else
           return false;
     },
+    total(){
+      return this.teams.length;
+    }
     // editable(index,row){
     //   // if(row.orderState == 'WAITING_FOR_PAYING')
     //   //   return true;

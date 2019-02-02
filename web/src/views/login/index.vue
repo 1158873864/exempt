@@ -1,17 +1,18 @@
-<template>
-  <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
      <!-- <vue-recaptcha sitekey="6LdRB4sUAAAAAHGqNXwexwX7PpXiof_Lz0YHwQLS">
     <button>Click me</button>
   </vue-recaptcha> -->
+
+<template>
+  <div class="login-container">
+    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
       <h3 class="title">{{ title }}</h3>
-      <el-form-item prop="用户名">
+      <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
         <el-input v-model="loginForm.username" name="username" type="text" auto-complete="on" placeholder="用户名" />
       </el-form-item>
-      <el-form-item prop="密码">
+      <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
@@ -34,7 +35,9 @@
       <div class="tips">
         <span style="margin-right:20px;">请输入账号密码</span>
       </div>
-          <div>
+    </el-form>
+  </div>
+</template>
         <!-- <vue-recaptcha
           ref="recaptcha"
           @verify="onVerify"
@@ -42,17 +45,13 @@
           :sitekey="sitekey">
         </vue-recaptcha> -->
         <!-- <button @click="resetRecaptcha"> Reset ReCAPTCHA </button> -->
-      </div>
-    </el-form>
-  </div>
-</template>
 <script>
   grecaptcha.ready(function() {
       grecaptcha.execute('6LdRB4sUAAAAAHGqNXwexwX7PpXiof_Lz0YHwQLS', {action: 'homepage'});
   });
   </script>
 <script>
-import { isvalidUsername } from '@/utils/validate'
+import { isvalidUsername,isvalidPassword } from '@/utils/validate'
 import { login } from '@/api/login'
 import store from '../../store'
 import {titleList, titleUpdate} from '@/api/company'
@@ -65,6 +64,7 @@ export default {
   components: { VueRecaptcha },
   data() {
     const validateUsername = (rule, value, callback) => {
+      console.log(value)
       if (!isvalidUsername(value)) {
         callback(new Error('请输入正确的用户名'))
       } else {
@@ -72,8 +72,8 @@ export default {
       }
     }
     const validatePass = (rule, value, callback) => {
-      if (value.length < 8) {
-        callback(new Error('密码不能小于8位'))
+      if (!isvalidPassword(value)) {
+        callback(new Error('必须包含字母和数字且超过8位'))
       } else {
         callback()
       }
@@ -84,7 +84,7 @@ export default {
         password: ''
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur' }],
+        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePass }]
       },
       loading: false,
@@ -123,10 +123,10 @@ export default {
     },
     handleLogin() {
     //  console.log("dfdfsffd1")
-      this.$refs.loginForm.validate(valid => {
-        //console.log("dfdfsffd2")
-       // this.$router.push({ path: this.redirect || '/' })
-      //  console.log("dfdfsffd3")
+      this.$refs.loginForm.validate(valid => {//如果表单为false，不会进入validate函数内部，而是直接返回。
+        // this.$router.push({ path: this.redirect || '/' })
+        console.log("23123123")
+        console.log(valid)
         if (valid) {
          // console.log("dfdfsffd4")
           this.loading = true ;
@@ -175,11 +175,16 @@ export default {
     },
  
    validate(event) {
+    console.log("1212s");
     event.preventDefault();
+    console.log("12121");
     if (!document.getElementById('field').value) {
+      console.log("1212w");
       alert("You must add text to the required field");
     } else {
+      console.log("1212d");
       grecaptcha.execute();
+      console.log("document.getElementById('field').value");
     }
   },
  

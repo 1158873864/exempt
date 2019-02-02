@@ -114,7 +114,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
         if (Double.parseDouble(getQrCodeParameters.getMoney()) <= money_threshold) {
             throw new TooLittleMoneyException();
         }
-        Integer id = StringParseUtil.StringToInt(getQrCodeParameters.getMerchantId());
+       // Integer id = StringParseUtil.StringToInt(getQrCodeParameters.getMerchantName());
         if (StringParseUtil.StringToInt(getQrCodeParameters.getTime()) == null || StringParseUtil.StringToDouble(getQrCodeParameters.getMoney()) == null) {
             throw new BlankInputException();
         }
@@ -174,10 +174,10 @@ public class TransactionBlServiceImpl implements TransactionBlService {
 
         }
 
-        if (id == null) {
-            throw new WrongIdException();
+        if (StringUtils.isBlank(getQrCodeParameters.getMerchantName())) {
+            throw new BlankInputException();
         } else {
-            User user = userDataService.getUserById(id);
+            User user = userDataService.getUserByUsername(getQrCodeParameters.getMerchantName());
             if (user == null || user.getRole() != 3) {
                 throw new WrongIdException();
             } else {

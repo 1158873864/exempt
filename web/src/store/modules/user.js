@@ -77,6 +77,8 @@ const user = {
           if (data.permissions && data.permissions.length > 0) { // 验证返回的roles是否是一个非空数组
             roles = roles.concat(data.permissions)
             commit('SET_ROLES', roles)
+            
+            commit('SET_NAME', data.info.user.username)
           } else {
             reject('未获取到角色')
           }

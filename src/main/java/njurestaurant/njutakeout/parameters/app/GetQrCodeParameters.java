@@ -1,7 +1,5 @@
 package njurestaurant.njutakeout.parameters.app;
 
-import java.util.Date;
-
 /**
  * web端请求二维码接口
  */
@@ -14,18 +12,18 @@ public class GetQrCodeParameters {
     /*待付款金额*/
     private String money;
     private String memo;
-    private String merchantId;
+    private String merchantName;
     private String time;
     private String sign;
     /*选择收款的二维码*/
     private String type;
 
-    public GetQrCodeParameters(String ip, String id, String money, String memo, String merchantId, String time, String sign, String type) {
+    public GetQrCodeParameters(String ip, String id, String money, String memo, String merchantName, String time, String sign, String type) {
         this.ip = ip;
         this.id = id;
         this.money = money;
         this.memo = memo;
-        this.merchantId = merchantId;
+        this.merchantName = merchantName;
         this.time = time;
         this.sign = sign;
         this.type = type;
@@ -39,12 +37,12 @@ public class GetQrCodeParameters {
         this.type = type;
     }
 
-    public String getMerchantId() {
-        return merchantId;
+    public String getMerchantName() {
+        return merchantName;
     }
 
-    public void setMerchantId(String merchantId) {
-        this.merchantId = merchantId;
+    public void setMerchantName(String merchantName) {
+        this.merchantName = merchantName;
     }
 
     public String getIp() {

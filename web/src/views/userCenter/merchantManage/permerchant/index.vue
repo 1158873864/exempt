@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <div>所有商户</div>
+    <div>我是商户</div>
      <el-input v-model="searchStr" suffix-icon="el-icon-search" placeholder="请输入搜索内容"></el-input>
         <el-table
         :data="filterData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
@@ -8,7 +8,7 @@
         <!-- <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column> -->
         <el-table-column prop="name" label="商户名"  align="center"></el-table-column>
         <el-table-column prop="alipayp" label="支付宝点位"  align="center"></el-table-column>
-        <el-table-column prop="wechatp" label="微信号点位"  align="center"></el-table-column>
+        <el-table-column prop="wechatp" label="微信点位"  align="center"></el-table-column>
         <el-table-column prop="priority" label="等级"  align="center"></el-table-column>
         <el-table-column prop="balance" label="余额"  align="center"></el-table-column>
         <el-table-column prop="applyId" label="操作上级id"  align="center"></el-table-column>
@@ -52,7 +52,7 @@
                 <el-form-item label="密码" prop="password">
                     <el-input v-model="newRow.user.password" type="password" placeholder="密码" style="width:90%;"></el-input>
                 </el-form-item>
-                <el-form-item label="状态" >
+                <!-- <el-form-item label="状态" >
                     <el-select v-model="newRow.user.status" placeholder="启用" style="width:20%;">
                     <el-option label="启用" value="启用"></el-option>
                     <el-option label="停用" value="停用"></el-option>
@@ -73,7 +73,7 @@
                 </el-form-item>
                 <el-form-item label="微信点位">
                     <el-input v-model="newRow.wechat" placeholder="微信点位" style="width:10%;"></el-input>%
-                </el-form-item>
+                </el-form-item> -->
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -108,37 +108,37 @@ import {getTime} from '@/utils/index'
             }
             return {
                 teams:[{
-                    "addTime": "2019-01-17T16:37:02.184Z",	//申请时间
-                    "alipay": 0,	
-                    "applyId": 0,	//申请人id
-                    "approvalTime": "2019-01-17T16:37:02.184Z",	//审批时间
-                    "approverId": 0,	//审批人id
-                    "balance": 0,
-                    "id": 0,
-                    "name": "string",
-                    "priority": 0,	//用户星级
-                    "status": "启用",	//WAITING 等待审批/PASS 审批通过/ REJECT 审批不通过
-                    "user": {
-                        "avatarUrl": "string",
-                        "cards": [
-                        {
-                            "accountWithBank": "string",
-                            "bank": "string",
-                            "bin": "string",
-                            "cardNumber": "string",
-                            "id": 0,
-                            "name": "string",
-                            "status": "string"
-                        }
-                        ],
-                        "id": 0,
-                        "password": "string",
-                        "role": 0,
-                        "tableId": 0,
-                        "username": "string"
-                    },
-                    "verifyCode": "string",
-                    "wechat": 0
+                    // "addTime": "2019-01-17T16:37:02.184Z",	//申请时间
+                    // "alipay": 0,	
+                    // "applyId": 0,	//申请人id
+                    // "approvalTime": "2019-01-17T16:37:02.184Z",	//审批时间
+                    // "approverId": 0,	//审批人id
+                    // "balance": 0,
+                    // "id": 0,
+                    // "name": "string",
+                    // "priority": 0,	//用户星级
+                    // "status": "启用",	//WAITING 等待审批/PASS 审批通过/ REJECT 审批不通过
+                    // "user": {
+                    //     "avatarUrl": "string",
+                    //     "cards": [
+                    //     {
+                    //         "accountWithBank": "string",
+                    //         "bank": "string",
+                    //         "bin": "string",
+                    //         "cardNumber": "string",
+                    //         "id": 0,
+                    //         "name": "string",
+                    //         "status": "string"
+                    //     }
+                    //     ],
+                    //     "id": 0,
+                    //     "password": "string",
+                    //     "role": 0,
+                    //     "tableId": 0,
+                    //     "username": "string"
+                    // },
+                    // "verifyCode": "string",
+                    // "wechat": 0
                     }
                 ],
                 currentPage:1,
@@ -259,13 +259,18 @@ import {getTime} from '@/utils/index'
                         });
                     }else{
                        this.teams = response.data;
-                       this.teams.forEach(el => {
-                        //    el.statusp =el.status=='WAITING'?'等待审批':'PASS'?'审批通过':'审批不通过';
-                           el.wechatp = el.wechat+'%';
-                           el.alipayp = el.alipay+'%';
-                           el.addTimep = getTime(el.addTime)
-                       });
-                      
+                       var a = [];
+                       if(store.getters.role == 3){
+                            this.teams.forEach(el => {
+                                if(store.getters.uid == el.user.id){
+                                    el.wechatp = el.wechat+'%';
+                                    el.alipayp = el.alipay+'%';
+                                    el.addTimep = getTime(el.addTime)
+                                    a.push(el);
+                                }
+                            });
+                            this.teams = a ;
+                       }
                     }
                 })
             },

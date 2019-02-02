@@ -53,7 +53,7 @@
             :page-sizes="[10, 20, 30, 40]"
             :page-size="pagesize"
             layout="sizes, prev, pager, next"
-            :total="1000">
+            :total=total>
             </el-pagination>
         </div>
 </div>
@@ -95,6 +95,11 @@
                 //window.innerHeight:浏览器的可用高度
                 //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
                 //后面的50：根据需求空出的高度，自行调整
+            },
+            computed:{
+                total(){
+                    return this.teams.length;
+                }
             },
             created(){
                 this.getData();

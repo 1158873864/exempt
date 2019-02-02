@@ -13,7 +13,7 @@
      <el-button type="primary" @click="dateSearch">查询</el-button>
      <el-table
             :data="filterData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-            height="500"
+            height="600"
             border
             style="width: 100%">
             <el-table-column prop="number" label="编号"  align="center"></el-table-column>
@@ -23,13 +23,13 @@
             <el-table-column prop="wechat" label="微信点位"  align="center"></el-table-column> -->
             <!-- <el-table-column prop="depositList" label="depositList"  align="center"></el-table-column> -->
             <el-table-column prop="withdrewed" label="已提现"  align="center"></el-table-column>
-            <el-table-column prop="balance" label="余额"  align="center"></el-table-column>
-             <el-table-column prop="date" label="日期"  align="center"></el-table-column>
+            <el-table-column prop="balance" label="余额"  align="center"></el-table-column>    
             <el-table-column prop="depositList" label="平台分析"  align="center">
                 <template slot-scope="scope">
                     <el-tag :type="device.type?'success':'info'" v-for="device in scope.row.depositList" :key="device.type">{{ device.type }} : {{ device.money }}</el-tag>
                 </template>
             </el-table-column>
+            <el-table-column prop="date" label="日期"  align="center"></el-table-column>
             <!-- <el-table-column prop="platformAnalyseList" label="platformAnalyseList"  align="center"></el-table-column> -->
             <!-- <el-table-column prop="successOrders" label="成功订单数"  align="center"></el-table-column> -->
             <!-- <el-table-column prop="totalOrders" label="总订单数"  align="center"></el-table-column> -->
@@ -52,7 +52,7 @@
             :page-sizes="[10, 20, 30, 40]"
             :page-size="pagesize"
             layout="sizes, prev, pager, next"
-            :total="1000">
+            :total=total>
             </el-pagination>
         </div>
   </div>
@@ -62,6 +62,7 @@
 import Chart from '@/components/Charts/lineMarker'
 import { agencyReport,getPermerchantReport} from '@/api/report'
 import { getTime,getTimeFormat } from "@/utils/index";
+import store from '../../../store';
 export default {
   name: 'LineChart',
   components: { Chart },
@@ -95,13 +96,16 @@ export default {
                 endDate:""
           }
       },
-         computed: {
+    computed: {
     filterData() {
       return this.teams.filter(item => {
         var reg = new RegExp(this.searchStr, "i");
         console.log(item.username);
         return !this.searchStr || reg.test(item.username) || reg.test(item.balance);
       });
+    },
+    total(){
+        return this.teams.length;
     }
   },
       created(){
@@ -154,9 +158,14 @@ export default {
                 }else{
                   if(response.data.length!=0)
                     this.teams = response.data;
-                    this.teams.forEach(el => {
-                        el.orderState = (el.orderState=='WAITING_FOR_PAYING')?'等待支付':'PAID'?'已支付':'失效';
-                    });
+                    var a=[];
+                    if(store.getters.role == 2){
+                        this.teams.forEach(el => {
+                            if(store.getters.name == el.agentName)
+                                a.push(el);
+                            });
+                        this.teams = a ;
+                    }
                     // this.teams.alipay = this.teams.alipay+'%'
                     // this.teams.alipay = this.teams.alipay+'%'
                 }

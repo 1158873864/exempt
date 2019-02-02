@@ -1,11 +1,11 @@
 <template>
   <div class="app-container">
-    <el-form ref="form" :model="form" label-width="100px">
-      <el-form-item label="用户名">
-        <el-input v-model="form.username" style="width: 30%;" type="text" onkeyup="this.value=this.value.replace(/[^a-zA-Z]/g,'')" placeholder="只能输入英文字母"></el-input>
+    <el-form ref="form" :model="form" label-width="100px" :rules="addRules">
+      <el-form-item label="用户名" prop="username">
+        <el-input v-model="form.username" style="width: 30%;" type="text"  placeholder="用户名"></el-input>
       </el-form-item>
-      <el-form-item label="密码">
-        <el-input v-model="form.password" style="width: 30%;" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" placeholder="密码"></el-input>
+      <el-form-item label="密码" prop="password">
+        <el-input v-model="form.password" style="width: 30%;"  placeholder="密码"></el-input>
       </el-form-item>
       <el-form-item label="等级">
         <!-- <el-input v-model="form.level" type="number" min="1"  style="width: 30%;"></el-input> -->
@@ -44,10 +44,24 @@
 import { addMerchant } from "@/api/role";
 import Form from "../../../../components/form/index";
 import store from "../../../../store";
-
+import { isvalidUsername,isvalidPassword } from '@/utils/validate';
 export default {
   name: "index",
   data() {
+    const validateUsername = (rule, value, callback) => {
+      if (!isvalidUsername(value)) {
+        callback(new Error('请输入正确的用户名（只能由英文字母组成）'))
+      } else {
+        callback()
+      }
+    }
+    const validatePass = (rule, value, callback) => {
+      if (!isvalidPassword(value)) {
+        callback(new Error('必须包含字母和数字且超过8位'))  
+      } else {
+        callback()
+      }
+    }
     return {
       form: {
         alipay: "",
@@ -78,7 +92,12 @@ export default {
           value: "5",
           label: "5"
         }
-      ]
+      ],
+      addRules: {
+        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        password: [{ required: true, trigger: 'blur', validator: validatePass }]
+        // post: [{ required: true, trigger: 'blur', validator: validateEmpty }]
+      }
     };
   },
 

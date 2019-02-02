@@ -20,8 +20,8 @@
       <template slot-scope="{row}">
         <el-button type="primary" size="small" v-if="row.state=='WAITING'">等待处理</el-button>
         <el-button type="warning" size="small" v-else-if="row.state=='DEALING'">正在处理</el-button>
-        <el-button type="success" size="small" v-else-if="row.state=='SUCCESS'">成功</el-button>
-        <el-button type="danger" size="small" v-else-if="row.state=='SUCCESS'">失败</el-button>
+        <el-button type="success" size="small" v-else-if="row.state=='SUCCESS'">提现成功</el-button>
+        <el-button type="danger" size="small" v-else-if="row.state=='FAILED'">提现失败</el-button>
         <el-tag type="warning" v-if="row.state=='SUCCESS'">{{ row.operateTime }}</el-tag>
       </template>
     </el-table-column>
@@ -34,7 +34,7 @@
         :page-sizes="[10, 20, 30, 40]"
         :page-size="pagesize"
         layout="sizes, prev, pager, next"
-        :total="1000"
+        :total=total
       ></el-pagination>
     </div>
   </div>
@@ -79,6 +79,9 @@ export default {
           reg.test(item.money)
         );
       });
+    },
+    total(){
+      return this.teams.length;
     }
   },
   created() {

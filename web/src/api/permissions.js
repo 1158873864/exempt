@@ -6,12 +6,6 @@ export function getTreePermissions(){
             title: '公告管理',
         },
         {
-            title: '角色管理',
-        },
-        {
-            title: '收款码新增',
-        },
-        {
             title: '团队管理' ,
             children: [
                 {
@@ -93,6 +87,9 @@ export function getTreePermissions(){
                 },
                 {
                     title: '所有代理',
+                },
+                {
+                    title: '我是代理',
                 }
             ]
         },
@@ -102,14 +99,14 @@ export function getTreePermissions(){
                 {
                     title: '添加供码用户',
                 },
-                {
-                    title: '审批供码用户',
-                },
+                // {
+                //     title: '审批供码用户',
+                // },
                 {
                     title: '所有供码用户',
                 },
                 {
-                    title: '供码用户',
+                    title: '我是供码用户',
                 }
             ]
         },
@@ -124,6 +121,9 @@ export function getTreePermissions(){
                 },
                 {
                     title: '所有商户',
+                },
+                {
+                    title: '我是商户',
                 },
                 {
                     title: '我的商户',
@@ -189,9 +189,9 @@ export function getTreePermissions(){
         {
             title: '订单明细',
         },
-        {
-            title: '商户提现订单',
-        },
+        // {
+        //     title: '商户提现订单',
+        // },
         {
             title: '内部码帐变订单',
         },

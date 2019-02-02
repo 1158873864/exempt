@@ -25,7 +25,7 @@
       <div class="text item">{{ '等 &#x3000;级: ' + info.priority }}</div>
       <div class="text item" v-if="info.codeType == 'TPASS' ">码类型: 转账通码</div>
       <div class="text item" v-if="info.codeType == 'TSOLID' ">码类型: 转账固码</div>
-      <div class="text item" v-if="info.codeType == 'RPASSOFF' ">码类型: 线收款通码</div>
+      <div class="text item" v-if="info.codeType == 'RPASSOFF' ">码类型: 离线收款通码</div>
       <div class="text item" v-if="info.codeType == 'RPASSQR' ">码类型: 在线收款通码</div>
       <div class="text item" v-if="info.codeType == 'RSOLID' ">码类型:' 收款固码</div>
     </el-card>
@@ -133,7 +133,7 @@ export default {
       newRowIndex: 1,
       dialogFormVisible: false,
       newRow: {
-        cardId: 0,
+        cardId: "",
         id: 0,
         money: 0,
         type: "string"

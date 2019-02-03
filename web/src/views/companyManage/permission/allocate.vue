@@ -75,23 +75,55 @@ import {getIds} from '@/utils/treeids'
                         // "post": "职位",
                         // "permission": "权限",
                 }],
-                expanded:[]
+                expanded:[],
+                heads:[]
             }
         },
         created(){
             this.treepermissions = getTreePermissions();
-            console.log(this.treepermissions)
+            var a =[]
+            this.treepermissions.forEach(el1 => {
+                     if(el1.children){
+                        //  a.push(el1.title)
+                         el1.children.forEach(el2=>{
+                             if(el2.children){
+                                 el2.children.forEach(el3=>{
+                                     if(el3.children){
+
+                                     }else{
+                                         a.push(el3.title)
+                                     }
+                                 })
+                                 }else{
+                                 a.push(el2.title)
+                             }
+                         })
+
+                     }else{
+                         a.push(el1.title)
+                     }
+                 });
+            console.log(a)
+            this.heads = a
+            console.log(this.heads)
             this.getPost();
         },
         methods: {
-             setCheckedNodes(nodes) {
+            intersect(a,b){
+                let set1 = new Set(a),set2 = new Set(b);
+                return [...new Set([...set1].filter( x => set2.has(x)))];
+            },
+            setCheckedNodes(nodes) {
+                 console.log(nodes)
                  this.expanded = nodes;
                  var a = []
-                 nodes.forEach(element => {
-                     var c = {}
-                     c.title = element;
-                     a.push(c)
-                 });
+                 var no = this.intersect(nodes,this.heads)
+                no.forEach(element => {
+                    var c = {}
+                    c.title = element;
+                    a.push(c)
+                });
+                 console.log(a)
                 this.$refs.tree.setCheckedNodes(a);
             },
             getTeams(){

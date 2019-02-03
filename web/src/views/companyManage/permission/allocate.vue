@@ -8,6 +8,7 @@
                     v-for="item in posts"
                     :key="item.id"
                     :label="item.post"
+                    node-key="id"
                     :value="item.post">
                     </el-option>
             </el-select >
@@ -35,7 +36,8 @@
                     show-checkbox
                     node-key="title"
                     ref="tree"
-                   
+                    :default-expanded-keys="expanded"
+
                    >
                 </el-tree>
             <el-form-item>
@@ -72,7 +74,8 @@ import {getIds} from '@/utils/treeids'
                 teams:[{
                         // "post": "职位",
                         // "permission": "权限",
-                }]
+                }],
+                expanded:[]
             }
         },
         created(){
@@ -81,6 +84,16 @@ import {getIds} from '@/utils/treeids'
             this.getPost();
         },
         methods: {
+             setCheckedNodes(nodes) {
+                 this.expanded = nodes;
+                 var a = []
+                 nodes.forEach(element => {
+                     var c = {}
+                     c.title = element;
+                     a.push(c)
+                 });
+                this.$refs.tree.setCheckedNodes(a);
+            },
             getTeams(){
                     checkSinglePermission(this.permissionaddParameters.post).then(response => {
                             // console.log(response.data.infoCode)
@@ -102,6 +115,7 @@ import {getIds} from '@/utils/treeids'
                                 a.permission = response.data.permission.join(',');
                                 a.post = response.data.post;
                                 this.teams = [a]
+                                this.setCheckedNodes(response.data.permission);
                                 console.log(this.teams,'ppp;')
                             }
                             resolve()

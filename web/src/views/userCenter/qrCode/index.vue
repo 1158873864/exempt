@@ -21,7 +21,7 @@
               <el-input v-model="formparameters.merchantName" style="width: 30%;"></el-input>
             </el-form-item>
             <el-form-item>
-                <el-button type="primary" @click="getCode">获取二维码</el-button>
+                <el-button type="primary" @click="getCode"  :disabled="isdisabled">获取二维码</el-button>
                 <!-- <el-button>取消</el-button> -->
             </el-form-item>
                 <el-form-item>
@@ -55,7 +55,8 @@ import config from '../../../../config'
                    },
                    urlBase:"http://qr.liantu.com/api.php?text=",
                    showqrcodeurl:'alipays://platformapi/startapp?appId=20000123%26actionType=scan%26biz_data={"s": "money","u":"2088022126490523","a":"0.1","m":"11547555613680009"}',
-                   img_src:''
+                   img_src:'',
+                   isdisabled:false
                 }
             },
             created(){
@@ -68,10 +69,11 @@ import config from '../../../../config'
             },
             methods:{
                 getCode(){
+                    this.isdisabled = true ;
                      this.formparameters.time = Date.parse(new Date())/1000;
                     qrCodeGet(this.formparameters.id, this.formparameters.ip, this.formparameters.memo, this.formparameters.merchantName, this.formparameters.money, this.formparameters.sign, this.formparameters.time,this.formparameters.type ).then(res=>{
                         // console.log(res)
-                         if(res.code!=200){
+                        if(res.code!=200){
                             this.$message({
                                 message: res.data.reason,
                                 type: 'warning'
@@ -80,6 +82,7 @@ import config from '../../../../config'
                             this.img_src = this.urlBase + this.BASE_API + res.data.url +"?orderId="+res.data.orderId
                             // console.log(this.img_src)
                         }
+                        this.isdisabled = false ;
                     })
                 },
             }

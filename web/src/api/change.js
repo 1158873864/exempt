@@ -25,7 +25,7 @@ export function P2Ccard(cardNumber_in, cardNumber_out, money, operateId) {
     })
 }
 
-export function qrcode(cardNumber, loginId, money, operateId) {
+export function qrcode() {
     return request({
         url: '/internalaccountchange/qrcode',
         method: 'post',

@@ -76,7 +76,7 @@
 </template>
 
 <script>
-import {suppliersGet, supplierUpdate , deviceUpdate} from "@/api/role";
+import {suppliersGet, supplierUpdate , deviceUpdate } from "@/api/role";
 import { isvalidUsername,isvalidPassword } from '@/utils/validate' 
 import store from '../../../../store'
   export default {
@@ -168,6 +168,7 @@ import store from '../../../../store'
               message: "设备启用成功",
               type: "success"
             });
+             this.getTeams();
           }
         });
       },
@@ -187,6 +188,7 @@ import store from '../../../../store'
               message: "设备停用成功",
               type: "success"
             });
+              this.getTeams()
           }
         });
       },
@@ -268,7 +270,7 @@ import store from '../../../../store'
                             //el.devices = [{imei:"123",online:1},{imei:"456",online:0}]
                             el.devices.forEach(de=>{
                                 console.log(de.imei)
-                                de.device_team = de.imei +' '+ (de.online?'在线':'离线');
+                                de.device_team = de.imei +'\xa0\xa0\xa0\xa0'+ (de.online?'在线':'离线')+'\xa0\xa0\xa0\xa0'+'已'+de.status;
                             })
                             console.log(el.user.id,store.getters.uid)
                             if(el.user.id == store.getters.uid){

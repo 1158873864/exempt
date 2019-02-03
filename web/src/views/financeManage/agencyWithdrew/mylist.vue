@@ -35,6 +35,14 @@
                     <el-tag v-if="scope.row.state=='DEALING'" type="warning">等待处理</el-tag>
                 </template>
             </el-table-column>
+            <el-table-column label="备注" align="center" min-width="100%">
+                <template scope="scope">
+                    <el-button size="small" type="primary" align="center"
+                            @click="addMemo(scope.row)" >{{memo}}
+                    </el-button> 
+
+                </template>
+            </el-table-column>
             <el-table-column label="操作" align="center">
                 <template scope="scope">
                     <el-button size="small" type="success" align="center"
@@ -58,6 +66,17 @@
             :total=total>
             </el-pagination>
         </div>
+        <el-dialog title="添加备注信息" :visible.sync="dialogFormVisible">
+            <el-form :model="newRow" label-width="13%">
+                <el-form-item label="备注：">
+                    <el-input v-model="newRow.memo" placeholder="备注" style="width:70%;"></el-input>
+                </el-form-item>
+            </el-form>
+             <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="update">确 定</el-button>
+            </div>
+        </el-dialog>
 </div>
 
 </template>
@@ -88,8 +107,13 @@
                         }
                         }
                     ],
+                    newRow:{
+                        
+                    },
+                    memo:"添加备注",
                     currentPage:1,
-                    pagesize:10
+                    pagesize:10,
+                    dialogFormVisible: false,
                 }
             },
             mounted:function(){
@@ -107,6 +131,15 @@
                 this.getData();
             },
             methods: {
+                
+                addMemo(row){
+                    this.dialogFormVisible = true;
+                    this.newRow = row;
+                },
+                update(){
+                    this.memo = this.newRow.memo;
+                    this.dialogFormVisible = false;
+                },
                 getWithdrew(id,memo,state){
                     withdrewDeal(id,memo,store.getters.uid,state).then(response=>{
                         console.log(response)

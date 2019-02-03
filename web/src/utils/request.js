@@ -41,7 +41,14 @@ service.interceptors.response.use(
         })
         console.log("123asdad")
       }
-
+      if(response.data.code == 1010){
+        Message({
+          message: "该账户已停用",
+          type: 'error',
+          duration: 3 * 1000
+        })
+        console.log("123asdad")
+      }
       // Message({
       //   message: res.message,
       //   type: 'error',

@@ -35,16 +35,13 @@
                     <el-tag v-if="scope.row.state=='DEALING'" type="warning">等待处理</el-tag>
                 </template>
             </el-table-column>
-            <el-table-column label="备注" align="center" min-width="100%">
-                <template scope="scope">
-                    <el-button size="small" type="primary" align="center"
-                            @click="addMemo(scope.row)" >{{memo}}
-                    </el-button> 
-
-                </template>
+            <el-table-column prop="memo" label="备注" align="center" min-width="100%">
             </el-table-column>
             <el-table-column label="操作" align="center">
                 <template scope="scope">
+                    <el-button size="small" type="primary" align="center"
+                            @click="addMemo(scope.row)">添加备注
+                    </el-button> 
                     <el-button size="small" type="success" align="center"
                             @click="getWithdrew(scope.row.id,scope.row.memo,'SUCCESS')">通过
                     </el-button>    
@@ -73,7 +70,7 @@
                 </el-form-item>
             </el-form>
              <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button @click="cancel">取 消</el-button>
                 <el-button type="primary" @click="update">确 定</el-button>
             </div>
         </el-dialog>
@@ -91,13 +88,14 @@
                     activeNames: ['1'],
                     labelPosition: 'right',
                     teams:[{
+                      //  memo:"",
                         "id": 1,
                         "cardNumber": "string",
                         "name": "string",
                         "bank": "string",
                         "accountWithBank": "string",
                         "bin": "string",
-                        "status": "string",
+                        "status": "string", 
                         "user": {
                             "id": 2,
                             "username": "string",
@@ -108,9 +106,9 @@
                         }
                     ],
                     newRow:{
-                        
+                       // memo:""
                     },
-                    memo:"添加备注",
+                    memop:"",
                     currentPage:1,
                     pagesize:10,
                     dialogFormVisible: false,
@@ -128,17 +126,22 @@
                 }
             },
             created(){
-                this.getData();
+                this.getTeams();
             },
             methods: {
                 
                 addMemo(row){
                     this.dialogFormVisible = true;
                     this.newRow = row;
+                    this.newRow.memo = "";
                 },
                 update(){
-                    this.memo = this.newRow.memo;
                     this.dialogFormVisible = false;
+                    this.memop=this.newRow.memo;
+                },
+                cancel(){
+                    this.dialogFormVisible = false;
+                    this.newRow.memo="";
                 },
                 getWithdrew(id,memo,state){
                     withdrewDeal(id,memo,store.getters.uid,state).then(response=>{

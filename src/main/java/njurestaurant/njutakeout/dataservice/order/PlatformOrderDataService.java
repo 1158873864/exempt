@@ -32,5 +32,7 @@ public interface PlatformOrderDataService {
 
     List<PlatformOrder> findByImeiAndCodeType(String imei , CodeType codeType);
 
-    PlatformOrder findByImeiAndStateAndCodeType(String imei, OrderState orderState,CodeType codeType);
+    List<PlatformOrder>  findByImeiAndStateAndCodeType(String imei, OrderState orderState,CodeType codeType);
+
+    PlatformOrder findByImeiAndStateAndCodeTypeAndMoney(String imei, OrderState orderState,CodeType codeType,double money);
 }

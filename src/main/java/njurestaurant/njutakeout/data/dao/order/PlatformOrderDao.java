@@ -23,6 +23,7 @@ public interface PlatformOrderDao extends JpaRepository<PlatformOrder, Integer> 
 
     List<PlatformOrder> findPlatformOrderByImeiAndCodetype(String imei, CodeType codeType);
 
-    PlatformOrder findPlatformOrderByImeiAndStateAndCodetype(String imei, OrderState state,CodeType codeType);
+    PlatformOrder findPlatformOrderByImeiAndStateAndCodetypeAndMoney(String imei, OrderState state,CodeType codeType,double money);
 
+    List<PlatformOrder>  findPlatformOrderByImeiAndStateAndCodetype(String imei, OrderState state,CodeType codeType);
 }

@@ -124,7 +124,7 @@ export default {
     handleLogin() {
     //  console.log("dfdfsffd1")
       this.$refs.loginForm.validate(valid => {//如果表单为false，不会进入validate函数内部，而是直接返回。
-        // this.$router.push({ path: this.redirect || '/' })
+        this.$router.push({ path: this.redirect || '/' })
         console.log("23123123")
         console.log(valid)
         if (valid) {

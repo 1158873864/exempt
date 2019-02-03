@@ -208,7 +208,7 @@ public class UserController {
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             User user = new User(merchantAddParameters.getUsername(), encoder.encode(merchantAddParameters.getPassword()), 3, new ArrayList<>());
-            Merchant merchant = new Merchant(merchantAddParameters.getAlipay(), merchantAddParameters.getWechat(), 0, "启用", new Date(), merchantAddParameters.getUsername(), merchantAddParameters.getApplyId(), user, merchantAddParameters.getLevel());
+            Merchant merchant = new Merchant(merchantAddParameters.getAlipay(), merchantAddParameters.getWechat(), 0, merchantAddParameters.getStatus(), new Date(), merchantAddParameters.getUsername(), merchantAddParameters.getApplyId(), user, merchantAddParameters.getLevel());
             if (userDataService.getUserById(merchantAddParameters.getApplyId()).getRole() == 2)
                 merchant.setStatus("停用");//代理商新增商户需要等待管理员审批，所以账号暂时不可用
             MerchantAddResponse merchantAddResponse = merchantBlService.addMerchant(merchant);
@@ -233,7 +233,7 @@ public class UserController {
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             User user = new User(supplierAddParameters.getUsername(), encoder.encode(supplierAddParameters.getPassword()), 4, new ArrayList<>());
-            Supplier supplier = new Supplier(user, supplierAddParameters.getId(), new Date(), "启用", new ArrayList<>(), supplierAddParameters.getLevel(), CodeType.TSOLID);
+            Supplier supplier = new Supplier(user, supplierAddParameters.getId(), new Date(), supplierAddParameters.getStatus(), new ArrayList<>(), supplierAddParameters.getLevel(), CodeType.TSOLID);
 
             try {
                 UserAddResponse userAddResponse = supplierBlService.addSupplier(supplier);

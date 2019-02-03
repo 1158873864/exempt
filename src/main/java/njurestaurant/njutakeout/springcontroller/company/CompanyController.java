@@ -27,6 +27,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class CompanyController {
 
@@ -291,8 +293,10 @@ public class CompanyController {
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
     public ResponseEntity<Response> approvalMerchants() {
-
-        return new ResponseEntity<>(new JSONResponse(200, merchantBlService.findMerchantsByState("停用")), HttpStatus.OK);
+        List<Merchant> list = merchantBlService.findMerchantsByState("停用");
+        List<Merchant> list1 = merchantBlService.findMerchantsByState("申请启用");
+        list.addAll(list1);
+        return new ResponseEntity<>(new JSONResponse(200, list), HttpStatus.OK);
     }
 
     @ApiOperation(value = "审批供码账号", notes = "管理员审批待审批供码用户账号")

@@ -120,7 +120,7 @@ public class UserBlServiceImpl implements UserBlService {
                     break;
                 case 3:
                     Merchant merchant = merchantDataService.findMerchantById(user.getTableId());
-                    if (userDataService.getUserById(merchant.getApplyId()).getRole() != 1)
+                    if (merchant.getStatus().equals("申请启用"))
                         throw new WaitingException();
                     if (merchant.getStatus().equals("停用"))
                         throw new BlockUpException();

@@ -71,6 +71,7 @@ const user = {
     GetInfo({ commit, state }) {                                                               
       return new Promise((resolve, reject) => {
         console.log('get info')
+        console.log(state.uid)
         getInfo(state.uid).then(response => {
           const data = response.data
           var roles = ['404', '面板','用户信息','用户中心']

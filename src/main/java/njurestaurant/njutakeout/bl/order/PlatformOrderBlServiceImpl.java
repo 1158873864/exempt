@@ -48,10 +48,11 @@ public class PlatformOrderBlServiceImpl implements PlatformOrderBlService {
     private final MerchantDataService merchantDataService;
     private final AlipayDataService alipayDataService;
     private final UserDao userDao;
-    private final DeviceDao deviceDao ;
+    private final DeviceDao deviceDao;
     private final SupplierDataService supplierDataService;
     private final AlipayOrderDataService alipayOrderDataService;
     private final AgentDataService agentDataService;
+
     @Autowired
     public PlatformOrderBlServiceImpl(PlatformOrderDataService platformOrderDataService, UserDataService userDataService, MerchantDataService merchantDataService, AlipayDataService alipayDataService, UserDao userDao, DeviceDao deviceDao, SupplierDataService supplierDataService, AlipayOrderDataService alipayOrderDataService, AgentDataService agentDataService) {
         this.platformOrderDataService = platformOrderDataService;
@@ -98,13 +99,18 @@ public class PlatformOrderBlServiceImpl implements PlatformOrderBlService {
                     type = "支付宝";
                     User user = userDao.findUserById(p.getUid());
                     Merchant merchant = merchantDataService.findMerchantById(user.getTableId());
+                    if (p.getState() == OrderState.WAITING_FOR_PAYING)
+                        if (checkOrderIsExpired(p.getTime())) {
+                            p.setState(OrderState.EXPIRED);
+                            platformOrderDataService.savePlatformOrder(p);
+                        }
                     if (userDao.findUserById(merchant.getApplyId()).getRole() == 1)
                         return new OrderListResponse(p.getId(), p.getNumber(), p.getMoney(), p.getPayMoney(), p.getRechargeId(),
                                 p.getPayCode(), p.getState(), p.getTime(), p.getPayTime(), p.getUid(), p.getSupplierid(), 0, usernameMap.get(p.getUid()),
                                 type, alipay.getId(), alipay.getName());
                     else if (userDao.findUserById(merchant.getApplyId()).getRole() == 2)
                         return new OrderListResponse(p.getId(), p.getNumber(), p.getMoney(), p.getPayMoney(), p.getRechargeId(),
-                                p.getPayCode(), p.getState(), p.getTime(), p.getPayTime(), p.getUid(),p.getSupplierid() , merchant.getApplyId(), usernameMap.get(p.getUid()),
+                                p.getPayCode(), p.getState(), p.getTime(), p.getPayTime(), p.getUid(), p.getSupplierid(), merchant.getApplyId(), usernameMap.get(p.getUid()),
                                 type, alipay.getId(), alipay.getName());
                 } else return null; // 可能有微信的收款方式
             } else return null;
@@ -112,28 +118,44 @@ public class PlatformOrderBlServiceImpl implements PlatformOrderBlService {
         }).filter(pf -> pf != null).collect(Collectors.toList());
     }
 
+    /**
+     * 检查订单是否已失效
+     *
+     * @return 失效返回true，没失效返回false
+     */
+    private boolean checkOrderIsExpired(Date date) {
+        Date now = new Date();
+        long diff = now.getTime() - date.getTime();
+        double minutes = (double) diff / (1000 * 60);
+        // 预设失效时间为2分钟
+        if (minutes > TransactionBlServiceImpl.time) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     @Override
-    public PlatformOrder updatePlatformOrder(int id, PlatformUpdateParameters platformUpdateParameters) throws  BlankInputException ,OrderWrongInputException {
+    public PlatformOrder updatePlatformOrder(int id, PlatformUpdateParameters platformUpdateParameters) throws BlankInputException, OrderWrongInputException {
         PlatformOrder platformOrder = platformOrderDataService.findById(id);
         if (platformOrder == null) {
-            throw new OrderWrongInputException(new WrongResponse(9999,"订单不存在"));
+            throw new OrderWrongInputException(new WrongResponse(9999, "订单不存在"));
         } else {
 
             OrderState orderState = OrderState.valueOf(platformUpdateParameters.getState());
-            switch (orderState){
+            switch (orderState) {
                 case WAITING_FOR_PAYING:
 //                    if (platformOrder.getState() == OrderState.PAID || platformOrder.getState() == OrderState.EXPIRED)
-                        throw new OrderWrongInputException(new WrongResponse(9998,"所有订单不允许修改成未支付订单"));
+                    throw new OrderWrongInputException(new WrongResponse(9998, "所有订单不允许修改成未支付订单"));
                 case PAID:
-                    if ( platformOrder.getState() == OrderState.EXPIRED)
-                        throw new OrderWrongInputException(new WrongResponse(9997,"已失效订单不允许修改成已支付订单"));
+                    if (platformOrder.getState() == OrderState.EXPIRED)
+                        throw new OrderWrongInputException(new WrongResponse(9997, "已失效订单不允许修改成已支付订单"));
                     else if (platformOrder.getState() == PAID) {
                         AlipayOrder alipayOrder = alipayOrderDataService.getAlipayOrderByOrderId(platformUpdateParameters.getOrderId());
                         alipayOrder.setMoney(platformUpdateParameters.getRealPay());
                         alipayOrder.setTime(platformUpdateParameters.getPayTime());
                         alipayOrderDataService.saveAlipayOrder(alipayOrder);
-                    }else if (platformOrder.getState() == OrderState.WAITING_FOR_PAYING){
+                    } else if (platformOrder.getState() == OrderState.WAITING_FOR_PAYING) {
                         AlipayOrder alipayOrder = new AlipayOrder(platformOrder.getImei(), platformUpdateParameters.getOrderId(),
                                 platformUpdateParameters.getRealPay(), "补单", platformUpdateParameters.getPayTime());
                         alipayOrderDataService.saveAlipayOrder(alipayOrder);
@@ -142,7 +164,7 @@ public class PlatformOrderBlServiceImpl implements PlatformOrderBlService {
                     platformOrder.setPayMoney(platformUpdateParameters.getRealPay());
                     platformOrder.setPayTime(platformUpdateParameters.getPayTime());
                     platformOrder.setState(PAID);
-                 //   platformOrderDataService.savePlatformOrder(platformOrder);
+                    //   platformOrderDataService.savePlatformOrder(platformOrder);
                     User user = userDataService.getUserById(platformOrder.getUid());
                     if (user != null) {
                         Merchant merchant = merchantDataService.findMerchantById(user.getTableId());
@@ -179,7 +201,7 @@ public class PlatformOrderBlServiceImpl implements PlatformOrderBlService {
                     }
                     break;
                 case EXPIRED:
-                    throw new OrderWrongInputException(new WrongResponse(9996,"所有订单不允许修改成已失效订单"));
+                    throw new OrderWrongInputException(new WrongResponse(9996, "所有订单不允许修改成已失效订单"));
                 default:
                     throw new BlankInputException();
             }

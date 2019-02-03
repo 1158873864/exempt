@@ -163,12 +163,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
             Supplier supplier = device.getSupplier();
             System.out.println(jsonObject.toString());
             if ((platformOrderDataService.findByImeiAndCodeType(imei, CodeType.RPASSQR) != null && platformOrderDataService.findByImeiAndCodeType(imei, CodeType.RPASSQR).size() > 0)
-                    || (platformOrderDataService.findByImeiAndCodeType(imei, CodeType.RPASSOFF) != null && platformOrderDataService.findByImeiAndCodeType(imei, CodeType.RPASSOFF).size() > 0)) { // 供码用户提供收款码
-                System.out.println("1:" + supplier.getCodeType() + supplier.getId() + " " + imei);
-                // 提取imei，根据imei查询未付款的订单号，根据订单号把订单状态更新成已成功付款，保留订单金额，新插入实收金额。
-                PlatformOrder platformOrders = platformOrderDataService.findByImeiAndStateAndCodeType(imei, OrderState.WAITING_FOR_PAYING, CodeType.RPASSQR);
-                PlatformOrder platformOrders1 = platformOrderDataService.findByImeiAndStateAndCodeType(imei, OrderState.WAITING_FOR_PAYING, CodeType.RPASSOFF);
-                if (platformOrders != null || platformOrders1 != null) {
+                        || (platformOrderDataService.findByImeiAndCodeType(imei, CodeType.RPASSOFF) != null && platformOrderDataService.findByImeiAndCodeType(imei, CodeType.RPASSOFF).size() > 0)) { // 供码用户提供收款码
+                    System.out.println("1:" + supplier.getCodeType() + supplier.getId() + " " + imei);
+                    // 提取imei，根据imei查询未付款的订单号，根据订单号把订单状态更新成已成功付款，保留订单金额，新插入实收金额。
+                    PlatformOrder platformOrders = platformOrderDataService.findByImeiAndStateAndCodeTypeAndMoney(imei, OrderState.WAITING_FOR_PAYING, CodeType.RPASSQR,Double.parseDouble(jsonObject.getString("money")));
+                    PlatformOrder platformOrders1 = platformOrderDataService.findByImeiAndStateAndCodeTypeAndMoney(imei, OrderState.WAITING_FOR_PAYING, CodeType.RPASSOFF,Double.parseDouble(jsonObject.getString("money")));
+                    if (platformOrders != null || platformOrders1 != null) {
                     if (platformOrders1 != null)
                         platformOrders = platformOrders1;
                     platformOrders.setState(OrderState.PAID);

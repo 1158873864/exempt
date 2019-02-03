@@ -114,7 +114,7 @@ public class TransactionBlServiceImpl implements TransactionBlService {
         if (Double.parseDouble(getQrCodeParameters.getMoney()) <= money_threshold) {
             throw new TooLittleMoneyException();
         }
-       // Integer id = StringParseUtil.StringToInt(getQrCodeParameters.getMerchantName());
+        // Integer id = StringParseUtil.StringToInt(getQrCodeParameters.getMerchantName());
         if (StringParseUtil.StringToInt(getQrCodeParameters.getTime()) == null || StringParseUtil.StringToDouble(getQrCodeParameters.getMoney()) == null) {
             throw new BlankInputException();
         }
@@ -236,20 +236,22 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                             }
                             //if (checkOrderIsExpired())
                             if (chosenSupplier.getCodeType() == CodeType.RPASSOFF || chosenSupplier.getCodeType() == CodeType.RPASSQR) {
-                                PlatformOrder platformOrder = platformOrderDataService.findByImeiAndStateAndCodeType(getReceiptCodeResponse.getImei(), OrderState.WAITING_FOR_PAYING, CodeType.RPASSOFF);
-                                PlatformOrder platformOrder1 = platformOrderDataService.findByImeiAndStateAndCodeType(getReceiptCodeResponse.getImei(), OrderState.WAITING_FOR_PAYING, CodeType.RPASSQR);
-                                if (platformOrder != null && platformOrder1 == null)
-                                    if (checkOrderIsExpired(platformOrder.getTime())) {//如果过期，则置为过期
-                                        platformOrder.setState(OrderState.EXPIRED);
-                                        platformOrderDataService.savePlatformOrder(platformOrder);
-                                    } else
-                                        throw new OrderNotPayedException();//如果没过期，则抛异常
-                                if (platformOrder == null && platformOrder1 != null)
-                                    if (checkOrderIsExpired(platformOrder1.getTime())) {//如果过期，则置为过期
-                                        platformOrder1.setState(OrderState.EXPIRED);
-                                        platformOrderDataService.savePlatformOrder(platformOrder1);
-                                    } else
-                                        throw new OrderNotPayedException();//如果没过期，则抛异常
+                                List<PlatformOrder> platformOrder = platformOrderDataService.findByImeiAndStateAndCodeType(getReceiptCodeResponse.getImei(), OrderState.WAITING_FOR_PAYING, CodeType.RPASSOFF);
+                                List<PlatformOrder> platformOrder1 = platformOrderDataService.findByImeiAndStateAndCodeType(getReceiptCodeResponse.getImei(), OrderState.WAITING_FOR_PAYING, CodeType.RPASSQR);
+                                platformOrder.addAll(platformOrder1);
+                                if (platformOrder.size() > 0) {
+                                    for (PlatformOrder pl : platformOrder) {
+                                        if (pl.getState() == OrderState.WAITING_FOR_PAYING)
+                                            if (checkOrderIsExpired(pl.getTime())) {//如果过期，则置为过期
+                                                pl.setState(OrderState.EXPIRED);
+                                                platformOrderDataService.savePlatformOrder(pl);
+                                            }
+                                    }
+                                    for (PlatformOrder pl : platformOrder) {
+                                        if (!checkOrderIsExpired(pl.getTime()) && pl.getMoney()==Double.parseDouble(getQrCodeParameters.getMoney()))
+                                            throw new OrderNotPayedException();//如果没过期，且面额相等，则抛异常
+                                    }
+                                }
                             }
 
                             break; // 支付宝在线

@@ -1,6 +1,7 @@
 package njurestaurant.njutakeout.springcontroller.company;
 
 import io.swagger.annotations.*;
+import njurestaurant.njutakeout.Log.SystemControllerLog;
 import njurestaurant.njutakeout.bl.order.TransactionBlServiceImpl;
 import njurestaurant.njutakeout.blservice.account.MerchantBlService;
 import njurestaurant.njutakeout.blservice.account.SupplierBlService;
@@ -70,8 +71,8 @@ public class CompanyController {
     public ResponseEntity<Response> GetAnnouncement() {
         return new ResponseEntity<>(new JSONResponse(200, CompanyController.announcement), HttpStatus.OK);
     }
-
-    @ApiOperation(value = "公告管理", notes = "设置公告")
+    @SystemControllerLog(descrption = "修改公告",actionType = "3")
+    @ApiOperation(value = "修改公告", notes = "修改公告")
     @RequestMapping(value = "company/announcement/set", method = RequestMethod.GET)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = System.class),
@@ -82,7 +83,7 @@ public class CompanyController {
         CompanyController.announcement = announcement;
         return new ResponseEntity<>(new JSONResponse(200, CompanyController.announcement), HttpStatus.OK);
     }
-
+    @SystemControllerLog(descrption = "新增团队",actionType = "1")
     @ApiOperation(value = "新增团队", notes = "公司管理员新增团队")
     @RequestMapping(value = "company/team/add", method = RequestMethod.POST)
     @ApiResponses(value = {
@@ -100,7 +101,7 @@ public class CompanyController {
             return new ResponseEntity<>(new JSONResponse(10120, "The team name is null or size 0!", e.getResponse()), HttpStatus.OK);
         }
     }
-
+    @SystemControllerLog(descrption = "新增收款码",actionType = "1")
     @ApiOperation(value = "新增收款码", notes = "管理员新增收款码")
     @RequestMapping(value = "company/code/add", method = RequestMethod.POST)
     @ApiResponses(value = {
@@ -112,7 +113,7 @@ public class CompanyController {
         ReceiptCode receiptCode = receiptCodeBlService.addReceiptCode(new ReceiptCode(receiptCodeAddParameters.getTeam(), receiptCodeAddParameters.getType(), receiptCodeAddParameters.getDuration(), receiptCodeAddParameters.getPriority(), receiptCodeAddParameters.getInfo(), receiptCodeAddParameters.getNumber()));
         return new ResponseEntity<>(new JSONResponse(200, receiptCode.getId()), HttpStatus.OK);
     }
-
+    @SystemControllerLog(descrption = "新增银行卡",actionType = "1")
     @ApiOperation(value = "新增银行卡", notes = "公司管理员新增银行卡")
     @RequestMapping(value = "company/card/add", method = RequestMethod.POST)
     @ApiResponses(value = {
@@ -132,7 +133,7 @@ public class CompanyController {
             return new ResponseEntity<>(new JSONResponse(10110, "the card number is existent.", e.getResponse()), HttpStatus.OK);
         }
     }
-
+    @SystemControllerLog(descrption = "权限分配",actionType = "3")
     @ApiOperation(value = "权限分配", notes = "管理员分配权限")
     @RequestMapping(value = "company/permission/allocate", method = RequestMethod.POST)
     @ApiResponses(value = {
@@ -202,7 +203,7 @@ public class CompanyController {
 //        List<Integer> teamsNumber = teamBlService.loadAllTeam().stream().map(x -> x.getId()).collect(Collectors.toList());
         return new ResponseEntity<>(new JSONResponse(200, teamBlService.loadAllTeam()), HttpStatus.OK);
     }
-
+    @SystemControllerLog(descrption = "删除团队",actionType = "2")
     @ApiOperation(value = "删除团队", notes = "删除某个团队列表")
     @RequestMapping(value = "company/team/delete/{id}", method = RequestMethod.GET)
     @ApiResponses(value = {
@@ -219,7 +220,7 @@ public class CompanyController {
             return new ResponseEntity<>(new JSONResponse(10200, e.getResponse()), HttpStatus.OK);
         }
     }
-
+    @SystemControllerLog(descrption = "修改团队",actionType = "3")
     @ApiOperation(value = "修改团队", notes = "管理员修改团队内容")
     @RequestMapping(value = "company/team/update/{id}", method = RequestMethod.POST)
     @ApiResponses(value = {
@@ -273,7 +274,7 @@ public class CompanyController {
             return new ResponseEntity<>(new JSONResponse(10200, e.getResponse()), HttpStatus.OK);
         }
     }
-
+    @SystemControllerLog(descrption = "审批商户账号开通",actionType = "3")
     @ApiOperation(value = "审批商户账号开通", notes = "管理员审批待审批的商户账号")
     @RequestMapping(value = "company/approval/merchant/{mid}", method = RequestMethod.PUT)
     @ApiResponses(value = {
@@ -298,7 +299,7 @@ public class CompanyController {
         list.addAll(list1);
         return new ResponseEntity<>(new JSONResponse(200, list), HttpStatus.OK);
     }
-
+    @SystemControllerLog(descrption = "审批供码账号",actionType = "3")
     @ApiOperation(value = "审批供码账号", notes = "管理员审批待审批供码用户账号")
     @RequestMapping(value = "company/approval/supplier/{sid}", method = RequestMethod.PUT)
     @ApiResponses(value = {
@@ -321,7 +322,7 @@ public class CompanyController {
 
         return new ResponseEntity<>(new JSONResponse(200, supplierBlService.findSupplierByState("停用")), HttpStatus.OK);
     }
-
+    @SystemControllerLog(descrption = "删除银行卡",actionType = "2")
     @ApiOperation(value = "删除银行卡", notes = "删除银行卡")
     @RequestMapping(value = "company/card/delete/{id}", method = RequestMethod.GET)
     @ApiResponses(value = {
@@ -348,7 +349,7 @@ public class CompanyController {
 //        } else
 //            return new ResponseEntity<>(new JSONResponse(200, companyCard), HttpStatus.OK);
 //    }
-
+    @SystemControllerLog(descrption = "删除收款码",actionType = "2")
     @ApiOperation(value = "删除收款码", notes = "删除收款码")
     @RequestMapping(value = "company/code/delete/{id}", method = RequestMethod.GET)
     @ApiResponses(value = {
@@ -371,7 +372,7 @@ public class CompanyController {
     public ResponseEntity<Response> showAllPosts() {
         return new ResponseEntity<>(new JSONResponse(200, postBlService.getPosts()), HttpStatus.OK);
     }
-
+    @SystemControllerLog(descrption = "删除岗位",actionType = "2")
     @ApiOperation(value = "删除岗位", notes = "删除公司的岗位")
     @RequestMapping(value = "company/post/delete/{id}", method = RequestMethod.GET)
     @ApiResponses(value = {
@@ -383,7 +384,7 @@ public class CompanyController {
         postBlService.delPostById(id);
         return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("delete success.")), HttpStatus.OK);
     }
-
+    @SystemControllerLog(descrption = "增加岗位",actionType = "1")
     @ApiOperation(value = "增加岗位", notes = "管理员增加公司的岗位")
     @RequestMapping(value = "company/post/add", method = RequestMethod.GET)
     @ApiResponses(value = {
@@ -410,7 +411,7 @@ public class CompanyController {
     public ResponseEntity<Response> showAllPermissions() {
         return new ResponseEntity<>(new JSONResponse(200, permissionBlService.getPermissions()), HttpStatus.OK);
     }
-
+    @SystemControllerLog(descrption = "删除权限",actionType = "2")
     @ApiOperation(value = "删除权限", notes = "管理员删除某个权限")
     @RequestMapping(value = "company/permission/delete/{id}", method = RequestMethod.GET)
     @ApiResponses(value = {
@@ -422,7 +423,7 @@ public class CompanyController {
         permissionBlService.delPermissionById(id);
         return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("delete success.")), HttpStatus.OK);
     }
-
+    @SystemControllerLog(descrption = "增加权限",actionType = "1")
     @ApiOperation(value = "增加权限", notes = "管理员增加岗位权限")
     @RequestMapping(value = "company/permission/add", method = RequestMethod.GET)
     @ApiResponses(value = {
@@ -430,7 +431,7 @@ public class CompanyController {
             @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
             @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
     @ResponseBody
-    public ResponseEntity<Response> deletePermission(@RequestParam("permission") String permission) {
+    public ResponseEntity<Response> addPermission(@RequestParam("permission") String permission) {
         try {
             Permission p = permissionBlService.addPermission(permission);
             return new ResponseEntity<>(new JSONResponse(200, p), HttpStatus.OK);
@@ -468,7 +469,7 @@ public class CompanyController {
 //        systemBlService.delSystemById(id);
 //        return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("delete success")), HttpStatus.OK);
 //    }
-
+    @SystemControllerLog(descrption = "修改系统管理",actionType = "3")
     @ApiOperation(value = "修改系统管理", notes = "管理员修改系统管理内容")
     @RequestMapping(value = "company/sys/update", method = RequestMethod.POST)
     @ApiResponses(value = {
@@ -505,8 +506,8 @@ public class CompanyController {
     public ResponseEntity<Response> GetRiskcontrol() {
         return new ResponseEntity<>(new JSONResponse(200, TransactionBlServiceImpl.getTime()), HttpStatus.OK);
     }
-
-    @ApiOperation(value = "风控管理", notes = "管理员设置二维码失效时间")
+    @SystemControllerLog(descrption = "管理员修改二维码失效时间",actionType = "3")
+    @ApiOperation(value = "管理员修改二维码失效时间", notes = "管理员修改二维码失效时间")
     @RequestMapping(value = "company/riskcontrol/set", method = RequestMethod.GET)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = System.class),

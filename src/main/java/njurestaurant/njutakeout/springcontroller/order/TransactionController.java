@@ -3,6 +3,7 @@ package njurestaurant.njutakeout.springcontroller.order;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import njurestaurant.njutakeout.Log.SystemControllerLog;
 import njurestaurant.njutakeout.blservice.order.TransactionBlService;
 import njurestaurant.njutakeout.entity.order.WithdrewOrder;
 import njurestaurant.njutakeout.exception.*;
@@ -35,8 +36,8 @@ public class TransactionController {
     public TransactionController(TransactionBlService transactionBlService) {
         this.transactionBlService = transactionBlService;
     }
-
-    @ApiOperation(value = "获取二维码", notes = "商家发起获取二维码请求")
+    @SystemControllerLog(descrption = "获取二维码",actionType = "1")
+    @ApiOperation(value = "获取二维码", notes = "获取二维码")
     @RequestMapping(value = "qrCode/get", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = GetQrCodeResponse.class),
@@ -66,8 +67,8 @@ public class TransactionController {
             return new ResponseEntity<>(new JSONResponse(1015, new FailedToLoadCodeResponse("failed", "订单未支付，不可获取二维码。")), HttpStatus.OK);
         }
     }
-
-    @ApiOperation(value = "提现", notes = "代理商/商家发起提现请求")
+    @SystemControllerLog(descrption = "发起提现请求",actionType = "1")
+    @ApiOperation(value = "发起提现请求", notes = "发起提现请求")
     @RequestMapping(value = "withdrew", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
@@ -107,8 +108,8 @@ public class TransactionController {
     public ResponseEntity<Response> showWithdrewOrder() {
         return new ResponseEntity<>(new JSONResponse(200, transactionBlService.getAllWaitingWithdrewOrder()), HttpStatus.OK);
     }
-
-    @ApiOperation(value = "抢单", notes = "财务点击接手处理提现订单")
+    @SystemControllerLog(descrption = "抢单",actionType = "3")
+    @ApiOperation(value = "抢单", notes = "抢单")
     @RequestMapping(value = "withdrew/get/{id}", method = RequestMethod.GET)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
@@ -126,8 +127,8 @@ public class TransactionController {
             return new ResponseEntity<>(new JSONResponse(10410, new WrongResponse(10410, "该订单已被处理。")), HttpStatus.OK);
         }
     }
-
-    @ApiOperation(value = "处理提现订单", notes = "财务处理的提现订单")
+    @SystemControllerLog(descrption = "处理提现订单",actionType = "3")
+    @ApiOperation(value = "处理提现订单", notes = "处理提现订单")
     @RequestMapping(value = "withdrew/deal/{id}", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),

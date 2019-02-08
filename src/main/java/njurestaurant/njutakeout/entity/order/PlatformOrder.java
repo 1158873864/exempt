@@ -1,5 +1,6 @@
 package njurestaurant.njutakeout.entity.order;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import njurestaurant.njutakeout.publicdatas.app.CodeType;
 import njurestaurant.njutakeout.publicdatas.order.OrderState;
 

@@ -66,6 +66,9 @@ public class ReportBlServiceImpl implements ReportBlService {
      */
     @Override
     public List<MerchantReportResponse> getReportOfMerchant(Date startDate, Date endDate) throws WrongInputException {
+        System.out.println("33333333333333333333333333333333");
+        System.out.println(startDate);
+        System.out.println(endDate);
         if (startDate == null) startDate = new Date();
         if (endDate == null) endDate = new Date();
         String date;
@@ -84,7 +87,10 @@ public class ReportBlServiceImpl implements ReportBlService {
             c2.set(Calendar.SECOND, 59);
             c2.set(Calendar.MILLISECOND, 999);
             endDate = c2.getTime();
-            if (DateUtils.isSameDay(startDate, endDate)) date = FormatDateTime.dateToString(startDate, "yyyy-MM-dd");
+            System.out.println(startDate);
+            System.out.println(endDate);
+            if (DateUtils.isSameDay(startDate, endDate))
+                date = FormatDateTime.dateToString(startDate, "yyyy-MM-dd");
             else
                 date = FormatDateTime.dateToString(startDate, "yyyy-MM-dd") + "~" + FormatDateTime.dateToString(endDate, "yyyy-MM-dd");
         } else {

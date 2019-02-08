@@ -74,7 +74,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     /**
      * 用Map存储已建立连接的用户
      */
-    private static final Map<String, WebSocketSession> socketSessionMap = new HashMap<>();
+    public static final Map<String, WebSocketSession> socketSessionMap = new HashMap<>();
 
     /**
      * 处理前端发送的文本信息 js调用websocket.send时候，会调用该方法
@@ -93,7 +93,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
         String cmd = jsonObject.getString("cmd");
         String type = jsonObject.getString("type");
         String imei = jsonObject.getString("imei");
-
+        //回复客户端的心跳检测
+        if (cmd.equals("HeartBeat") && type.equals("HeartBeat")){
+            session.sendMessage(new TextMessage(jsonObject.toString()));
+            System.out.println(new TextMessage(jsonObject.toString()));
+        }
         // 收到设备更新信息
         // 客户端消息:{"cmd":"validation","type":"alipay","userid":"支付宝userid","loginid":"支付宝loginid","imei":"设备唯一标识","name":"支付宝账号昵称/姓名(暂时未定)"}
         if (cmd.equals("validation") && type.equals("alipay")) {
@@ -163,12 +167,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
             Supplier supplier = device.getSupplier();
             System.out.println(jsonObject.toString());
             if ((platformOrderDataService.findByImeiAndCodeType(imei, CodeType.RPASSQR) != null && platformOrderDataService.findByImeiAndCodeType(imei, CodeType.RPASSQR).size() > 0)
-                        || (platformOrderDataService.findByImeiAndCodeType(imei, CodeType.RPASSOFF) != null && platformOrderDataService.findByImeiAndCodeType(imei, CodeType.RPASSOFF).size() > 0)) { // 供码用户提供收款码
-                    System.out.println("1:" + supplier.getCodeType() + supplier.getId() + " " + imei);
-                    // 提取imei，根据imei查询未付款的订单号，根据订单号把订单状态更新成已成功付款，保留订单金额，新插入实收金额。
-                    PlatformOrder platformOrders = platformOrderDataService.findByImeiAndStateAndCodeTypeAndMoney(imei, OrderState.WAITING_FOR_PAYING, CodeType.RPASSQR,Double.parseDouble(jsonObject.getString("money")));
-                    PlatformOrder platformOrders1 = platformOrderDataService.findByImeiAndStateAndCodeTypeAndMoney(imei, OrderState.WAITING_FOR_PAYING, CodeType.RPASSOFF,Double.parseDouble(jsonObject.getString("money")));
-                    if (platformOrders != null || platformOrders1 != null) {
+                    || (platformOrderDataService.findByImeiAndCodeType(imei, CodeType.RPASSOFF) != null && platformOrderDataService.findByImeiAndCodeType(imei, CodeType.RPASSOFF).size() > 0)) { // 供码用户提供收款码
+                System.out.println("1:" + supplier.getCodeType() + supplier.getId() + " " + imei);
+                // 提取imei，根据imei查询未付款的订单号，根据订单号把订单状态更新成已成功付款，保留订单金额，新插入实收金额。
+                PlatformOrder platformOrders = platformOrderDataService.findByImeiAndStateAndCodeTypeAndMoney(imei, OrderState.WAITING_FOR_PAYING, CodeType.RPASSQR, Double.parseDouble(jsonObject.getString("money")));
+                PlatformOrder platformOrders1 = platformOrderDataService.findByImeiAndStateAndCodeTypeAndMoney(imei, OrderState.WAITING_FOR_PAYING, CodeType.RPASSOFF, Double.parseDouble(jsonObject.getString("money")));
+                if (platformOrders != null || platformOrders1 != null) {
                     if (platformOrders1 != null)
                         platformOrders = platformOrders1;
                     platformOrders.setState(OrderState.PAID);
@@ -192,6 +196,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
                                 Agent agent = agentDataService.findAgentById(suser.getTableId());
                                 agent.setBalance(agent.getBalance() + money * agent.getAlipay() / 100);
                                 agentDataService.saveAgent(agent);
+                                if (AgentDailyFlow.date == null)
+                                    AgentDailyFlow.date = new Date();
                                 if (!DateUtils.isSameDay(AgentDailyFlow.date, new Date())) {
                                     AgentDailyFlow.commission.clear();
                                     AgentDailyFlow.flow.clear();
@@ -242,6 +248,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
                                 Agent agent = agentDataService.findAgentById(suser.getTableId());
                                 agent.setBalance(agent.getBalance() + money * agent.getAlipay() / 100);
                                 agentDataService.saveAgent(agent);
+                                if (AgentDailyFlow.date == null)
+                                    AgentDailyFlow.date = new Date();
                                 if (!DateUtils.isSameDay(AgentDailyFlow.date, new Date())) {
                                     AgentDailyFlow.commission.clear();
                                     AgentDailyFlow.flow.clear();
@@ -302,7 +310,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
             if (mapThread.containsKey(imei)) {
                 Thread thread = mapThread.get(imei);
                 thread.interrupt();
-                mapThread.remove(imei);
             }
         }
 
@@ -419,9 +426,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-
+        String imei = (String) session.getAttributes().get("imei");
         if (session.isOpen()) {
             session.close();
+            socketSessionMap.remove(imei, session);
         }
         System.out.println("用户 " + session.getAttributes().get("imei") + " 已关闭连接");
 
@@ -452,7 +460,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
      * @param token
      * @param message
      */
-    public static void sendMessageToUser(String token, TextMessage message) {
+    public static Boolean sendMessageToUser(String token, TextMessage message) {
 
         Set<String> keySet = socketSessionMap.keySet();
         for (String key : keySet) {
@@ -460,11 +468,19 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
         WebSocketSession socketSession = socketSessionMap.get(token);
         try {
-            if (socketSession != null && socketSession.isOpen()) {
-                socketSession.sendMessage(message);
-            }
+            if (socketSession != null)
+                if (socketSession.isOpen()) {
+                    socketSession.sendMessage(message);
+                    return true;
+                } else {
+                    socketSession.close();
+                    return false;
+                }
+            else
+                return false;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
     }
 }

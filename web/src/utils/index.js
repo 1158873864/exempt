@@ -90,3 +90,13 @@ export function getTimeFormat(date1){
   var date1 = date.getDate();
   return (year + "-" + month + "-" + date1);
 }
+export function getDateTimeFormat(date1){
+  var date = new Date(date1);
+  var year = date.getFullYear();
+  var month = date.getMonth() + 1;    //js从0开始取 
+  var date1 = date.getDate();
+  var hour = date.getHours();
+  var minutes = date.getMinutes();
+  var second = date.getSeconds();
+  return (year + "-" + month + "-" + date1 + " " + hour + ":" + minutes + ":" + second );
+}

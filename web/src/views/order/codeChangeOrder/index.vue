@@ -15,7 +15,7 @@
       <el-table-column prop="loginId" label="支付宝账号" align="center"></el-table-column>
       <el-table-column prop="money" label="支付宝提现金额" align="center"></el-table-column>
       <el-table-column prop="balance" label="账变前余额" align="center" min-width="100%"></el-table-column>
-      <el-table-column prop="cardNumber" label="银行卡信息" align="center" min-width="100%"></el-table-column>
+      <el-table-column prop="cardNumber" label="银行卡信息" align="center" min-width="120%"></el-table-column>
       <el-table-column prop="realMoney" label="到卡金额" align="center"></el-table-column>
       <el-table-column prop="cardBalance" label="卡上余额" align="center"></el-table-column>
       <el-table-column prop="operateTimep" label="操作时间" align="center" min-width="120%"></el-table-column>
@@ -101,13 +101,20 @@ export default {
         } else {
           if (response.data.length != 0) {
             this.teams = response.data;
-            var a = [];
-            this.teams.forEach(el => {
-              el.operateTimep = getTime(el.operateTime);
-              if(el.operateUsername == store.getters.name)
-                  a.push(el);
-            });
-            this.teams = a;
+            if(store.getters.role == 1){     
+              this.teams.forEach(el => {
+                  el.operateTimep = getTime(el.operateTime);
+              });
+            }
+            if(store.getters.role == 4){
+              var a = [];
+              this.teams.forEach(el => {
+                el.operateTimep = getTime(el.operateTime);
+                if(el.operateUsername == store.getters.name)
+                    a.push(el);
+              });
+              this.teams = a;
+            }
           }
         }
       });

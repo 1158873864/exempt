@@ -173,6 +173,13 @@ export function teamVerifyCodeCheckByTeamName(teamName,verifyCode) {
     }
   })
 }
+
+export function personalCardsGet() {
+  return request({
+      url: '/usr/cards',
+      method: 'get',
+  })
+}
 /**
  * 
  * @param {岗位} post 

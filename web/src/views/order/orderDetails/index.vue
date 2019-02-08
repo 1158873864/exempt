@@ -5,13 +5,23 @@
             :data="filterData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             border
             style="width: 100%">
-            <el-table-column prop="orderNumber" label="订单编号"  align="center" min-width="100%"></el-table-column>
+            <el-table-column prop="orderNumber" label="订单编号"  align="center" min-width="110%"></el-table-column>
+            <el-table-column prop="codeType" label="供码模式"  align="center" min-width="100%">
+             <template slot-scope="scope">
+                    <el-tag  v-if="scope.row.codeType=='TPASS'" >转账通码</el-tag>
+                    <el-tag  v-else-if="scope.row.codeType=='TSOLID'" >转账固码</el-tag>
+                    <el-tag  v-else-if="scope.row.codeType=='RPASSOFF'" >收款通码离线码</el-tag>
+                    <el-tag  v-else-if="scope.row.codeType=='RPASSQR'" >收款通码在线码</el-tag>
+                    <el-tag  v-else-if="scope.row.codeType=='RSOLID'" >收款固码(二开)</el-tag>
+              </template>
+            </el-table-column>
             <el-table-column prop="money" label="订单金额"  align="center"></el-table-column>
             <el-table-column prop="paymoney" label="成交金额"  align="center"></el-table-column>
             <el-table-column prop="rechargeId" label="充值方编号"  align="center"></el-table-column>
             <el-table-column prop="nickname" label="支付宝昵称"  align="center"></el-table-column>
             <!-- <el-table-column prop="code" label="收款码"  align="center"></el-table-column> -->
             <el-table-column prop="time" label="订单时间"  align="center"></el-table-column>
+            <el-table-column prop="payTime" label="支付时间"  align="center"></el-table-column>
             <el-table-column prop="orderState" label="状态"  align="center">
                  <!-- <template slot-scope="{row}">
                     <el-button type="success" size="small" v-if="row.orderState=='PAID'">已支付</el-button>
@@ -42,7 +52,7 @@
             :total=total>
             </el-pagination>
          </div>
-             <el-dialog title="补单" :visible.sync="dialogFormVisible">
+             <el-dialog title="补单" :visible.sync="dialogFormVisible" @close='closeDialog' >
             <el-form :model="newRow">
                 <el-form-item label="支付宝订单编号">
                     <el-input v-model="newRow.alipayOrderId"  placeholder="订单金额"></el-input>
@@ -61,11 +71,14 @@
                     <el-input v-model="newRow.paymoney"  placeholder="实付金额"></el-input>
                 </el-form-item>
                 <el-form-item label="支付时间">
-                    <el-date-picker v-model="newRow.payTime" type="datetime"  @change="dateChange"   placeholder="支付时间" ></el-date-picker>
+                    <el-date-picker v-model="newRow.TT" type="datetime"    placeholder="支付时间" ></el-date-picker>
+                </el-form-item>
+                <el-form-item label="备注">
+                    <el-input v-model="newRow.memo"  placeholder="备注"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button @click="dialogFormVisible = false;">取 消</el-button>
                 <el-button type="primary" @click="confirm">确 定</el-button>
             </div>
     </el-dialog>
@@ -74,14 +87,14 @@
 
     <script>
 import { ordersGet,ordersUpdate } from "@/api/order";
-import { getTime } from "@/utils/index";
+import { getTime,getDateTimeFormat } from "@/utils/index";
 import store from '../../../store';
 export default {
   data() {
     return {
       teams: [
         {
-          payTime_format:""
+         // codeType:'TPASS'
           // id: 1,
           // number: "dfadfas",
           // state: "WAITING_FOR_PAYING",
@@ -97,10 +110,11 @@ export default {
           // merchantId:26,
           // supplierId:28,
           // agentId:0
+          
         }
       ],
       newRow:{
-        payTime:""
+        TT:""
       },
       dialogFormVisible: false,
       currentPage: 1,
@@ -114,19 +128,12 @@ export default {
         if(this.searchStr == '未支付')
           this.searchStr = 'WAITING_FOR_PAYING';
         var reg = new RegExp(this.searchStr, "i");
-        console.log(item.money);
-        console.log("1212dasdasd");
-        console.log(item.orderState);
+        // console.log(item.money);
+        // console.log("1212dasdasd");
+        // console.log(item.orderState);
         return !this.searchStr || reg.test(item.money) || reg.test(item.merchantName) 
       });
     },
-    judge(){
-      if(store.getters.role == 1)
-          return true;
-      else
-          return false;
-    },
-
     total(){
       return this.teams.length;
     }
@@ -144,9 +151,16 @@ export default {
     console.log(store.getters.role)
   },
   methods: {
-    
+    judge(){
+      console.log("1asdasdsadadadadadasd2214142fdsfsdgsdgsdG");
+      console.log(store.getters.role);
+      if(store.getters.role == 1)
+          return true;
+      else
+          return false;
+    },
     editable(index,row){ 
-       if(row.orderState == '等待付款')
+       if(row.orderState == '等待付款'|| row.orderState == '已失效'|| row.orderState == 'WAITING_FOR_PAYING' || row.orderState == 'EXPIRED')
           return true;
        else
           return false;
@@ -155,13 +169,18 @@ export default {
         this.dialogFormVisible = true;
         // console.log(row)
         this.newRow = row;
+       // this.newRow.payTime = getTime(row.payTime);
         if(row.orderState == '等待付款')
             this.newRow.orderState = 'WAITING_FOR_PAYING';
         if(row.orderState == '已付款')
             this.newRow.orderState = 'PAID';
         if(row.orderState == '已失效')
             this.newRow.orderState = 'EXPIRED';
-},
+    },
+    closeDialog() {  
+       this.dialogFormVisible = false;
+       this.getTeams();
+    },
     dateChange(val){
       console.log(val);
       this.newRow.payTime = val; 
@@ -179,7 +198,7 @@ export default {
     },
     confirm(){
       ordersUpdate(this.newRow.orderId,this.newRow.orderState,this.newRow.money,
-      this.newRow.paymoney,this.newRow.alipayOrderId,this.newRow.payTime).then(response =>{
+      this.newRow.paymoney,this.newRow.alipayOrderId,Date.parse(this.newRow.TT)/1000,this.newRow.memo).then(response =>{
         if(response.code != 200){
           this.$message({
             message: response.data,
@@ -191,10 +210,11 @@ export default {
             type: "success"
           });
           this.dialogFormVisible = false;
+          //this.newRow.payTime = getTime(this.newRow.payTime)
           this.getTeams();
         }
       })
-    },
+    },  
     getTeams() {
       ordersGet().then(response => {
         console.log(response, "sdll");
@@ -208,7 +228,10 @@ export default {
             this.teams = response.data; 
             this.teams.forEach(el => {
               el.time=getTime(el.time);
-              el.payTime_format = getTime(el.payTime);
+              if(el.payTime != null)
+                el.payTime = getTime(el.payTime);
+              // else
+              //   el.payTime = ""
               if(el.orderState == 'WAITING_FOR_PAYING')
                   el.orderState = '等待付款';
               if(el.orderState == 'PAID')

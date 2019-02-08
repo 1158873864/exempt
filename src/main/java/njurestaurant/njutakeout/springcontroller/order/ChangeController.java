@@ -3,6 +3,7 @@ package njurestaurant.njutakeout.springcontroller.order;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import njurestaurant.njutakeout.Log.SystemControllerLog;
 import njurestaurant.njutakeout.blservice.order.ChangeBlService;
 import njurestaurant.njutakeout.data.dao.company.CompanyCardDao;
 import njurestaurant.njutakeout.data.dao.order.CardChangeOrderDao;
@@ -85,8 +86,8 @@ public class ChangeController {
 ////        changeOrderDataService.saveQRcodeChangeOrder(qRcodeChangeOrder);
 //        return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("更新内部码账变订单成功")), HttpStatus.OK);
 //    }
-
-    @ApiOperation(value = "内部卡账变(个人卡转入公司卡)", notes = "发起内部卡转账申请(个人卡转入公司卡)")
+    @SystemControllerLog(descrption = "发起内部卡转账申请(个人卡转入公司卡)",actionType = "1")
+    @ApiOperation(value = "发起内部卡转账申请(个人卡转入公司卡)", notes = "发起内部卡转账申请(个人卡转入公司卡)")
     @RequestMapping(value = "internalaccountchange/P2Ccard", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
@@ -167,8 +168,8 @@ public class ChangeController {
         } else
             return new ResponseEntity<>(new JSONResponse(10160, new WrongResponse(10160, "该用户无法查看内部码账变订单。")), HttpStatus.OK);
     }
-
-    @ApiOperation(value = "修改内部卡账变订单", notes = "修改内部卡账变信息")
+    @SystemControllerLog(descrption = "修改内部卡账变订单",actionType = "3")
+    @ApiOperation(value = "修改内部卡账变订单", notes = "修改内部卡账变订单")
     @RequestMapping(value = "internalaccountchange/card/{uid}", method = RequestMethod.PUT)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),

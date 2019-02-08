@@ -3,6 +3,7 @@ package njurestaurant.njutakeout.springcontroller.order;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import njurestaurant.njutakeout.Log.SystemControllerLog;
 import njurestaurant.njutakeout.blservice.order.PlatformOrderBlService;
 import njurestaurant.njutakeout.entity.order.PlatformOrder;
 import njurestaurant.njutakeout.exception.BlankInputException;
@@ -17,9 +18,12 @@ import njurestaurant.njutakeout.response.SuccessResponse;
 import njurestaurant.njutakeout.response.WrongResponse;
 import njurestaurant.njutakeout.response.order.OrderListResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 @RestController
 public class OrderController {
@@ -41,8 +45,8 @@ public class OrderController {
     public ResponseEntity<Response> getOrders() {
         return new ResponseEntity<>(new JSONResponse(200,  platformOrderBlService.findAllPlatformOrders()), HttpStatus.OK);
     }
-
-    @ApiOperation(value = "修改订单", notes = "修改某张订单")
+    @SystemControllerLog(descrption = "修改订单",actionType = "3")
+    @ApiOperation(value = "修改订单", notes = "修改订单")
     @RequestMapping(value = "order/list/update/{id}", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
@@ -51,7 +55,8 @@ public class OrderController {
     @ResponseBody
     public ResponseEntity<Response> getOrder(@PathVariable("id")int id, @RequestBody PlatformUpdateParameters platformUpdateParameters) {
         try {
-            return new ResponseEntity<>(new JSONResponse(200,  platformOrderBlService.updatePlatformOrder(id, platformUpdateParameters)), HttpStatus.OK);
+            platformOrderBlService.updatePlatformOrder(id, platformUpdateParameters);
+            return new ResponseEntity<>(new JSONResponse(200, "补单成功" ), HttpStatus.OK);
         } catch (OrderWrongInputException e) {
             e.printStackTrace();
             return new ResponseEntity<>(new JSONResponse(e.getResponse().getInfoCode(),e.getResponse().getDescription()),HttpStatus.OK);

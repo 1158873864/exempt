@@ -63,7 +63,7 @@
             :total=total>
             </el-pagination>
         </div>
-        <el-dialog title="添加备注信息" :visible.sync="dialogFormVisible">
+        <el-dialog title="添加备注信息" :visible.sync="dialogFormVisible" :before-close="cancel">
             <el-form :model="newRow" label-width="13%">
                 <el-form-item label="备注：">
                     <el-input v-model="newRow.memo" placeholder="备注" style="width:70%;"></el-input>
@@ -108,7 +108,7 @@
                     newRow:{
                        // memo:""
                     },
-                    memop:"",
+                   // memop:"",
                     currentPage:1,
                     pagesize:10,
                     dialogFormVisible: false,
@@ -133,11 +133,10 @@
                 addMemo(row){
                     this.dialogFormVisible = true;
                     this.newRow = row;
-                    this.newRow.memo = "";
                 },
                 update(){
                     this.dialogFormVisible = false;
-                    this.memop=this.newRow.memo;
+                    //this.memop=this.newRow.memo;
                 },
                 cancel(){
                     this.dialogFormVisible = false;
@@ -183,7 +182,6 @@
                             var a = []
                            this.teams = response.data;
                            this.teams.forEach(el => {
-                               el.memo = ''
                                el.applyTime = getTime(el.applyTime)
                                if(el.state == 'DEALING')
                                     a.push(el)

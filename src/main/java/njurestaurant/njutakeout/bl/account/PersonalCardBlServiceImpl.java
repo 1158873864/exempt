@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +39,7 @@ public class PersonalCardBlServiceImpl implements PersonalCardBlService {
         }
         PersonalCard tmp = personalCardDataService.savePersonalCard(new PersonalCard(personalCardAddParameters.getNumber(),
                 personalCardAddParameters.getName(), personalCardAddParameters.getBank(),personalCardAddParameters.getAccountOfBank(),
-                personalCardAddParameters.getBin(), 0.0, personalCardAddParameters.getStatus(), user));
+                personalCardAddParameters.getBin(), 0.0, personalCardAddParameters.getStatus(), new Date(), user));
         return new PersonalCardAddResponse(tmp.getId());
     }
 

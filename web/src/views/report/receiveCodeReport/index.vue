@@ -54,12 +54,12 @@ export default {
       },
       teams: [
         {
-          alipayLoginId: "string",
-          date: "string",
-          number: "string",
-          payMoney: 0,
-          supplierName: "string",
-          withdrew: 0
+          alipayLoginId: "",
+          date: "",
+          number: "",
+          payMoney: "",
+          supplierName: "",
+          withdrew: ""
         }
       ],
       currentPage: 1,

@@ -52,11 +52,11 @@ export default {
                       "post": "post",
               },
               teams:[{
-                      date: "string",
-                      number: "string",
-                      realReceipt: 0,
-                      supplierName: "string",
-                      withdrew: 0
+                      date: "",
+                      number: "",
+                      realReceipt: "",
+                      supplierName: "",
+                      withdrew: ""
                       }],
                 currentPage:1,
                 pagesize:10,

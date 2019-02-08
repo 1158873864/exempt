@@ -22,8 +22,8 @@ public class OrderListResponse {
     private String type;
     private int tableId;
     private String nickname;
-
-    public OrderListResponse(int orderId, String orderNumber, double money, double paymoney, String rechargeId, String code, OrderState orderState, Date time, Date payTime, int merchantId, int supplierId, int agentId, String merchantName, String type, int tableId, String nickname) {
+    private CodeType codeType;
+    public OrderListResponse(int orderId, String orderNumber, double money, double paymoney, String rechargeId, String code, OrderState orderState, Date time, Date payTime, int merchantId, int supplierId, int agentId, String merchantName, String type, int tableId, String nickname, CodeType codeType) {
         this.orderId = orderId;
         this.orderNumber = orderNumber;
         this.money = money;
@@ -40,6 +40,7 @@ public class OrderListResponse {
         this.type = type;
         this.tableId = tableId;
         this.nickname = nickname;
+        this.codeType = codeType;
     }
 
     public int getOrderId() {
@@ -168,5 +169,13 @@ public class OrderListResponse {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public CodeType getCodeType() {
+        return codeType;
+    }
+
+    public void setCodeType(CodeType codeType) {
+        this.codeType = codeType;
     }
 }

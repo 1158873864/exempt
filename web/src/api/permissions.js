@@ -61,7 +61,10 @@ export function getTreePermissions(){
                 },
                 {
                     title: '公司添加银行卡' ,
-                }
+                },
+                {
+                    title: '所有个人银行卡' ,
+                },
             ]
         },
         {
@@ -158,6 +161,9 @@ export function getTreePermissions(){
                 {
                     title: '处理单子',
                 },
+                {
+                    title:'提现历史'
+                }
             ]
         
         

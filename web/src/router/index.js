@@ -163,16 +163,24 @@ export const asyncRouterMap = [
         meta: { title: '银行卡管理',role:['银行卡管理'] },
         children: [
           {
+            path: 'cardAdd',
+            name: 'cardAdd',
+            component: () => import('@/views/companyManage/bankCard/cardAdd/index'),
+            meta: { title: '公司添加银行卡', role: ['公司添加银行卡'] },
+            breadcrumb: false
+          },
+          {
             path: 'cards',
             name: 'cards',
             component: () => import('@/views/companyManage/bankCard/cards/index'),
             meta: { title: '公司所有银行卡', role: ['公司所有银行卡'] },
           },
+         
           {
-            path: 'cardAdd',
-            name: 'cardAdd',
-            component: () => import('@/views/companyManage/bankCard/cardAdd/index'),
-            meta: { title: '公司添加银行卡', role: ['公司添加银行卡'], breadcrumb: false },
+            path: 'personalCards',
+            name: 'personalCards',
+            component: () => import('@/views/companyManage/bankCard/personalCards/index'),
+            meta: { title: '所有个人银行卡', role: ['所有个人银行卡'] },
             breadcrumb: false
           }
         ]
@@ -369,6 +377,12 @@ export const asyncRouterMap = [
         component: () => import('@/views/financeManage/agencyWithdrew/mylist'),
         meta: { title: '处理单子', role: ['处理单子'] },
       },
+      {
+        path: 'cardskiting',
+        name: 'cardskiting',
+        component: () => import('@/views/userCenter/bankCardSetting/cardskiting/index'),
+        meta: { title: '提现历史',role:['提现历史'] },
+      },    
       {
         path: 'c2p',
         name: 'c2p',

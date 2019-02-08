@@ -3,6 +3,7 @@ package njurestaurant.njutakeout.springcontroller.order;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import njurestaurant.njutakeout.Log.SystemControllerLog;
 import njurestaurant.njutakeout.blservice.order.OrderBlService;
 import njurestaurant.njutakeout.exception.OrderIdDoesNotExistException;
 import njurestaurant.njutakeout.publicdatas.account.Role;
@@ -27,7 +28,7 @@ public class SupplierOrderController {
         this.orderBlService = orderBlService;
     }
 
-    @ApiOperation(value = "接受订单", notes = "商户接受某订单")
+    @ApiOperation(value = "接受订单", notes = "接受订单")
     @RequestMapping(value = "order/supplier/accept/{orderId}", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = OrderAcceptResponse.class),

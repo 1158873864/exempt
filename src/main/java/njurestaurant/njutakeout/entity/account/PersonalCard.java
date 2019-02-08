@@ -1,6 +1,7 @@
 package njurestaurant.njutakeout.entity.account;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "personal_card")
@@ -23,6 +24,8 @@ public class PersonalCard {
     private double cardBalance;
     @Column(name = "status")
     private String status;
+    @Column(name="addTime")
+    private Date addTime;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
@@ -30,12 +33,13 @@ public class PersonalCard {
     public PersonalCard() {
     }
 
-    public PersonalCard(String cardNumber, String name, String bank, String accountWithBank, String bin, Double balance, String status, User user) {
+    public PersonalCard(String cardNumber, String name, String bank, String accountWithBank, String bin, Double balance, String status, Date addTime, User user) {
         this.cardNumber = cardNumber;
         this.name = name;
         this.bank = bank;
         this.accountWithBank = accountWithBank;
         this.bin = bin;
+        this.addTime = addTime;
         this.cardBalance = cardBalance;
         this.status = status;
         this.user = user;
@@ -111,5 +115,13 @@ public class PersonalCard {
 
     public void setCardBalance(double cardBalance) {
         this.cardBalance = cardBalance;
+    }
+
+    public Date getAddTime() {
+        return addTime;
+    }
+
+    public void setAddTime(Date addTime) {
+        this.addTime = addTime;
     }
 }

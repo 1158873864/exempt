@@ -5,7 +5,7 @@ export function ordersGet() {
     method: 'get'
   })
 }
-export function ordersUpdate(id,state,money,realPay,orderId,payTime) {
+export function ordersUpdate(id,state,money,realPay,orderId,payTime,memo) {
   return request({
     url: '/order/list/update/'+id,
     method: 'post',
@@ -14,7 +14,8 @@ export function ordersUpdate(id,state,money,realPay,orderId,payTime) {
       money,
       realPay,
       orderId,
-      payTime
+      payTime,
+      memo
     }
   })
 }

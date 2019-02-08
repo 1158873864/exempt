@@ -1,6 +1,7 @@
 package njurestaurant.njutakeout.springcontroller.account;
 
 import io.swagger.annotations.*;
+import njurestaurant.njutakeout.Log.SystemControllerLog;
 import njurestaurant.njutakeout.blservice.account.*;
 import njurestaurant.njutakeout.blservice.event.LogBlService;
 import njurestaurant.njutakeout.data.dao.account.AgentDao;
@@ -146,7 +147,7 @@ public class UserController {
 //            return new ResponseEntity<>(e.getResponse(), HttpStatus.NOT_FOUND);
 //        }
 //    }
-
+    @SystemControllerLog(descrption = "管理员新增管理员",actionType = "1")
     @ApiOperation(value = "新增管理员", notes = "管理员新增管理员")
     @RequestMapping(value = "admin/add", method = RequestMethod.POST)
     @ApiResponses(value = {
@@ -168,7 +169,7 @@ public class UserController {
             return new ResponseEntity<>(new JSONResponse(10100, new UsernameIsExistentException().getResponse()), HttpStatus.OK);
         }
     }
-
+    @SystemControllerLog(descrption = "新增代理商",actionType = "1")
     @ApiOperation(value = "新增代理商", notes = "管理员新增代理")
     @RequestMapping(value = "agent/add", method = RequestMethod.POST)
     @ApiResponses(value = {
@@ -191,7 +192,7 @@ public class UserController {
             return new ResponseEntity<>(new JSONResponse(200, agentAddResponse), HttpStatus.OK);
         }
     }
-
+    @SystemControllerLog(descrption = "新增商家",actionType = "1")
     @ApiOperation(value = "新增商家", notes = "代理/管理员新增商家")
     @RequestMapping(value = "merchant/add", method = RequestMethod.POST)
     @ApiResponses(value = {
@@ -217,7 +218,7 @@ public class UserController {
             return new ResponseEntity<>(new JSONResponse(200, merchantAddResponse), HttpStatus.OK);
         }
     }
-
+    @SystemControllerLog(descrption = "新增供码用户",actionType = "1")
     @ApiOperation(value = "新增供码用户", notes = "管理员新增供码用户")
     @RequestMapping(value = "supplier/add", method = RequestMethod.POST)
     @ApiResponses(value = {
@@ -245,6 +246,7 @@ public class UserController {
             }
         }
     }
+    @SystemControllerLog(descrption = "更改管理员信息",actionType = "3")
     @ApiOperation(value = "更改管理员信息", notes = "更改管理员信息")
     @RequestMapping(value = "staff/update/{uid}", method = RequestMethod.PUT)
     @ApiResponses(value = {
@@ -289,7 +291,8 @@ public class UserController {
             return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("更新成功")), HttpStatus.OK);
         }
     }
-    @ApiOperation(value = "更改代理用户信息", notes = "代理修改个人用户信息")
+    @SystemControllerLog(descrption = "更改代理商信息",actionType = "3")
+    @ApiOperation(value = "更改代理商信息", notes = "更改代理商信息")
     @RequestMapping(value = "agent/update/{uid}", method = RequestMethod.PUT)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
@@ -333,8 +336,8 @@ public class UserController {
             return new ResponseEntity<>(new JSONResponse(200, new SuccessResponse("更新成功")), HttpStatus.OK);
         }
     }
-
-    @ApiOperation(value = "更改商家用户信息", notes = "商家修改个人用户信息")
+    @SystemControllerLog(descrption = "更改商户信息",actionType = "3")
+    @ApiOperation(value = "更改商户信息", notes = "更改商户信息")
     @RequestMapping(value = "merchant/update/{uid}", method = RequestMethod.PUT)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
@@ -354,8 +357,8 @@ public class UserController {
             return new ResponseEntity<>(new JSONResponse(10100, e.getResponse()), HttpStatus.OK);
         }
     }
-
-    @ApiOperation(value = "更改供码用户信息", notes = "供码用户修改供码用户信息")
+    @SystemControllerLog(descrption = "更改供码用户信息",actionType = "3")
+    @ApiOperation(value = "更改供码用户信息", notes = "更改供码用户信息")
     @RequestMapping(value = "supplier/update/{uid}", method = RequestMethod.PUT)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
@@ -374,7 +377,7 @@ public class UserController {
             return new ResponseEntity<>(new JSONResponse(10100, e.getResponse()), HttpStatus.OK);
         }
     }
-
+    @SystemControllerLog(descrption = "删除用户",actionType = "2")
     @ApiOperation(value = "删除用户", notes = "删除某个用户")
     @RequestMapping(value = "account/delete/{id}", method = RequestMethod.GET)
     @ApiResponses(value = {

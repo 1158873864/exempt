@@ -1,5 +1,7 @@
 package njurestaurant.njutakeout.parameters.order;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 public class PlatformUpdateParameters {
@@ -7,14 +9,17 @@ public class PlatformUpdateParameters {
     private double money;
     private double realPay;
     private String orderId;
-    private Date payTime;
+    private String payTime;
 
-    public PlatformUpdateParameters(String state, double money, double realPay, String orderId, Date payTime) {
+    private String memo;
+
+    public PlatformUpdateParameters(String state, double money, double realPay, String orderId, String payTime, String memo) {
         this.state = state;
         this.money = money;
         this.realPay = realPay;
         this.orderId = orderId;
         this.payTime = payTime;
+        this.memo = memo;
     }
 
     public String getState() {
@@ -49,11 +54,19 @@ public class PlatformUpdateParameters {
         this.orderId = orderId;
     }
 
-    public Date getPayTime() {
+    public String getPayTime() {
         return payTime;
     }
 
-    public void setPayTime(Date payTime) {
+    public void setPayTime(String payTime) {
         this.payTime = payTime;
+    }
+
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 }

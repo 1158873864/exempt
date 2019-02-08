@@ -2,6 +2,7 @@ package njurestaurant.njutakeout.springcontroller.app;
 
 import io.swagger.annotations.ApiOperation;
 import net.sf.json.JSONObject;
+import njurestaurant.njutakeout.Log.SystemControllerLog;
 import njurestaurant.njutakeout.blservice.account.UserBlService;
 import njurestaurant.njutakeout.exception.*;
 import njurestaurant.njutakeout.response.JSONResponse;
@@ -54,6 +55,7 @@ public class AppController {
         }
     }
 
+    @SystemControllerLog(descrption = "修改设备状态",actionType = "3")
     @ApiOperation(value = "修改设备状态", notes = "修改设备状态")
     @RequestMapping(value = "app/device", method = RequestMethod.GET)
     @ResponseBody

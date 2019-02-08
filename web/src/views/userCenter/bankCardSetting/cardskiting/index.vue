@@ -15,7 +15,16 @@
 
     <el-table-column prop="cardId" label="卡号" align="center"></el-table-column>
     <el-table-column prop="money" label="金额" align="center"></el-table-column>
+    <el-table-column prop="type" label="提现类型" align="center">
+      <template scope="scope">
+          <div v-if="scope.row.type =='merchant' ">商户提现</div>
+          <div v-if="scope.row.type =='agent' ">代理提现</div>
+      </template>
+    </el-table-column>
+    <el-table-column prop="applicantId" label="申请人id" align="center"></el-table-column>
+    <el-table-column prop="operateId" label="处理人id" align="center"></el-table-column>
     <el-table-column prop="applyTime" label="申请提现时间" align="center"></el-table-column>
+    <el-table-column prop="operateTime" label="申请提现时间" align="center"></el-table-column> 
     <el-table-column prop="state" label="提现状态" align="center">
       <template slot-scope="{row}">
         <el-button type="primary" size="small" v-if="row.state=='WAITING'">等待处理</el-button>
@@ -25,6 +34,7 @@
         <el-tag type="warning" v-if="row.state=='SUCCESS'">{{ row.operateTime }}</el-tag>
       </template>
     </el-table-column>
+    <el-table-column prop="memo" label="备注" align="center"></el-table-column>
     </el-table>
     <div class="block">
       <el-pagination
@@ -114,14 +124,15 @@ export default {
               el.applyTime = getTime(el.applyTime);
               el.operateTime = getTime(el.operateTime);    
             });
-
-            var a = []
-            this.teams.forEach(el => {
-              if(el.applicantId == store.getters.uid) {
-                  a.push(el)
-              }
-            })
-            this.teams = a;
+            if(store.getters.role != 1){
+              var a = []
+              this.teams.forEach(el => {
+                if(el.applicantId == store.getters.uid) {
+                    a.push(el)
+                }
+              })
+              this.teams = a;
+            }
         }
         }
       });

@@ -35,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -120,7 +121,6 @@ public class TransactionBlServiceImpl implements TransactionBlService {
         }
         double money = StringParseUtil.StringToDouble(getQrCodeParameters.getMoney());
         Date date = FormatDateTime.TenTimestampToDate(StringParseUtil.StringToInt(getQrCodeParameters.getTime()));
-
         map2.put(getQrCodeParameters.getIp(), String.valueOf(date.getTime()));//ip,十三位时间戳 ms，记录每个ip每次访问的时间
         map5.put(getQrCodeParameters.getId(), String.valueOf(date.getTime()));//id, 记录每个id每次访问的时间
 
@@ -366,23 +366,43 @@ public class TransactionBlServiceImpl implements TransactionBlService {
      * @return
      */
     private GetReceiptCodeResponse checkAlipayOnline(String imei, String userId) throws OrderNotPayedException {
-        WebSocketHandler.sendMessageToUser(imei, new TextMessage(String.valueOf(new CheckOnlineParameters(imei, userId))));
-
+        Boolean beensent = WebSocketHandler.sendMessageToUser(imei, new TextMessage(String.valueOf(new CheckOnlineParameters(imei, userId))));
+        System.out.println("1111111111111111111");
+        if (!beensent)
+            return null;
+        System.out.println("22222222222222222222222");
         Thread thread = Thread.currentThread();
         WebSocketHandler.mapThread.put(imei, thread);
         try {
-            thread.sleep(10000);
+            thread.sleep(8000);
         } catch (InterruptedException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
+            System.out.println("aaaaaaaaaaaaaaaaaaaaaa");
         }
-
+        System.out.println("333333333333333333333333");
+        WebSocketHandler.mapThread.remove(imei);
         TextMessage textMessage = WebSocketHandler.msgMap.get(imei);
-        System.out.println(textMessage.toString());
-        if (textMessage == null || StringUtils.isBlank(textMessage.getPayload())) return null;
+        System.out.println(textMessage);
+        System.out.println("4444444444444444444444");
+        if (textMessage == null || StringUtils.isBlank(textMessage.getPayload())){
+            try {
+                WebSocketHandler.msgMap.remove(imei);
+                WebSocketHandler.socketSessionMap.get(imei).close();
+                WebSocketHandler.socketSessionMap.remove(imei);
+                System.out.println("55555555555555555555555555555");
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbb");
+            }
+            return null;
+        }
+        System.out.println("666666666666666666666666");
         //{"cmd":"passcode","imei":"304517300097652","type":"alipay","status":"success","userid":"2088022126490523","qrcode":"","offqrcode":""}
         try {
             JSONObject jsonObject = new JSONObject(textMessage.getPayload());
+            WebSocketHandler.msgMap.remove(imei);
+            System.out.println("7777777777777777777777777");
             String cmd = jsonObject.getString("cmd");
             String type = jsonObject.getString("type");
             String im = jsonObject.getString("imei");
@@ -391,8 +411,10 @@ public class TransactionBlServiceImpl implements TransactionBlService {
             String qrCode = jsonObject.getString("qrcode");
             String offQrCode = jsonObject.getString("offqrcode");
             String status = jsonObject.getString("status");
+            System.out.println("8888888888888888888888");
             return new GetReceiptCodeResponse(cmd, type, im, status, "msg", userid, qrCode, offQrCode);
         } catch (JSONException e) {
+            System.out.println("9999999999999999999999999");
             return null;
         }
     }

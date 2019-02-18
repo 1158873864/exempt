@@ -7,26 +7,22 @@
         border>
         <!-- <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column> -->
         <el-table-column prop="name" label="商户名"  align="center"></el-table-column>
-        <el-table-column prop="alipayp" label="支付宝点位"  align="center"></el-table-column>
-        <el-table-column prop="wechatp" label="微信号点位"  align="center"></el-table-column>
         <el-table-column prop="priority" label="等级"  align="center"></el-table-column>
         <el-table-column prop="balance" label="余额"  align="center"></el-table-column>
         <el-table-column prop="applyId" label="操作上级id"  align="center"></el-table-column>
         <el-table-column prop="addTimep" label="添加时间"  align="center" min-width="70%"></el-table-column>
         <el-table-column prop="statusp" label="状态"  align="center">
-             <template slot-scope="{row}">
-            <el-button type="success" size="small" v-if="row.status=='启用'">启用</el-button>
-            <!-- <el-tag type="success" v-if="row.status=='审批通过'">{{ row.approvalTime }}</el-tag> -->
-            <el-button type="info" size="small" v-else-if="row.status=='停用'">停用</el-button>
-             <!-- <el-tag type="warning" v-if="row.status=='等待审批'">{{ row.addTime }}</el-tag> -->
+            <template slot-scope="{row}">
+                <el-button type="success" size="small" v-if="row.status=='启用'">启用</el-button>
+                <!-- <el-tag type="success" v-if="row.status=='审批通过'">{{ row.approvalTime }}</el-tag> -->
+                <el-button type="info" size="small" v-else-if="row.status=='停用'">停用</el-button>
+                <!-- <el-tag type="warning" v-if="row.status=='等待审批'">{{ row.addTime }}</el-tag> -->
             </template>
         </el-table-column>
         <el-table-column label="操作" fixed="right" align="center" >
             <template scope="scope" >
-                <el-button size="small" 
-                        @click="openDialog(scope.$index,scope.row)">修改</el-button>
-            </template>
-                
+                <el-button size="small" @click="openDialog(scope.$index,scope.row)">查看或修改</el-button>
+            </template>    
         </el-table-column>
         <!-- <el-table-column prop="approvalTime" label="审批时间"  align="center"></el-table-column> -->
         
@@ -44,7 +40,7 @@
         :total="total">
         </el-pagination>
     </div>
-      <el-dialog title="修改商户信息" :visible.sync="dialogFormVisible">
+      <el-dialog title="查看或修改商户信息" :visible.sync="dialogFormVisible">
             <el-form ref="form" :model="newRow.user" :rules="addRules" label-width="13%">
                 <el-form-item label="用户名" prop="username">
                     <el-input v-model="newRow.user.username" placeholder="用户名" style="width:90%;"></el-input>
@@ -69,7 +65,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="支付宝点位">
-                    <el-input v-model="newRow.alipay" placeholder="支付宝点位" style="width:10%;"></el-input>%
+                    <el-button type="primary" @click="alipayRateDialogFormVisible = true">查看或修改支付宝点位</el-button>  
                 </el-form-item>
                 <el-form-item label="微信点位">
                     <el-input v-model="newRow.wechat" placeholder="微信点位" style="width:10%;"></el-input>%
@@ -78,6 +74,29 @@
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
                 <el-button type="primary" @click="updateSupplier('form')">确 定</el-button>
+            </div>
+    </el-dialog>
+      <el-dialog title="支付宝点位信息" :visible.sync="alipayRateDialogFormVisible">
+            <el-form  :model="newRow"  label-width="30%">
+                <el-form-item label="转账通码点位">
+                    <el-input v-model="newRow.alipay_TPASS" style="width: 30%;"  placeholder="转账通码点位"></el-input>%
+                </el-form-item>
+                <el-form-item label="转账固码点位">
+                    <el-input v-model="newRow.alipay_TSOLID" style="width: 30%;"  placeholder="转账固码点位"></el-input>%
+                </el-form-item>
+                <el-form-item label="收款通码离线码点位">
+                    <el-input v-model="newRow.alipay_RPASSOFF" style="width: 30%;"  placeholder="收款通码离线码点位"></el-input>%
+                </el-form-item>
+                <el-form-item label="收款通码在线码点位">
+                    <el-input v-model="newRow.alipay_RPASSQR" style="width: 30%;"  placeholder="收款通码在线码点位"></el-input>%
+                </el-form-item>
+                <el-form-item label="收款固码(二开)点位">
+                    <el-input v-model="newRow.alipay_RSOLID" style="width: 30%;"  placeholder="收款固码(二开)点位"></el-input>%
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="alipayRateDialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="alipayRateDialogFormVisible = false">确 定</el-button>
             </div>
     </el-dialog>
   </div>
@@ -151,6 +170,7 @@ import {getTime} from '@/utils/index'
                     },
                 newRowIndex:1,
                 dialogFormVisible: false,
+                alipayRateDialogFormVisible:false,
                 searchStr: '', // 新增
                 options: [
                 {
@@ -202,12 +222,18 @@ import {getTime} from '@/utils/index'
                 this.$refs[formName].validate((valid) => {
                  if (valid) {
                 updateMerchant(this.newRow.user.id,
-                this.newRow.alipay,
-                this.newRow.priority,
+                this.newRow.level,
                 this.newRow.user.username,
                 this.newRow.user.password,
                 this.newRow.user.status,
-                this.newRow.wechat).then(response=> {
+                this.newRow.wechat,
+                this.newRow.alipay_TPASS,
+                this.newRow.alipay_TSOLID,
+                this.newRow.alipay_RPASSOFF,
+                this.newRow.alipay_RPASSQR,
+                this.newRow.alipay_RSOLID
+                ).then(response=> {
+                    this.dialogFormVisible = false;
                     if(response.code!=200){
                         this.$message({
                             message: response.data.description,
@@ -215,7 +241,6 @@ import {getTime} from '@/utils/index'
                         });
                     }else{
                         // this.teams[this.newRowIndex].priority = this.newRow.level;
-                        this.dialogFormVisible = false;
                         this.getData();
                          this.$message({
                             message: '修改成功',
@@ -234,7 +259,6 @@ import {getTime} from '@/utils/index'
                 //this.newRow = JSON.parse(JSON.stringify(row));
                 this.newRow = row;
                 this.newRow.level = row.priority;
-
             },
             handleSizeChange(val) {
                 console.log(`每页 ${val} 条`);

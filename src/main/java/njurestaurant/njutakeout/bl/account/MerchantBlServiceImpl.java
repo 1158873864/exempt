@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,28 +70,32 @@ public class MerchantBlServiceImpl implements MerchantBlService {
             throw new WrongIdException();
         } else {
             User user = userDao.findUserById(id);
-            if (!user.getUsername().equals( merchantUpdateParameters.getName())) {
+            if (!user.getUsername().equals(merchantUpdateParameters.getName())) {
                 if (userDao.findUserByUsername(merchantUpdateParameters.getName()) != null)
                     throw new UsernameIsExistentException();
                 else {
 
-                //           user.setOriginPassword(RSAUtils.encryptedDataOnJava(merchantUpdateParameters.getPassword(), publicKey));
+                    //           user.setOriginPassword(RSAUtils.encryptedDataOnJava(merchantUpdateParameters.getPassword(), publicKey));
 //            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 //            if(!user.getPassword().equals(merchantUpdateParameters.getPassword()))
 //                user.setPassword(encoder.encode(merchantUpdateParameters.getPassword()));
-                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-                merchant.setName(merchantUpdateParameters.getName());
-                user.setUsername(merchantUpdateParameters.getName());
-                user.setPassword(encoder.encode(merchantUpdateParameters.getPassword()));
-                userDataService.saveUser(user);
-                merchant.setUser(user);
-                merchant.setStatus(merchantUpdateParameters.getStatus());
-                merchant.setPriority(merchantUpdateParameters.getLevel());
-                merchant.setAlipay(merchantUpdateParameters.getAlipay());
-                merchant.setWechat(merchantUpdateParameters.getWechat());
-                return new MerchantAddResponse(merchantDataService.saveMerchant(merchant).getUser().getId());
+                    BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+                    merchant.setName(merchantUpdateParameters.getName());
+                    user.setUsername(merchantUpdateParameters.getName());
+                    user.setPassword(encoder.encode(merchantUpdateParameters.getPassword()));
+                    userDataService.saveUser(user);
+                    merchant.setUser(user);
+                    merchant.setStatus(merchantUpdateParameters.getStatus());
+                    merchant.setPriority(merchantUpdateParameters.getLevel());
+                    merchant.setAlipay_TPASS(merchantUpdateParameters.getAlipay_TPASS());
+                    merchant.setAlipay_TSOLID(merchantUpdateParameters.getAlipay_TSOLID());
+                    merchant.setAlipay_RPASSOFF(merchantUpdateParameters.getAlipay_RPASSOFF());
+                    merchant.setAlipay_RPASSQR(merchantUpdateParameters.getAlipay_RPASSQR());
+                    merchant.setAlipay_RSOLID(merchantUpdateParameters.getAlipay_RSOLID());
+                    merchant.setWechat(merchantUpdateParameters.getWechat());
+                    return new MerchantAddResponse(merchantDataService.saveMerchant(merchant).getUser().getId());
                 }
-            }else {
+            } else {
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
                 merchant.setName(merchantUpdateParameters.getName());
                 user.setUsername(merchantUpdateParameters.getName());
@@ -99,7 +104,11 @@ public class MerchantBlServiceImpl implements MerchantBlService {
                 merchant.setUser(user);
                 merchant.setStatus(merchantUpdateParameters.getStatus());
                 merchant.setPriority(merchantUpdateParameters.getLevel());
-                merchant.setAlipay(merchantUpdateParameters.getAlipay());
+                merchant.setAlipay_TPASS(merchantUpdateParameters.getAlipay_TPASS());
+                merchant.setAlipay_TSOLID(merchantUpdateParameters.getAlipay_TSOLID());
+                merchant.setAlipay_RPASSOFF(merchantUpdateParameters.getAlipay_RPASSOFF());
+                merchant.setAlipay_RPASSQR(merchantUpdateParameters.getAlipay_RPASSQR());
+                merchant.setAlipay_RSOLID(merchantUpdateParameters.getAlipay_RSOLID());
                 merchant.setWechat(merchantUpdateParameters.getWechat());
                 return new MerchantAddResponse(merchantDataService.saveMerchant(merchant).getUser().getId());
             }
@@ -126,9 +135,9 @@ public class MerchantBlServiceImpl implements MerchantBlService {
 //            merchant.setUser(user);
 //            merchant.setAlipay(merchantApprovalParameters.getAlipay());
 //            merchant.setWechat(merchantApprovalParameters.getWechat());
-//            merchant.setApproverId(merchantApprovalParameters.getApproverId());
+                merchant.setApproverId(merchantApprovalParameters.getApproverId());
 //            merchant.setPriority(merchantApprovalParameters.getLevel());
-//            merchant.setApprovalTime(new Date());
+                merchant.setApprovalTime(new Date());
             if (merchantApprovalParameters.getStatus() == 1) {
                 merchant.setStatus("启用");
             } else if (merchantApprovalParameters.getStatus() == 0) {
@@ -170,6 +179,11 @@ public class MerchantBlServiceImpl implements MerchantBlService {
     public List<Merchant> findMerchantsByState(String status) {
         List<Merchant> merchantList = merchantDataService.getMerchantsByState(status);
         return JSONFilter(merchantList);
+    }
+
+    @Override
+    public Merchant findMerchantByMerchantName(String merchantName) {
+        return merchantDao.findByName(merchantName);
     }
 
     private List<Merchant> JSONFilter(List<Merchant> merchantList) {

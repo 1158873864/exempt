@@ -7,8 +7,6 @@
         border>
         <!-- <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column> -->
         <el-table-column prop="name" label="商户名"  align="center"></el-table-column>
-        <el-table-column prop="alipayp" label="支付宝点位"  align="center"></el-table-column>
-        <el-table-column prop="wechatp" label="微信点位"  align="center"></el-table-column>
         <el-table-column prop="priority" label="等级"  align="center"></el-table-column>
         <el-table-column prop="balance" label="余额"  align="center"></el-table-column>
         <el-table-column prop="applyId" label="操作上级id"  align="center"></el-table-column>
@@ -24,7 +22,7 @@
         <el-table-column label="操作" fixed="right" align="center" >
             <template scope="scope" >
                 <el-button size="small" 
-                        @click="openDialog(scope.$index,scope.row)">修改</el-button>
+                        @click="openDialog(scope.$index,scope.row)">查看或修改</el-button>
             </template>
                 
         </el-table-column>
@@ -44,7 +42,7 @@
         :total="total">
         </el-pagination>
     </div>
-      <el-dialog title="修改商户信息" :visible.sync="dialogFormVisible">
+      <el-dialog title="查看或修改商户信息" :visible.sync="dialogFormVisible">
             <el-form ref="form" :model="newRow.user" :rules="addRules" label-width="13%">
                 <el-form-item label="用户名" prop="username">
                     <el-input v-model="newRow.user.username" placeholder="用户名" style="width:90%;"></el-input>
@@ -52,34 +50,38 @@
                 <el-form-item label="密码" prop="password">
                     <el-input v-model="newRow.user.password" type="password" placeholder="密码" style="width:90%;"></el-input>
                 </el-form-item>
-                <!-- <el-form-item label="状态" >
-                    <el-select v-model="newRow.user.status" placeholder="启用" style="width:20%;">
-                    <el-option label="启用" value="启用"></el-option>
-                    <el-option label="停用" value="停用"></el-option>
-                    </el-select>
-                </el-form-item> 
-                <el-form-item label="等级">
-                    <el-select v-model="newRow.priority" placeholder="请选择" style="width:10%;">
-                        <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                        ></el-option>
-                    </el-select>
-                </el-form-item>
                 <el-form-item label="支付宝点位">
-                    <el-input v-model="newRow.alipay" placeholder="支付宝点位" style="width:10%;"></el-input>%
+                    <el-button type="primary" @click="alipayRateDialogFormVisible = true">查看支付宝点位</el-button>  
                 </el-form-item>
-                <el-form-item label="微信点位">
-                    <el-input v-model="newRow.wechat" placeholder="微信点位" style="width:10%;"></el-input>%
-                </el-form-item> -->
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
                 <el-button type="primary" @click="updateSupplier('form')">确 定</el-button>
             </div>
     </el-dialog>
+    <el-dialog title="支付宝点位信息" :visible.sync="alipayRateDialogFormVisible">
+            <el-form  :model="newRow"  label-width="30%">
+                <el-form-item label="转账通码点位:">
+                    <div>{{'&#12288;'+newRow.alipay_TPASS+"%"}}</div>
+                </el-form-item>
+                <el-form-item label="转账固码点位:">
+                    <div>{{'&#12288;'+newRow.alipay_TSOLID+"%"}}</div>
+                </el-form-item>
+                <el-form-item label="收款通码离线码点位:">
+                    <div>{{'&#12288;'+newRow.alipay_RPASSOFF+"%"}}</div>
+                </el-form-item>
+                <el-form-item label="收款通码在线码点位:">
+                    <div>{{'&#12288;'+newRow.alipay_RPASSQR+"%"}}</div>
+                </el-form-item>
+                <el-form-item label="收款固码(二开)点位:">
+                    <div>{{'&#12288;'+newRow.alipay_RSOLID+"%"}}</div>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="alipayRateDialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="alipayRateDialogFormVisible = false">确 定</el-button>
+            </div>
+        </el-dialog>
   </div>
 </template>
 <script>
@@ -151,6 +153,7 @@ import {getTime} from '@/utils/index'
                     },
                 newRowIndex:1,
                 dialogFormVisible: false,
+                alipayRateDialogFormVisible:false,
                 searchStr: '', // 新增
                 options: [
                 {
@@ -202,12 +205,16 @@ import {getTime} from '@/utils/index'
                 this.$refs[formName].validate((valid) => {
                  if (valid) {
                 updateMerchant(this.newRow.user.id,
-                this.newRow.alipay,
-                this.newRow.priority,
+                this.newRow.level,
                 this.newRow.user.username,
                 this.newRow.user.password,
-                this.newRow.user.status,
-                this.newRow.wechat).then(response=> {
+                this.newRow.status,
+                this.newRow.wechat,
+                this.newRow.alipay_TPASS,
+                this.newRow.alipay_TSOLID,
+                this.newRow.alipay_RPASSOFF,
+                this.newRow.alipay_RPASSQR,
+                this.newRow.alipay_RSOLID).then(response=> {
                     if(response.code!=200){
                         this.$message({
                             message: response.data.description,

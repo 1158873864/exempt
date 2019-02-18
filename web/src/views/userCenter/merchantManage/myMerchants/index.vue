@@ -1,6 +1,6 @@
 <template>
     <div class="app-container">
-    <div>所有商户</div>
+    <div>我的商户</div>
      <el-input v-model="searchStr" suffix-icon="el-icon-search" placeholder="请输入搜索内容"></el-input>
         <el-table
         :data="filterData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
@@ -8,10 +8,8 @@
         style="width: 100%">
         <!-- <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column> -->
         <el-table-column prop="name" label="商户名"  align="center"></el-table-column>
-        <el-table-column prop="alipayp" label="支付宝点位"  align="center"></el-table-column>
-        <el-table-column prop="wechatp" label="微信号点位"  align="center"></el-table-column>
         <el-table-column prop="balance" label="余额"  align="center"></el-table-column>
-        <el-table-column prop="applyId" label="代理商"  align="center"></el-table-column>
+        <el-table-column prop="applyId" label="代理商id"  align="center"></el-table-column>
         <el-table-column prop="addTimep" label="申请时间"  align="center"></el-table-column>
         <el-table-column prop="statusp" label="状态"  align="center">
              <template slot-scope="{row}">
@@ -24,7 +22,7 @@
         <el-table-column label="操作" fixed="right" align="center" >
             <template scope="scope" >
                 <el-button size="small" 
-                        @click="openDialog(scope.$index,scope.row)">修改</el-button>
+                        @click="openDialog(scope.$index,scope.row)">查看或修改</el-button>
             </template>
         </el-table-column>
         <!-- <el-table-column prop="approvalTime" label="审批时间"  align="center"></el-table-column> -->
@@ -43,43 +41,91 @@
         :total="total">
         </el-pagination>
     </div>
-      <el-dialog title="修改商户信息" :visible.sync="dialogFormVisible">
-            <el-form :model="newRow">
-                <el-form-item label="用户名">
-                    <el-input v-model="newRow.user.username" placeholder="area"></el-input>
+        <el-dialog title="查看或修改商户信息" :visible.sync="dialogFormVisible">
+            <el-form ref="form" :model="newRow.user" :rules="addRules" label-width="13%">
+                <el-form-item label="用户名" prop="username">
+                    <el-input v-model="newRow.user.username" placeholder="用户名" style="width:90%;"></el-input>
                 </el-form-item>
-                <el-form-item label="密码">
-                    <el-input v-model="newRow.user.password" type="password" placeholder="area"></el-input>
+                <el-form-item label="密码" prop="password">
+                    <el-input v-model="newRow.user.password" type="password" placeholder="密码" style="width:90%;"></el-input>
                 </el-form-item>
-                <el-form-item label="状态">
-                    <el-select v-model="newRow.user.status" placeholder="启用">
+                <el-form-item label="状态" >
+                    <el-select v-model="newRow.user.status" placeholder="启用" style="width:20%;">
                     <el-option label="启用" value="启用"></el-option>
                     <el-option label="停用" value="停用"></el-option>
                     </el-select>
-                </el-form-item>
+                </el-form-item> 
                 <el-form-item label="等级">
-                    <el-input v-model="newRow.level" placeholder="area"></el-input>
+                    <el-select v-model="newRow.priority" placeholder="请选择" style="width:10%;">
+                        <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                        ></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="支付宝点位">
-                    <el-input v-model="newRow.alipay" placeholder="area"></el-input>
+                    <el-button type="primary" @click="alipayRateDialogFormVisible = true">查看或修改支付宝点位</el-button>  
                 </el-form-item>
                 <el-form-item label="微信点位">
-                    <el-input v-model="newRow.wechat" placeholder="password"></el-input>
+                    <el-input v-model="newRow.wechat" placeholder="微信点位" style="width:10%;"></el-input>%
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="updateSupplier">确 定</el-button>
+                <el-button type="primary" @click="updateSupplier('form')">确 定</el-button>
+            </div>
+    </el-dialog>
+      <el-dialog title="支付宝点位信息" :visible.sync="alipayRateDialogFormVisible">
+            <el-form  :model="newRow"  label-width="30%">
+                <el-form-item label="转账通码点位">
+                    <el-input v-model="newRow.alipay_TPASS" style="width: 30%;"  placeholder="转账通码点位"></el-input>%
+                </el-form-item>
+                <el-form-item label="转账固码点位">
+                    <el-input v-model="newRow.alipay_TSOLID" style="width: 30%;"  placeholder="转账固码点位"></el-input>%
+                </el-form-item>
+                <el-form-item label="收款通码离线码点位">
+                    <el-input v-model="newRow.alipay_RPASSOFF" style="width: 30%;"  placeholder="收款通码离线码点位"></el-input>%
+                </el-form-item>
+                <el-form-item label="收款通码在线码点位">
+                    <el-input v-model="newRow.alipay_RPASSQR" style="width: 30%;"  placeholder="收款通码在线码点位"></el-input>%
+                </el-form-item>
+                <el-form-item label="收款固码(二开)点位">
+                    <el-input v-model="newRow.alipay_RSOLID" style="width: 30%;"  placeholder="收款固码(二开)点位"></el-input>%
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="alipayRateDialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="alipayRateDialogFormVisible = false">确 定</el-button>
             </div>
     </el-dialog>
   </div>
 </template>
 <script>
 import { merchantsMy,updateMerchant } from '@/api/role'
+import { isvalidUsername,isvalidPassword } from '@/utils/validate'  
 import store from '../../../../store'
 import {getTime} from '@/utils/index'
     export default {
         data() {
+             const validateUsername = (rule, value, callback) => {
+            console.log(rule)
+            console.log(value)
+            console.log(callback)
+            if (!isvalidUsername(value)) {
+                callback(new Error('请输入正确的用户名（只能由英文字母组成）'))
+            } else {
+                callback()
+            }
+            }
+            const validatePass = (rule, value, callback) => {
+            if (!isvalidPassword(value)) {
+                callback(new Error('必须包含字母和数字且超过8位'))
+            } else {
+                callback()
+            }
+            }
             return {
                 teams:[{
                     "addTime": "2019-01-17T16:37:02.184Z",	//申请时间
@@ -125,7 +171,13 @@ import {getTime} from '@/utils/index'
                     },
                 newRowIndex:1,
                 dialogFormVisible: false,
+                alipayRateDialogFormVisible:false,
                 searchStr: '', // 新增
+                 addRules: {
+                username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+                password: [{ required: true, trigger: 'blur', validator: validatePass }]
+                // post: [{ required: true, trigger: 'blur', validator: validateEmpty }]
+              },
             }
         },
         computed: {
@@ -145,14 +197,21 @@ import {getTime} from '@/utils/index'
             this.getData();
         },
         methods: {
-             updateSupplier() {
-                updateMerchant(this.newRow.id,
-                this.newRow.alipay,
+            
+           updateSupplier(formName) {
+                this.$refs[formName].validate((valid) => {
+                 if (valid) {
+                updateMerchant(this.newRow.user.id,
                 this.newRow.level,
-                this.newRow.user.name,
+                this.newRow.user.username,
                 this.newRow.user.password,
                 this.newRow.user.status,
-                this.newRow.wechat).then(response=> {
+                this.newRow.wechat,
+                this.newRow.alipay_TPASS,
+                this.newRow.alipay_TSOLID,
+                this.newRow.alipay_RPASSOFF,
+                this.newRow.alipay_RPASSQR,
+                this.newRow.alipay_RSOLID).then(response=> {
                     if(response.code!=200){
                         this.$message({
                             message: response.data.description,
@@ -166,6 +225,11 @@ import {getTime} from '@/utils/index'
                             message: '修改成功',
                             type: 'success'
                         });
+                    }
+                });
+                } else {
+                    console.log('error submit!!');
+                    return false;
                     }
                 });
             },

@@ -55,7 +55,9 @@
       <div class="text item">{{ '状 &#x3000;态: ' + info.status }}</div>
       <div class="text item">{{ '角 &#x3000;色: ' + userInfo.role_ch }}</div>
       <div class="text item">{{ '等&#x3000;级: ' + info.priority }}</div>
-      <div class="text item">{{ '支付宝点位: ' + info.alipay + '%' }}</div>
+      <div class="text item">{{ '支付宝点位: '}}
+        <el-button size="small" @click="alipayRate()">查看</el-button>
+      </div>
       <div class="text item">{{ '微信点位: ' + info.wechat + '%' }}</div>
       <el-form>
         <el-form-item>{{ '余额:' + info.balance }}</el-form-item>
@@ -64,6 +66,29 @@
         </el-form-item>
       </el-form>
     </el-card>
+    <el-dialog title="支付宝点位信息" :visible.sync="alipayRateDialogFormVisible">
+            <el-form  :model="info"  label-width="30%">
+                <el-form-item label="转账通码点位:">
+                    <div>{{'&#12288;'+info.alipay_TPASS+"%"}}</div>
+                </el-form-item>
+                <el-form-item label="转账固码点位:">
+                    <div>{{'&#12288;'+info.alipay_TSOLID+"%"}}</div>
+                </el-form-item>
+                <el-form-item label="收款通码离线码点位:">
+                    <div>{{'&#12288;'+info.alipay_RPASSOFF+"%"}}</div>
+                </el-form-item>
+                <el-form-item label="收款通码在线码点位:">
+                    <div>{{'&#12288;'+info.alipay_RPASSQR+"%"}}</div>
+                </el-form-item>
+                <el-form-item label="收款固码(二开)点位:">
+                    <div>{{'&#12288;'+info.alipay_RSOLID+"%"}}</div>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="alipayRateDialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="alipayRateDialogFormVisible = false">确 定</el-button>
+            </div>
+        </el-dialog>
     <!-- <el-table :data="list" style="width: 100%;padding-top: 15px;">
       <el-table-column label="卡号" min-width="200" prop="cardNumber"></el-table-column>
       <el-table-column label="姓名" min-width="200" prop="name"></el-table-column>
@@ -132,6 +157,7 @@ export default {
       userInfo: {},
       newRowIndex: 1,
       dialogFormVisible: false,
+      alipayRateDialogFormVisible:false,
       newRow: {
         cardId: "",
         id: 0,
@@ -150,6 +176,9 @@ export default {
       this.newRow.id = store.getters.uid;
       // console.log("opendialog");
       //this.newRow = JSON.parse(JSON.stringify(row));
+    },
+    alipayRate(){
+      this.alipayRateDialogFormVisible = true;
     },
     fetchData() {
       getInfo(store.getters.uid).then(response => {

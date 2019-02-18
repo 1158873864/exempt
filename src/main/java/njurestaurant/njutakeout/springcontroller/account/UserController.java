@@ -209,9 +209,11 @@ public class UserController {
         } else {
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
             User user = new User(merchantAddParameters.getUsername(), encoder.encode(merchantAddParameters.getPassword()), 3, new ArrayList<>());
-            Merchant merchant = new Merchant(merchantAddParameters.getAlipay(), merchantAddParameters.getWechat(), 0, merchantAddParameters.getStatus(), new Date(), merchantAddParameters.getUsername(), merchantAddParameters.getApplyId(), user, merchantAddParameters.getLevel());
-            if (userDataService.getUserById(merchantAddParameters.getApplyId()).getRole() == 2)
-                merchant.setStatus("停用");//代理商新增商户需要等待管理员审批，所以账号暂时不可用
+            Merchant merchant = new Merchant(merchantAddParameters.getAlipay_TPASS(),merchantAddParameters.getAlipay_TSOLID(),merchantAddParameters.getAlipay_RPASSOFF(),
+                    merchantAddParameters.getAlipay_RPASSQR(),merchantAddParameters.getAlipay_RSOLID(), merchantAddParameters.getWechat(), 0, merchantAddParameters.getStatus(),
+                    new Date(), merchantAddParameters.getUsername(), merchantAddParameters.getApplyId(), user, merchantAddParameters.getLevel());
+//            if (userDataService.getUserById(merchantAddParameters.getApplyId()).getRole() == 2)
+//                merchant.setStatus("申请启用");//代理商新增商户需要等待管理员审批，所以账号暂时不可用
             MerchantAddResponse merchantAddResponse = merchantBlService.addMerchant(merchant);
             user.setTableId(merchant.getId());
             userBlService.updateUser(user);
@@ -507,5 +509,14 @@ public class UserController {
             return new ResponseEntity<>(new JSONResponse(200, e.getResponse()), HttpStatus.OK);
         }
     }
-
+    @ApiOperation(value = "查看某个商户", notes = "查看某个商户")
+    @RequestMapping(value = "merchant/{merchantName}", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = SuccessResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> getMerchantRate(@PathVariable("merchantName")String merchantName) {
+        return new ResponseEntity<>(new JSONResponse(200, merchantBlService.findMerchantByMerchantName(merchantName)), HttpStatus.OK);
+    }
 }

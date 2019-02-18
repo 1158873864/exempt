@@ -79,6 +79,11 @@ public class PlatformOrderBlServiceImpl implements PlatformOrderBlService {
         }
     }
 
+    @Override
+    public PlatformOrder findPlatformOrderByNumber(String number) {
+        return platformOrderDataService.findByNumber(number);
+    }
+
     /**
      * 查看全部订单明细
      *
@@ -140,6 +145,7 @@ public class PlatformOrderBlServiceImpl implements PlatformOrderBlService {
 
     @Override
     public PlatformOrder updatePlatformOrder(int id, PlatformUpdateParameters platformUpdateParameters) throws BlankInputException, OrderWrongInputException {
+        double rate;
         PlatformOrder platformOrder = platformOrderDataService.findById(id);
         if (platformOrder == null) {
             throw new OrderWrongInputException(new WrongResponse(9999, "订单不存在"));
@@ -157,8 +163,7 @@ public class PlatformOrderBlServiceImpl implements PlatformOrderBlService {
                                 platformUpdateParameters.getRealPay(), platformUpdateParameters.getMemo(), date);
                         alipayOrderDataService.saveAlipayOrder(alipayOrder);
                         System.out.println("#######################################2");
-                    }
-                    else if (platformOrder.getState() == PAID) {
+                    } else if (platformOrder.getState() == PAID) {
                         throw new OrderWrongInputException(new WrongResponse(9997, "不允许修改已支付订单"));
                     }
                     platformOrder.setMoney(platformUpdateParameters.getMoney());
@@ -175,7 +180,7 @@ public class PlatformOrderBlServiceImpl implements PlatformOrderBlService {
                         Merchant merchant = merchantDataService.findMerchantById(user.getTableId());
                         User suser = userDataService.getUserById(merchant.getApplyId());
                         if (merchant != null) {
-                            merchant.setBalance(merchant.getBalance() + platformUpdateParameters.getRealPay() * (1 - merchant.getAlipay() / 100));
+                            merchant.setBalance(merchant.getBalance() + platformUpdateParameters.getRealPay() * (1 - getRate(platformOrder.getCodetype(),merchant) / 100));
                             merchantDataService.saveMerchant(merchant);
                         }
                         System.out.println("#######################################5");
@@ -195,9 +200,9 @@ public class PlatformOrderBlServiceImpl implements PlatformOrderBlService {
                                 }
                                 // 计算代理的每日流量
                                 if (AgentDailyFlow.flow.containsKey(agent.getId())) {
-                                    AgentDailyFlow.flow.put(agent.getId(), AgentDailyFlow.flow.get(agent.getId()) + platformUpdateParameters.getRealPay() * (1 - merchant.getAlipay() / 100));
+                                    AgentDailyFlow.flow.put(agent.getId(), AgentDailyFlow.flow.get(agent.getId()) + platformUpdateParameters.getRealPay() * (1 - getRate(platformOrder.getCodetype(),merchant)  / 100));
                                 } else {
-                                    AgentDailyFlow.flow.put(agent.getId(), platformUpdateParameters.getRealPay() * (1 - merchant.getAlipay() / 100));
+                                    AgentDailyFlow.flow.put(agent.getId(), platformUpdateParameters.getRealPay() * (1 - getRate(platformOrder.getCodetype(),merchant)  / 100));
                                 }
                                 // 计算代理的每日佣金
                                 if (AgentDailyFlow.commission.containsKey(agent.getId())) {
@@ -221,6 +226,22 @@ public class PlatformOrderBlServiceImpl implements PlatformOrderBlService {
         }
     }
 
+    public static double getRate(CodeType codeType, Merchant merchant) {
+        switch (codeType) {
+            case RPASSOFF: // 收款通码离线码
+                return merchant.getAlipay_RPASSOFF();
+            case RPASSQR:   //收款通码在线码
+                return merchant.getAlipay_RPASSQR();
+            case RSOLID:    // 收款固码
+                return merchant.getAlipay_RSOLID();
+            case TPASS: //转账通码
+                return merchant.getAlipay_TPASS();
+            case TSOLID:    //转账固码
+                return merchant.getAlipay_TSOLID();
+            default:
+                return 0;
+        }
+    }
 //    @Override
 //    public List<OrderListResponse> merchantOrderReportByUid(int uid) {
 //        // 找出全部商家的信息

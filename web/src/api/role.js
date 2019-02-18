@@ -33,22 +33,33 @@ export function addAgent(alipay,
   })
 }
 export function addMerchant(
-  alipay,
   applyId,
   level,
   password,
   username,
-  wechat) {
+  status,
+  wechat,
+   alipay_TPASS,
+   alipay_TSOLID,
+   alipay_RPASSOFF,
+   alipay_RPASSQR,
+   alipay_RSOLID
+  ) {
   return request({
     url: '/merchant/add',
     method: 'post',
     data: {
-      alipay,
       applyId,
       level,
       password,
       username,
+      status,
       wechat,
+      alipay_TPASS,
+      alipay_TSOLID,
+      alipay_RPASSOFF,
+      alipay_RPASSQR,
+      alipay_RSOLID
     }
   })
 }
@@ -91,22 +102,32 @@ export function deleteMerchant(aid) {
     }
   })
 }
-export function updateMerchant(uid, alipay,
+export function updateMerchant(uid,
   level,
   name,
   password,
   status,
-  wechat) {
+  wechat,
+  alipay_TPASS,
+  alipay_TSOLID,
+  alipay_RPASSOFF,
+  alipay_RPASSQR,
+  alipay_RSOLID
+  ) {
   return request({
     url: '/merchant/update/' + uid,
     method: 'put',
     data: {
-      alipay,
       level,
       name,
       password,
       status,
-      wechat
+      wechat,
+      alipay_TPASS,
+      alipay_TSOLID,
+      alipay_RPASSOFF,
+      alipay_RPASSQR,
+      alipay_RSOLID
     }
   })
 }
@@ -206,6 +227,10 @@ export function deviceUpdate(id,imei,status) {
     }
   })
 }
+export function deviceInfo(id,){
+
+}
+
 export function qrcode() {
   return request({
     url: '/internalaccountchange/qrcode',

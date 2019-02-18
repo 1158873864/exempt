@@ -8,7 +8,11 @@
             style="width: 100%">
             <el-table-column prop="mid" label="商户id"  align="center"></el-table-column>
             <el-table-column prop="user.username" label="用户名"  align="center"></el-table-column>
-            <el-table-column prop="alipayp" label="支付宝点位"  align="center"></el-table-column>
+            <el-table-column label="支付宝点位"  align="center">
+                  <template scope="scope">
+                        <el-button size="small" @click="alipayRate(scope.row)">查看</el-button>
+                    </template>
+            </el-table-column>
             <el-table-column prop="wechatp" label="微信点位"  align="center"></el-table-column>
             <!-- <el-table-column prop="approverId" label="审核人id"  align="center"></el-table-column> -->
             <el-table-column prop="priority" label="等级"  align="center"></el-table-column>
@@ -36,6 +40,29 @@
             :total=total>
             </el-pagination>
         </div>
+         <el-dialog title="支付宝点位信息" :visible.sync="alipayRateDialogFormVisible">
+            <el-form  :model="newRow"  label-width="30%">
+                <el-form-item label="转账通码点位:">
+                    <div>{{'&#12288;'+newRow.alipay_TPASS+"%"}}</div>
+                </el-form-item>
+                <el-form-item label="转账固码点位:">
+                    <div>{{'&#12288;'+newRow.alipay_TSOLID+"%"}}</div>
+                </el-form-item>
+                <el-form-item label="收款通码离线码点位:">
+                    <div>{{'&#12288;'+newRow.alipay_RPASSOFF+"%"}}</div>
+                </el-form-item>
+                <el-form-item label="收款通码在线码点位:">
+                    <div>{{'&#12288;'+newRow.alipay_RPASSQR+"%"}}</div>
+                </el-form-item>
+                <el-form-item label="收款固码(二开)点位:">
+                    <div>{{'&#12288;'+newRow.alipay_RSOLID+"%"}}</div>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="alipayRateDialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="alipayRateDialogFormVisible = false">确 定</el-button>
+            </div>
+    </el-dialog>
       </div>
     </template>
     
@@ -47,7 +74,7 @@
                 return {
                     activeNames: ['1'],
                     labelPosition: 'right',
-                    
+                    err: '&#12288;',
                     teams:[{
                         alipay:0,
                         approverId:0,
@@ -59,6 +86,10 @@
                         mid:0,
                         }
                     ],
+                    newRow:{
+                     
+                    },
+                    alipayRateDialogFormVisible :false,
                     currentPage:1
                 }
             },
@@ -72,6 +103,10 @@
                 // this.
             },
             methods: {
+                alipayRate(row){
+                    this.newRow = row ;
+                    this.alipayRateDialogFormVisible = true;
+                },
                 approval(index, row,status) {
                     // console.log(row);
                     ApprovalMer(

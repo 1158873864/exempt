@@ -202,7 +202,10 @@ public class TransactionBlServiceImpl implements TransactionBlService {
                     randomNumber = random.nextInt(len);
                     chosenSupplier = supplierList.get(randomNumber);
                     supplierList.remove(randomNumber);
-
+                    if (getQrCodeParameters.getCodeType() != chosenSupplier.getCodeType()){
+                        len--;
+                        continue;
+                    }
                     // 查找该用户设备
                     List<Device> devices = chosenSupplier.getDevices();
                     int dLen = devices.size();

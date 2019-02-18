@@ -351,7 +351,13 @@ export const asyncRouterMap = [
         name: 'qrcodePersonal',
         component: () => import('@/views/userCenter/qrCode/index'),
         meta: { title: '获取二维码', role: ['用户中心'] },
-      }
+      },
+      // {
+      //   path: 'test',
+      //   name: 'test',
+      //   component: () => import('@/views/test.htm'),
+      //   meta: { title: 'test' }
+      // }
     ]
   },
 

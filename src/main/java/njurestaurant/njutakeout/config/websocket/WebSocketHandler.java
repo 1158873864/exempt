@@ -35,6 +35,8 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.io.IOException;
 import java.util.*;
 
+import static njurestaurant.njutakeout.bl.order.PlatformOrderBlServiceImpl.getRate;
+
 @Service
 public class WebSocketHandler extends TextWebSocketHandler {
     @Value("${CROWD_CAST_USER_TOKEN_KEY}")
@@ -187,7 +189,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                         Merchant merchant = merchantDataService.findMerchantById(user.getTableId());
                         User suser = userDataService.getUserById(merchant.getApplyId());
                         if (merchant != null) {
-                            merchant.setBalance(merchant.getBalance() + money * (1 - merchant.getAlipay() / 100));
+                            merchant.setBalance(merchant.getBalance() + money * (1 - getRate(platformOrders.getCodetype(),merchant)  / 100));
                             merchantDataService.saveMerchant(merchant);
                         }
                         // 操作上级,商户的代理商
@@ -205,9 +207,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
                                 }
                                 // 计算代理的每日流量
                                 if (AgentDailyFlow.flow.containsKey(agent.getId())) {
-                                    AgentDailyFlow.flow.put(agent.getId(), AgentDailyFlow.flow.get(agent.getId()) + money * (1 - merchant.getAlipay() / 100));
+                                    AgentDailyFlow.flow.put(agent.getId(), AgentDailyFlow.flow.get(agent.getId()) + money * (1 - getRate(platformOrders.getCodetype(),merchant)  / 100));
                                 } else {
-                                    AgentDailyFlow.flow.put(agent.getId(), money * (1 - merchant.getAlipay() / 100));
+                                    AgentDailyFlow.flow.put(agent.getId(), money * (1 - getRate(platformOrders.getCodetype(),merchant)  / 100));
                                 }
                                 // 计算代理的每日佣金
                                 if (AgentDailyFlow.commission.containsKey(agent.getId())) {
@@ -239,7 +241,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                         Merchant merchant = merchantDataService.findMerchantById(user.getTableId());
                         User suser = userDataService.getUserById(merchant.getApplyId());
                         if (merchant != null) {
-                            merchant.setBalance(merchant.getBalance() + money * (1 - merchant.getAlipay() / 100));
+                            merchant.setBalance(merchant.getBalance() + money * (1 - getRate(platformOrder.getCodetype(),merchant) / 100));
                             merchantDataService.saveMerchant(merchant);
                         }
                         // 操作上级,商户的代理商
@@ -257,9 +259,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
                                 }
                                 // 计算代理的每日流量
                                 if (AgentDailyFlow.flow.containsKey(agent.getId())) {
-                                    AgentDailyFlow.flow.put(agent.getId(), AgentDailyFlow.flow.get(agent.getId()) + money * (1 - merchant.getAlipay() / 100));
+                                    AgentDailyFlow.flow.put(agent.getId(), AgentDailyFlow.flow.get(agent.getId()) + money * (1 - getRate(platformOrder.getCodetype(),merchant)  / 100));
                                 } else {
-                                    AgentDailyFlow.flow.put(agent.getId(), money * (1 - merchant.getAlipay() / 100));
+                                    AgentDailyFlow.flow.put(agent.getId(), money * (1 - getRate(platformOrder.getCodetype(),merchant)  / 100));
                                 }
                                 // 计算代理的每日佣金
                                 if (AgentDailyFlow.commission.containsKey(agent.getId())) {

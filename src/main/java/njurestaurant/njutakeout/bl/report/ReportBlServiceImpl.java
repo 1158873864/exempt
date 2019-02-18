@@ -25,6 +25,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static njurestaurant.njutakeout.bl.order.PlatformOrderBlServiceImpl.getRate;
+
 @Service
 public class ReportBlServiceImpl implements ReportBlService {
     private final PlatformOrderDataService platformOrderDataService;
@@ -152,7 +154,7 @@ public class ReportBlServiceImpl implements ReportBlService {
                             Merchant merchant = merchantMap.get(platformOrder.getUid());
                             switch (platformOrder.getType()) {
                                 case "alipay":
-                                    merchantReportResponse.setAvailiableDeposit(merchantReportResponse.getAvailiableDeposit() + platformOrder.getPayMoney() * (1 - merchant.getAlipay() / 100)); //
+                                    merchantReportResponse.setAvailiableDeposit(merchantReportResponse.getAvailiableDeposit() + platformOrder.getPayMoney() * (1 - getRate(platformOrder.getCodetype(),merchant)  / 100)); //
                                     break;
                                 case "wechat":
                                     merchantReportResponse.setAvailiableDeposit(merchantReportResponse.getAvailiableDeposit() + platformOrder.getPayMoney() * (1 - merchant.getWechat() / 100));
@@ -169,7 +171,7 @@ public class ReportBlServiceImpl implements ReportBlService {
                                                 merchantReportResponse.setAgentProfit(merchantReportResponse.getAgentProfit() + platformOrder.getPayMoney() * agent.getAlipay() / 100);    // 代理分润
                                             platformAnalyses = dailyAnalyse(merchantReportResponse.getPlatformAnalyseList(), "支付宝", platformOrder.getPayMoney());
                                             merchantReportResponse.setPlatformAnalyseList(platformAnalyses);    // 每日量分析
-                                            merchantReportResponse.setCompanyProfit((merchant.getAlipay()) / 100 * platformOrder.getPayMoney() + merchantReportResponse.getCompanyProfit());    // 公司分润
+                                            merchantReportResponse.setCompanyProfit(getRate(platformOrder.getCodetype(),merchant) / 100 * platformOrder.getPayMoney() + merchantReportResponse.getCompanyProfit());    // 公司分润
                                             break;
                                         case "wechat":  // 微信
                                             if (agent != null)
@@ -671,4 +673,5 @@ public class ReportBlServiceImpl implements ReportBlService {
 
         return supplierReportResponses;
     }
+
 }

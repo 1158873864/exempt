@@ -10,6 +10,7 @@ import njurestaurant.njutakeout.exception.*;
 import njurestaurant.njutakeout.parameters.app.GetQrCodeParameters;
 import njurestaurant.njutakeout.parameters.order.WithdrewDealParameters;
 import njurestaurant.njutakeout.parameters.order.WithdrewParameters;
+import njurestaurant.njutakeout.publicdatas.app.CodeType;
 import njurestaurant.njutakeout.publicdatas.order.OrderState;
 import njurestaurant.njutakeout.response.JSONResponse;
 import njurestaurant.njutakeout.response.Response;
@@ -67,6 +68,7 @@ public class TransactionController {
             return new ResponseEntity<>(new JSONResponse(1015, new FailedToLoadCodeResponse("failed", "订单未支付，不可获取二维码。")), HttpStatus.OK);
         }
     }
+
     @SystemControllerLog(descrption = "发起提现请求",actionType = "1")
     @ApiOperation(value = "发起提现请求", notes = "发起提现请求")
     @RequestMapping(value = "withdrew", method = RequestMethod.POST)

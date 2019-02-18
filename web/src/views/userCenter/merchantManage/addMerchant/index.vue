@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form ref="form" :model="form" label-width="100px" :rules="addRules">
+    <el-form ref="form" :model="form" label-width="150px" :rules="addRules">
       <el-form-item label="用户名" prop="username">
         <el-input v-model="form.username" style="width: 30%;" type="text"  placeholder="用户名"></el-input>
       </el-form-item>
@@ -19,16 +19,29 @@
         </el-select>
       </el-form-item>
         <el-form-item label="状态">
-                    <el-select v-model="form.status" placeholder="启用">
-                    <el-option label="申请启用" value="申请启用"></el-option>
-                    <!-- <el-option label="停用" value="停用"></el-option> -->
-                    </el-select>
-            </el-form-item>
+            <el-select v-model="form.status" placeholder="">
+              <el-option v-model="isAdmin_lable" :value="isAdmin_value" ></el-option>
+              <!-- <el-option label="停用" value="停用"></el-option> -->
+            </el-select>
+        </el-form-item>
+
       <el-form-item label="微信点位">
-        <el-input v-model="form.wechat" style="width: 10%;"  placeholder="微信点位"></el-input>%
+        <el-input v-model="form.wechat" style="width: 15%;"  placeholder="微信点位"></el-input>%
       </el-form-item>
-      <el-form-item label="支付宝点位">
-        <el-input v-model="form.alipay" style="width: 10%;"  placeholder="支付宝点位"></el-input>%
+      <el-form-item label="转账通码点位">
+        <el-input v-model="form.TPASS" style="width: 15%;"  placeholder="转账通码点位"></el-input>%
+      </el-form-item>
+      <el-form-item label="转账固码点位">
+        <el-input v-model="form.TSOLID" style="width: 15%;"  placeholder="转账固码点位"></el-input>%
+      </el-form-item>
+      <el-form-item label="收款通码离线码点位">
+        <el-input v-model="form.RPASSOFF" style="width: 15%;"  placeholder="收款通码离线码点位"></el-input>%
+      </el-form-item>
+      <el-form-item label="收款通码在线码点位">
+        <el-input v-model="form.RPASSQR" style="width: 15%;"  placeholder="收款通码在线码点位"></el-input>%
+      </el-form-item>
+      <el-form-item label="收款固码(二开)点位">
+        <el-input v-model="form.RSOLID" style="width: 15%;"  placeholder="收款固码(二开)点位"></el-input>%
       </el-form-item>
       <!-- <el-form-item label="申请人id">
               <el-input v-model="form.applyId" style="width: 30%;"></el-input>
@@ -97,7 +110,8 @@ export default {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePass }]
         // post: [{ required: true, trigger: 'blur', validator: validateEmpty }]
-      }
+      },
+      isAdmin_lable :""
     };
   },
 
@@ -106,32 +120,61 @@ export default {
   },
   created() {
     this.form.applyId = store.getters.uid;
+    console.log("11111111111111");
+    console.log(store.getters.role);
+    console.log(store.getters.uid);
+    if(store.getters.role == 1){
+        console.log("2222")
+        this.isAdmin_lable = '启用';
+    }
+    if(store.getters.role == 2)
+        this.isAdmin_lable = '申请启用';
   },
   methods: {
+    isAdmin_value(){
+      if(store.getters.role == 1)
+        return '启用';
+      if(store.getters.role == 2)
+        return '申请启用';
+    },
+    // isAdmin_lable(){
+    //   if(store.getters.role == 1)
+    //     return '启用';
+    //   if(store.getters.role == 2)
+    //     return '申请启用';
+    // },
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           if (
-            this.form.alipay.length == 0 ||
             this.form.applyId.length == 0 ||
             this.form.level.length == 0 ||
             this.form.password.length == 0 ||
             this.form.username == 0 ||
-            this.form.wechat.length == 0
+            this.form.wechat.length == 0||
+            this.form.TPASS.length == 0||
+            this.form.TSOLID.length == 0||
+            this.form.RPASSOFF.length == 0||
+            this.form.RPASSQR.length == 0||
+            this.form.RSOLID.length == 0
           ) {
-            alert("請輸入完整信息");
+            alert("请输入完整信息");
             return;
           }
 
           // alert('submit!');
           addMerchant(
-            this.form.alipay,
             this.form.applyId,
             this.form.level,
             this.form.password,
             this.form.username,
+            this.form.status,
             this.form.wechat,
-            this.form.status
+            this.form.TPASS,
+            this.form.TSOLID,
+            this.form.RPASSOFF,
+            this.form.RPASSQR,
+            this.form.RSOLID
           )
             .then(response => {
               // console.log(response.data.infoCode)

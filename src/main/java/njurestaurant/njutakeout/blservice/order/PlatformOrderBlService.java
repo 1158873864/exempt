@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface PlatformOrderBlService {
     PlatformOrder findPlatformOrderById(int id) throws WrongIdException;
-
+    PlatformOrder findPlatformOrderByNumber(String number);
     /**
      * 查看全部订单明细
      *

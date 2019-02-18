@@ -16,6 +16,7 @@ import njurestaurant.njutakeout.response.JSONResponse;
 import njurestaurant.njutakeout.response.Response;
 import njurestaurant.njutakeout.response.SuccessResponse;
 import njurestaurant.njutakeout.response.WrongResponse;
+import njurestaurant.njutakeout.response.order.OneOrderResponse;
 import njurestaurant.njutakeout.response.order.OrderListResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -64,5 +65,16 @@ public class OrderController {
             e.printStackTrace();
             return new ResponseEntity<>(new JSONResponse(e.getResponse().getInfoCode(),e.getResponse().getDescription()),HttpStatus.OK);
         }
+    }
+    @ApiOperation(value = "查看某个订单", notes = "查看某个订单")
+    @RequestMapping(value = "order/list/{number}", method = RequestMethod.GET)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = OrderListResponse.class),
+            @ApiResponse(code = 401, message = "Unauthorized", response = WrongResponse.class),
+            @ApiResponse(code = 500, message = "Failure", response = WrongResponse.class)})
+    @ResponseBody
+    public ResponseEntity<Response> getOrderByNumber(@PathVariable("number") String number) {//根据订单号查订单
+        PlatformOrder platformOrder = platformOrderBlService.findPlatformOrderByNumber(number);
+        return new ResponseEntity<>(new JSONResponse(200, new OneOrderResponse(String.valueOf(platformOrder.getTime().getTime()),platformOrder.getState())), HttpStatus.OK);
     }
 }
